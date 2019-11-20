@@ -1,15 +1,20 @@
 import React from 'react'
+import { BrowserRouter as Router, Route } from 'react-router-dom'
 import { ThemeProvider } from 'styled-components'
 import { GlobalStyle, theme } from 'styles'
+import AgeGroupsPage from 'pages/AgeGroupsPage'
 
 function App() {
   return (
-    <ThemeProvider theme={theme}>
-      <>
-        <GlobalStyle />
-        <p>Hello World!</p>
-      </>
-    </ThemeProvider>
+    <Router>
+      <ThemeProvider theme={theme}>
+        <>
+          <GlobalStyle />
+          <p>Hello World!</p>
+          <Route path="/" exact component={AgeGroupsPage} />
+        </>
+      </ThemeProvider>
+    </Router>
   )
 }
 
