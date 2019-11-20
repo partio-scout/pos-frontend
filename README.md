@@ -1,1 +1,1 @@
-# Partio-ohjelma frontend
+# Partio-ohjelmasovellus frontend
