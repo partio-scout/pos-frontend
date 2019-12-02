@@ -8,6 +8,7 @@ const Container = styled.div`
   flex-wrap: nowrap;
   overflow: scroll;
   scroll-snap-type: x mandatory;
+  pointer-events: all;
 `
 
 const AgeGroupSection = styled(Link)`
