@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
+import { Link } from 'react-router-dom'
 
 const Container = styled.div`
   height: 100%;
@@ -9,7 +10,7 @@ const Container = styled.div`
   scroll-snap-type: x mandatory;
 `
 
-const AgeGroupSection = styled.div`
+const AgeGroupSection = styled(Link)`
   width: 50vw;
   padding: 0 5vw;
   flex: 0 0 auto;
@@ -30,7 +31,8 @@ const AgeGroupSection = styled.div`
 
 const AgeGroupIllustration = styled.div`
   width: 100%;
-  height: 200px;
+  height: 0;
+  padding-bottom: 100%;
   background-color: #f5f5f5;
 `
 
@@ -45,7 +47,7 @@ const AgeGroupsPage = () => {
   return (
     <Container>
       {ageGroups.map((ageGroup, i) => (
-        <AgeGroupSection key={i} bg={i}>
+        <AgeGroupSection key={i} to={ageGroup}>
           <AgeGroupIllustration />
           {ageGroup}
         </AgeGroupSection>
