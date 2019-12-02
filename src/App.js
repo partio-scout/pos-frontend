@@ -10,7 +10,6 @@ function App() {
       <ThemeProvider theme={theme}>
         <>
           <GlobalStyle />
-          <p>Hello World!</p>
           <Route path="/" exact component={AgeGroupsPage} />
         </>
       </ThemeProvider>
