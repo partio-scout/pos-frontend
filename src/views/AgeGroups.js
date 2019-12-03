@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react'
-import styled from 'styled-components'
+import styled, { withTheme } from 'styled-components'
 import { Link } from 'react-router-dom'
 
 const Container = styled.div`
@@ -59,17 +59,9 @@ const AgeGroupIllustration = styled.div`
   background-color: #f5f5f5;
 `
 
-const AgeGroupsPage = () => {
+const AgeGroups = ({ theme }) => {
   const contentRef = useRef()
   const containerRef = useRef()
-
-  const backgroundColors = [
-    '#dbc65e',
-    '#45a4cc',
-    '#a079db',
-    '#6dc288',
-    '#d6b160',
-  ]
 
   useEffect(() => {
     const container = containerRef.current
@@ -83,7 +75,7 @@ const AgeGroupsPage = () => {
         const scrolledToIndex = ageGroupCenterPositions.indexOf(
           ageGroupCenterPositions.find(x => x > -xPosition)
         )
-        container.style.backgroundColor = backgroundColors[scrolledToIndex]
+        container.style.backgroundColor = theme.color.ageGroups[scrolledToIndex]
       }
 
       container.addEventListener('scroll', scrollHandler)
@@ -91,7 +83,7 @@ const AgeGroupsPage = () => {
         container.removeEventListener('scroll', scrollHandler)
       }
     }
-  }, [contentRef, containerRef, backgroundColors])
+  }, [contentRef, containerRef, theme])
 
   const ageGroups = [
     'Sudenpennut',
@@ -105,7 +97,7 @@ const AgeGroupsPage = () => {
     <Container ref={containerRef}>
       <Content ref={contentRef}>
         {ageGroups.map((ageGroup, i) => (
-          <AgeGroupSection key={i} to={ageGroup}>
+          <AgeGroupSection key={i} to={`/ageGroup/${i}`}>
             <AgeGroupIllustration />
             {ageGroup}
           </AgeGroupSection>
@@ -115,4 +107,4 @@ const AgeGroupsPage = () => {
   )
 }
 
-export default AgeGroupsPage
+export default withTheme(AgeGroups)

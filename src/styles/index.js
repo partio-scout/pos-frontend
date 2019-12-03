@@ -18,6 +18,10 @@ export const media = Object.keys(sizes).reduce((acc, label) => {
 
 export const theme = {
   fontFamily: 'Helvetica',
+  color: {
+    text: '#FFF',
+    ageGroups: ['#dbc65e', '#45a4cc', '#a079db', '#6dc288', '#d6b160'],
+  },
 }
 
 export const GlobalStyle = createGlobalStyle`
@@ -26,6 +30,7 @@ export const GlobalStyle = createGlobalStyle`
     width: 100%;
     height: 100%;
     font-family: ${({ theme }) => theme.fontFamily};
+    color: ${({ theme }) => theme.color.text};
   }
 
   #root {

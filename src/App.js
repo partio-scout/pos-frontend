@@ -8,20 +8,20 @@ import {
 import styled, { ThemeProvider } from 'styled-components'
 import { useTransition, animated } from 'react-spring'
 import { GlobalStyle, theme } from 'styles'
-import AgeGroupsPage from 'pages/AgeGroupsPage'
-import AgeGroupActivitiesPage from 'pages/AgeGroupActivitiesPage'
+import AgeGroups from 'views/AgeGroups'
+import TaskGroups from 'views/TaskGroups'
 
 const App = () => {
-  // const fetchAllData = async () => {
-  //   const data = await fetch(
-  //     'https://pof-backend-staging.partio.fi/spn-ohjelma-json-taysi/?postGUID=86b5b30817ce3649e590c5059ec88921'
-  //   )
-  //   console.log(data)
-  // }
+  const fetchAllData = async () => {
+    const data = await fetch(
+      'https://pof-backend-staging.partio.fi/spn-ohjelma-json-taysi/?postGUID=86b5b30817ce3649e590c5059ec88921'
+    )
+    console.log(data)
+  }
 
-  // useEffect(() => {
-  //   fetchAllData()
-  // }, [])
+  useEffect(() => {
+    fetchAllData()
+  }, [])
 
   return (
     <Router>
@@ -57,7 +57,7 @@ const BaseRoute = withRouter(({ location }) => {
       {transitions.map(({ item, props, key }) => (
         <BaseRouteContainer key={key} style={props}>
           <Switch location={item}>
-            <Route path="/" exact component={AgeGroupsPage} />
+            <Route path="/" exact component={AgeGroups} />
           </Switch>
         </BaseRouteContainer>
       ))}
@@ -97,9 +97,9 @@ const ActivityPageRoutes = withRouter(({ location }) => {
             {ageGroups.map((ageGroup, i) => (
               <Route
                 key={i}
-                path={`/${ageGroup}`}
+                path={`/agegroup/${i}`}
                 exact
-                component={AgeGroupActivitiesPage}
+                component={TaskGroups}
               />
             ))}
           </Switch>
