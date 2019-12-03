@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import {
   BrowserRouter as Router,
   Route,
@@ -12,6 +12,17 @@ import AgeGroupsPage from 'pages/AgeGroupsPage'
 import AgeGroupActivitiesPage from 'pages/AgeGroupActivitiesPage'
 
 const App = () => {
+  // const fetchAllData = async () => {
+  //   const data = await fetch(
+  //     'https://pof-backend-staging.partio.fi/spn-ohjelma-json-taysi/?postGUID=86b5b30817ce3649e590c5059ec88921'
+  //   )
+  //   console.log(data)
+  // }
+
+  // useEffect(() => {
+  //   fetchAllData()
+  // }, [])
+
   return (
     <Router>
       <ThemeProvider theme={theme}>

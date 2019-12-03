@@ -1,14 +1,36 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 
 const Container = styled.div`
+  position: relative;
+  height: 100%;
+  pointer-events: all;
+  overflow: scroll;
+  scroll-snap-type: x mandatory;
+  background-color: #dbc65e;
+  transition: background-color 400ms;
+
+  ::before {
+    content: ' ';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 40%;
+    background: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.4),
+      rgba(0, 0, 0, 0)
+    );
+  }
+`
+
+const Content = styled.div`
   height: 100%;
   display: flex;
   flex-wrap: nowrap;
-  overflow: scroll;
-  scroll-snap-type: x mandatory;
-  pointer-events: all;
+  position: absolute;
 `
 
 const AgeGroupSection = styled(Link)`
@@ -38,6 +60,39 @@ const AgeGroupIllustration = styled.div`
 `
 
 const AgeGroupsPage = () => {
+  const contentRef = useRef()
+  const containerRef = useRef()
+
+  const backgroundColors = [
+    '#dbc65e',
+    '#45a4cc',
+    '#a079db',
+    '#6dc288',
+    '#d6b160',
+  ]
+
+  useEffect(() => {
+    const container = containerRef.current
+    const content = contentRef.current
+    if (container && content) {
+      const scrollHandler = () => {
+        const ageGroupCenterPositions = [...content.children].map(
+          child => child.clientWidth / 2 + child.offsetLeft
+        )
+        const xPosition = content.getBoundingClientRect().x
+        const scrolledToIndex = ageGroupCenterPositions.indexOf(
+          ageGroupCenterPositions.find(x => x > -xPosition)
+        )
+        container.style.backgroundColor = backgroundColors[scrolledToIndex]
+      }
+
+      container.addEventListener('scroll', scrollHandler)
+      return () => {
+        container.removeEventListener('scroll', scrollHandler)
+      }
+    }
+  }, [contentRef, containerRef, backgroundColors])
+
   const ageGroups = [
     'Sudenpennut',
     'Seikkailijat',
@@ -45,14 +100,17 @@ const AgeGroupsPage = () => {
     'Samoajat',
     'Vaeltajat',
   ]
+
   return (
-    <Container>
-      {ageGroups.map((ageGroup, i) => (
-        <AgeGroupSection key={i} to={ageGroup}>
-          <AgeGroupIllustration />
-          {ageGroup}
-        </AgeGroupSection>
-      ))}
+    <Container ref={containerRef}>
+      <Content ref={contentRef}>
+        {ageGroups.map((ageGroup, i) => (
+          <AgeGroupSection key={i} to={ageGroup}>
+            <AgeGroupIllustration />
+            {ageGroup}
+          </AgeGroupSection>
+        ))}
+      </Content>
     </Container>
   )
 }
