@@ -20,7 +20,7 @@ export const theme = {
   fontFamily: 'Helvetica',
   color: {
     text: '#FFF',
-    ageGroups: ['#dbc65e', '#45a4cc', '#a079db', '#6dc288', '#d6b160'],
+    ageGroups: ['#f5ea2e', '#d4791e', '#5e0f75', '#33652e', '#6e470a'],
   },
 }
 

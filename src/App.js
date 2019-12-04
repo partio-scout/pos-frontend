@@ -5,23 +5,23 @@ import {
   Switch,
   withRouter,
 } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
 import styled, { ThemeProvider } from 'styled-components'
 import { useTransition, animated } from 'react-spring'
+import { fetchAllContent } from 'api'
+import { setAgeGroups } from 'redux/actionCreators'
 import { GlobalStyle, theme } from 'styles'
 import AgeGroups from 'views/AgeGroups'
 import TaskGroups from 'views/TaskGroups'
 
 const App = () => {
-  const fetchAllData = async () => {
-    const data = await fetch(
-      'https://pof-backend-staging.partio.fi/spn-ohjelma-json-taysi/?postGUID=86b5b30817ce3649e590c5059ec88921'
-    )
-    console.log(data)
-  }
+  const dispatch = useDispatch()
 
   useEffect(() => {
-    fetchAllData()
-  }, [])
+    fetchAllContent().then(({ ageGroups }) => {
+      dispatch(setAgeGroups(ageGroups))
+    })
+  }, [dispatch])
 
   return (
     <Router>
@@ -75,19 +75,13 @@ const ActivitiesPageContainer = styled(animated.div)`
 `
 
 const ActivityPageRoutes = withRouter(({ location }) => {
+  const ageGroups = useSelector(state => state.ageGroups)
+
   const transitions = useTransition(location, location => location.pathname, {
     from: { transform: 'translate3d(0, 100%, 0)' },
     enter: { transform: 'translate3d(0, 0, 0)' },
     leave: { transform: 'translate3d(0, 100%, 0)' },
   })
-
-  const ageGroups = [
-    'Sudenpennut',
-    'Seikkailijat',
-    'Tarpojat',
-    'Samoajat',
-    'Vaeltajat',
-  ]
 
   return (
     <>
@@ -97,7 +91,7 @@ const ActivityPageRoutes = withRouter(({ location }) => {
             {ageGroups.map((ageGroup, i) => (
               <Route
                 key={i}
-                path={`/agegroup/${i}`}
+                path={`/guid/${ageGroup.guid}`}
                 exact
                 component={TaskGroups}
               />

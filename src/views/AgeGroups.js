@@ -1,6 +1,8 @@
 import React, { useEffect, useRef } from 'react'
 import styled, { withTheme } from 'styled-components'
-import { Link } from 'react-router-dom'
+import { useSelector } from 'react-redux'
+import { determineLanguageFromUrl } from 'utils'
+import AgeGroup from 'components/AgeGroup'
 
 const Container = styled.div`
   position: relative;
@@ -8,7 +10,7 @@ const Container = styled.div`
   pointer-events: all;
   overflow: scroll;
   scroll-snap-type: x mandatory;
-  background-color: #dbc65e;
+  background-color: ${({ theme }) => theme.color.ageGroups[0]};
   transition: background-color 400ms;
 
   ::before {
@@ -33,33 +35,10 @@ const Content = styled.div`
   position: absolute;
 `
 
-const AgeGroupSection = styled(Link)`
-  width: 50vw;
-  padding: 0 5vw;
-  flex: 0 0 auto;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  scroll-snap-align: center;
-
-  :first-child {
-    padding-left: 25vw;
-  }
-
-  :last-child {
-    padding-right: 25vw;
-  }
-`
-
-const AgeGroupIllustration = styled.div`
-  width: 100%;
-  height: 0;
-  padding-bottom: 100%;
-  background-color: #f5f5f5;
-`
-
 const AgeGroups = ({ theme }) => {
+  const ageGroups = useSelector(state => state.ageGroups)
+  const language = determineLanguageFromUrl()
+
   const contentRef = useRef()
   const containerRef = useRef()
 
@@ -77,7 +56,6 @@ const AgeGroups = ({ theme }) => {
         )
         container.style.backgroundColor = theme.color.ageGroups[scrolledToIndex]
       }
-
       container.addEventListener('scroll', scrollHandler)
       return () => {
         container.removeEventListener('scroll', scrollHandler)
@@ -85,22 +63,11 @@ const AgeGroups = ({ theme }) => {
     }
   }, [contentRef, containerRef, theme])
 
-  const ageGroups = [
-    'Sudenpennut',
-    'Seikkailijat',
-    'Tarpojat',
-    'Samoajat',
-    'Vaeltajat',
-  ]
-
   return (
     <Container ref={containerRef}>
       <Content ref={contentRef}>
         {ageGroups.map((ageGroup, i) => (
-          <AgeGroupSection key={i} to={`/ageGroup/${i}`}>
-            <AgeGroupIllustration />
-            {ageGroup}
-          </AgeGroupSection>
+          <AgeGroup key={i} ageGroup={ageGroup} language={language} />
         ))}
       </Content>
     </Container>
