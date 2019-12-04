@@ -37,7 +37,7 @@ const Content = styled.div`
 
 const AgeGroups = ({ theme }) => {
   const ageGroups = useSelector(state => state.ageGroups)
-  const language = determineLanguageFromUrl()
+  const language = determineLanguageFromUrl(window.location)
 
   const contentRef = useRef()
   const containerRef = useRef()

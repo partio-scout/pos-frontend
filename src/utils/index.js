@@ -1,4 +1,4 @@
-export const determineLanguageFromUrl = () => {
-  const url = new URL(window.location)
-  return url.searchParams.get('lang') || 'fi'
+export const determineLanguageFromUrl = url => {
+  const urlObj = new URL(url)
+  return urlObj.searchParams.get('lang') || 'fi'
 }
