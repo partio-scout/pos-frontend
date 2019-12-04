@@ -7,7 +7,7 @@ export const fetchAllContent = async () => {
   console.log(programData)
 
   const ageGroups = programData.agegroups.map(ageGroup => {
-    const { taskgroups, ...rest } = ageGroup //eslint-disable-line
+    const { taskgroups, ...rest } = ageGroup // eslint-disable-line
     return rest
   })
   const guidsToExclude = [
