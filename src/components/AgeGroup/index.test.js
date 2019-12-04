@@ -24,7 +24,9 @@ describe('AgeGroup component', () => {
     )
     const elem = getByTestId('title')
     expect(elem.innerHTML).toBe(
-      testAgeGroup.languages.find(lang => lang.lang === language).title
+      testAgeGroup.languages
+        .find(lang => lang.lang === language)
+        .title.split('(')[0]
     )
   })
 })

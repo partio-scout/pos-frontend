@@ -17,10 +17,10 @@ export const media = Object.keys(sizes).reduce((acc, label) => {
 }, {})
 
 export const theme = {
-  fontFamily: 'Helvetica',
+  fontFamily: 'Muli, sans-serif',
   color: {
     text: '#FFF',
-    ageGroups: ['#f5ea2e', '#d4791e', '#5e0f75', '#33652e', '#6e470a'],
+    ageGroups: ['#D1C41C', '#D4791E', '#5E0F75', '#33652E', '#6E470A'],
   },
 }
 
