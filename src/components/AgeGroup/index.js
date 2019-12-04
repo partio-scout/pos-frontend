@@ -31,7 +31,9 @@ const AgeGroupIllustration = styled.div`
 const AgeGroup = ({ ageGroup, language }) => (
   <AgeGroupLink to={`/guid/${ageGroup.guid}`}>
     <AgeGroupIllustration />
-    {ageGroup.languages.find(x => x.lang === language).title}
+    <h3 data-testid="title">
+      {ageGroup.languages.find(x => x.lang === language).title}
+    </h3>
   </AgeGroupLink>
 )
 
