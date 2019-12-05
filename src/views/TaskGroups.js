@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { withRouter } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 
 const Background = styled.div`
   position: relative;
@@ -91,10 +92,12 @@ const TaskGroup = styled.div`
 `
 
 const TaskGroups = ({ history, location }) => {
-  const pathSplit = location.pathname.split('/')
-  const ageGroupIndex = pathSplit[pathSplit.length - 1]
+  const ageGroups = useSelector(state => state.ageGroups)
+  const locationSplit = location.pathname.split('guid/')
+  const guid = locationSplit[locationSplit.length - 1]
+  const openAgeGroup = ageGroups.find(x => x.guid === guid)
   return (
-    <Background ageGroupIndex={ageGroupIndex}>
+    <Background ageGroupIndex={openAgeGroup ? openAgeGroup.order : 0}>
       <Content>
         <CloseIcon onClick={() => history.push('/')}>X</CloseIcon>
         <HeadingContent>
