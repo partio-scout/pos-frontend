@@ -20,7 +20,10 @@ export const theme = {
   fontFamily: 'Muli, sans-serif',
   color: {
     text: '#FFF',
+    background: '#0F0F0F',
     ageGroups: ['#D1C41C', '#D4791E', '#5E0F75', '#33652E', '#6E470A'],
+    ageGroupGradients: ['#D8CD41', '#DB8F43', '#78368B', '#547E50', '#856532'],
+    gradientDark: '#0F0F0F',
   },
 }
 

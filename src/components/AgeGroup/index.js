@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
+import { getAgeGroupTitleWithoutAges } from 'utils'
 
 const AgeGroupLink = styled(Link)`
   width: 50vw;
@@ -38,13 +39,18 @@ const AgeGroupIllustration = styled.div`
   background-color: #f5f5f5;
 `
 
-const AgeGroup = ({ ageGroup, language }) => (
-  <AgeGroupLink to={`/guid/${ageGroup.guid}`}>
-    <AgeGroupIllustration />
-    <h3 data-testid="title">
-      {ageGroup.languages.find(x => x.lang === language).title.split('(')[0]}
-    </h3>
-  </AgeGroupLink>
-)
+const AgeGroup = ({ ageGroup, language }) => {
+  const languageInfo = ageGroup.languages.find(x => x.lang === language)
+  return (
+    <AgeGroupLink to={`/guid/${ageGroup.guid}`}>
+      <AgeGroupIllustration />
+      <h3 data-testid="title">
+        {getAgeGroupTitleWithoutAges(
+          languageInfo ? languageInfo.title : ageGroup.title
+        )}
+      </h3>
+    </AgeGroupLink>
+  )
+}
 
 export default AgeGroup

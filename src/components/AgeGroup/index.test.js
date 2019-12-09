@@ -1,6 +1,7 @@
 import React from 'react'
 import { render } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
+import { getAgeGroupTitleWithoutAges } from 'utils'
 import AgeGroup from './index'
 
 const testAgeGroup = {
@@ -24,9 +25,9 @@ describe('AgeGroup component', () => {
     )
     const elem = getByTestId('title')
     expect(elem.innerHTML).toBe(
-      testAgeGroup.languages
-        .find(lang => lang.lang === language)
-        .title.split('(')[0]
+      getAgeGroupTitleWithoutAges(
+        testAgeGroup.languages.find(lang => lang.lang === language).title
+      )
     )
   })
 })

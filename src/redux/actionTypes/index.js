@@ -1,1 +1,3 @@
 export const SET_AGE_GROUPS = 'SET_AGE_GROUPS'
+export const SET_TASK_GROUPS = 'SET_TASK_GROUPS'
+export const SET_SUB_TASK_GROUPS = 'SET_SUB_TASK_GROUPS'

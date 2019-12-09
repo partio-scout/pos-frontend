@@ -5,22 +5,30 @@ import {
   Switch,
   withRouter,
 } from 'react-router-dom'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import styled, { ThemeProvider } from 'styled-components'
 import { useTransition, animated } from 'react-spring'
-import { fetchAllContent } from 'api'
-import { setAgeGroups } from 'redux/actionCreators'
+import { fetchAllContent, fetchTranslations } from 'api'
+import {
+  setAgeGroups,
+  setTaskGroups,
+  setSubTaskGroups,
+} from 'redux/actionCreators'
 import { GlobalStyle, theme } from 'styles'
 import AgeGroups from 'views/AgeGroups'
 import TaskGroups from 'views/TaskGroups'
+import SubTaskGroups from 'views/SubTaskGroups'
 
 const App = () => {
   const dispatch = useDispatch()
 
   useEffect(() => {
-    fetchAllContent().then(({ ageGroups }) => {
+    fetchAllContent().then(({ ageGroups, taskGroups, subTaskGroups }) => {
       dispatch(setAgeGroups(ageGroups))
+      dispatch(setTaskGroups(taskGroups))
+      dispatch(setSubTaskGroups(subTaskGroups))
     })
+    fetchTranslations()
   }, [dispatch])
 
   return (
@@ -30,6 +38,7 @@ const App = () => {
           <GlobalStyle />
           <BaseRoute />
           <ActivityPageRoutes />
+          <SubTaskPageRoutes />
         </>
       </ThemeProvider>
     </Router>
@@ -75,8 +84,6 @@ const ActivitiesPageContainer = styled(animated.div)`
 `
 
 const ActivityPageRoutes = withRouter(({ location }) => {
-  const ageGroups = useSelector(state => state.ageGroups)
-
   const transitions = useTransition(location, location => location.pathname, {
     from: { transform: 'translate3d(0, 100%, 0)' },
     enter: { transform: 'translate3d(0, 0, 0)' },
@@ -88,16 +95,38 @@ const ActivityPageRoutes = withRouter(({ location }) => {
       {transitions.map(({ item, props, key }) => (
         <ActivitiesPageContainer key={key} style={props}>
           <Switch location={item}>
-            {ageGroups.map((ageGroup, i) => (
-              <Route
-                key={i}
-                path={`/guid/${ageGroup.guid}`}
-                exact
-                component={TaskGroups}
-              />
-            ))}
+            <Route path="/guid/:guid" component={TaskGroups} />
           </Switch>
         </ActivitiesPageContainer>
+      ))}
+    </>
+  )
+})
+
+const SubTaskPageContainer = styled(animated.div)`
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+`
+
+const SubTaskPageRoutes = withRouter(({ location }) => {
+  const transitions = useTransition(location, location => location.pathname, {
+    from: { transform: 'translate3d(100%, 0, 0)' },
+    enter: { transform: 'translate3d(0, 0, 0)' },
+    leave: { transform: 'translate3d(100%, 0, 0)' },
+  })
+
+  return (
+    <>
+      {transitions.map(({ item, props, key }) => (
+        <SubTaskPageContainer key={key} style={props}>
+          <Switch location={item}>
+            <Route path="/guid/:guid" component={SubTaskGroups} />
+          </Switch>
+        </SubTaskPageContainer>
       ))}
     </>
   )
