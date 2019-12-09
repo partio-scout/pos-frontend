@@ -36,9 +36,13 @@ const StyledTaskGroup = styled(Link)`
 
 const TaskGroup = ({ taskGroup, ageGroupIndex, language }) => {
   const renderSubTaskGroupsOrTasks = taskGroup => {
+    const tasksTerm =
+      taskGroup.subtask_term && taskGroup.subtask_term.plural
+        ? taskGroup.subtask_term.plural
+        : 'aktiviteettia'
     const tasksText =
       taskGroup.amountOfTasks > 0
-        ? `${taskGroup.amountOfTasks} ${taskGroup.subtask_term.plural}`
+        ? `${taskGroup.amountOfTasks} ${tasksTerm}`
         : ''
     const taskGroupsText =
       taskGroup.amountOfTaskGroups > 0

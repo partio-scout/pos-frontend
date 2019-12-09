@@ -2,6 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { useParams, useHistory } from 'react-router-dom'
 import { useSelector } from 'react-redux'
+import { X } from 'react-feather'
 import TaskGroup from 'components/TaskGroup'
 import { getAgeGroupTitleWithoutAges, determineLanguageFromUrl } from 'utils'
 
@@ -34,9 +35,6 @@ const CloseIcon = styled.div`
   position: absolute;
   top: 1rem;
   right: 1rem;
-  width: 11px;
-  height: 15px;
-  color: #fff;
   cursor: pointer;
 `
 
@@ -104,7 +102,9 @@ const TaskGroups = () => {
   return (
     <Background ageGroupIndex={ageGroupIndex}>
       <Content>
-        <CloseIcon onClick={() => history.push('/')}>X</CloseIcon>
+        <CloseIcon>
+          <X onClick={() => history.push('/')} />
+        </CloseIcon>
         <HeadingContent>
           <MainSymbol />
           <h3>{getAgeGroupTitleWithoutAges(ageGroup.title)}</h3>
