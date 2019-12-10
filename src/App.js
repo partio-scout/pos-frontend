@@ -40,7 +40,7 @@ const App = () => {
   )
 }
 
-const BaseRouteContainer = styled(animated.div)`
+const RouteContainer = styled(animated.div)`
   width: 100%;
   height: 100%;
   position: absolute;
@@ -60,24 +60,15 @@ const BaseRoute = () => {
   return (
     <>
       {transitions.map(({ item, props, key }) => (
-        <BaseRouteContainer key={key} style={props}>
+        <RouteContainer key={key} style={props}>
           <Switch location={item}>
             <Route path="/" exact component={AgeGroups} />
           </Switch>
-        </BaseRouteContainer>
+        </RouteContainer>
       ))}
     </>
   )
 }
-
-const ActivitiesPageContainer = styled(animated.div)`
-  width: 100vw;
-  height: 100vh;
-  position: absolute;
-  top: 0;
-  left: 0;
-  pointer-events: none;
-`
 
 const ActivityPageRoutes = () => {
   const location = useLocation()
@@ -90,24 +81,15 @@ const ActivityPageRoutes = () => {
   return (
     <>
       {transitions.map(({ item, props, key }) => (
-        <ActivitiesPageContainer key={key} style={props}>
+        <RouteContainer key={key} style={props}>
           <Switch location={item}>
             <Route path="/guid/:guid" component={TaskGroups} />
           </Switch>
-        </ActivitiesPageContainer>
+        </RouteContainer>
       ))}
     </>
   )
 }
-
-const SubTaskPageContainer = styled(animated.div)`
-  width: 100vw;
-  height: 100vh;
-  position: absolute;
-  top: 0;
-  left: 0;
-  pointer-events: none;
-`
 
 const SubTaskPageRoutes = () => {
   const location = useLocation()
@@ -120,11 +102,11 @@ const SubTaskPageRoutes = () => {
   return (
     <>
       {transitions.map(({ item, props, key }) => (
-        <SubTaskPageContainer key={key} style={props}>
+        <RouteContainer key={key} style={props}>
           <Switch location={item}>
             <Route path="/guid/:guid" component={SubTaskGroups} />
           </Switch>
-        </SubTaskPageContainer>
+        </RouteContainer>
       ))}
     </>
   )
