@@ -1,9 +1,10 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import styled from 'styled-components'
 import { useParams, useHistory } from 'react-router-dom'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { X } from 'react-feather'
 import TaskGroup from 'components/TaskGroup'
+import { setSelectedAgeGroup } from 'redux/actionCreators'
 import { getAgeGroupTitleWithoutAges, determineLanguageFromUrl } from 'utils'
 
 const Background = styled.div`
@@ -83,6 +84,7 @@ const MainSymbol = styled.div`
 
 const TaskGroups = () => {
   const history = useHistory()
+  const dispatch = useDispatch()
   const ageGroups = useSelector(state => state.ageGroups)
   const taskGroups = useSelector(state => state.taskgroups)
 
@@ -90,6 +92,12 @@ const TaskGroups = () => {
   const language = determineLanguageFromUrl(window.location)
 
   const ageGroup = ageGroups.find(x => x.guid === guid)
+
+  useEffect(() => {
+    if (ageGroup) {
+      dispatch(setSelectedAgeGroup(ageGroup))
+    }
+  }, [ageGroup, dispatch])
 
   if (!ageGroup) {
     return null

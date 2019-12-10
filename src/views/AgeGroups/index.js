@@ -37,6 +37,7 @@ const Content = styled.div`
 
 const AgeGroups = ({ theme }) => {
   const ageGroups = useSelector(state => state.ageGroups)
+  const selectedAgeGroup = useSelector(state => state.selectedAgeGroup)
   const language = determineLanguageFromUrl(window.location)
 
   const contentRef = useRef()
@@ -46,6 +47,12 @@ const AgeGroups = ({ theme }) => {
     const container = containerRef.current
     const content = contentRef.current
     if (container && content) {
+      if (selectedAgeGroup) {
+        const ageGroupStartPositions = [...content.children].map(
+          child => child.offsetLeft
+        )
+        container.scrollLeft = ageGroupStartPositions[selectedAgeGroup.order]
+      }
       const scrollHandler = () => {
         const ageGroupCenterPositions = [...content.children].map(
           child => child.clientWidth / 2 + child.offsetLeft
@@ -61,14 +68,16 @@ const AgeGroups = ({ theme }) => {
         container.removeEventListener('scroll', scrollHandler)
       }
     }
-  }, [contentRef, containerRef, theme])
+  }, [contentRef, containerRef, theme, selectedAgeGroup])
 
   return (
     <Container ref={containerRef}>
       <Content ref={contentRef}>
-        {ageGroups.map((ageGroup, i) => (
-          <AgeGroup key={i} ageGroup={ageGroup} language={language} />
-        ))}
+        {ageGroups
+          .sort((a, b) => a.order - b.order)
+          .map((ageGroup, i) => (
+            <AgeGroup key={i} ageGroup={ageGroup} language={language} />
+          ))}
       </Content>
     </Container>
   )
