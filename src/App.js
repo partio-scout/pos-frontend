@@ -3,17 +3,13 @@ import {
   BrowserRouter as Router,
   Route,
   Switch,
-  withRouter,
+  useLocation,
 } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import styled, { ThemeProvider } from 'styled-components'
 import { useTransition, animated } from 'react-spring'
 import { fetchAllContent, fetchTranslations } from 'api'
-import {
-  setAgeGroups,
-  setTaskGroups,
-  setSubTaskGroups,
-} from 'redux/actionCreators'
+import { setAgeGroups, setTaskGroups } from 'redux/actionCreators'
 import { GlobalStyle, theme } from 'styles'
 import AgeGroups from 'views/AgeGroups'
 import TaskGroups from 'views/TaskGroups'
@@ -23,10 +19,9 @@ const App = () => {
   const dispatch = useDispatch()
 
   useEffect(() => {
-    fetchAllContent().then(({ ageGroups, taskGroups, subTaskGroups }) => {
+    fetchAllContent().then(({ ageGroups, taskGroups }) => {
       dispatch(setAgeGroups(ageGroups))
       dispatch(setTaskGroups(taskGroups))
-      dispatch(setSubTaskGroups(subTaskGroups))
     })
     fetchTranslations()
   }, [dispatch])
@@ -54,7 +49,8 @@ const BaseRouteContainer = styled(animated.div)`
   pointer-events: none;
 `
 
-const BaseRoute = withRouter(({ location }) => {
+const BaseRoute = () => {
+  const location = useLocation()
   const transitions = useTransition(location, location => location.pathname, {
     from: { transform: 'translate3d(0, -100%, 0)' },
     enter: { transform: 'translate3d(0, 0, 0)' },
@@ -72,7 +68,7 @@ const BaseRoute = withRouter(({ location }) => {
       ))}
     </>
   )
-})
+}
 
 const ActivitiesPageContainer = styled(animated.div)`
   width: 100vw;
@@ -83,7 +79,8 @@ const ActivitiesPageContainer = styled(animated.div)`
   pointer-events: none;
 `
 
-const ActivityPageRoutes = withRouter(({ location }) => {
+const ActivityPageRoutes = () => {
+  const location = useLocation()
   const transitions = useTransition(location, location => location.pathname, {
     from: { transform: 'translate3d(0, 100%, 0)' },
     enter: { transform: 'translate3d(0, 0, 0)' },
@@ -101,7 +98,7 @@ const ActivityPageRoutes = withRouter(({ location }) => {
       ))}
     </>
   )
-})
+}
 
 const SubTaskPageContainer = styled(animated.div)`
   width: 100vw;
@@ -112,7 +109,8 @@ const SubTaskPageContainer = styled(animated.div)`
   pointer-events: none;
 `
 
-const SubTaskPageRoutes = withRouter(({ location }) => {
+const SubTaskPageRoutes = () => {
+  const location = useLocation()
   const transitions = useTransition(location, location => location.pathname, {
     from: { transform: 'translate3d(100%, 0, 0)' },
     enter: { transform: 'translate3d(0, 0, 0)' },
@@ -130,6 +128,6 @@ const SubTaskPageRoutes = withRouter(({ location }) => {
       ))}
     </>
   )
-})
+}
 
 export default App

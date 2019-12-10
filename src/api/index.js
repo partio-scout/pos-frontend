@@ -18,25 +18,29 @@ export const fetchAllContent = async () => {
     ageGroup => !guidsToExclude.includes(ageGroup.guid)
   )
 
-  const subTaskGroupsToShow = []
-
   const taskGroups = programData.agegroups.reduce((acc, ageGroup) => {
     const { taskgroups, ...rest } = ageGroup // eslint-disable-line
 
-    taskgroups.forEach(group => {
-      const { tasks, taskgroups: subTaskGroups, ...rest } = group
-      subTaskGroups.forEach(subTaskGroup => {
-        const { tasks: subTasks, ...subTaskGroupRest } = subTaskGroup // eslint-disable-line
-        subTaskGroupsToShow.push({
-          ...subTaskGroupRest,
-          taskGroupGuid: group.guid,
-          amountOfTasks: subTasks ? subTasks.length : 0,
-        })
+    // this function adds the guid of the agegroup to all nested taskgroups
+    // this way we can easily deduce which agegroup the (sub)taskgroup is related to
+    const addAgeGroupGuids = items =>
+      items.map(item => {
+        if (item.taskgroups) {
+          return {
+            ...item,
+            ageGroupGuid: ageGroup.guid,
+            taskgroups: addAgeGroupGuids(item.taskgroups),
+          }
+        }
+        return { ...item, ageGroupGuid: ageGroup.guid }
       })
+
+    taskgroups.forEach(group => {
+      const { taskgroups: subTaskGroups } = group
+      const subTaskGroupsWithAgeGroupGuids = addAgeGroupGuids(subTaskGroups)
       acc.push({
-        ...rest,
-        amountOfTasks: tasks ? tasks.length : 0,
-        amountOfTaskGroups: subTaskGroups ? subTaskGroups.length : 0,
+        ...group,
+        taskgroups: subTaskGroupsWithAgeGroupGuids,
         ageGroupGuid: ageGroup.guid,
       })
     })
@@ -46,7 +50,6 @@ export const fetchAllContent = async () => {
   return {
     ageGroups: ageGroupsToShow,
     taskGroups,
-    subTaskGroups: subTaskGroupsToShow,
   }
 }
 

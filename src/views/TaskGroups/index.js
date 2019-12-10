@@ -7,7 +7,6 @@ import TaskGroup from 'components/TaskGroup'
 import { getAgeGroupTitleWithoutAges, determineLanguageFromUrl } from 'utils'
 
 const Background = styled.div`
-  position: relative;
   min-height: 100vh;
   width: 100vw;
   background-color: ${({ theme }) => theme.color.gradientDark};
@@ -85,7 +84,7 @@ const MainSymbol = styled.div`
 const TaskGroups = () => {
   const history = useHistory()
   const ageGroups = useSelector(state => state.ageGroups)
-  const taskGroups = useSelector(state => state.taskGroups)
+  const taskGroups = useSelector(state => state.taskgroups)
 
   const { guid } = useParams()
   const language = determineLanguageFromUrl(window.location)

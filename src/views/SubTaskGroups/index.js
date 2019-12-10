@@ -43,36 +43,50 @@ const SubTaskGroups = () => {
   const { guid } = useParams()
   const history = useHistory()
   const language = determineLanguageFromUrl(window.location)
+
+  const deepFind = (func, items = [], childrenKey = 'taskgroups') => {
+    const found = items.find(func)
+    if (found) {
+      return found
+    }
+    return items
+      .map(x => deepFind(func, x[childrenKey], childrenKey))
+      .flat()
+      .filter(Boolean)
+      .shift()
+  }
+
   const taskGroup = useSelector(state =>
-    state.taskGroups.find(x => x.guid === guid)
+    deepFind(x => x.guid === guid, state.taskgroups)
   )
-  const subTaskGroups = useSelector(state =>
-    state.subTaskGroups.filter(x => x.taskGroupGuid === guid)
-  )
+
   const ageGroups = useSelector(state => state.ageGroups)
 
-  if (!(taskGroup && subTaskGroups)) {
+  if (!taskGroup || !ageGroups) {
     return null
   }
 
+  const subTaskGroups = taskGroup.taskgroups
   const taskGroupLanguages = taskGroup.languages.find(x => x.lang === language)
   const ageGroup = ageGroups.find(x => x.guid === taskGroup.ageGroupGuid)
 
   return (
     <StyledSubTaskGroups>
-      <BackArrow onClick={() => history.push(`/guid/${ageGroup.guid}`)}>
+      <BackArrow onClick={() => history.goBack()}>
         <ArrowLeft />
       </BackArrow>
       <h4>{taskGroupLanguages ? taskGroupLanguages.title : taskGroup.title}</h4>
       <TaskList>
-        {subTaskGroups.map(subTaskGroup => (
-          <TaskGroup
-            key={subTaskGroup.guid}
-            taskGroup={subTaskGroup}
-            ageGroupIndex={ageGroup.order}
-            language={language}
-          />
-        ))}
+        {subTaskGroups.map(subTaskGroup => {
+          return (
+            <TaskGroup
+              key={subTaskGroup.guid}
+              taskGroup={subTaskGroup}
+              ageGroupIndex={ageGroup.order}
+              language={language}
+            />
+          )
+        })}
       </TaskList>
     </StyledSubTaskGroups>
   )

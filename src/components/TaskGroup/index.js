@@ -41,14 +41,13 @@ const TaskGroup = ({ taskGroup, ageGroupIndex, language }) => {
         ? taskGroup.subtask_term.plural
         : 'aktiviteettia'
     const tasksText =
-      taskGroup.amountOfTasks > 0
-        ? `${taskGroup.amountOfTasks} ${tasksTerm}`
-        : ''
+      taskGroup.tasks.length > 0 ? `${taskGroup.tasks.length} ${tasksTerm}` : ''
     const taskGroupsText =
-      taskGroup.amountOfTaskGroups > 0
-        ? `${taskGroup.amountOfTaskGroups} aktiviteettiryhmää`
+      taskGroup.taskgroups.length > 0
+        ? `${taskGroup.taskgroups.length} aktiviteettiryhmää`
         : ''
-    return <span>{`${tasksText + ' '}${taskGroupsText}`}</span>
+    // add extra space char in the end to ensure that empty rows take the height of this line
+    return <span>{`${tasksText + ' '}${taskGroupsText} \u00A0`}</span>
   }
 
   const languageInfo = taskGroup.languages.find(x => x.lang === language)
