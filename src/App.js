@@ -15,6 +15,7 @@ import { GlobalStyle, theme } from 'styles'
 import AgeGroups from 'views/AgeGroups'
 import AgeGroup from 'views/AgeGroup'
 import TaskGroup from 'views/TaskGroup'
+import { ITEM_TYPES } from 'consts'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -46,9 +47,9 @@ const ComponentToRender = () => {
   const item = useSelector(state => state.itemsByGuid[guid])
 
   switch (item && item.type) {
-    case 'AGE_GROUP':
+    case ITEM_TYPES.AGE_GROUP:
       return <AgeGroup />
-    case 'TASK_GROUP':
+    case ITEM_TYPES.TASK_GROUP:
       return <TaskGroup />
     default:
       return <AgeGroups />

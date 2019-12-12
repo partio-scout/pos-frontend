@@ -1,0 +1,5 @@
+export const ITEM_TYPES = {
+  AGE_GROUP: 'AGE_GROUP',
+  TASK_GROUP: 'TASK_GROUP',
+  TASK: 'TASK',
+}
