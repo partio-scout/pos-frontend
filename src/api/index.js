@@ -6,10 +6,8 @@ export const fetchAllContent = async () => {
   const programData = data.program[0]
   console.log(programData)
 
-  const ageGroups = programData.agegroups.map(ageGroup => {
-    const { taskgroups, ...rest } = ageGroup // eslint-disable-line
-    return rest
-  })
+  const { agegroups: ageGroups } = programData
+
   const guidsToExclude = [
     '0cdad01fccaf149bfdb5ae3a2cdd6d56',
     'e13d38602cec28781ed110c008385552',
@@ -18,39 +16,7 @@ export const fetchAllContent = async () => {
     ageGroup => !guidsToExclude.includes(ageGroup.guid)
   )
 
-  const taskGroups = programData.agegroups.reduce((acc, ageGroup) => {
-    const { taskgroups, ...rest } = ageGroup // eslint-disable-line
-
-    // this function adds the guid of the agegroup to all nested taskgroups
-    // this way we can easily deduce which agegroup the (sub)taskgroup is related to
-    const addAgeGroupGuids = items =>
-      items.map(item => {
-        if (item.taskgroups) {
-          return {
-            ...item,
-            ageGroupGuid: ageGroup.guid,
-            taskgroups: addAgeGroupGuids(item.taskgroups),
-          }
-        }
-        return { ...item, ageGroupGuid: ageGroup.guid }
-      })
-
-    taskgroups.forEach(group => {
-      const { taskgroups: subTaskGroups } = group
-      const subTaskGroupsWithAgeGroupGuids = addAgeGroupGuids(subTaskGroups)
-      acc.push({
-        ...group,
-        taskgroups: subTaskGroupsWithAgeGroupGuids,
-        ageGroupGuid: ageGroup.guid,
-      })
-    })
-    return acc
-  }, [])
-
-  return {
-    ageGroups: ageGroupsToShow,
-    taskGroups,
-  }
+  return ageGroupsToShow
 }
 
 export const fetchTranslations = async () => {

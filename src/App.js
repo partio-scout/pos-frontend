@@ -1,27 +1,27 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import {
   BrowserRouter as Router,
   Route,
   Switch,
   useLocation,
+  useParams,
 } from 'react-router-dom'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import styled, { ThemeProvider } from 'styled-components'
 import { useTransition, animated } from 'react-spring'
 import { fetchAllContent, fetchTranslations } from 'api'
-import { setAgeGroups, setTaskGroups } from 'redux/actionCreators'
+import { setInitialData } from 'redux/actionCreators'
 import { GlobalStyle, theme } from 'styles'
 import AgeGroups from 'views/AgeGroups'
-import TaskGroups from 'views/TaskGroups'
-import SubTaskGroups from 'views/SubTaskGroups'
+import AgeGroup from 'views/AgeGroup'
+import TaskGroup from 'views/TaskGroup'
 
 const App = () => {
   const dispatch = useDispatch()
 
   useEffect(() => {
-    fetchAllContent().then(({ ageGroups, taskGroups }) => {
-      dispatch(setAgeGroups(ageGroups))
-      dispatch(setTaskGroups(taskGroups))
+    fetchAllContent().then(ageGroups => {
+      dispatch(setInitialData(ageGroups))
     })
     fetchTranslations()
   }, [dispatch])
@@ -31,13 +31,28 @@ const App = () => {
       <ThemeProvider theme={theme}>
         <>
           <GlobalStyle />
-          <BaseRoute />
-          <ActivityPageRoutes />
-          <SubTaskPageRoutes />
+          <TransitioningRoutes>
+            <Route path="/" exact component={ComponentToRender} />
+            <Route path="/guid/:guid" component={ComponentToRender} />
+          </TransitioningRoutes>
         </>
       </ThemeProvider>
     </Router>
   )
+}
+
+const ComponentToRender = () => {
+  const { guid } = useParams()
+  const item = useSelector(state => state.itemsByGuid[guid])
+
+  switch (item && item.type) {
+    case 'AGE_GROUP':
+      return <AgeGroup />
+    case 'TASK_GROUP':
+      return <TaskGroup />
+    default:
+      return <AgeGroups />
+  }
 }
 
 const RouteContainer = styled(animated.div)`
@@ -49,67 +64,48 @@ const RouteContainer = styled(animated.div)`
   pointer-events: none;
 `
 
-const BaseRoute = () => {
+const TransitioningRoutes = ({ children }) => {
+  const depth = useRef(-1)
+  const direction = useRef(1)
   const location = useLocation()
+  const guid = location.pathname.split('/').pop() // breaks if url has language
+  const item = useSelector(state => state.itemsByGuid[guid])
+
+  useEffect(() => {
+    let nextDepth = -1
+    if (item) {
+      nextDepth = item.depth
+    }
+    direction.current = nextDepth - depth.current > 0 ? 1 : -1
+    depth.current = nextDepth
+  }, [location.pathname, item])
+
   const transitions = useTransition(location, location => location.pathname, {
-    from: { transform: 'translate3d(0, -100%, 0)' },
-    enter: { transform: 'translate3d(0, 0, 0)' },
-    leave: { transform: 'translate3d(0, -50%, 0)' },
+    from: { p: 1 },
+    enter: { p: 0 },
+    leave: { p: -1 },
   })
 
-  return (
-    <>
-      {transitions.map(({ item, props, key }) => (
-        <RouteContainer key={key} style={props}>
-          <Switch location={item}>
-            <Route path="/" exact component={AgeGroups} />
-          </Switch>
-        </RouteContainer>
-      ))}
-    </>
-  )
-}
+  return transitions.map(({ item, props, key }) => {
+    const style = {
+      transform: props.p.interpolate(p => {
+        if (
+          depth.current === -1 ||
+          (depth.current === 0 && direction.current === 1)
+        ) {
+          return `translate3d(0, ${p * 100 * direction.current}%, 0)`
+        }
 
-const ActivityPageRoutes = () => {
-  const location = useLocation()
-  const transitions = useTransition(location, location => location.pathname, {
-    from: { transform: 'translate3d(0, 100%, 0)' },
-    enter: { transform: 'translate3d(0, 0, 0)' },
-    leave: { transform: 'translate3d(0, 100%, 0)' },
+        return `translate3d(${p * 100 * direction.current}%, 0, 0)`
+      }),
+    }
+
+    return (
+      <RouteContainer style={style} key={key}>
+        <Switch location={item}>{children}</Switch>
+      </RouteContainer>
+    )
   })
-
-  return (
-    <>
-      {transitions.map(({ item, props, key }) => (
-        <RouteContainer key={key} style={props}>
-          <Switch location={item}>
-            <Route path="/guid/:guid" component={TaskGroups} />
-          </Switch>
-        </RouteContainer>
-      ))}
-    </>
-  )
-}
-
-const SubTaskPageRoutes = () => {
-  const location = useLocation()
-  const transitions = useTransition(location, location => location.pathname, {
-    from: { transform: 'translate3d(100%, 0, 0)' },
-    enter: { transform: 'translate3d(0, 0, 0)' },
-    leave: { transform: 'translate3d(100%, 0, 0)' },
-  })
-
-  return (
-    <>
-      {transitions.map(({ item, props, key }) => (
-        <RouteContainer key={key} style={props}>
-          <Switch location={item}>
-            <Route path="/guid/:guid" component={SubTaskGroups} />
-          </Switch>
-        </RouteContainer>
-      ))}
-    </>
-  )
 }
 
 export default App

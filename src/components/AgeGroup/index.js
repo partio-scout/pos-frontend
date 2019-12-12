@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
-import { getAgeGroupTitleWithoutAges } from 'utils'
+import { getAgeGroupTitleWithoutAges } from 'helpers'
 
 const AgeGroupLink = styled(Link)`
   width: 50vw;

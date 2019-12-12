@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react'
 import styled, { withTheme } from 'styled-components'
 import { useSelector } from 'react-redux'
-import { determineLanguageFromUrl } from 'utils'
+import { determineLanguageFromUrl } from 'helpers'
 import AgeGroup from 'components/AgeGroup'
 
 const Container = styled.div`
@@ -43,32 +43,38 @@ const AgeGroups = ({ theme }) => {
   const contentRef = useRef()
   const containerRef = useRef()
 
+  const getAgeGroupStartPositions = () =>
+    [...contentRef.current.children].map(child => child.offsetLeft)
+
+  useEffect(() => {
+    if (containerRef.current && contentRef.current && selectedAgeGroup) {
+      const ageGroupStartPositions = getAgeGroupStartPositions()
+      containerRef.current.scrollLeft =
+        ageGroupStartPositions[selectedAgeGroup.order]
+    }
+  }, [contentRef, containerRef, selectedAgeGroup])
+
   useEffect(() => {
     const container = containerRef.current
     const content = contentRef.current
+
     if (container && content) {
-      if (selectedAgeGroup) {
-        const ageGroupStartPositions = [...content.children].map(
-          child => child.offsetLeft
-        )
-        container.scrollLeft = ageGroupStartPositions[selectedAgeGroup.order]
-      }
       const scrollHandler = () => {
-        const ageGroupCenterPositions = [...content.children].map(
-          child => child.clientWidth / 2 + child.offsetLeft
-        )
-        const xPosition = content.getBoundingClientRect().x
-        const scrolledToIndex = ageGroupCenterPositions.indexOf(
-          ageGroupCenterPositions.find(x => x > -xPosition)
+        const ageGroupStartPositions = getAgeGroupStartPositions()
+        const xPosition = container.scrollLeft
+        const scrolledToIndex = ageGroupStartPositions.indexOf(
+          ageGroupStartPositions.find(x => x >= xPosition)
         )
         container.style.backgroundColor = theme.color.ageGroups[scrolledToIndex]
       }
+
+      scrollHandler()
       container.addEventListener('scroll', scrollHandler)
       return () => {
         container.removeEventListener('scroll', scrollHandler)
       }
     }
-  }, [contentRef, containerRef, theme, selectedAgeGroup])
+  }, [contentRef, containerRef, theme])
 
   return (
     <Container ref={containerRef}>

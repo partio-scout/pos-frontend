@@ -3,9 +3,9 @@ import styled from 'styled-components'
 import { useParams, useHistory } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { X } from 'react-feather'
-import TaskGroup from 'components/TaskGroup'
+import TaskGroupItem from 'components/TaskGroupItem'
 import { setSelectedAgeGroup } from 'redux/actionCreators'
-import { getAgeGroupTitleWithoutAges, determineLanguageFromUrl } from 'utils'
+import { getAgeGroupTitleWithoutAges, determineLanguageFromUrl } from 'helpers'
 
 const Background = styled.div`
   min-height: 100vh;
@@ -82,16 +82,17 @@ const MainSymbol = styled.div`
   background-color: #f5f5f5;
 `
 
-const TaskGroups = () => {
+const AgeGroup = () => {
   const history = useHistory()
   const dispatch = useDispatch()
-  const ageGroups = useSelector(state => state.ageGroups)
-  const taskGroups = useSelector(state => state.taskgroups)
+  const itemsByGuid = useSelector(state => state.itemsByGuid)
 
   const { guid } = useParams()
   const language = determineLanguageFromUrl(window.location)
 
-  const ageGroup = ageGroups.find(x => x.guid === guid)
+  const ageGroup = itemsByGuid.hasOwnProperty(guid)
+    ? itemsByGuid[guid].item
+    : undefined
 
   useEffect(() => {
     if (ageGroup) {
@@ -103,7 +104,6 @@ const TaskGroups = () => {
     return null
   }
 
-  const taskGroupsInAgeGroup = taskGroups.filter(x => x.ageGroupGuid === guid)
   const ageGroupIndex = ageGroup ? ageGroup.order : 0
 
   return (
@@ -118,11 +118,11 @@ const TaskGroups = () => {
         </HeadingContent>
         <BodyContent>
           <p>Ilmansuunnat</p>
-          {taskGroupsInAgeGroup.length > 0 &&
-            taskGroupsInAgeGroup
+          {ageGroup.taskgroups.length > 0 &&
+            ageGroup.taskgroups
               .sort((a, b) => a.order - b.order)
               .map(taskGroup => (
-                <TaskGroup
+                <TaskGroupItem
                   key={taskGroup.guid}
                   taskGroup={taskGroup}
                   ageGroupIndex={ageGroupIndex}
@@ -135,4 +135,4 @@ const TaskGroups = () => {
   )
 }
 
-export default TaskGroups
+export default AgeGroup

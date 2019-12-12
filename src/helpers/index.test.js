@@ -1,4 +1,4 @@
-import { determineLanguageFromUrl } from 'utils'
+import { determineLanguageFromUrl } from 'helpers'
 
 describe('determineLanguageFromUrl', () => {
   it('returns what is specified in the "lang" url parameter', () => {
