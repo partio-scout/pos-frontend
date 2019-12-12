@@ -47,7 +47,7 @@ const TaskGroup = ({ taskGroup, ageGroupIndex, language }) => {
         ? `${taskGroup.taskgroups.length} aktiviteettiryhmää`
         : ''
     // add extra space char in the end to ensure that empty rows take the height of this line
-    return <span>{`${tasksText + ' '}${taskGroupsText} \u00A0`}</span>
+    return <span>{`${tasksText} ${taskGroupsText} \u00A0`}</span>
   }
 
   const languageInfo = taskGroup.languages.find(x => x.lang === language)
