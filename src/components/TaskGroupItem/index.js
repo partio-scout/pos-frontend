@@ -14,7 +14,7 @@ const StyledTaskGroup = styled(Link)`
 
   > * {
     line-height: 1.3;
-    color: #fff;
+    color: ${({ theme }) => theme.color.text};
   }
 
   > :nth-child(2) {

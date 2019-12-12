@@ -13,7 +13,7 @@ const AgeGroupLink = styled(Link)`
   align-items: center;
   justify-content: center;
   scroll-snap-align: center;
-  color: #fff;
+  color: ${({ theme }) => theme.color.text};
   text-decoration: none;
 
   > h3 {

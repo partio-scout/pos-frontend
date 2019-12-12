@@ -1,7 +1,8 @@
 import React from 'react'
-import { render } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { getAgeGroupTitleWithoutAges } from 'helpers'
+import { renderWithTheme } from 'test'
+
 import AgeGroup from './index'
 
 const testAgeGroup = {
@@ -18,7 +19,7 @@ const testAgeGroup = {
 describe('AgeGroup component', () => {
   it('displays the title of the given age group with the given language', () => {
     const language = 'sv'
-    const { getByTestId } = render(
+    const { getByTestId } = renderWithTheme(
       <MemoryRouter>
         <AgeGroup ageGroup={testAgeGroup} language={language} />
       </MemoryRouter>
