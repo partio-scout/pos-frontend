@@ -9,7 +9,7 @@ export const ageGroups = (state = [], action) => {
   }
 }
 
-export const selectedAgeGroup = (state = [], action) => {
+export const selectedAgeGroup = (state = null, action) => {
   switch (action.type) {
     case SET_SELECTED_AGE_GROUP:
       return action.payload

@@ -90,9 +90,7 @@ const AgeGroup = () => {
   const { guid } = useParams()
   const language = determineLanguageFromUrl(window.location)
 
-  const ageGroup = itemsByGuid.hasOwnProperty(guid)
-    ? itemsByGuid[guid].item
-    : undefined
+  const ageGroup = itemsByGuid[guid] ? itemsByGuid[guid].item : undefined
 
   useEffect(() => {
     if (ageGroup) {

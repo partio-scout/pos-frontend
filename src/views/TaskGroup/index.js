@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import { useParams, useHistory } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { ArrowLeft } from 'react-feather'
+import ListItem from 'components/ListItem'
 import TaskGroupItem from 'components/TaskGroupItem'
 import { determineLanguageFromUrl } from 'helpers'
 
@@ -50,25 +51,38 @@ const TaskGroup = () => {
     return null
   }
 
-  const { item } = taskGroup
+  const getTranslation = taskOrTaskGroup => {
+    return taskOrTaskGroup.languages.find(x => x.lang === language)
+  }
 
-  const subTaskGroups = item.taskgroups
-  const taskGroupLanguages = item.languages.find(x => x.lang === language)
+  const { item } = taskGroup
+  const taskGroupTranslation = getTranslation(item)
 
   return (
     <StyledTaskGroup>
-      <BackArrow onClick={() => history.goBack()}>
+      <BackArrow onClick={() => history.push(`/guid/${taskGroup.parentGuid}`)}>
         <ArrowLeft />
       </BackArrow>
-      <h4>{taskGroupLanguages ? taskGroupLanguages.title : item.title}</h4>
+      <h4>{taskGroupTranslation ? taskGroupTranslation.title : item.title}</h4>
       <TaskList>
-        {subTaskGroups.map(subTaskGroup => {
+        {item.taskgroups.map(subTaskGroup => {
           return (
             <TaskGroupItem
               key={subTaskGroup.guid}
               taskGroup={subTaskGroup}
               ageGroupIndex={taskGroup.ageGroupIndex}
               language={language}
+            />
+          )
+        })}
+        {item.tasks.map(task => {
+          const taskTranslation = getTranslation(task)
+          return (
+            <ListItem
+              key={task.guid}
+              guid={task.guid}
+              ageGroupIndex={taskGroup.ageGroupIndex}
+              title={taskTranslation ? taskTranslation.title : task.title}
             />
           )
         })}
