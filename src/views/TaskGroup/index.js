@@ -2,38 +2,10 @@ import React from 'react'
 import styled from 'styled-components'
 import { useParams, useHistory } from 'react-router-dom'
 import { useSelector } from 'react-redux'
-import { ArrowLeft } from 'react-feather'
+import DetailPage from 'components/DetailPage'
 import ListItem from 'components/ListItem'
 import TaskGroupItem from 'components/TaskGroupItem'
 import { determineLanguageFromUrl } from 'helpers'
-
-const StyledTaskGroup = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  box-sizing: border-box;
-  height: 100vh;
-  width: 100vw;
-  padding: 1rem;
-  display: grid;
-  grid-template-rows: auto auto 1fr;
-  background-color: ${({ theme }) => theme.color.background};
-  pointer-events: all;
-
-  > h4 {
-    margin: 0;
-    padding-bottom: 1rem;
-    font-size: 18px;
-    text-align: center;
-  }
-`
-
-const BackArrow = styled.div`
-  position: absolute;
-  top: 1rem;
-  left: 1rem;
-  cursor: pointer;
-`
 
 const TaskList = styled.div`
   padding-bottom: 2rem;
@@ -59,11 +31,10 @@ const TaskGroup = () => {
   const taskGroupTranslation = getTranslation(item)
 
   return (
-    <StyledTaskGroup>
-      <BackArrow onClick={() => history.push(`/guid/${taskGroup.parentGuid}`)}>
-        <ArrowLeft />
-      </BackArrow>
-      <h4>{taskGroupTranslation ? taskGroupTranslation.title : item.title}</h4>
+    <DetailPage
+      onBackClick={() => history.push(`/guid/${taskGroup.parentGuid}`)}
+      title={taskGroupTranslation ? taskGroupTranslation.title : item.title}
+    >
       <TaskList>
         {item.taskgroups.map(subTaskGroup => {
           return (
@@ -87,7 +58,7 @@ const TaskGroup = () => {
           )
         })}
       </TaskList>
-    </StyledTaskGroup>
+    </DetailPage>
   )
 }
 

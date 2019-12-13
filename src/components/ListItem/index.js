@@ -18,6 +18,12 @@ const StyledListItem = styled(Link)`
     color: ${({ theme }) => theme.color.text};
   }
 
+  > :first-child {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
   > :nth-child(2) {
     opacity: 0.65;
   }

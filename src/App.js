@@ -15,6 +15,7 @@ import { GlobalStyle, theme } from 'styles'
 import AgeGroups from 'views/AgeGroups'
 import AgeGroup from 'views/AgeGroup'
 import TaskGroup from 'views/TaskGroup'
+import Task from 'views/Task'
 import { ITEM_TYPES } from 'consts'
 
 const App = () => {
@@ -51,6 +52,8 @@ const ComponentToRender = () => {
       return <AgeGroup />
     case ITEM_TYPES.TASK_GROUP:
       return <TaskGroup />
+    case ITEM_TYPES.TASK:
+      return <Task />
     default:
       return <AgeGroups />
   }
