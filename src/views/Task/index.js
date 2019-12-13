@@ -44,7 +44,6 @@ const Task = () => {
       if (suggestionsInLanguage) {
         const res = await fetch(suggestionsInLanguage.details)
         const data = await res.json()
-        console.log(data)
         setSuggestions(data.items)
       }
     },
