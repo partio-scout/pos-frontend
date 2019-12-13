@@ -1,6 +1,6 @@
 export const fetchAllContent = async () => {
   const res = await fetch(
-    'https://pof-backend-staging.partio.fi/spn-ohjelma-json-taysi/?postGUID=86b5b30817ce3649e590c5059ec88921'
+    'https://pof-backend.partio.fi/spn-ohjelma-json-taysi/?postGUID=86b5b30817ce3649e590c5059ec88921'
   )
   const data = await res.json()
   const programData = data.program[0]
@@ -19,9 +19,16 @@ export const fetchAllContent = async () => {
   return ageGroupsToShow
 }
 
+export const fetchTaskDetails = async (guid, lang) => {
+  const res = await fetch(
+    `https://pof-backend.partio.fi/item-json/?postGUID=${guid}&lang=${lang}`
+  )
+  return await res.json()
+}
+
 export const fetchTranslations = async () => {
   const res = await fetch(
-    'https://pof-backend-staging.partio.fi/tag-translations-json/'
+    'https://pof-backend.partio.fi/tag-translations-json/'
   )
   const data = await res.json()
   console.log(data)

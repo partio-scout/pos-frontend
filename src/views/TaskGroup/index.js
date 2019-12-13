@@ -7,6 +7,11 @@ import ListItem from 'components/ListItem'
 import TaskGroupItem from 'components/TaskGroupItem'
 import { determineLanguageFromUrl } from 'helpers'
 
+const StyledDetailPage = styled(DetailPage)`
+  display: grid;
+  grid-template-rows: auto auto 1fr;
+`
+
 const TaskList = styled.div`
   padding-bottom: 2rem;
   overflow: scroll;
@@ -31,7 +36,7 @@ const TaskGroup = () => {
   const taskGroupTranslation = getTranslation(item)
 
   return (
-    <DetailPage
+    <StyledDetailPage
       onBackClick={() => history.push(`/guid/${taskGroup.parentGuid}`)}
       title={taskGroupTranslation ? taskGroupTranslation.title : item.title}
     >
@@ -58,7 +63,7 @@ const TaskGroup = () => {
           )
         })}
       </TaskList>
-    </DetailPage>
+    </StyledDetailPage>
   )
 }
 

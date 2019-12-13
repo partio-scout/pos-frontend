@@ -10,8 +10,6 @@ const StyledDetailPage = styled.div`
   height: 100vh;
   width: 100vw;
   padding: 1rem;
-  display: grid;
-  grid-template-rows: auto auto 1fr;
   background-color: ${({ theme }) => theme.color.background};
   pointer-events: all;
 
@@ -30,9 +28,9 @@ const BackArrow = styled.div`
   cursor: pointer;
 `
 
-const DetailPage = ({ onBackClick, title, children }) => {
+const DetailPage = ({ onBackClick, title, children, className }) => {
   return (
-    <StyledDetailPage>
+    <StyledDetailPage className={className}>
       <BackArrow onClick={onBackClick} data-testid="back-arrow">
         <ArrowLeft />
       </BackArrow>
