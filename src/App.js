@@ -69,7 +69,7 @@ const TransitioningRoutes = ({ children }) => {
   const depth = useRef(-1)
   const direction = useRef(1)
   const location = useLocation()
-  const guid = location.pathname.split('/').pop() // breaks if url has language
+  const guid = location.pathname.split('/').pop()
   const item = useSelector(state => state.itemsByGuid[guid])
 
   useEffect(() => {
