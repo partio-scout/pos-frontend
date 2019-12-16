@@ -37,7 +37,9 @@ const TaskGroup = () => {
 
   return (
     <StyledDetailPage
-      onBackClick={() => history.push(`/guid/${taskGroup.parentGuid}`)}
+      onBackClick={() =>
+        history.push(`/guid/${taskGroup.parentGuid}?lang=${language}`)
+      }
       title={taskGroupTranslation ? taskGroupTranslation.title : item.title}
     >
       <TaskList>
@@ -59,6 +61,7 @@ const TaskGroup = () => {
               guid={task.guid}
               ageGroupIndex={taskGroup.ageGroupIndex}
               title={taskTranslation ? taskTranslation.title : task.title}
+              language={language}
             />
           )
         })}

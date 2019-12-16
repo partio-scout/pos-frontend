@@ -103,16 +103,21 @@ const AgeGroup = () => {
   }
 
   const ageGroupIndex = ageGroup ? ageGroup.order : 0
+  const languageInfo = ageGroup.languages.find(x => x.lang === language)
 
   return (
     <Background ageGroupIndex={ageGroupIndex}>
       <Content>
         <CloseIcon>
-          <X onClick={() => history.push('/')} />
+          <X onClick={() => history.push(`/?lang=${language}`)} />
         </CloseIcon>
         <HeadingContent>
           <MainSymbol />
-          <h3>{getAgeGroupTitleWithoutAges(ageGroup.title)}</h3>
+          <h3>
+            {getAgeGroupTitleWithoutAges(
+              languageInfo ? languageInfo.title : ageGroup.title
+            )}
+          </h3>
         </HeadingContent>
         <BodyContent>
           <p>Ilmansuunnat</p>

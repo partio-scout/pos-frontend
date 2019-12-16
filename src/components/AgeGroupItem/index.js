@@ -48,7 +48,7 @@ const AgeGroupItem = ({ ageGroup, language }) => {
   const languageInfo = ageGroup.languages.find(x => x.lang === language)
   return (
     <Container>
-      <AgeGroupLink to={`/guid/${ageGroup.guid}`}>
+      <AgeGroupLink to={`/guid/${ageGroup.guid}?lang=${language}`}>
         <AgeGroupIllustration />
         <h3 data-testid="title">
           {getAgeGroupTitleWithoutAges(

@@ -41,12 +41,12 @@ const StyledListItem = styled(Link)`
   }
 `
 
-const ListItem = ({ guid, ageGroupIndex, title, children }) => {
+const ListItem = ({ guid, ageGroupIndex, title, language, children }) => {
   return (
     <StyledListItem
       data-testid="link"
       agegroupindex={ageGroupIndex}
-      to={`/guid/${guid}`}
+      to={`/guid/${guid}?lang=${language}`}
     >
       <span data-testid="title">{title}</span>
       {children}

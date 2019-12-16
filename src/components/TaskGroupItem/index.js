@@ -25,6 +25,7 @@ const TaskGroupItem = ({ taskGroup, ageGroupIndex, language }) => {
       guid={taskGroup.guid}
       ageGroupIndex={ageGroupIndex}
       title={languageInfo ? languageInfo.title : taskGroup.title}
+      language={language}
     >
       {renderSubTaskGroupsOrTasks(taskGroup)}
     </ListItem>
