@@ -22,11 +22,15 @@
     "husky": "3.1.0",
     "prettier": "1.19.1",
     "pretty-quick": "2.0.1",
-    "react-scripts": "3.2.0"
+    "react-scripts": "3.2.0",
+    "workbox-build": "^4.3.1",
+    "workbox-cli": "^4.3.1"
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "react-scripts build && yarn service-worker",
+    "service-worker": "workbox copyLibraries build/workbox 6& yarn update-sw",
+    "update-sw": "workbox injectManifest workbox.config.js",
     "test": "react-scripts test --verbose",
     "lint": "eslint src",
     "eject": "react-scripts eject"
