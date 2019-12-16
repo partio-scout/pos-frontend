@@ -1,20 +1,17 @@
 import React from 'react'
 import ListItem from 'components/ListItem'
 
-const TaskGroupItem = ({ taskGroup, ageGroupIndex, language }) => {
+const TaskGroupItem = ({ taskGroup, ageGroupIndex, language, tasksTerm }) => {
   const renderSubTaskGroupsOrTasks = taskGroup => {
-    const tasksTerm =
-      taskGroup.subtask_term && taskGroup.subtask_term.plural
-        ? taskGroup.subtask_term.plural
-        : 'aktiviteettia'
-    const tasksText =
-      taskGroup.tasks.length > 0 ? `${taskGroup.tasks.length} ${tasksTerm}` : ''
-    const taskGroupsText =
-      taskGroup.taskgroups.length > 0
-        ? `${taskGroup.taskgroups.length} aktiviteettiryhmää`
-        : ''
+    const term = tasksTerm || 'aktiviteettia'
+    const tasksExist = taskGroup.tasks.length > 0
+    const tasksGroupsExist = taskGroup.taskgroups.length > 0
+    const tasksText = tasksExist ? taskGroup.tasks.length : ''
+    const taskGroupsText = tasksGroupsExist ? taskGroup.taskgroups.length : ''
     return (
-      <span data-testid="tasks-text">{`${tasksText} ${taskGroupsText}`}</span>
+      <span data-testid="tasks-text">{`${tasksText} ${
+        tasksExist && tasksGroupsExist ? '+' : ''
+      } ${taskGroupsText} ${term}`}</span>
     )
   }
 

@@ -5,7 +5,11 @@ import { useSelector, useDispatch } from 'react-redux'
 import { X } from 'react-feather'
 import TaskGroupItem from 'components/TaskGroupItem'
 import { setSelectedAgeGroup } from 'redux/actionCreators'
-import { getAgeGroupTitleWithoutAges, determineLanguageFromUrl } from 'helpers'
+import {
+  getAgeGroupTitleWithoutAges,
+  determineLanguageFromUrl,
+  getTermInLanguage,
+} from 'helpers'
 
 const Background = styled.div`
   min-height: 100vh;
@@ -91,8 +95,11 @@ const AgeGroup = () => {
   const history = useHistory()
   const dispatch = useDispatch()
   const itemsByGuid = useSelector(state => state.itemsByGuid)
-  const translations = useSelector(
+  const groupHeadingTranslations = useSelector(
     state => state.translations.aktiviteettipaketin_ylakasite
+  )
+  const activityTranslations = useSelector(
+    state => state.translations.aktiviteetin_ylakasite
   )
 
   const { guid } = useParams()
@@ -106,27 +113,12 @@ const AgeGroup = () => {
     }
   }, [ageGroup, dispatch])
 
-  if (!ageGroup || !translations) {
+  if (!ageGroup || !groupHeadingTranslations) {
     return null
   }
 
   const ageGroupIndex = ageGroup ? ageGroup.order : 0
   const languageInfo = ageGroup.languages.find(x => x.lang === language)
-
-  const translateTermHeading = () => {
-    const translationsInLanguage = translations.find(
-      translation => translation.lang === language
-    )
-    if (translationsInLanguage) {
-      const item = translationsInLanguage.items.find(
-        item => item.key === `${ageGroup.subtaskgroup_term.single}_plural`
-      )
-      if (item && item.value) {
-        return item.value
-      }
-    }
-    return 'Aktiviteetit'
-  }
 
   return (
     <Background ageGroupIndex={ageGroupIndex}>
@@ -143,7 +135,13 @@ const AgeGroup = () => {
           </h3>
         </HeadingContent>
         <BodyContent>
-          <h4>{translateTermHeading()}</h4>
+          <h4>
+            {getTermInLanguage(
+              groupHeadingTranslations,
+              `${ageGroup.subtaskgroup_term.name}_plural`,
+              language
+            )}
+          </h4>
           {ageGroup.taskgroups.length > 0 &&
             ageGroup.taskgroups
               .sort((a, b) => a.order - b.order)
@@ -153,6 +151,11 @@ const AgeGroup = () => {
                   taskGroup={taskGroup}
                   ageGroupIndex={ageGroupIndex}
                   language={language}
+                  tasksTerm={getTermInLanguage(
+                    activityTranslations,
+                    `${taskGroup.subtask_term.name}_plural`,
+                    language
+                  )}
                 />
               ))}
         </BodyContent>

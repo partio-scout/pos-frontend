@@ -6,6 +6,18 @@ export const determineLanguageFromUrl = url => {
 export const getAgeGroupTitleWithoutAges = title =>
   title.split('(')[0].split(':')[0]
 
+export const getTermInLanguage = (translationGroup, termKey, language) => {
+  const translationsInLanguage = translationGroup.find(
+    translation => translation.lang === language
+  )
+  if (translationsInLanguage) {
+    const item = translationsInLanguage.items.find(item => item.key === termKey)
+    if (item && item.value) {
+      return item.value
+    }
+  }
+}
+
 export const getItemType = item => {
   const { taskgroups, tasks } = item
   if ((taskgroups, tasks)) return 'TASK_GROUP'

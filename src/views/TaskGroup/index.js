@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux'
 import DetailPage from 'components/DetailPage'
 import ListItem from 'components/ListItem'
 import TaskGroupItem from 'components/TaskGroupItem'
-import { determineLanguageFromUrl } from 'helpers'
+import { determineLanguageFromUrl, getTermInLanguage } from 'helpers'
 
 const StyledDetailPage = styled(DetailPage)`
   display: grid;
@@ -23,8 +23,11 @@ const TaskGroup = () => {
   const language = determineLanguageFromUrl(window.location)
 
   const taskGroup = useSelector(state => state.itemsByGuid[guid])
+  const activityTranslations = useSelector(
+    state => state.translations.aktiviteetin_ylakasite
+  )
 
-  if (!taskGroup) {
+  if (!taskGroup || !activityTranslations) {
     return null
   }
 
@@ -50,6 +53,11 @@ const TaskGroup = () => {
               taskGroup={subTaskGroup}
               ageGroupIndex={taskGroup.ageGroupIndex}
               language={language}
+              tasksTerm={getTermInLanguage(
+                activityTranslations,
+                `${item.subtask_term.name}_plural`,
+                language
+              )}
             />
           )
         })}
