@@ -4,7 +4,7 @@ import { useParams, useHistory } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import DetailPage from 'components/DetailPage'
 import { fetchTaskDetails } from 'api'
-import { determineLanguageFromUrl } from 'helpers'
+import { determineLanguageFromUrl, getTermInLanguage } from 'helpers'
 
 const DetailsContainer = styled.div`
   display: flex;
@@ -33,6 +33,7 @@ const Task = () => {
   const history = useHistory()
   const language = determineLanguageFromUrl(window.location)
   const task = useSelector(state => state.itemsByGuid[guid])
+  const generalTranslations = useSelector(state => state.translations.yleiset)
   const [details, setDetails] = useState()
   const [suggestions, setSuggestions] = useState()
 
@@ -63,20 +64,24 @@ const Task = () => {
   const translations = task.item.languages.find(x => x.lang === language)
 
   const renderDetails = () => {
-    if (!details) return null
+    if (!details || !generalTranslations) return null
     const { ingress, content } = details
     return (
       <DetailsContainer>
         {content && <p>{details.content}</p>}
         {ingress && (
           <>
-            <SubHeading>Tavoite</SubHeading>
+            <SubHeading>
+              {getTermInLanguage(generalTranslations, 'task_target', language)}
+            </SubHeading>
             <p>{details.ingress}</p>
           </>
         )}
         {suggestions && (
           <>
-            <SubHeading>Vinkit</SubHeading>
+            <SubHeading>
+              {getTermInLanguage(generalTranslations, 'tips', language)}
+            </SubHeading>
             {suggestions.map(suggestion => (
               <p key={suggestion.guid}>{suggestion.content}</p>
             ))}
