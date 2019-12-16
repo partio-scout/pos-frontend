@@ -10,7 +10,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import styled, { ThemeProvider } from 'styled-components'
 import { useTransition, animated } from 'react-spring'
 import { fetchAllContent, fetchTranslations } from 'api'
-import { setInitialData } from 'redux/actionCreators'
+import { setInitialData, setTranslations } from 'redux/actionCreators'
 import { GlobalStyle, theme } from 'styles'
 import AgeGroups from 'views/AgeGroups'
 import AgeGroup from 'views/AgeGroup'
@@ -25,7 +25,9 @@ const App = () => {
     fetchAllContent().then(ageGroups => {
       dispatch(setInitialData(ageGroups))
     })
-    fetchTranslations()
+    fetchTranslations().then(translations =>
+      dispatch(setTranslations(translations))
+    )
   }, [dispatch])
 
   return (
