@@ -2,10 +2,11 @@ import React, { useEffect, useRef } from 'react'
 import styled, { withTheme } from 'styled-components'
 import { useSelector } from 'react-redux'
 import { determineLanguageFromUrl } from 'helpers'
-import AgeGroup from 'components/AgeGroup'
+import AgeGroupItem from 'components/AgeGroupItem'
 
 const Container = styled.div`
   position: relative;
+  width: 100%;
   height: 100%;
   pointer-events: all;
   overflow: scroll;
@@ -33,6 +34,8 @@ const Content = styled.div`
   display: flex;
   flex-wrap: nowrap;
   position: absolute;
+  top: 0;
+  left: 0;
 `
 
 const AgeGroups = ({ theme }) => {
@@ -82,7 +85,7 @@ const AgeGroups = ({ theme }) => {
         {ageGroups
           .sort((a, b) => a.order - b.order)
           .map((ageGroup, i) => (
-            <AgeGroup key={i} ageGroup={ageGroup} language={language} />
+            <AgeGroupItem key={i} ageGroup={ageGroup} language={language} />
           ))}
       </Content>
     </Container>
