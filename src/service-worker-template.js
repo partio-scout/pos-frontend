@@ -7,18 +7,49 @@ self.importScripts('/workbox/workbox-v4.3.1/workbox-sw.js')
 workbox.setConfig({ modulePathPrefix: '/workbox/workbox-v4.3.1' })
 //self.workbox.logLevel = self.workbox.LOG_LEVEL.verbose;
 
+const cacheName = 'request-cache-v1'
+
 self.addEventListener('install', event => event.waitUntil(self.skipWaiting()))
 self.addEventListener('activate', event =>
-  event.waitUntil(self.clients.claim())
+  event.waitUntil(
+    caches.keys().then(cacheNames => {
+      return Promise.all(
+        cacheNames.map(cacheName => {
+          return caches.delete(cacheName)
+        })
+      )
+    })
+  )
 )
-
+self.addEventListener('fetch', event => {
+  event.respondWith(
+    caches
+      .match(event.request)
+      .then(response => {
+        if (response) {
+          console.log('Found ', event.request.url, ' in cache')
+          return response
+        }
+        console.log('Network request for ', event.request.url)
+        return fetch(event.request).then(response => {
+          return caches.open(cacheName).then(cache => {
+            cache.put(event.request.url, response.clone())
+            return response
+          })
+        })
+      })
+      .catch(error => {
+        // TODO: Respond with custom offline page
+      })
+  )
+})
 // GENERATED FILES ARE INJECTED HERE BY build-service-worker.js
 workbox.precaching.precacheAndRoute([])
 
 // API calls precache
 workbox.precaching.precacheAndRoute([
-  'https://pof-backend-staging.partio.fi/spn-ohjelma-json-taysi/?postGUID=86b5b30817ce3649e590c5059ec88921',
-  'https://pof-backend-staging.partio.fi/tag-translations-json/',
+  'https://pof-backend.partio.fi/spn-ohjelma-json-taysi/?postGUID=86b5b30817ce3649e590c5059ec88921',
+  'https://pof-backend.partio.fi/tag-translations-json/',
 ])
 
 // app-shell

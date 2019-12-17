@@ -1,3 +1,5 @@
+import { ITEM_TYPES } from 'consts'
+
 export const determineLanguageFromUrl = url => {
   const urlObj = new URL(url)
   return urlObj.searchParams.get('lang') || 'fi'
@@ -20,9 +22,9 @@ export const getTermInLanguage = (translationGroup, termKey, language) => {
 
 export const getItemType = item => {
   const { taskgroups, tasks } = item
-  if ((taskgroups, tasks)) return 'TASK_GROUP'
-  if (taskgroups) return 'AGE_GROUP'
-  return 'TASK'
+  if ((taskgroups, tasks)) return ITEM_TYPES.TASK_GROUP
+  if (taskgroups) return ITEM_TYPES.AGE_GROUP
+  return ITEM_TYPES.TASK
 }
 
 export const deepFlatten = items => {
