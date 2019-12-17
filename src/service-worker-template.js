@@ -27,10 +27,8 @@ self.addEventListener('fetch', event => {
       .match(event.request)
       .then(response => {
         if (response) {
-          console.log('Found ', event.request.url, ' in cache')
           return response
         }
-        console.log('Network request for ', event.request.url)
         return fetch(event.request).then(response => {
           return caches.open(cacheName).then(cache => {
             cache.put(event.request.url, response.clone())
