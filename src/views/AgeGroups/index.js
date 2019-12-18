@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react'
 import styled, { withTheme } from 'styled-components'
 import { useSelector } from 'react-redux'
+import { Link } from 'react-router-dom'
 import { determineLanguageFromUrl } from 'helpers'
 import AgeGroupItem from 'components/AgeGroupItem'
 
@@ -38,10 +39,26 @@ const Content = styled.div`
   left: 0;
 `
 
+const Languages = styled.div`
+  position: fixed;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  pointer-events: all;
+
+  > a {
+    padding: 0 5px;
+    text-decoration: none;
+    color: ${({ theme }) => theme.color.text};
+    text-transform: uppercase;
+  }
+`
+
 const AgeGroups = ({ theme }) => {
   const ageGroups = useSelector(state => state.ageGroups)
   const selectedAgeGroup = useSelector(state => state.selectedAgeGroup)
   const language = determineLanguageFromUrl(window.location)
+  const languages = ['fi', 'sv', 'en', 'smi']
 
   const contentRef = useRef()
   const containerRef = useRef()
@@ -88,6 +105,13 @@ const AgeGroups = ({ theme }) => {
             <AgeGroupItem key={i} ageGroup={ageGroup} language={language} />
           ))}
       </Content>
+      <Languages>
+        {languages.map((language, i) => (
+          <Link key={i} to={`/?lang=${language}`}>
+            {language}
+          </Link>
+        ))}
+      </Languages>
     </Container>
   )
 }
