@@ -12,8 +12,9 @@ const DetailsContainer = styled.div`
   justify-content: flex-start;
   overflow: scroll;
 
-  > p {
-    margin: 1.2rem 0;
+  > div,
+  h5 {
+    margin: 0.6rem 0;
     white-space: pre-line;
   }
 `
@@ -68,13 +69,15 @@ const Task = () => {
     const { ingress, content } = details
     return (
       <DetailsContainer>
-        {content && <p>{details.content}</p>}
+        {content && (
+          <div dangerouslySetInnerHTML={{ __html: details.content }} />
+        )}
         {ingress && (
           <>
             <SubHeading>
               {getTermInLanguage(generalTranslations, 'task_target', language)}
             </SubHeading>
-            <p>{details.ingress}</p>
+            <div dangerouslySetInnerHTML={{ __html: details.ingress }} />
           </>
         )}
         {suggestions && (
@@ -83,7 +86,10 @@ const Task = () => {
               {getTermInLanguage(generalTranslations, 'tips', language)}
             </SubHeading>
             {suggestions.map(suggestion => (
-              <p key={suggestion.guid}>{suggestion.content}</p>
+              <div
+                key={suggestion.guid}
+                dangerouslySetInnerHTML={{ __html: suggestion.content }}
+              />
             ))}
           </>
         )}
