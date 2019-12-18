@@ -58,7 +58,7 @@ const AgeGroups = ({ theme }) => {
   const ageGroups = useSelector(state => state.ageGroups)
   const selectedAgeGroup = useSelector(state => state.selectedAgeGroup)
   const language = determineLanguageFromUrl(window.location)
-  const languages = ['fi', 'sv', 'en', 'smi']
+  const languages = ['fi', 'sv', 'en', 'smn']
 
   const contentRef = useRef()
   const containerRef = useRef()
