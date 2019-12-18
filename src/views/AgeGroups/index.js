@@ -41,7 +41,7 @@ const Content = styled.div`
 
 const Languages = styled.div`
   position: fixed;
-  bottom: 10px;
+  bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
   pointer-events: all;
