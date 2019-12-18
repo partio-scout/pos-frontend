@@ -3,28 +3,21 @@ import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 import { getAgeGroupTitleWithoutAges } from 'helpers'
 
-const Container = styled.div`
-  display: flex;
-  align-items: center;
-`
-
-const AgeGroupLink = styled(Link)`
+const StyledAgeGroupItem = styled.div`
   width: 50vw;
-  margin-top: 3rem;
-  padding: 0 8vw;
+  padding: 3rem 8vw 0;
   flex: 0 0 auto;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
   scroll-snap-align: center;
-  color: ${({ theme }) => theme.color.text};
-  text-decoration: none;
 
-  > h3 {
-    padding-top: 3rem;
-    font-size: 24px;
-    font-weight: normal;
+  > a {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: ${({ theme }) => theme.color.text};
+    text-decoration: none;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   }
 
   :first-child {
@@ -33,6 +26,14 @@ const AgeGroupLink = styled(Link)`
 
   :last-child {
     padding-right: 25vw;
+  }
+`
+
+const AgeGroupLink = styled(Link)`
+  > h3 {
+    padding-top: 3rem;
+    font-size: 24px;
+    font-weight: normal;
   }
 `
 
@@ -47,7 +48,7 @@ const AgeGroupIllustration = styled.div`
 const AgeGroupItem = ({ ageGroup, language }) => {
   const languageInfo = ageGroup.languages.find(x => x.lang === language)
   return (
-    <Container>
+    <StyledAgeGroupItem>
       <AgeGroupLink to={`/guid/${ageGroup.guid}?lang=${language}`}>
         <AgeGroupIllustration />
         <h3 data-testid="title">
@@ -56,7 +57,7 @@ const AgeGroupItem = ({ ageGroup, language }) => {
           )}
         </h3>
       </AgeGroupLink>
-    </Container>
+    </StyledAgeGroupItem>
   )
 }
 

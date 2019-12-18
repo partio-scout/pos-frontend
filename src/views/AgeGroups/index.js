@@ -63,14 +63,17 @@ const AgeGroups = ({ theme }) => {
   const contentRef = useRef()
   const containerRef = useRef()
 
-  const getAgeGroupStartPositions = () =>
-    [...contentRef.current.children].map(child => child.offsetLeft)
+  const getAgeGroupCenterPositions = () =>
+    [...contentRef.current.children].map(
+      child => child.clientWidth / 2 + child.offsetLeft
+    )
 
   useEffect(() => {
     if (containerRef.current && contentRef.current && selectedAgeGroup) {
-      const ageGroupStartPositions = getAgeGroupStartPositions()
+      const ageGroupCenterPositions = getAgeGroupCenterPositions()
       containerRef.current.scrollLeft =
-        ageGroupStartPositions[selectedAgeGroup.order]
+        ageGroupCenterPositions[selectedAgeGroup.order] -
+        document.body.clientWidth / 2
     }
   }, [contentRef, containerRef, selectedAgeGroup])
 
@@ -80,10 +83,10 @@ const AgeGroups = ({ theme }) => {
 
     if (container && content) {
       const scrollHandler = () => {
-        const ageGroupStartPositions = getAgeGroupStartPositions()
+        const ageGroupCenterPositions = getAgeGroupCenterPositions()
         const xPosition = container.scrollLeft
-        const scrolledToIndex = ageGroupStartPositions.indexOf(
-          ageGroupStartPositions.find(x => x >= xPosition)
+        const scrolledToIndex = ageGroupCenterPositions.indexOf(
+          ageGroupCenterPositions.find(x => x >= xPosition)
         )
         container.style.backgroundColor = theme.color.ageGroups[scrolledToIndex]
       }
