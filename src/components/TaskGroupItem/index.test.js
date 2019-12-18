@@ -12,6 +12,7 @@ const taskGroupItemProps = {
   },
   ageGroupIndex: 2,
   language: 'sv',
+  tasksTerm: 'askelta',
 }
 
 const TestComponent = (
@@ -25,7 +26,7 @@ describe('TaskGroupItem component', () => {
     const { getByTestId } = renderWithTheme(TestComponent)
     const elem = getByTestId('tasks-text')
     expect(elem.innerHTML).toBe(
-      `${taskGroupItemProps.taskGroup.tasks.length} aktiviteettia ${taskGroupItemProps.taskGroup.taskgroups.length} aktiviteettiryhmää`
+      `${taskGroupItemProps.taskGroup.tasks.length} + ${taskGroupItemProps.taskGroup.taskgroups.length} ${taskGroupItemProps.tasksTerm}`
     )
   })
 })

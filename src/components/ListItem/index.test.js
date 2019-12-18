@@ -7,6 +7,7 @@ const listItemProps = {
   guid: '1234',
   ageGroupIndex: 0,
   title: 'ListItem title',
+  language: 'fi',
 }
 
 const TestComponent = (
@@ -22,9 +23,11 @@ describe('ListItem component', () => {
     expect(elem.innerHTML).toBe(listItemProps.title)
   })
 
-  it('links to the given GUID', () => {
+  it('links to the given GUID with the givenn language', () => {
     const { getByTestId } = renderWithTheme(TestComponent)
     const elem = getByTestId('link')
-    expect(elem.getAttribute('href')).toBe('/guid/' + listItemProps.guid)
+    expect(elem.getAttribute('href')).toBe(
+      `/guid/${listItemProps.guid}?lang=${listItemProps.language}`
+    )
   })
 })
