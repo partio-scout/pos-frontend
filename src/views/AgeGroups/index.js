@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useLayoutEffect, useRef, useState, useCallback } from 'react'
 import styled, { withTheme } from 'styled-components'
 import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
@@ -12,7 +12,8 @@ const Container = styled.div`
   pointer-events: all;
   overflow: scroll;
   scroll-snap-type: x mandatory;
-  background-color: ${({ theme }) => theme.color.ageGroups[0]};
+  background-color: ${({ activeIndex = 0, theme }) =>
+    theme.color.ageGroupGradients[activeIndex]};
   transition: background-color 400ms;
 
   ::before {
@@ -21,12 +22,13 @@ const Container = styled.div`
     top: 0;
     left: 0;
     width: 100%;
-    height: 60%;
-    background: linear-gradient(
+    height: 100%;
+    background: ${({ activeIndex = 0, theme }) =>
+      `linear-gradient(
       to bottom,
-      rgba(0, 0, 0, 0.4),
+      ${theme.color.ageGroupGradientsDark[activeIndex]},
       rgba(0, 0, 0, 0)
-    );
+    );`};
   }
 `
 
@@ -57,50 +59,67 @@ const Languages = styled.div`
 const AgeGroups = ({ theme }) => {
   const ageGroups = useSelector(state => state.ageGroups)
   const selectedAgeGroup = useSelector(state => state.selectedAgeGroup)
+  const [activeIndex, setActiveIndex] = useState(0)
   const language = determineLanguageFromUrl(window.location)
   const languages = ['fi', 'sv', 'en', 'smn']
 
   const contentRef = useRef()
   const containerRef = useRef()
 
-  const getAgeGroupCenterPositions = () =>
-    [...contentRef.current.children].map(
-      child => child.clientWidth / 2 + child.offsetLeft
-    )
+  const getAgeGroupCenterPositions = useCallback(
+    content =>
+      [...content.children].map(
+        child => child.clientWidth / 2 + child.offsetLeft
+      ),
+    []
+  )
 
-  useEffect(() => {
-    if (containerRef.current && contentRef.current && selectedAgeGroup) {
-      const ageGroupCenterPositions = getAgeGroupCenterPositions()
-      containerRef.current.scrollLeft =
-        ageGroupCenterPositions[selectedAgeGroup.order] -
-        document.body.clientWidth / 2
-    }
-  }, [contentRef, containerRef, selectedAgeGroup])
-
-  useEffect(() => {
+  useLayoutEffect(() => {
     const container = containerRef.current
     const content = contentRef.current
 
-    if (container && content) {
-      const scrollHandler = () => {
-        const ageGroupCenterPositions = getAgeGroupCenterPositions()
-        const xPosition = container.scrollLeft
-        const scrolledToIndex = ageGroupCenterPositions.indexOf(
-          ageGroupCenterPositions.find(x => x >= xPosition)
-        )
-        container.style.backgroundColor = theme.color.ageGroups[scrolledToIndex]
-      }
-
-      scrollHandler()
-      container.addEventListener('scroll', scrollHandler)
-      return () => {
-        container.removeEventListener('scroll', scrollHandler)
-      }
+    if (!container || !content || !selectedAgeGroup) {
+      return
     }
-  }, [contentRef, containerRef, theme])
+
+    const ageGroupCenterPositions = getAgeGroupCenterPositions(content)
+    container.scrollLeft =
+      ageGroupCenterPositions[selectedAgeGroup.order] -
+      document.body.clientWidth / 2
+  }, [contentRef, containerRef, selectedAgeGroup, getAgeGroupCenterPositions])
+
+  useLayoutEffect(() => {
+    const container = containerRef.current
+    const content = contentRef.current
+
+    if (!container || !content) {
+      return
+    }
+
+    const scrollHandler = () => {
+      const ageGroupCenterPositions = getAgeGroupCenterPositions(content)
+      const xPosition = container.scrollLeft
+      const nextActiveIndex = ageGroupCenterPositions.indexOf(
+        ageGroupCenterPositions.find(x => x >= xPosition)
+      )
+      setActiveIndex(nextActiveIndex < 0 ? 0 : nextActiveIndex)
+    }
+
+    scrollHandler()
+    container.addEventListener('scroll', scrollHandler)
+    return () => {
+      container.removeEventListener('scroll', scrollHandler)
+    }
+  }, [
+    contentRef,
+    containerRef,
+    theme,
+    setActiveIndex,
+    getAgeGroupCenterPositions,
+  ])
 
   return (
-    <Container ref={containerRef}>
+    <Container ref={containerRef} activeIndex={activeIndex}>
       <Content ref={contentRef}>
         {ageGroups
           .sort((a, b) => a.order - b.order)

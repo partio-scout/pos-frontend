@@ -6,7 +6,10 @@ export const determineLanguageFromUrl = url => {
 }
 
 export const getAgeGroupTitleWithoutAges = title =>
-  title.split('(')[0].split(':')[0]
+  title
+    .split('(')[0]
+    .split(':')[0]
+    .trim()
 
 export const getTermInLanguage = (translationGroup, termKey, language) => {
   const translationsInLanguage = translationGroup.find(
