@@ -2,19 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 import { getAgeGroupTitleWithoutAges } from 'helpers'
-import SudenpennutOn from 'assets/sudenpennut/sudenpennut_on.svg'
-import SeikkailijatOn from 'assets/seikkailijat/seikkailijat_on.svg'
-import TarpojatOn from 'assets/tarpojat/tarpojat_on.svg'
-import SamoajatOn from 'assets/samoajat/samoajat_on.svg'
-import VaeltajatOn from 'assets/vaeltajat/vaeltajat_on.svg'
-
-const images = {
-  SudenpennutOn,
-  SeikkailijatOn,
-  TarpojatOn,
-  SamoajatOn,
-  VaeltajatOn,
-}
+import ageGroupGraphics from 'graphics/ageGroups'
 
 const StyledAgeGroupItem = styled.div`
   width: 50vw;
@@ -55,12 +43,14 @@ const AgeGroupIllustration = styled.img`
 `
 
 const AgeGroupItem = ({ ageGroup, language }) => {
-  const title = getAgeGroupTitleWithoutAges(ageGroup.title)
   const languageInfo = ageGroup.languages.find(x => x.lang === language)
+
   return (
     <StyledAgeGroupItem>
       <AgeGroupLink to={`/guid/${ageGroup.guid}?lang=${language}`}>
-        <AgeGroupIllustration src={images[`${title}On`]} />
+        <AgeGroupIllustration
+          src={ageGroupGraphics[`AgeGroup${ageGroup.guid}`]}
+        />
         <h3 data-testid="title">
           {getAgeGroupTitleWithoutAges(
             languageInfo ? languageInfo.title : ageGroup.title

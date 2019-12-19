@@ -1,5 +1,6 @@
 import React from 'react'
 import ListItem from 'components/ListItem'
+import taskGroupGraphics from 'graphics/taskGroups'
 
 const TaskGroupItem = ({ taskGroup, ageGroupIndex, language, tasksTerm }) => {
   const renderSubTaskGroupsOrTasks = taskGroup => {
@@ -23,6 +24,7 @@ const TaskGroupItem = ({ taskGroup, ageGroupIndex, language, tasksTerm }) => {
       ageGroupIndex={ageGroupIndex}
       title={languageInfo ? languageInfo.title : taskGroup.title}
       language={language}
+      icon={taskGroupGraphics[`Group${taskGroup.guid}`] || null}
     >
       {renderSubTaskGroupsOrTasks(taskGroup)}
     </ListItem>

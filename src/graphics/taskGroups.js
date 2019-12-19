@@ -1,0 +1,25 @@
+// Tarpojat
+import Group42f16dfd80cc6195da2a820f3b139d2d from 'assets/taskGroups/42f16dfd80cc6195da2a820f3b139d2d.svg'
+import Group191075ff6fa48b9c2e5f1bdcdb3ea9d6 from 'assets/taskGroups/191075ff6fa48b9c2e5f1bdcdb3ea9d6.svg'
+import Group6c8b774d5b4eac2d6cd6c783318d7352 from 'assets/taskGroups/6c8b774d5b4eac2d6cd6c783318d7352.svg'
+import Groupb0053e46f632dee91c4fefe3fd4d7775 from 'assets/taskGroups/b0053e46f632dee91c4fefe3fd4d7775.svg'
+import Group889ed017742aa45e8d4ba10f6f1b3397 from 'assets/taskGroups/889ed017742aa45e8d4ba10f6f1b3397.svg'
+// Seikkailijat
+import Groupbf73d8d6dce1443814077cf01c5ff6eb from 'assets/taskGroups/bf73d8d6dce1443814077cf01c5ff6eb.svg'
+import Group9d38f3641e43ba855da244fe64413ee2 from 'assets/taskGroups/9d38f3641e43ba855da244fe64413ee2.svg'
+import Group5f1bab6334d8bb75d57b93054691eb37 from 'assets/taskGroups/5f1bab6334d8bb75d57b93054691eb37.svg'
+import Groupcdf88418917bd4f1a2ad0481c4b97bcf from 'assets/taskGroups/cdf88418917bd4f1a2ad0481c4b97bcf.svg'
+import Group3b48ff141343fd0bd3c4a565484f22d1 from 'assets/taskGroups/3b48ff141343fd0bd3c4a565484f22d1.svg'
+
+export default {
+  Group42f16dfd80cc6195da2a820f3b139d2d,
+  Group191075ff6fa48b9c2e5f1bdcdb3ea9d6,
+  Group6c8b774d5b4eac2d6cd6c783318d7352,
+  Groupb0053e46f632dee91c4fefe3fd4d7775,
+  Group889ed017742aa45e8d4ba10f6f1b3397,
+  Groupbf73d8d6dce1443814077cf01c5ff6eb,
+  Group9d38f3641e43ba855da244fe64413ee2,
+  Group5f1bab6334d8bb75d57b93054691eb37,
+  Groupcdf88418917bd4f1a2ad0481c4b97bcf,
+  Group3b48ff141343fd0bd3c4a565484f22d1,
+}

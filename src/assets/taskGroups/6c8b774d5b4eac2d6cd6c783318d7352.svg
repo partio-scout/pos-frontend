@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="420px" height="420px" viewBox="0 0 420 420" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 60.1 (88133) - https://sketch.com -->
+    <title>Luovuus-tarppo</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Luovuus-tarppo" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Ribbon-center" transform="translate(60.000000, 165.000000)" fill-rule="nonzero" stroke="#FFFFFF" stroke-width="28">
+            <rect id="Rectangle" x="62" y="16" width="174" height="70"></rect>
+            <polygon id="Line" stroke-linecap="square" points="62 60 0 60 15.888356 30 0 0 62 0"></polygon>
+            <g id="Group-4" transform="translate(236.000000, 0.000000)" stroke-linecap="square">
+                <polygon id="Line" transform="translate(31.000000, 30.000000) scale(-1, 1) translate(-31.000000, -30.000000) " points="62 60 0 60 15.888356 30 0 0 62 0"></polygon>
+            </g>
+        </g>
+        <path d="M210,419 C94.5722857,419 1,325.427714 1,210 C1,94.5722857 94.5722857,1 210,1 C325.427714,1 419,94.5722857 419,210 C419,325.427714 325.427714,419 210,419 Z" id="Fill-17" fill="#5E0F75"></path>
+        <path d="M166.436189,167.077797 L253.563811,167.077797 L253.563811,121.221154 L166.436189,121.221154 L166.436189,167.077797 Z M186.097642,307.483507 L209.69517,318.855844 L233.960419,306.507087 L210.023879,196.288836 L186.097642,307.483507 Z M234.966453,192.298951 L262.73514,320.162713 L210,347 L157.26486,321.585399 L185.083982,192.298951 L141.215035,192.298951 L141.215035,96 L278.784965,96 L278.784965,192.298951 L234.966453,192.298951 Z" id="Brush" fill="#FFFFFF" fill-rule="nonzero"></path>
+    </g>
+</svg>

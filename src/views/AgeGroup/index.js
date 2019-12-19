@@ -10,19 +10,7 @@ import {
   determineLanguageFromUrl,
   getTermInLanguage,
 } from 'helpers'
-import SudenpennutOn from 'assets/sudenpennut/sudenpennut_on.svg'
-import SeikkailijatOn from 'assets/seikkailijat/seikkailijat_on.svg'
-import TarpojatOn from 'assets/tarpojat/tarpojat_on.svg'
-import SamoajatOn from 'assets/samoajat/samoajat_on.svg'
-import VaeltajatOn from 'assets/vaeltajat/vaeltajat_on.svg'
-
-const images = {
-  SudenpennutOn,
-  SeikkailijatOn,
-  TarpojatOn,
-  SamoajatOn,
-  VaeltajatOn,
-}
+import ageGroupGraphics from 'graphics/ageGroups'
 
 const Background = styled.div`
   min-height: 100vh;
@@ -139,9 +127,7 @@ const AgeGroup = () => {
           <X onClick={() => history.push(`/?lang=${language}`)} />
         </CloseIcon>
         <HeadingContent>
-          <MainSymbol
-            src={images[`${getAgeGroupTitleWithoutAges(ageGroup.title)}On`]}
-          />
+          <MainSymbol src={ageGroupGraphics[`AgeGroup${ageGroup.guid}`]} />
           <h3>
             {getAgeGroupTitleWithoutAges(
               languageInfo ? languageInfo.title : ageGroup.title

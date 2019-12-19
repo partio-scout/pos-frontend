@@ -1,6 +1,7 @@
 import React from 'react'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { Link } from 'react-router-dom'
+import TaskIcon from 'assets/tasks/task.svg'
 
 const StyledListItem = styled(Link)`
   position: relative;
@@ -38,15 +39,30 @@ const StyledListItem = styled(Link)`
     border-radius: 50%;
     background-color: ${({ theme, agegroupindex }) =>
       theme.color.ageGroups[agegroupindex]};
+    background-size: contain;
+
+    ${({ icon }) =>
+      icon &&
+      css`
+        background-image: url(${icon});
+      `};
   }
 `
 
-const ListItem = ({ guid, ageGroupIndex, title, language, children }) => {
+const ListItem = ({
+  guid,
+  ageGroupIndex,
+  title,
+  language,
+  children,
+  icon = TaskIcon,
+}) => {
   return (
     <StyledListItem
       data-testid="link"
       agegroupindex={ageGroupIndex}
       to={`/guid/${guid}?lang=${language}`}
+      icon={icon}
     >
       <span data-testid="title">{title}</span>
       {children}

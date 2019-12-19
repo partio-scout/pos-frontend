@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="420px" height="420px" viewBox="0 0 420 420" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 60.1 (88133) - https://sketch.com -->
+    <title>Selviytyminen-tarppo</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Selviytyminen-tarppo" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Ribbon-center" transform="translate(60.000000, 165.000000)" fill-rule="nonzero" stroke="#FFFFFF" stroke-width="28">
+            <rect id="Rectangle" x="62" y="16" width="174" height="70"></rect>
+            <polygon id="Line" stroke-linecap="square" points="62 60 0 60 15.888356 30 0 0 62 0"></polygon>
+            <g id="Group-4" transform="translate(236.000000, 0.000000)" stroke-linecap="square">
+                <polygon id="Line" transform="translate(31.000000, 30.000000) scale(-1, 1) translate(-31.000000, -30.000000) " points="62 60 0 60 15.888356 30 0 0 62 0"></polygon>
+            </g>
+        </g>
+        <path d="M210,419 C94.5722857,419 1,325.427714 1,210 C1,94.5722857 94.5722857,1 210,1 C325.427714,1 419,94.5722857 419,210 C419,325.427714 325.427714,419 210,419 Z" id="Fill-17" fill="#5E0F75"></path>
+        <path d="M223.665399,71.5 L223.665239,95.0142222 L283.994796,155.343685 L229.210164,210.128036 L283.994796,264.912574 L223.414093,325.492996 L223.414093,348.5 L196.329648,348.5 L196.329648,325.236924 L136.005204,264.912574 L190.789648,210.128036 L136.005204,155.343685 L196.580795,94.768 L196.580955,71.5 L223.665399,71.5 Z M210.058999,229.2792 L210,229.338481 L209.940813,229.2792 L174.308392,264.912574 L210,300.604182 L245.691608,264.912574 L210.058999,229.2792 Z M210,119.652078 L174.308392,155.343685 L209.940813,190.976871 L210,190.917778 L210.058999,190.976871 L245.691608,155.343685 L210,119.652078 Z" id="Shape" fill="#FFFFFF" fill-rule="nonzero"></path>
+    </g>
+</svg>
