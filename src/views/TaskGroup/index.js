@@ -47,17 +47,25 @@ const TaskGroup = () => {
     >
       <TaskList>
         {item.taskgroups.map(subTaskGroup => {
+          const tasksTerm =
+            item.subtask_term && item.subtask_term.name
+              ? getTermInLanguage(
+                  activityTranslations,
+                  `${item.subtask_term.name}_plural`,
+                  language
+                )
+              : getTermInLanguage(
+                  activityTranslations,
+                  'aktiviteetti_plural',
+                  language
+                )
           return (
             <TaskGroupItem
               key={subTaskGroup.guid}
               taskGroup={subTaskGroup}
               ageGroupIndex={taskGroup.ageGroupIndex}
               language={language}
-              tasksTerm={getTermInLanguage(
-                activityTranslations,
-                `${item.subtask_term.name}_plural`,
-                language
-              )}
+              tasksTerm={tasksTerm}
             />
           )
         })}
