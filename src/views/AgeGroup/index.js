@@ -10,6 +10,19 @@ import {
   determineLanguageFromUrl,
   getTermInLanguage,
 } from 'helpers'
+import SudenpennutOn from 'assets/sudenpennut/sudenpennut_on.svg'
+import SeikkailijatOn from 'assets/seikkailijat/seikkailijat_on.svg'
+import TarpojatOn from 'assets/tarpojat/tarpojat_on.svg'
+import SamoajatOn from 'assets/samoajat/samoajat_on.svg'
+import VaeltajatOn from 'assets/vaeltajat/vaeltajat_on.svg'
+
+const images = {
+  SudenpennutOn,
+  SeikkailijatOn,
+  TarpojatOn,
+  SamoajatOn,
+  VaeltajatOn,
+}
 
 const Background = styled.div`
   min-height: 100vh;
@@ -83,12 +96,11 @@ const BodyContent = styled.div`
   }
 `
 
-const MainSymbol = styled.div`
+const MainSymbol = styled.img`
   width: 8rem;
   height: 8rem;
   margin: 0 auto;
   border-radius: 50%;
-  background-color: #f5f5f5;
 `
 
 const AgeGroup = () => {
@@ -127,7 +139,9 @@ const AgeGroup = () => {
           <X onClick={() => history.push(`/?lang=${language}`)} />
         </CloseIcon>
         <HeadingContent>
-          <MainSymbol />
+          <MainSymbol
+            src={images[`${getAgeGroupTitleWithoutAges(ageGroup.title)}On`]}
+          />
           <h3>
             {getAgeGroupTitleWithoutAges(
               languageInfo ? languageInfo.title : ageGroup.title
