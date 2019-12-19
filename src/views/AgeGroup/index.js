@@ -28,7 +28,7 @@ const Background = styled.div`
     background: ${({ theme, ageGroupIndex }) => `
     linear-gradient(
       to bottom,
-      ${theme.color.ageGroups[ageGroupIndex]},
+      ${theme.color.ageGroupGradients[ageGroupIndex]},
       ${theme.color.gradientDark}
     );
     `};
