@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react'
-import styled from 'styled-components'
+import styled, { keyframes } from 'styled-components'
 import { useParams, useHistory } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import DetailPage from 'components/DetailPage'
@@ -17,6 +17,17 @@ const DetailsContainer = styled.div`
     margin: 0.6rem 0;
     white-space: pre-line;
   }
+
+  > div {
+    animation: ${keyframes`
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    `} 200ms linear;
+  }
 `
 
 const StyledDetailPage = styled(DetailPage)`
@@ -27,6 +38,14 @@ const StyledDetailPage = styled(DetailPage)`
 const SubHeading = styled.h5`
   margin: 0;
   opacity: 0.5;
+  animation: ${keyframes`
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 0.5;
+    }
+  `} 200ms linear;
 `
 
 const Task = () => {
