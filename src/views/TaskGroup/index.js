@@ -5,7 +5,9 @@ import { useSelector } from 'react-redux'
 import DetailPage from 'components/DetailPage'
 import ListItem from 'components/ListItem'
 import TaskGroupItem from 'components/TaskGroupItem'
+import Actions from 'components/Actions'
 import { determineLanguageFromUrl, getTermInLanguage } from 'helpers'
+import { ITEM_TYPES } from 'consts'
 
 const StyledDetailPage = styled(DetailPage)`
   display: grid;
@@ -15,6 +17,12 @@ const StyledDetailPage = styled(DetailPage)`
 const TaskList = styled.div`
   padding-bottom: 2rem;
   overflow: scroll;
+`
+
+const Task = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 `
 
 const TaskGroup = () => {
@@ -72,13 +80,15 @@ const TaskGroup = () => {
         {item.tasks.map(task => {
           const taskTranslation = getTranslation(task)
           return (
-            <ListItem
-              key={task.guid}
-              guid={task.guid}
-              ageGroupIndex={taskGroup.ageGroupIndex}
-              title={taskTranslation ? taskTranslation.title : task.title}
-              language={language}
-            />
+            <Task key={task.guid}>
+              <ListItem
+                guid={task.guid}
+                ageGroupIndex={taskGroup.ageGroupIndex}
+                title={taskTranslation ? taskTranslation.title : task.title}
+                language={language}
+              />
+              <Actions guid={task.guid} itemType={ITEM_TYPES.TASK} />
+            </Task>
           )
         })}
       </TaskList>

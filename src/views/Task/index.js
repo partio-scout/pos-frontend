@@ -3,6 +3,7 @@ import styled, { keyframes } from 'styled-components'
 import { useParams, useHistory } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import DetailPage from 'components/DetailPage'
+import Actions from 'components/Actions'
 import { fetchTaskDetails } from 'api'
 import { determineLanguageFromUrl, getTermInLanguage } from 'helpers'
 
@@ -46,6 +47,12 @@ const SubHeading = styled.h5`
       opacity: 0.5;
     }
   `} 200ms linear;
+`
+
+const StyledActions = styled(Actions)`
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
 `
 
 const Task = () => {
@@ -124,6 +131,7 @@ const Task = () => {
       }
       title={translations ? translations.title : task.item.title}
     >
+      <StyledActions guid={task.guid} itemType={task.type} />
       {renderDetails()}
     </StyledDetailPage>
   )

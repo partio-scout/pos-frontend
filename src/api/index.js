@@ -1,3 +1,4 @@
+// CONTENT (Partio API)
 export const fetchAllContent = async () => {
   const res = await fetch(
     'https://pof-backend.partio.fi/spn-ohjelma-json-taysi/?postGUID=86b5b30817ce3649e590c5059ec88921'
@@ -32,5 +33,21 @@ export const fetchTranslations = async () => {
   )
   const data = await res.json()
   console.log(data)
+  return data
+}
+
+// POS BACKEND
+
+export const API_URL = 'http://localhost:3001'
+
+export const postTaskEntry = async entry => {
+  const res = await fetch(`${API_URL}/task-entry`, {
+    method: 'POST',
+    body: JSON.stringify(entry),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+  const data = await res.json()
   return data
 }
