@@ -9,6 +9,7 @@ const StyledMenu = styled.div`
   width: 100%;
   padding: 1.5rem 1rem;
   display: flex;
+  font-size: 18px;
   z-index: 1;
 
   > * {

@@ -51,7 +51,6 @@ const Manage = () => {
       <Content>
         <Subheading>Ilmoitukset</Subheading>
         <ListItem
-          guid="test"
           ageGroupIndex={0}
           title="Viittaveljet / Sudenpennut 2"
           subTitle="Nico Pelkonen liittyi"

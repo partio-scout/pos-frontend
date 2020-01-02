@@ -24,7 +24,7 @@ const Overlay = styled.div`
 `
 
 const Content = styled.div`
-  position: absolute;
+  position: fixed;
   bottom: 0;
   left: 0;
   box-sizing: border-box;

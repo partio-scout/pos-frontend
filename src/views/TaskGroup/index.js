@@ -5,7 +5,6 @@ import { useSelector } from 'react-redux'
 import DetailPage from 'components/DetailPage'
 import ListItem from 'components/ListItem'
 import TaskGroupItem from 'components/TaskGroupItem'
-import Actions from 'components/Actions'
 import { determineLanguageFromUrl, getTermInLanguage } from 'helpers'
 import { ITEM_TYPES } from 'consts'
 
@@ -17,21 +16,6 @@ const StyledDetailPage = styled(DetailPage)`
 const TaskList = styled.div`
   padding-bottom: 2rem;
   overflow: scroll;
-`
-
-const Task = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-
-  > :first-child {
-    flex: 1;
-    overflow: hidden;
-  }
-`
-
-const StyledActions = styled(Actions)`
-  padding-left: 5px;
 `
 
 const TaskGroup = () => {

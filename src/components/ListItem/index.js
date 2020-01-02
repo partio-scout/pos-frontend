@@ -1,10 +1,10 @@
 import React from 'react'
 import styled, { css } from 'styled-components'
-import { Link } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 import TaskIcon from 'assets/tasks/task.svg'
 import Actions from 'components/Actions'
 
-const StyledListItem = styled(Link)`
+const StyledListItem = styled.div`
   position: relative;
   min-height: 2rem;
   padding-left: 3.5rem;
@@ -24,6 +24,7 @@ const StyledListItem = styled(Link)`
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    margin-right: 2rem;
   }
 
   > span:nth-child(2) {
@@ -66,11 +67,14 @@ const ListItem = ({
   itemType,
   icon = TaskIcon,
 }) => {
+  const history = useHistory()
   return (
     <StyledListItem
       data-testid="link"
       agegroupindex={ageGroupIndex}
-      to={`/guid/${guid}?lang=${language}`}
+      onClick={() =>
+        guid && language && history.push(`/guid/${guid}?lang=${language}`)
+      }
       icon={icon}
     >
       <span data-testid="title">{title}</span>
