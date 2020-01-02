@@ -89,15 +89,15 @@ const TaskGroup = () => {
         {item.tasks.map(task => {
           const taskTranslation = getTranslation(task)
           return (
-            <Task key={task.guid}>
-              <ListItem
-                guid={task.guid}
-                ageGroupIndex={taskGroup.ageGroupIndex}
-                title={taskTranslation ? taskTranslation.title : task.title}
-                language={language}
-              />
-              <StyledActions guid={task.guid} itemType={ITEM_TYPES.TASK} />
-            </Task>
+            <ListItem
+              key={task.guid}
+              guid={task.guid}
+              ageGroupIndex={taskGroup.ageGroupIndex}
+              title={taskTranslation ? taskTranslation.title : task.title}
+              language={language}
+              itemType={ITEM_TYPES.TASK}
+              showActions
+            />
           )
         })}
       </TaskList>

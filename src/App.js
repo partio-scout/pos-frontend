@@ -16,6 +16,7 @@ import AgeGroups from 'views/AgeGroups'
 import AgeGroup from 'views/AgeGroup'
 import TaskGroup from 'views/TaskGroup'
 import Task from 'views/Task'
+import Manage from 'views/Manage'
 import { ITEM_TYPES } from 'consts'
 
 const App = () => {
@@ -37,6 +38,7 @@ const App = () => {
           <GlobalStyle />
           <TransitioningRoutes>
             <Route path="/" exact component={ComponentToRender} />
+            <Route path="/manage" exact component={Manage} />
             <Route path="/guid/:guid" component={ComponentToRender} />
           </TransitioningRoutes>
         </>

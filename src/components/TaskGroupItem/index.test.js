@@ -1,7 +1,4 @@
-import React from 'react'
-import { MemoryRouter } from 'react-router-dom'
-import { renderWithTheme } from 'test'
-import TaskGroupItem from './index'
+import { getSubTaskGroupsOrTasksText } from './index'
 
 const taskGroupItemProps = {
   taskGroup: {
@@ -15,17 +12,13 @@ const taskGroupItemProps = {
   tasksTerm: 'askelta',
 }
 
-const TestComponent = (
-  <MemoryRouter>
-    <TaskGroupItem {...taskGroupItemProps} />
-  </MemoryRouter>
-)
-
 describe('TaskGroupItem component', () => {
   it('renders the amounts of given subTaskGroups and tasks', () => {
-    const { getByTestId } = renderWithTheme(TestComponent)
-    const elem = getByTestId('tasks-text')
-    expect(elem.innerHTML).toBe(
+    const text = getSubTaskGroupsOrTasksText(
+      taskGroupItemProps.tasksTerm,
+      taskGroupItemProps.taskGroup
+    )
+    expect(text).toBe(
       `${taskGroupItemProps.taskGroup.tasks.length} + ${taskGroupItemProps.taskGroup.taskgroups.length} ${taskGroupItemProps.tasksTerm}`
     )
   })

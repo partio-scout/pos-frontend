@@ -2,6 +2,7 @@ import React from 'react'
 import styled, { css } from 'styled-components'
 import { Link } from 'react-router-dom'
 import TaskIcon from 'assets/tasks/task.svg'
+import Actions from 'components/Actions'
 
 const StyledListItem = styled(Link)`
   position: relative;
@@ -25,7 +26,7 @@ const StyledListItem = styled(Link)`
     text-overflow: ellipsis;
   }
 
-  > :nth-child(2) {
+  > span:nth-child(2) {
     opacity: 0.65;
   }
 
@@ -49,12 +50,20 @@ const StyledListItem = styled(Link)`
   }
 `
 
+const StyledActions = styled(Actions)`
+  position: absolute;
+  top: 0.5rem;
+  right: 0;
+`
+
 const ListItem = ({
   guid,
   ageGroupIndex,
   title,
+  subTitle,
   language,
-  children,
+  showActions,
+  itemType,
   icon = TaskIcon,
 }) => {
   return (
@@ -65,7 +74,10 @@ const ListItem = ({
       icon={icon}
     >
       <span data-testid="title">{title}</span>
-      {children}
+      {subTitle && <span>{subTitle}</span>}
+      {showActions && itemType && (
+        <StyledActions guid="test" itemType={itemType} />
+      )}
     </StyledListItem>
   )
 }
