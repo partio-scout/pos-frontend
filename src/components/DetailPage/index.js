@@ -12,6 +12,7 @@ const StyledDetailPage = styled.div`
   padding: 1rem;
   background-color: ${({ theme }) => theme.color.background};
   pointer-events: all;
+  overflow: hidden;
 
   > h4 {
     margin: 0;
