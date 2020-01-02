@@ -23,6 +23,15 @@ const Task = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+
+  > :first-child {
+    flex: 1;
+    overflow: hidden;
+  }
+`
+
+const StyledActions = styled(Actions)`
+  padding-left: 5px;
 `
 
 const TaskGroup = () => {
@@ -87,7 +96,7 @@ const TaskGroup = () => {
                 title={taskTranslation ? taskTranslation.title : task.title}
                 language={language}
               />
-              <Actions guid={task.guid} itemType={ITEM_TYPES.TASK} />
+              <StyledActions guid={task.guid} itemType={ITEM_TYPES.TASK} />
             </Task>
           )
         })}

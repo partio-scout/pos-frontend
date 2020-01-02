@@ -13,6 +13,10 @@ const DetailsContainer = styled.div`
   justify-content: flex-start;
   overflow: scroll;
 
+  a {
+    color: ${({ theme }) => theme.color.text};
+  }
+
   > div,
   h5 {
     margin: 0.6rem 0;
