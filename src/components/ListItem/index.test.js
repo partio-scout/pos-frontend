@@ -1,5 +1,7 @@
 import React from 'react'
-import { MemoryRouter } from 'react-router-dom'
+import { fireEvent } from '@testing-library/react'
+import { Router } from 'react-router-dom'
+import { createMemoryHistory } from 'history'
 import { renderWithTheme } from 'test'
 import ListItem from './index'
 
@@ -10,24 +12,28 @@ const listItemProps = {
   language: 'fi',
 }
 
-const TestComponent = (
-  <MemoryRouter>
-    <ListItem {...listItemProps} />
-  </MemoryRouter>
-)
-
 describe('ListItem component', () => {
   it('displays the given title', () => {
-    const { getByTestId } = renderWithTheme(TestComponent)
+    const history = createMemoryHistory()
+    const { getByTestId } = renderWithTheme(
+      <Router history={history}>
+        <ListItem {...listItemProps} />
+      </Router>
+    )
     const elem = getByTestId('title')
     expect(elem.innerHTML).toBe(listItemProps.title)
   })
 
-  it('links to the given GUID with the givenn language', () => {
-    const { getByTestId } = renderWithTheme(TestComponent)
-    const elem = getByTestId('link')
-    expect(elem.getAttribute('href')).toBe(
-      `/guid/${listItemProps.guid}?lang=${listItemProps.language}`
+  it('links to the given GUID with the given language', () => {
+    const history = createMemoryHistory()
+    const { getByTestId } = renderWithTheme(
+      <Router history={history}>
+        <ListItem {...listItemProps} />
+      </Router>
     )
+    const elem = getByTestId('link')
+    fireEvent.click(elem)
+    expect(history.location.pathname).toEqual(`/guid/${listItemProps.guid}`)
+    expect(history.location.search).toEqual(`?lang=${listItemProps.language}`)
   })
 })
