@@ -16,6 +16,7 @@ import AgeGroups from 'views/AgeGroups'
 import AgeGroup from 'views/AgeGroup'
 import TaskGroup from 'views/TaskGroup'
 import Task from 'views/Task'
+import Manage from 'views/Manage'
 import { ITEM_TYPES } from 'consts'
 
 const App = () => {
@@ -37,6 +38,7 @@ const App = () => {
           <GlobalStyle />
           <TransitioningRoutes>
             <Route path="/" exact component={ComponentToRender} />
+            <Route path="/manage" component={Manage} />
             <Route path="/guid/:guid" component={ComponentToRender} />
           </TransitioningRoutes>
         </>
@@ -84,6 +86,9 @@ const TransitioningRoutes = ({ children }) => {
     }
     direction.current = nextDepth - depth.current > 0 ? 1 : -1
     depth.current = nextDepth
+    if (location.pathname === '/manage') {
+      depth.current = -2
+    }
   }, [location.pathname, item])
 
   const transitions = useTransition(location, location => location.pathname, {
@@ -96,7 +101,7 @@ const TransitioningRoutes = ({ children }) => {
     const style = {
       transform: props.p.interpolate(p => {
         if (
-          depth.current === -1 ||
+          (depth.current === -1 && direction.current !== 1) ||
           (depth.current === 0 && direction.current === 1)
         ) {
           return `translate3d(0, ${p * 100 * direction.current}%, 0)`

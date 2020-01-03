@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { determineLanguageFromUrl } from 'helpers'
 import AgeGroupItem from 'components/AgeGroupItem'
+import Menu from 'components/Menu'
 
 const Container = styled.div`
   position: relative;
@@ -43,7 +44,7 @@ const Content = styled.div`
 
 const Languages = styled.div`
   position: fixed;
-  bottom: 20px;
+  bottom: 2rem;
   left: 50%;
   transform: translateX(-50%);
   pointer-events: all;
@@ -120,6 +121,7 @@ const AgeGroups = ({ theme }) => {
 
   return (
     <Container ref={containerRef} activeIndex={activeIndex}>
+      <Menu language={language} />
       <Content ref={contentRef}>
         {ageGroups
           .sort((a, b) => a.order - b.order)
