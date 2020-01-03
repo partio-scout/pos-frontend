@@ -19,6 +19,7 @@ const StyledMenu = styled.div`
 
 const Username = styled.span`
   white-space: nowrap;
+  text-align: center;
 `
 
 const Menu = ({ language }) => {
