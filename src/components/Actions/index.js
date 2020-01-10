@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import TaskActions from 'components/TaskActions'
 import { MoreHorizontal } from 'react-feather'
-import { postTaskEntry } from 'api'
+import { postTaskEntry, postTaskFavourite } from 'api'
 import { COMPLETION_STATUS, ITEM_TYPES } from 'consts'
 
 const Actions = ({ guid, itemType, className }) => {
@@ -16,6 +16,13 @@ const Actions = ({ guid, itemType, className }) => {
     })
     setShowActions(false)
   }
+  const markTaskFavourite = async () => {
+    await postTaskFavourite({
+      user_guid: 1,
+      task_guid: guid,
+    })
+    setShowActions(false)
+  }
 
   return (
     <>
@@ -27,6 +34,7 @@ const Actions = ({ guid, itemType, className }) => {
         <TaskActions
           onCancel={() => setShowActions(false)}
           onMarkDone={() => markTaskDone()}
+          onMarkFavourite={() => markTaskFavourite()}
         />
       )}
     </>
