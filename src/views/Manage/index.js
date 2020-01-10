@@ -53,7 +53,7 @@ const Manage = () => {
         <ListItem
           ageGroupIndex={0}
           title="Viittaveljet / Sudenpennut 2"
-          subTitle="Nico Pelkonen liittyi"
+          subTitle="Jäsen 1 liittyi"
           language="fi"
           icon={null}
           itemType={ITEM_TYPES.TASK}

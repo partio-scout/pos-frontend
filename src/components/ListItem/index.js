@@ -3,6 +3,7 @@ import styled, { css } from 'styled-components'
 import { useHistory } from 'react-router-dom'
 import TaskIcon from 'assets/tasks/task.svg'
 import Actions from 'components/Actions'
+import { Heart } from 'react-feather'
 
 const StyledListItem = styled.div`
   position: relative;
@@ -24,7 +25,7 @@ const StyledListItem = styled.div`
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    margin-right: 2rem;
+    margin-right: 4rem;
   }
 
   > span:nth-child(2) {
@@ -51,10 +52,14 @@ const StyledListItem = styled.div`
   }
 `
 
-const StyledActions = styled(Actions)`
+const StyledActions = styled.div`
   position: absolute;
   top: 0.5rem;
   right: 0;
+`
+
+const StyledFavouriteIcon = styled(Heart)`
+  margin-right: 0.5em;
 `
 
 const ListItem = ({
@@ -66,6 +71,7 @@ const ListItem = ({
   showActions,
   itemType,
   icon = TaskIcon,
+  showFavourite,
 }) => {
   const history = useHistory()
   return (
@@ -79,9 +85,11 @@ const ListItem = ({
     >
       <span data-testid="title">{title}</span>
       {subTitle && <span>{subTitle}</span>}
-      {showActions && itemType && (
-        <StyledActions guid="test" itemType={itemType} />
-      )}
+
+      <StyledActions guid="test">
+        {showFavourite && <StyledFavouriteIcon color="red" fill="red" />}
+        {showActions && itemType && <Actions itemType={itemType} />}
+      </StyledActions>
     </StyledListItem>
   )
 }

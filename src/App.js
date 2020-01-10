@@ -9,8 +9,12 @@ import {
 import { useDispatch, useSelector } from 'react-redux'
 import styled, { ThemeProvider } from 'styled-components'
 import { useTransition, animated } from 'react-spring'
-import { fetchAllContent, fetchTranslations } from 'api'
-import { setInitialData, setTranslations } from 'redux/actionCreators'
+import { fetchAllContent, fetchTranslations, fetchFavourites } from 'api'
+import {
+  setInitialData,
+  setTranslations,
+  setFavourites,
+} from 'redux/actionCreators'
 import { GlobalStyle, theme } from 'styles'
 import AgeGroups from 'views/AgeGroups'
 import AgeGroup from 'views/AgeGroup'
@@ -30,6 +34,7 @@ const App = () => {
     fetchTranslations().then(translations =>
       dispatch(setTranslations(translations))
     )
+    fetchFavourites().then(favourites => dispatch(setFavourites(favourites)))
   }, [dispatch])
 
   return (

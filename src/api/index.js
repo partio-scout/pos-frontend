@@ -51,3 +51,25 @@ export const postTaskEntry = async entry => {
   const data = await res.json()
   return data
 }
+
+export const postTaskFavourite = async entry => {
+  const res = await fetch(`${API_URL}/favourite`, {
+    method: 'POST',
+    body: JSON.stringify(entry),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+  const data = await res.json()
+  return data
+}
+
+export const fetchFavourites = async () => {
+  const res = await fetch(`${API_URL}/favourites/1`)
+  if (!res.ok) {
+    return []
+  }
+  const data = await res.json()
+  const favourites = data.map(favourite => favourite.task_guid)
+  return favourites
+}

@@ -7,6 +7,8 @@ import AgeGroupListItem from 'components/AgeGroupListItem'
 
 import { X } from 'react-feather'
 import { determineLanguageFromUrl, getTermInLanguage } from 'helpers'
+import ListItem from 'components/ListItem'
+import { ITEM_TYPES } from 'consts'
 
 const Background = styled.div`
   min-height: 100vh;
@@ -103,10 +105,16 @@ const Profile = () => {
   const inProgress = useSelector(
     state => state.itemsByGuid['fd0083b9a325c06430ba29cc6c6d1bac']
   )
+  const favourites = useSelector(state =>
+    state.favourites.map(favourite => state.itemsByGuid[favourite])
+  )
 
   const activityTranslations = useSelector(
     state => state.translations.aktiviteetin_ylakasite
   )
+  const getTranslation = taskOrTaskGroup => {
+    return taskOrTaskGroup.languages.find(x => x.lang === language)
+  }
   if (!inProgress || !activityTranslations) return null
 
   const taskGroups = inProgress.item.taskgroups.slice(1, 4)
@@ -125,6 +133,39 @@ const Profile = () => {
           <h3>Teemu Testaaja</h3>
         </HeadingContent>
         <BodyContent>
+          <h4>Suosikit</h4>
+          <TaskList>
+            <ListItem
+              key={'test-favourite'}
+              ageGroupIndex={0}
+              title={'Example favourite'}
+              subTitle={'Esimerkki suosikki'}
+              language={'fi'}
+              itemType={ITEM_TYPES.TASK}
+              showFavourite
+              showActions
+            />
+            {favourites.map(favourite => {
+              const taskTranslation = getTranslation(favourite.item)
+
+              return (
+                <ListItem
+                  key={favourite.guid}
+                  guid={favourite.guid}
+                  ageGroupIndex={favourite.ageGroupIndex}
+                  title={
+                    taskTranslation
+                      ? taskTranslation.title
+                      : favourite.item.title
+                  }
+                  language={language}
+                  itemType={ITEM_TYPES.TASK}
+                  showActions
+                  showFavourite
+                />
+              )
+            })}
+          </TaskList>
           <h4>Hyväksytyt</h4>
           <TaskList>
             {taskGroups.map(subTaskGroup => {
