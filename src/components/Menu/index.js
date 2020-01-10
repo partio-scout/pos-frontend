@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { useHistory } from 'react-router-dom'
-import { MoreHorizontal } from 'react-feather'
+import { MoreHorizontal, User } from 'react-feather'
 
 const StyledMenu = styled.div`
   position: fixed;
@@ -21,6 +21,9 @@ const Username = styled.span`
   white-space: nowrap;
   text-align: center;
 `
+const Profile = styled.div`
+  text-align: right;
+`
 
 const Menu = ({ language }) => {
   const history = useHistory()
@@ -32,7 +35,9 @@ const Menu = ({ language }) => {
         />
       </div>
       <Username>Teppo Testaaja</Username>
-      <div />
+      <Profile>
+        <User onClick={() => history.push(`/profile?lang=${language}`)} />
+      </Profile>
     </StyledMenu>
   )
 }

@@ -17,6 +17,7 @@ import AgeGroup from 'views/AgeGroup'
 import TaskGroup from 'views/TaskGroup'
 import Task from 'views/Task'
 import Manage from 'views/Manage'
+import Profile from 'views/Profile'
 import { ITEM_TYPES } from 'consts'
 
 const App = () => {
@@ -40,6 +41,7 @@ const App = () => {
             <Route path="/" exact component={ComponentToRender} />
             <Route path="/manage" component={Manage} />
             <Route path="/guid/:guid" component={ComponentToRender} />
+            <Route path="/profile" component={Profile} />
           </TransitioningRoutes>
         </>
       </ThemeProvider>
@@ -88,6 +90,9 @@ const TransitioningRoutes = ({ children }) => {
     depth.current = nextDepth
     if (location.pathname === '/manage') {
       depth.current = -2
+    }
+    if (location.pathname === '/profile') {
+      direction.current = 1
     }
   }, [location.pathname, item])
 
