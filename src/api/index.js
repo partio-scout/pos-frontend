@@ -11,7 +11,7 @@ export const fetchAllContent = async () => {
 
   const guidsToExclude = [
     '0cdad01fccaf149bfdb5ae3a2cdd6d56',
-    'e13d38602cec28781ed110c008385552',
+    'b0bc122b1995418b828fa558c7d33414',
   ]
   const ageGroupsToShow = ageGroups.filter(
     ageGroup => !guidsToExclude.includes(ageGroup.guid)
