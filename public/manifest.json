@@ -1,6 +1,6 @@
 {
-  "short_name": "Partio-ohjelma",
-  "name": "Partio-ohjelma -sovellus",
+  "short_name": "Kompassi",
+  "name": "Kompassi",
   "icons": [
     {
       "src": "favicon-32.png",
@@ -20,6 +20,6 @@
   ],
   "start_url": "/",
   "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "theme_color": "#294073",
+  "background_color": "#294073"
 }
