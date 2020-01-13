@@ -153,7 +153,11 @@ const AgeGroup = () => {
                   language={language}
                   tasksTerm={getTermInLanguage(
                     activityTranslations,
-                    `${taskGroup.subtask_term.name}_plural`,
+                    `${
+                      taskGroup.subtask_term
+                        ? taskGroup.subtask_term.name
+                        : 'aktiviteetti'
+                    }_plural`,
                     language
                   )}
                 />
