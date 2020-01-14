@@ -21,6 +21,7 @@ export const theme = {
   color: {
     text: '#FFF',
     background: '#0F0F0F',
+    subText: '#878787',
     ageGroups: [
       '#3650A1',
       '#D4791E',

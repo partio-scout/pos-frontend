@@ -10,8 +10,6 @@ const StyledListItem = styled.div`
   min-height: 2rem;
   padding-left: 3.5rem;
   padding-bottom: 1rem;
-  display: flex;
-  flex-direction: column;
   cursor: pointer;
   user-select: none;
   text-decoration: none;
@@ -19,17 +17,6 @@ const StyledListItem = styled.div`
   > * {
     line-height: 1.3;
     color: ${({ theme }) => theme.color.text};
-  }
-
-  > :first-child {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    margin-right: 4rem;
-  }
-
-  > span:nth-child(2) {
-    opacity: 0.65;
   }
 
   ::before {
@@ -51,11 +38,25 @@ const StyledListItem = styled.div`
       `};
   }
 `
+const StyledListItemContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  > :first-child {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-right: 4rem;
+  }
 
+  > span:nth-child(2) {
+    color: ${({ theme }) => theme.color.subText};
+  }
+`
 const StyledActions = styled.div`
   position: absolute;
   top: 0.5rem;
   right: 0;
+  color: ${({ theme }) => theme.color.subText};
 `
 
 const StyledFavouriteIcon = styled(Heart)`
@@ -72,23 +73,29 @@ const ListItem = ({
   itemType,
   icon = TaskIcon,
   showFavourite,
+  isFavourite,
 }) => {
   const history = useHistory()
+  const FavouriteIcon = isFavourite ? (
+    <StyledFavouriteIcon color="#DB1930" fill="#DB1930" />
+  ) : (
+    <StyledFavouriteIcon />
+  )
   return (
-    <StyledListItem
-      data-testid="link"
-      agegroupindex={ageGroupIndex}
-      onClick={() =>
-        guid && language && history.push(`/guid/${guid}?lang=${language}`)
-      }
-      icon={icon}
-    >
-      <span data-testid="title">{title}</span>
-      {subTitle && <span>{subTitle}</span>}
+    <StyledListItem agegroupindex={ageGroupIndex} icon={icon}>
+      <StyledListItemContent
+        data-testid="link"
+        onClick={() =>
+          guid && language && history.push(`/guid/${guid}?lang=${language}`)
+        }
+      >
+        <span data-testid="title">{title}</span>
+        {subTitle && <span>{subTitle}</span>}
+      </StyledListItemContent>
 
       <StyledActions guid="test">
-        {showFavourite && <StyledFavouriteIcon color="red" fill="red" />}
-        {showActions && itemType && <Actions itemType={itemType} />}
+        {showFavourite && FavouriteIcon}
+        {showActions && itemType && <Actions guid={guid} itemType={itemType} />}
       </StyledActions>
     </StyledListItem>
   )
