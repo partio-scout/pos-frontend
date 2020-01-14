@@ -118,7 +118,6 @@ const AgeGroups = ({ theme }) => {
     setActiveIndex,
     getAgeGroupCenterPositions,
   ])
-
   return (
     <Container ref={containerRef} activeIndex={activeIndex}>
       <Menu language={language} />

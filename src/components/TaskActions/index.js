@@ -30,6 +30,7 @@ const Content = styled.div`
   box-sizing: border-box;
   width: 100%;
   padding: 2rem;
+  color: ${({ theme }) => theme.color.text};
   background-color: ${({ theme }) => theme.color.background};
   z-index: 1;
   animation: ${keyframes`
