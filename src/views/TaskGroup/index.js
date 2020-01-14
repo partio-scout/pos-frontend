@@ -27,6 +27,7 @@ const TaskGroup = () => {
   const activityTranslations = useSelector(
     state => state.translations.aktiviteetin_ylakasite
   )
+  const favourites = useSelector(state => state.favourites)
 
   if (!taskGroup || !activityTranslations) {
     return null
@@ -81,6 +82,8 @@ const TaskGroup = () => {
               language={language}
               itemType={ITEM_TYPES.TASK}
               showActions
+              showFavourite
+              isFavourite={favourites.includes(task.guid)}
             />
           )
         })}

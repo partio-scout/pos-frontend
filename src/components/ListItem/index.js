@@ -73,8 +73,14 @@ const ListItem = ({
   itemType,
   icon = TaskIcon,
   showFavourite,
+  isFavourite,
 }) => {
   const history = useHistory()
+  const FavouriteIcon = isFavourite ? (
+    <StyledFavouriteIcon color="#DB1930" fill="#DB1930" />
+  ) : (
+    <StyledFavouriteIcon />
+  )
   return (
     <StyledListItem agegroupindex={ageGroupIndex} icon={icon}>
       <StyledListItemContent
@@ -88,7 +94,7 @@ const ListItem = ({
       </StyledListItemContent>
 
       <StyledActions guid="test">
-        {showFavourite && <StyledFavouriteIcon color="red" fill="red" />}
+        {showFavourite && FavouriteIcon}
         {showActions && itemType && <Actions guid={guid} itemType={itemType} />}
       </StyledActions>
     </StyledListItem>

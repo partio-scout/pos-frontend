@@ -144,6 +144,7 @@ const Profile = () => {
               itemType={ITEM_TYPES.TASK}
               showFavourite
               showActions
+              isFavourite
             />
             {favourites.map(favourite => {
               const taskTranslation = getTranslation(favourite.item)
@@ -162,6 +163,7 @@ const Profile = () => {
                   itemType={ITEM_TYPES.TASK}
                   showActions
                   showFavourite
+                  isFavourite
                 />
               )
             })}
