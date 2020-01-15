@@ -8,7 +8,7 @@ const AgeGroupItem = ({ ageGroup, language }) => {
   return (
     <ListItem
       guid={ageGroup.guid}
-      ageGroupIndex={ageGroup.ageGroupIndex}
+      ageGroupGuid={ageGroup.ageGroupGuid}
       title={languageInfo ? languageInfo.title : ageGroup.title}
       subTitle={'Ikäryhmä plakkarissa'}
       language={language}

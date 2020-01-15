@@ -23,10 +23,11 @@ const Background = styled.div`
     left: 0;
     width: 100%;
     height: 19rem;
-    background: ${({ theme, ageGroupIndex }) => `
+    background: ${({ theme, ageGroupGuid }) => `
     linear-gradient(
       to bottom,
-      ${theme.color.ageGroupGradients[ageGroupIndex]},
+      ${theme.color.ageGroupGradients[ageGroupGuid] ||
+        theme.color.ageGroupGradients.default},
       ${theme.color.gradientDark}
     );
     `};
@@ -121,9 +122,9 @@ const Profile = () => {
   const item = inProgress.item
 
   //TODO: Maybe we can get users age from PartioID and compare it to groups
-  const ageGroupIndex = 2
+  const ageGroupGuid = 'fd0083b9a325c06430ba29cc6c6d1bac'
   return (
-    <Background ageGroupIndex={ageGroupIndex}>
+    <Background ageGroupGuid={ageGroupGuid}>
       <Content>
         <CloseIcon>
           <X onClick={() => history.push(`/?lang=${language}`)} />
@@ -137,7 +138,7 @@ const Profile = () => {
           <TaskList>
             <ListItem
               key={'test-favourite'}
-              ageGroupIndex={0}
+              ageGroupGuid={'fd0083b9a325c06430ba29cc6c6d1bac'}
               title={'Example favourite'}
               subTitle={'Esimerkki suosikki'}
               language={'fi'}
@@ -153,7 +154,7 @@ const Profile = () => {
                 <ListItem
                   key={favourite.guid}
                   guid={favourite.guid}
-                  ageGroupIndex={favourite.ageGroupIndex}
+                  ageGroupGuid={favourite.ageGroupGuid}
                   title={
                     taskTranslation
                       ? taskTranslation.title
@@ -187,7 +188,7 @@ const Profile = () => {
                 <TaskGroupItem
                   key={subTaskGroup.guid}
                   taskGroup={subTaskGroup}
-                  ageGroupIndex={inProgress.ageGroupIndex}
+                  ageGroupGuid={inProgress.ageGroupGuid}
                   language={language}
                   tasksTerm={tasksTerm}
                 />

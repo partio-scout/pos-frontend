@@ -25,10 +25,11 @@ const Background = styled.div`
     left: 0;
     width: 100%;
     height: 19rem;
-    background: ${({ theme, ageGroupIndex }) => `
+    background: ${({ theme, ageGroupGuid }) => `
     linear-gradient(
       to bottom,
-      ${theme.color.ageGroupGradients[ageGroupIndex]},
+      ${theme.color.ageGroupGradients[ageGroupGuid] ||
+        theme.color.ageGroupGradients.default},
       ${theme.color.gradientDark}
     );
     `};
@@ -116,18 +117,22 @@ const AgeGroup = () => {
   if (!ageGroup || !groupHeadingTranslations) {
     return null
   }
-
-  const ageGroupIndex = ageGroup ? ageGroup.order : 0
+  const ageGroupGuid = ageGroup ? ageGroup.guid : 'default'
   const languageInfo = ageGroup.languages.find(x => x.lang === language)
 
   return (
-    <Background ageGroupIndex={ageGroupIndex}>
+    <Background ageGroupGuid={ageGroupGuid}>
       <Content>
         <CloseIcon>
           <X onClick={() => history.push(`/?lang=${language}`)} />
         </CloseIcon>
         <HeadingContent>
-          <MainSymbol src={ageGroupGraphics[`AgeGroup${ageGroup.guid}`]} />
+          <MainSymbol
+            src={
+              ageGroupGraphics[`AgeGroup${ageGroup.guid}`] ||
+              ageGroupGraphics.AgeGroupDefault
+            }
+          />
           <h3>
             {getAgeGroupTitleWithoutAges(
               languageInfo ? languageInfo.title : ageGroup.title
@@ -149,7 +154,7 @@ const AgeGroup = () => {
                 <TaskGroupItem
                   key={taskGroup.guid}
                   taskGroup={taskGroup}
-                  ageGroupIndex={ageGroupIndex}
+                  ageGroupGuid={ageGroupGuid}
                   language={language}
                   tasksTerm={getTermInLanguage(
                     activityTranslations,
