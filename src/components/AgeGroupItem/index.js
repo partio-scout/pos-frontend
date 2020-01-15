@@ -49,7 +49,10 @@ const AgeGroupItem = ({ ageGroup, language }) => {
     <StyledAgeGroupItem>
       <AgeGroupLink to={`/guid/${ageGroup.guid}?lang=${language}`}>
         <AgeGroupIllustration
-          src={ageGroupGraphics[`AgeGroup${ageGroup.guid}`]}
+          src={
+            ageGroupGraphics[`AgeGroup${ageGroup.guid}`] ||
+            ageGroupGraphics.AgeGroupDefault
+          }
         />
         <h3 data-testid="title">
           {getAgeGroupTitleWithoutAges(

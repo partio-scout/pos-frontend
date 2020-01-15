@@ -13,13 +13,13 @@ export const getSubTaskGroupsOrTasksText = (tasksTerm, taskGroup) => {
   } ${taskGroupsText} ${term}`
 }
 
-const TaskGroupItem = ({ taskGroup, ageGroupIndex, language, tasksTerm }) => {
+const TaskGroupItem = ({ taskGroup, ageGroupGuid, language, tasksTerm }) => {
   const languageInfo = taskGroup.languages.find(x => x.lang === language)
 
   return (
     <ListItem
       guid={taskGroup.guid}
-      ageGroupIndex={ageGroupIndex}
+      ageGroupGuid={ageGroupGuid}
       title={languageInfo ? languageInfo.title : taskGroup.title}
       subTitle={getSubTaskGroupsOrTasksText(tasksTerm, taskGroup)}
       language={language}

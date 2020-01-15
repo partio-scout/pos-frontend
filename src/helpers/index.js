@@ -31,32 +31,32 @@ export const getItemType = item => {
 }
 
 export const deepFlatten = items => {
-  const flattener = (items, depth = 0, parentGuid, ageGroupIndex) => {
+  const flattener = (items, depth = 0, parentGuid, ageGroupGuid) => {
     const CHILD_GROUPS = ['taskgroups', 'tasks']
 
     if (!items) {
       return
     }
 
-    const parsedItems = items.map((x, i) => ({
+    const parsedItems = items.map(x => ({
       depth,
       parentGuid,
       item: x,
       guid: x.guid,
       type: getItemType(x),
-      ageGroupIndex: depth === 0 ? i : ageGroupIndex,
+      ageGroupGuid: depth === 0 ? x.guid : ageGroupGuid,
     }))
 
     return [
       ...parsedItems,
       ...items
-        .map((x, i) =>
+        .map(x =>
           CHILD_GROUPS.map(childrenKey =>
             flattener(
               x[childrenKey],
               depth + 1,
               x.guid,
-              depth === 0 ? i : ageGroupIndex
+              depth === 0 ? x.guid : ageGroupGuid
             )
           )
         )

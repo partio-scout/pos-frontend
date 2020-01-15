@@ -65,7 +65,7 @@ const TaskGroup = () => {
             <TaskGroupItem
               key={subTaskGroup.guid}
               taskGroup={subTaskGroup}
-              ageGroupIndex={taskGroup.ageGroupIndex}
+              ageGroupGuid={taskGroup.ageGroupGuid}
               language={language}
               tasksTerm={tasksTerm}
             />
@@ -77,7 +77,7 @@ const TaskGroup = () => {
             <ListItem
               key={task.guid}
               guid={task.guid}
-              ageGroupIndex={taskGroup.ageGroupIndex}
+              ageGroupGuid={taskGroup.ageGroupGuid}
               title={taskTranslation ? taskTranslation.title : task.title}
               language={language}
               itemType={ITEM_TYPES.TASK}

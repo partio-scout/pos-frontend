@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1000px" height="1000px" viewBox="0 0 1000 1000" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 61.2 (89653) - https://sketch.com -->
+    <title>Generic form of activity</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Generic-form-of-activity" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <path d="M990,500 C990,770.619527 770.619527,990 500,990 C229.380473,990 10,770.619527 10,500 C10.0232813,229.390117 229.390117,10.0232813 500,10 C770.619527,10 990,229.380473 990,500 Z" id="Shape" fill="#000000"></path>
+        <rect id="Rectangle" stroke="#979797" fill="#FFFFFF" transform="translate(500.000000, 500.000000) rotate(-315.000000) translate(-500.000000, -500.000000) " x="480" y="480" width="40" height="40"></rect>
+        <rect id="Rectangle" stroke="#979797" fill="#FFFFFF" transform="translate(380.000000, 500.000000) rotate(-315.000000) translate(-380.000000, -500.000000) " x="360" y="480" width="40" height="40"></rect>
+        <rect id="Rectangle" stroke="#979797" fill="#FFFFFF" transform="translate(620.000000, 500.000000) rotate(-315.000000) translate(-620.000000, -500.000000) " x="600" y="480" width="40" height="40"></rect>
+    </g>
+</svg>

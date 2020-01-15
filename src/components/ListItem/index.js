@@ -27,8 +27,8 @@ const StyledListItem = styled.div`
     width: 2.5rem;
     height: 2.5rem;
     border-radius: 50%;
-    background-color: ${({ theme, agegroupindex }) =>
-      theme.color.ageGroups[agegroupindex]};
+    background-color: ${({ theme, ageGroupGuid }) =>
+      theme.color.ageGroups[ageGroupGuid] || theme.color.ageGroups.default};
     background-size: contain;
 
     ${({ icon }) =>
@@ -65,7 +65,7 @@ const StyledFavouriteIcon = styled(Heart)`
 
 const ListItem = ({
   guid,
-  ageGroupIndex,
+  ageGroupGuid,
   title,
   subTitle,
   language,
@@ -82,7 +82,7 @@ const ListItem = ({
     <StyledFavouriteIcon />
   )
   return (
-    <StyledListItem agegroupindex={ageGroupIndex} icon={icon}>
+    <StyledListItem ageGroupGuid={ageGroupGuid} icon={icon}>
       <StyledListItemContent
         data-testid="link"
         onClick={() =>

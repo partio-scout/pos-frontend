@@ -14,7 +14,8 @@ const Container = styled.div`
   overflow: scroll;
   scroll-snap-type: x mandatory;
   background-color: ${({ activeIndex = 0, theme }) =>
-    theme.color.ageGroupGradients[activeIndex]};
+    theme.color.ageGroupGradients[activeIndex] ||
+    theme.color.ageGroupGradients.default};
   transition: background-color 400ms;
 
   ::before {
@@ -27,7 +28,8 @@ const Container = styled.div`
     background: ${({ activeIndex = 0, theme }) =>
       `linear-gradient(
       to bottom,
-      ${theme.color.ageGroupGradientsDark[activeIndex]},
+      ${theme.color.ageGroupGradientsDark[activeIndex] ||
+        theme.color.ageGroupGradientsDark.default},
       rgba(0, 0, 0, 0)
     );`};
   }
@@ -118,8 +120,14 @@ const AgeGroups = ({ theme }) => {
     setActiveIndex,
     getAgeGroupCenterPositions,
   ])
+
+  const activeAgeGroup = ageGroups.find(
+    ageGroup => ageGroup.order === activeIndex
+  )
+  const activeAgeGroupGuid = activeAgeGroup ? activeAgeGroup.guid : ''
+
   return (
-    <Container ref={containerRef} activeIndex={activeIndex}>
+    <Container ref={containerRef} activeIndex={activeAgeGroupGuid}>
       <Menu language={language} />
       <Content ref={contentRef}>
         {ageGroups

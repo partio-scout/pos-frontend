@@ -51,7 +51,7 @@ const Manage = () => {
       <Content>
         <Subheading>Ilmoitukset</Subheading>
         <ListItem
-          ageGroupIndex={0}
+          ageGroupGuid={'default'}
           title="Viittaveljet / Sudenpennut 2"
           subTitle="Jäsen 1 liittyi"
           language="fi"
