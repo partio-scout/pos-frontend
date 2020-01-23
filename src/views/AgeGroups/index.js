@@ -62,6 +62,7 @@ const Languages = styled.div`
 const AgeGroups = ({ theme }) => {
   const ageGroups = useSelector(state => state.ageGroups)
   const selectedAgeGroup = useSelector(state => state.selectedAgeGroup)
+  const user = useSelector(state => state.user)
   const [activeIndex, setActiveIndex] = useState(0)
   const language = determineLanguageFromUrl(window.location)
   const languages = ['fi', 'sv', 'en', 'smn']
@@ -121,14 +122,14 @@ const AgeGroups = ({ theme }) => {
     getAgeGroupCenterPositions,
   ])
 
+  //TODO: get agegroup from user if set
   const activeAgeGroup = ageGroups.find(
     ageGroup => ageGroup.order === activeIndex
   )
   const activeAgeGroupGuid = activeAgeGroup ? activeAgeGroup.guid : ''
-
   return (
     <Container ref={containerRef} activeIndex={activeAgeGroupGuid}>
-      <Menu language={language} />
+      <Menu language={language} user={user} />
       <Content ref={contentRef}>
         {ageGroups
           .sort((a, b) => a.order - b.order)
