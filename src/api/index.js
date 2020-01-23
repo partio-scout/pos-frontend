@@ -57,11 +57,34 @@ export const postTaskFavourite = async entry => {
 }
 
 export const fetchFavourites = async () => {
-  const res = await fetch(`${API_URL}/favourites/1`)
-  if (!res.ok) {
+  try {
+    const res = await fetch(`${API_URL}/favourites/1`)
+    if (!res.ok) {
+      return []
+    }
+    const data = await res.json()
+    const favourites = data.map(favourite => favourite.task_guid)
+    return favourites
+  } catch (error) {
+    console.log('error fetching favourites', error)
     return []
   }
-  const data = await res.json()
-  const favourites = data.map(favourite => favourite.task_guid)
-  return favourites
+}
+
+export const fetchUser = async () => {
+  try {
+    const res = await fetch(`${API_URL}/user`, { credentials: 'include' })
+    if (!res.ok) {
+      if (res.status !== 401) {
+        console.log('error fetching user', res.status, res.statusText)
+      }
+
+      return {}
+    }
+    const data = await res.json()
+    return data
+  } catch (err) {
+    console.log('User network error: ', err)
+    return {}
+  }
 }
