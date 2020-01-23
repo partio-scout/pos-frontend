@@ -49,6 +49,7 @@ const AgeGroupItem = ({ ageGroup, language }) => {
     <StyledAgeGroupItem>
       <AgeGroupLink to={`/guid/${ageGroup.guid}?lang=${language}`}>
         <AgeGroupIllustration
+          alt={ageGroup.title}
           src={
             ageGroupGraphics[`AgeGroup${ageGroup.guid}`] ||
             ageGroupGraphics.AgeGroupDefault

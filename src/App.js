@@ -9,11 +9,17 @@ import {
 import { useDispatch, useSelector } from 'react-redux'
 import styled, { ThemeProvider } from 'styled-components'
 import { useTransition, animated } from 'react-spring'
-import { fetchAllContent, fetchTranslations, fetchFavourites } from 'api'
+import {
+  fetchAllContent,
+  fetchTranslations,
+  fetchFavourites,
+  fetchUser,
+} from 'api'
 import {
   setInitialData,
   setTranslations,
   setFavourites,
+  setUser,
 } from 'redux/actionCreators'
 import { GlobalStyle, theme } from 'styles'
 import AgeGroups from 'views/AgeGroups'
@@ -22,6 +28,7 @@ import TaskGroup from 'views/TaskGroup'
 import Task from 'views/Task'
 import Manage from 'views/Manage'
 import Profile from 'views/Profile'
+import Login from 'views/Login'
 import { ITEM_TYPES } from 'consts'
 
 const App = () => {
@@ -34,7 +41,16 @@ const App = () => {
     fetchTranslations().then(translations =>
       dispatch(setTranslations(translations))
     )
-    fetchFavourites().then(favourites => dispatch(setFavourites(favourites)))
+
+    fetchUser().then(user => {
+      dispatch(setUser(user))
+
+      if (Object.keys(user).length > 0) {
+        fetchFavourites().then(favourites =>
+          dispatch(setFavourites(favourites))
+        )
+      }
+    })
   }, [dispatch])
 
   return (
@@ -47,6 +63,7 @@ const App = () => {
             <Route path="/manage" component={Manage} />
             <Route path="/guid/:guid" component={ComponentToRender} />
             <Route path="/profile" component={Profile} />
+            <Route path="/login" component={Login} />
           </TransitioningRoutes>
         </>
       </ThemeProvider>
@@ -96,7 +113,7 @@ const TransitioningRoutes = ({ children }) => {
     if (location.pathname === '/manage') {
       depth.current = -2
     }
-    if (location.pathname === '/profile') {
+    if (location.pathname === '/profile' || location.pathname === '/login') {
       direction.current = 1
     }
   }, [location.pathname, item])

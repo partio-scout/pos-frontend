@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { useHistory } from 'react-router-dom'
-import { MoreHorizontal, User } from 'react-feather'
+import { MoreHorizontal, User, LogIn } from 'react-feather'
 
 const StyledMenu = styled.div`
   position: fixed;
@@ -25,18 +25,28 @@ const Profile = styled.div`
   text-align: right;
 `
 
-const Menu = ({ language }) => {
+const Menu = ({ language, user }) => {
   const history = useHistory()
+  const isLoggedIn = Object.keys(user).length > 0
   return (
     <StyledMenu>
-      <div>
-        <MoreHorizontal
-          onClick={() => history.push(`/manage?lang=${language}`)}
-        />
-      </div>
-      <Username>Teppo Testaaja</Username>
+      {isLoggedIn && (
+        <>
+          <div>
+            <MoreHorizontal
+              onClick={() => history.push(`/manage?lang=${language}`)}
+            />
+          </div>
+          <Username>{user.name}</Username>
+        </>
+      )}
+
       <Profile>
-        <User onClick={() => history.push(`/profile?lang=${language}`)} />
+        {!isLoggedIn ? (
+          <LogIn onClick={() => history.push('login')} />
+        ) : (
+          <User onClick={() => history.push(`/profile?lang=${language}`)} />
+        )}
       </Profile>
     </StyledMenu>
   )

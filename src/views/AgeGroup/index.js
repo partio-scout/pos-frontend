@@ -128,6 +128,7 @@ const AgeGroup = () => {
         </CloseIcon>
         <HeadingContent>
           <MainSymbol
+            alt={ageGroup.title}
             src={
               ageGroupGraphics[`AgeGroup${ageGroup.guid}`] ||
               ageGroupGraphics.AgeGroupDefault
