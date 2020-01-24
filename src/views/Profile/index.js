@@ -95,6 +95,7 @@ const TaskList = styled.div`
 const Profile = () => {
   const history = useHistory()
   const language = determineLanguageFromUrl(window.location)
+  const user = useSelector(state => state.user)
 
   //TODO: Get these from the api
   const ageGroup1 = useSelector(
@@ -132,7 +133,7 @@ const Profile = () => {
         </CloseIcon>
         <HeadingContent>
           <Picture />
-          <h3>Teemu Testaaja</h3>
+          <h3>{user.name}</h3>
         </HeadingContent>
         <BodyContent>
           <h4>
