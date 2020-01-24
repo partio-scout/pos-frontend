@@ -4,6 +4,8 @@ import { useHistory } from 'react-router-dom'
 import { X } from 'react-feather'
 import ListItem from 'components/ListItem'
 import { ITEM_TYPES } from 'consts'
+import { useSelector } from 'react-redux'
+import { determineLanguageFromUrl, getTermInLanguage } from 'helpers'
 
 const StyledManage = styled.div`
   height: 100%;
@@ -42,14 +44,22 @@ const Content = styled.div`
 
 const Manage = () => {
   const history = useHistory()
+  const language = determineLanguageFromUrl(window.location)
+  const generalTranslations = useSelector(state => state.translations.yleiset)
+  if (!generalTranslations) return null
+
   return (
     <StyledManage>
       <Header>
-        <Subheading>Hallinta</Subheading>
+        <Subheading>
+          {getTermInLanguage(generalTranslations, 'manage', language)}
+        </Subheading>
         <CloseIcon onClick={() => history.push('/')} />
       </Header>
       <Content>
-        <Subheading>Ilmoitukset</Subheading>
+        <Subheading>
+          {getTermInLanguage(generalTranslations, 'notifications', language)}
+        </Subheading>
         <ListItem
           ageGroupGuid={'default'}
           title="Viittaveljet / Sudenpennut 2"

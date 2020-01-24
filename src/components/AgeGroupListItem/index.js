@@ -2,7 +2,7 @@ import React from 'react'
 import ListItem from 'components/ListItem'
 import ageGroupGraphics from 'graphics/ageGroups'
 
-const AgeGroupItem = ({ ageGroup, language }) => {
+const AgeGroupItem = ({ ageGroup, language, subTitle }) => {
   const languageInfo = ageGroup.item.languages.find(x => x.lang === language)
 
   return (
@@ -10,7 +10,7 @@ const AgeGroupItem = ({ ageGroup, language }) => {
       guid={ageGroup.guid}
       ageGroupGuid={ageGroup.ageGroupGuid}
       title={languageInfo ? languageInfo.title : ageGroup.title}
-      subTitle={'Ikäryhmä plakkarissa'}
+      subTitle={subTitle}
       language={language}
       icon={ageGroupGraphics[`AgeGroup${ageGroup.guid}`] || null}
     />

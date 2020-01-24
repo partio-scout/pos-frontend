@@ -4,6 +4,7 @@ import { useHistory, Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { X } from 'react-feather'
 import { determineLanguageFromUrl, getTermInLanguage } from 'helpers'
+import { API_URL } from '../../api'
 import loginBg from '../../assets/images/login-bg.jpg'
 import logo from '../../assets/images/logo.svg'
 
@@ -98,7 +99,9 @@ const Login = () => {
   const history = useHistory()
   const language = determineLanguageFromUrl(window.location)
   const languages = ['fi', 'sv', 'en', 'smn']
-  console.log(window.cookie)
+  const generalTranslations = useSelector(state => state.translations.yleiset)
+
+  if (!generalTranslations) return null
 
   return (
     <Background>
@@ -111,15 +114,16 @@ const Login = () => {
         </HeadingContent>
         <BodyContent>
           <p>
-            Tervetuloa Kompassiin!
-            <br />
-            Kirjaudu sisään partiotunnuksilla.
-            <br />
-            Tunnukset saat ryhmäsi vetäjältä.
+            {getTermInLanguage(
+              generalTranslations,
+              'welcome_message',
+              language
+            )}
           </p>
-          <p>Kirjautuneena voit hallita aktiviteetteja</p>
 
-          <a href="http://localhost:3001/login">Kirjaudu sisään</a>
+          <a href={`${API_URL}/login`}>
+            {getTermInLanguage(generalTranslations, 'login', language)}
+          </a>
 
           <Languages>
             {languages.map((language, i) => (

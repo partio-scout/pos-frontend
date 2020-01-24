@@ -113,6 +113,7 @@ const Profile = () => {
   const activityTranslations = useSelector(
     state => state.translations.aktiviteetin_ylakasite
   )
+  const generalTranslations = useSelector(state => state.translations.yleiset)
   const getTranslation = taskOrTaskGroup => {
     return taskOrTaskGroup.languages.find(x => x.lang === language)
   }
@@ -127,14 +128,16 @@ const Profile = () => {
     <Background ageGroupGuid={ageGroupGuid}>
       <Content>
         <CloseIcon>
-          <X onClick={() => history.push(`/?lang=${language}`)} />
+          <X onClick={() => history.goBack()} />
         </CloseIcon>
         <HeadingContent>
           <Picture />
           <h3>Teemu Testaaja</h3>
         </HeadingContent>
         <BodyContent>
-          <h4>Suosikit</h4>
+          <h4>
+            {getTermInLanguage(generalTranslations, 'favourites', language)}
+          </h4>
           <TaskList>
             <ListItem
               key={'test-favourite'}
@@ -169,7 +172,9 @@ const Profile = () => {
               )
             })}
           </TaskList>
-          <h4>Hyväksytyt</h4>
+          <h4>
+            {getTermInLanguage(generalTranslations, 'completed', language)}
+          </h4>
           <TaskList>
             {taskGroups.map(subTaskGroup => {
               const tasksTerm =
@@ -200,6 +205,11 @@ const Profile = () => {
                   key={ageGroup.guid}
                   ageGroup={ageGroup}
                   language={language}
+                  subTitle={getTermInLanguage(
+                    generalTranslations,
+                    'agegroup_completed',
+                    language
+                  )}
                 />
               )
             })}
