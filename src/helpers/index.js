@@ -72,3 +72,69 @@ export const deepFlatten = items => {
       return acc
     }, {})
 }
+
+export const getTaskGroupStatus = (taskGroup, userTasks, label) => {
+  const doneTasks = taskGroup.tasks.reduce((taskCount, task) => {
+    if (userTasks[task.guid] === 'COMPLETED') {
+      taskCount++
+    }
+    return taskCount
+  }, 0)
+  return `${label}: ${doneTasks} / ${taskGroup.tasks.length}`
+}
+
+export const getAgeGroupStatus = (ageGroup, userTasks) => {
+  const getGroupTasks = group => {
+    const taskTypes = {
+      mandatory: [],
+      optional: [],
+    }
+    const mandatory = group.mandatory_tasks.split(',')
+    taskTypes.mandatory = taskTypes.mandatory.concat(mandatory)
+
+    if (mandatory.length !== group.tasks.length) {
+      taskTypes.optional = taskTypes.optional.concat(
+        group.tasks
+          .filter(task => !mandatory.includes(task.guid))
+          .map(task => task.guid)
+      )
+    }
+
+    if (group.taskgroups.length > 0) {
+      group.taskgroups
+        .map(taskGroup => getGroupTasks(taskGroup))
+        .reduce((acc, curr) => {
+          acc.mandatory = acc.mandatory.concat(curr.mandatory)
+          acc.optional = acc.optional.concat(curr.optional)
+          return acc
+        }, taskTypes)
+    }
+
+    return taskTypes
+  }
+
+  const ageGroupTasks = ageGroup.item.taskgroups
+    .map(group => getGroupTasks(group))
+    .reduce(
+      (acc, curr) => {
+        acc.mandatory = acc.mandatory.concat(curr.mandatory)
+        acc.optional = acc.optional.concat(curr.optional)
+        return acc
+      },
+      {
+        mandatory: [],
+        optional: [],
+      }
+    )
+  const doneMandatory = ageGroupTasks.mandatory.filter(
+    task => userTasks[task] === 'COMPLETED'
+  )
+  const doneOptional = ageGroupTasks.optional.filter(
+    task => userTasks[task] === 'COMPLETED'
+  )
+
+  return {
+    mandatory: `${doneMandatory.length} / ${ageGroupTasks.mandatory.length}`,
+    optional: `${doneOptional.length} / ${ageGroupTasks.optional.length}`,
+  }
+}

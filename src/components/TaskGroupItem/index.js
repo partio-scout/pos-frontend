@@ -13,7 +13,13 @@ export const getSubTaskGroupsOrTasksText = (tasksTerm, taskGroup) => {
   } ${taskGroupsText} ${term}`
 }
 
-const TaskGroupItem = ({ taskGroup, ageGroupGuid, language, tasksTerm }) => {
+const TaskGroupItem = ({
+  taskGroup,
+  ageGroupGuid,
+  language,
+  tasksTerm,
+  subTitle,
+}) => {
   const languageInfo = taskGroup.languages.find(x => x.lang === language)
 
   return (
@@ -21,7 +27,7 @@ const TaskGroupItem = ({ taskGroup, ageGroupGuid, language, tasksTerm }) => {
       guid={taskGroup.guid}
       ageGroupGuid={ageGroupGuid}
       title={languageInfo ? languageInfo.title : taskGroup.title}
-      subTitle={getSubTaskGroupsOrTasksText(tasksTerm, taskGroup)}
+      subTitle={subTitle || getSubTaskGroupsOrTasksText(tasksTerm, taskGroup)}
       language={language}
       icon={taskGroupGraphics[`Group${taskGroup.guid}`] || null}
     />

@@ -2,7 +2,7 @@ import React, { useLayoutEffect, useRef, useState, useCallback } from 'react'
 import styled, { withTheme } from 'styled-components'
 import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { determineLanguageFromUrl } from 'helpers'
+import { determineLanguageFromUrl, getAgeGroupStatus } from 'helpers'
 import AgeGroupItem from 'components/AgeGroupItem'
 import Menu from 'components/Menu'
 
@@ -63,9 +63,14 @@ const AgeGroups = ({ theme }) => {
   const ageGroups = useSelector(state => state.ageGroups)
   const selectedAgeGroup = useSelector(state => state.selectedAgeGroup)
   const user = useSelector(state => state.user)
+  const userTasks = useSelector(state => state.tasks)
+
   const [activeIndex, setActiveIndex] = useState(0)
   const language = determineLanguageFromUrl(window.location)
+  const generalTranslations = useSelector(state => state.translations.yleiset)
   const languages = ['fi', 'sv', 'en', 'smn']
+
+  const itemsByGuid = useSelector(state => state.itemsByGuid)
 
   const contentRef = useRef()
   const containerRef = useRef()
@@ -127,15 +132,30 @@ const AgeGroups = ({ theme }) => {
     ageGroup => ageGroup.order === activeIndex
   )
   const activeAgeGroupGuid = activeAgeGroup ? activeAgeGroup.guid : ''
+
+  if (itemsByGuid.length === 0 || !generalTranslations) return null
+
   return (
     <Container ref={containerRef} activeIndex={activeAgeGroupGuid}>
       <Menu language={language} user={user} />
       <Content ref={contentRef}>
         {ageGroups
           .sort((a, b) => a.order - b.order)
-          .map((ageGroup, i) => (
-            <AgeGroupItem key={i} ageGroup={ageGroup} language={language} />
-          ))}
+          .map((ageGroup, i) => {
+            const ageGroupStatus = getAgeGroupStatus(
+              itemsByGuid[ageGroup.guid],
+              userTasks
+            )
+            return (
+              <AgeGroupItem
+                key={i}
+                ageGroup={ageGroup}
+                language={language}
+                status={ageGroupStatus}
+                translations={generalTranslations}
+              />
+            )
+          })}
       </Content>
       <Languages>
         {languages.map((language, i) => (

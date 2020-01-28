@@ -5,7 +5,11 @@ import { useSelector } from 'react-redux'
 import DetailPage from 'components/DetailPage'
 import ListItem from 'components/ListItem'
 import TaskGroupItem from 'components/TaskGroupItem'
-import { determineLanguageFromUrl, getTermInLanguage } from 'helpers'
+import {
+  determineLanguageFromUrl,
+  getTermInLanguage,
+  getTaskGroupStatus,
+} from 'helpers'
 import { ITEM_TYPES } from 'consts'
 
 const StyledDetailPage = styled(DetailPage)`
@@ -22,11 +26,13 @@ const TaskGroup = () => {
   const { guid } = useParams()
   const history = useHistory()
   const language = determineLanguageFromUrl(window.location)
+  const userTasks = useSelector(state => state.tasks)
 
   const taskGroup = useSelector(state => state.itemsByGuid[guid])
   const activityTranslations = useSelector(
     state => state.translations.aktiviteetin_ylakasite
   )
+  const generalTranslations = useSelector(state => state.translations.yleiset)
   const favourites = useSelector(state => state.favourites)
 
   if (!taskGroup || !activityTranslations) {
@@ -61,11 +67,17 @@ const TaskGroup = () => {
                   'aktiviteetti_plural',
                   language
                 )
+          const status = getTaskGroupStatus(
+            subTaskGroup,
+            userTasks,
+            getTermInLanguage(generalTranslations, `task_completed`, language)
+          )
           return (
             <TaskGroupItem
               key={subTaskGroup.guid}
               taskGroup={subTaskGroup}
               ageGroupGuid={taskGroup.ageGroupGuid}
+              subTitle={status}
               language={language}
               tasksTerm={tasksTerm}
             />
@@ -73,12 +85,20 @@ const TaskGroup = () => {
         })}
         {item.tasks.map(task => {
           const taskTranslation = getTranslation(task)
+          const status = userTasks[task.guid]
+            ? userTasks[task.guid].toLowerCase()
+            : ''
           return (
             <ListItem
               key={task.guid}
               guid={task.guid}
               ageGroupGuid={taskGroup.ageGroupGuid}
               title={taskTranslation ? taskTranslation.title : task.title}
+              subTitle={getTermInLanguage(
+                generalTranslations,
+                `task_${status}`,
+                language
+              )}
               language={language}
               itemType={ITEM_TYPES.TASK}
               showActions
