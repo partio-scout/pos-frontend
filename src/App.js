@@ -14,12 +14,14 @@ import {
   fetchTranslations,
   fetchFavourites,
   fetchUser,
+  fetchUserTasks,
 } from 'api'
 import {
   setInitialData,
   setTranslations,
   setFavourites,
   setUser,
+  setTasks,
 } from 'redux/actionCreators'
 import { GlobalStyle, theme } from 'styles'
 import AgeGroups from 'views/AgeGroups'
@@ -49,6 +51,7 @@ const App = () => {
         fetchFavourites().then(favourites =>
           dispatch(setFavourites(favourites))
         )
+        fetchUserTasks().then(tasks => dispatch(setTasks(tasks)))
       }
     })
   }, [dispatch])

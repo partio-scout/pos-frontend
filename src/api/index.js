@@ -39,9 +39,31 @@ export const postTaskEntry = async entry => {
     headers: {
       'Content-Type': 'application/json',
     },
+    credentials: 'include',
   })
   const data = await res.json()
   return data
+}
+
+export const fetchUserTasks = async () => {
+  try {
+    const res = await fetch(`${API_URL}/task-entries`, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+    })
+
+    if (!res.ok) {
+      console.log(`FetchUserTasks: ${res.status} ${res.statusText}`)
+      return []
+    }
+    const data = await res.json()
+    return data
+  } catch (error) {
+    console.log('Error fetching users tasks')
+    return []
+  }
 }
 
 export const postTaskFavourite = async entry => {
@@ -51,6 +73,7 @@ export const postTaskFavourite = async entry => {
     headers: {
       'Content-Type': 'application/json',
     },
+    credentials: 'include',
   })
   const data = await res.json()
   return data
@@ -58,7 +81,13 @@ export const postTaskFavourite = async entry => {
 
 export const fetchFavourites = async () => {
   try {
-    const res = await fetch(`${API_URL}/favourites/1`)
+    const res = await fetch(`${API_URL}/favourites`, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+    })
+
     if (!res.ok) {
       return []
     }
@@ -73,7 +102,12 @@ export const fetchFavourites = async () => {
 
 export const fetchUser = async () => {
   try {
-    const res = await fetch(`${API_URL}/user`, { credentials: 'include' })
+    const res = await fetch(`${API_URL}/user`, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+    })
     if (!res.ok) {
       if (res.status !== 401) {
         console.log('error fetching user', res.status, res.statusText)
