@@ -45,9 +45,8 @@ const App = () => {
     )
 
     fetchUser().then(user => {
-      dispatch(setUser(user))
-
       if (Object.keys(user).length > 0) {
+        dispatch(setUser({ ...user, loggedIn: true }))
         fetchFavourites().then(favourites =>
           dispatch(setFavourites(favourites))
         )
