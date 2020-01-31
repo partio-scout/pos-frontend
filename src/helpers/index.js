@@ -83,37 +83,37 @@ export const getTaskGroupStatus = (taskGroup, userTasks, label) => {
   return `${label}: ${doneTasks} / ${taskGroup.tasks.length}`
 }
 
-export const getAgeGroupStatus = (ageGroup, userTasks) => {
-  const getGroupTasks = group => {
-    const taskTypes = {
-      mandatory: [],
-      optional: [],
-    }
-    const mandatory = group.mandatory_tasks.split(',')
-    taskTypes.mandatory = taskTypes.mandatory.concat(mandatory)
+const getGroupTasks = group => {
+  const taskTypes = {
+    mandatory: [],
+    optional: [],
+  }
+  const mandatory = group.mandatory_tasks.split(',').filter(task => task !== '')
+  taskTypes.mandatory = taskTypes.mandatory.concat(mandatory)
 
-    if (mandatory.length !== group.tasks.length) {
-      taskTypes.optional = taskTypes.optional.concat(
-        group.tasks
-          .filter(task => !mandatory.includes(task.guid))
-          .map(task => task.guid)
-      )
-    }
-
-    if (group.taskgroups.length > 0) {
-      group.taskgroups
-        .map(taskGroup => getGroupTasks(taskGroup))
-        .reduce((acc, curr) => {
-          acc.mandatory = acc.mandatory.concat(curr.mandatory)
-          acc.optional = acc.optional.concat(curr.optional)
-          return acc
-        }, taskTypes)
-    }
-
-    return taskTypes
+  if (mandatory.length !== group.tasks.length) {
+    taskTypes.optional = taskTypes.optional.concat(
+      group.tasks
+        .filter(task => !mandatory.includes(task.guid))
+        .map(task => task.guid)
+    )
   }
 
-  const ageGroupTasks = ageGroup.item.taskgroups
+  if (group.taskgroups.length > 0) {
+    group.taskgroups
+      .map(taskGroup => getGroupTasks(taskGroup))
+      .reduce((acc, curr) => {
+        acc.mandatory = acc.mandatory.concat(curr.mandatory)
+        acc.optional = acc.optional.concat(curr.optional)
+        return acc
+      }, taskTypes)
+  }
+
+  return taskTypes
+}
+
+const getAgeGroupTasks = ageGroup => {
+  return ageGroup.taskgroups
     .map(group => getGroupTasks(group))
     .reduce(
       (acc, curr) => {
@@ -126,6 +126,10 @@ export const getAgeGroupStatus = (ageGroup, userTasks) => {
         optional: [],
       }
     )
+}
+
+export const getAgeGroupStatus = (ageGroup, userTasks) => {
+  const ageGroupTasks = getAgeGroupTasks(ageGroup)
   const doneMandatory = ageGroupTasks.mandatory.filter(
     task => userTasks[task] === 'COMPLETED'
   )
@@ -137,4 +141,25 @@ export const getAgeGroupStatus = (ageGroup, userTasks) => {
     mandatory: `${doneMandatory.length} / ${ageGroupTasks.mandatory.length}`,
     optional: `${doneOptional.length} / ${ageGroupTasks.optional.length}`,
   }
+}
+
+export const getCompletedTaskGroups = (ageGroup, userTasks) => {
+  return ageGroup.taskgroups
+    .filter(taskGroup => {
+      const mandatory = taskGroup.mandatory_tasks.split(',')
+      if (mandatory.length === 0) return false
+      return mandatory.every(guid => userTasks[guid] === 'COMPLETED')
+    })
+    .map(taskGroup => taskGroup.guid)
+}
+
+export const getAgeGroupCompletion = (ageGroup, userTasks) => {
+  const ageGroupTasks = getAgeGroupTasks(ageGroup)
+  const doneMandatory = ageGroupTasks.mandatory.filter(
+    task => userTasks[task] === 'COMPLETED'
+  )
+
+  return ageGroupTasks.mandatory.length === 0
+    ? true
+    : doneMandatory.length === ageGroupTasks.mandatory.length
 }

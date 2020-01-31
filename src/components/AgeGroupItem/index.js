@@ -1,8 +1,12 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
-import { getAgeGroupTitleWithoutAges, getTermInLanguage } from 'helpers'
-import ageGroupGraphics from 'graphics/ageGroups'
+import {
+  getAgeGroupTitleWithoutAges,
+  getTermInLanguage,
+  getAgeGroupStatus,
+} from 'helpers'
+import { getAgeGroupIcon } from 'graphics/ageGroups'
 
 const StyledAgeGroupItem = styled.div`
   width: 50vw;
@@ -46,18 +50,24 @@ const Status = styled.div`
   font-size: 0.875rem;
 `
 
-const AgeGroupItem = ({ ageGroup, language, status, translations }) => {
-  const languageInfo = ageGroup.languages.find(x => x.lang === language)
+const AgeGroupItem = ({
+  ageGroup,
+  language,
+  translations,
+  user,
+  userTasks,
+}) => {
+  const languageInfo = ageGroup.item.languages.find(x => x.lang === language)
+
+  const status = user.loggedIn
+    ? getAgeGroupStatus(ageGroup.item, userTasks)
+    : null
+
+  const icon = getAgeGroupIcon(ageGroup, userTasks, user.loggedIn)
   return (
     <StyledAgeGroupItem>
       <AgeGroupLink to={`/guid/${ageGroup.guid}?lang=${language}`}>
-        <AgeGroupIllustration
-          alt={ageGroup.title}
-          src={
-            ageGroupGraphics[`AgeGroup${ageGroup.guid}`] ||
-            ageGroupGraphics.AgeGroupDefault
-          }
-        />
+        <AgeGroupIllustration alt={ageGroup.title} src={icon} />
         <h3 data-testid="title">
           {getAgeGroupTitleWithoutAges(
             languageInfo ? languageInfo.title : ageGroup.title

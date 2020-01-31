@@ -27,6 +27,7 @@ const TaskGroup = () => {
   const history = useHistory()
   const language = determineLanguageFromUrl(window.location)
   const userTasks = useSelector(state => state.tasks)
+  const user = useSelector(state => state.user)
 
   const taskGroup = useSelector(state => state.itemsByGuid[guid])
   const activityTranslations = useSelector(
@@ -67,11 +68,17 @@ const TaskGroup = () => {
                   'aktiviteetti_plural',
                   language
                 )
-          const status = getTaskGroupStatus(
-            subTaskGroup,
-            userTasks,
-            getTermInLanguage(generalTranslations, `task_completed`, language)
-          )
+          const status = user.loggedIn
+            ? getTaskGroupStatus(
+                subTaskGroup,
+                userTasks,
+                getTermInLanguage(
+                  generalTranslations,
+                  `task_completed`,
+                  language
+                )
+              )
+            : null
           return (
             <TaskGroupItem
               key={subTaskGroup.guid}

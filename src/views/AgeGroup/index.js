@@ -10,7 +10,7 @@ import {
   determineLanguageFromUrl,
   getTermInLanguage,
 } from 'helpers'
-import ageGroupGraphics from 'graphics/ageGroups'
+import { getAgeGroupIcon } from 'graphics/ageGroups'
 
 const Background = styled.div`
   min-height: 100vh;
@@ -96,6 +96,8 @@ const AgeGroup = () => {
   const history = useHistory()
   const dispatch = useDispatch()
   const itemsByGuid = useSelector(state => state.itemsByGuid)
+  const userTasks = useSelector(state => state.tasks)
+  const user = useSelector(state => state.user)
   const groupHeadingTranslations = useSelector(
     state => state.translations.aktiviteettipaketin_ylakasite
   )
@@ -129,10 +131,11 @@ const AgeGroup = () => {
         <HeadingContent>
           <MainSymbol
             alt={ageGroup.title}
-            src={
-              ageGroupGraphics[`AgeGroup${ageGroup.guid}`] ||
-              ageGroupGraphics.AgeGroupDefault
-            }
+            src={getAgeGroupIcon(
+              itemsByGuid[ageGroup.guid],
+              userTasks,
+              user.loggedIn
+            )}
           />
           <h3>
             {getAgeGroupTitleWithoutAges(

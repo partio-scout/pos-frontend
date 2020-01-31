@@ -27,10 +27,9 @@ const Profile = styled.div`
 
 const Menu = ({ language, user }) => {
   const history = useHistory()
-  const isLoggedIn = Object.keys(user).length > 0
   return (
     <StyledMenu>
-      {isLoggedIn && (
+      {user.loggedIn && (
         <>
           <div>
             <MoreHorizontal
@@ -42,7 +41,7 @@ const Menu = ({ language, user }) => {
       )}
 
       <Profile>
-        {!isLoggedIn ? (
+        {!user.loggedIn ? (
           <LogIn onClick={() => history.push('login')} />
         ) : (
           <User onClick={() => history.push(`/profile?lang=${language}`)} />

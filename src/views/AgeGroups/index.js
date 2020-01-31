@@ -2,7 +2,7 @@ import React, { useLayoutEffect, useRef, useState, useCallback } from 'react'
 import styled, { withTheme } from 'styled-components'
 import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { determineLanguageFromUrl, getAgeGroupStatus } from 'helpers'
+import { determineLanguageFromUrl } from 'helpers'
 import AgeGroupItem from 'components/AgeGroupItem'
 import Menu from 'components/Menu'
 
@@ -142,16 +142,13 @@ const AgeGroups = ({ theme }) => {
         {ageGroups
           .sort((a, b) => a.order - b.order)
           .map((ageGroup, i) => {
-            const ageGroupStatus = getAgeGroupStatus(
-              itemsByGuid[ageGroup.guid],
-              userTasks
-            )
             return (
               <AgeGroupItem
                 key={i}
-                ageGroup={ageGroup}
+                ageGroup={itemsByGuid[ageGroup.guid]}
                 language={language}
-                status={ageGroupStatus}
+                user={user}
+                userTasks={userTasks}
                 translations={generalTranslations}
               />
             )
