@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import styled from 'styled-components'
 import { useParams, useHistory } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
@@ -93,6 +93,8 @@ const MainSymbol = styled.img`
 `
 
 const AgeGroup = () => {
+  const containerRef = useRef()
+  const clientY = useRef()
   const history = useHistory()
   const dispatch = useDispatch()
   const itemsByGuid = useSelector(state => state.itemsByGuid)
@@ -116,6 +118,29 @@ const AgeGroup = () => {
     }
   }, [ageGroup, dispatch])
 
+  useEffect(() => {
+    const container = containerRef.current
+    if (!container) return
+
+    const touchStart = event => {
+      clientY.current = event.touches[0].clientY
+    }
+
+    const touchEnd = event => {
+      const currY = event.changedTouches[0].clientY
+      if (currY - clientY.current >= 100) {
+        history.push(`/`)
+      }
+    }
+
+    container.addEventListener('touchstart', touchStart)
+    container.addEventListener('touchend', touchEnd)
+    return () => {
+      container.removeEventListener('touchstart', touchStart)
+      container.removeEventListener('touchend', touchEnd)
+    }
+  }, [history])
+
   if (!ageGroup || !groupHeadingTranslations) {
     return null
   }
@@ -123,7 +148,7 @@ const AgeGroup = () => {
   const languageInfo = ageGroup.languages.find(x => x.lang === language)
 
   return (
-    <Background ageGroupGuid={ageGroupGuid}>
+    <Background ageGroupGuid={ageGroupGuid} ref={containerRef}>
       <Content>
         <CloseIcon>
           <X onClick={() => history.push(`/?lang=${language}`)} />

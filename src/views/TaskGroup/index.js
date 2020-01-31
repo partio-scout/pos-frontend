@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef, useEffect } from 'react'
 import styled from 'styled-components'
 import { useParams, useHistory } from 'react-router-dom'
 import { useSelector } from 'react-redux'
@@ -25,6 +25,8 @@ const TaskList = styled.div`
 const TaskGroup = () => {
   const { guid } = useParams()
   const history = useHistory()
+  const containerRef = useRef()
+  const clientX = useRef(0)
   const language = determineLanguageFromUrl(window.location)
   const userTasks = useSelector(state => state.tasks)
   const user = useSelector(state => state.user)
@@ -35,6 +37,29 @@ const TaskGroup = () => {
   )
   const generalTranslations = useSelector(state => state.translations.yleiset)
   const favourites = useSelector(state => state.favourites)
+
+  useEffect(() => {
+    const container = containerRef.current
+    if (!container) return
+
+    const touchStart = event => {
+      clientX.current = event.touches[0].clientX
+    }
+
+    const touchEnd = event => {
+      const currX = event.changedTouches[0].clientX
+      if (currX - clientX.current >= 100) {
+        history.push(`/guid/${taskGroup.parentGuid}?lang=${language}`)
+      }
+    }
+
+    container.addEventListener('touchstart', touchStart)
+    container.addEventListener('touchend', touchEnd)
+    return () => {
+      container.removeEventListener('touchstart', touchStart)
+      container.removeEventListener('touchend', touchEnd)
+    }
+  }, [history, taskGroup, language])
 
   if (!taskGroup || !activityTranslations) {
     return null
@@ -54,7 +79,7 @@ const TaskGroup = () => {
       }
       title={taskGroupTranslation ? taskGroupTranslation.title : item.title}
     >
-      <TaskList>
+      <TaskList ref={containerRef}>
         {item.taskgroups.map(subTaskGroup => {
           const tasksTerm =
             item.subtask_term && item.subtask_term.name

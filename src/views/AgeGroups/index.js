@@ -1,7 +1,13 @@
-import React, { useLayoutEffect, useRef, useState, useCallback } from 'react'
+import React, {
+  useLayoutEffect,
+  useRef,
+  useState,
+  useCallback,
+  useEffect,
+} from 'react'
 import styled, { withTheme } from 'styled-components'
 import { useSelector } from 'react-redux'
-import { Link } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 import { determineLanguageFromUrl } from 'helpers'
 import AgeGroupItem from 'components/AgeGroupItem'
 import Menu from 'components/Menu'
@@ -60,6 +66,7 @@ const Languages = styled.div`
 `
 
 const AgeGroups = ({ theme }) => {
+  const history = useHistory()
   const ageGroups = useSelector(state => state.ageGroups)
   const selectedAgeGroup = useSelector(state => state.selectedAgeGroup)
   const user = useSelector(state => state.user)
@@ -74,6 +81,7 @@ const AgeGroups = ({ theme }) => {
 
   const contentRef = useRef()
   const containerRef = useRef()
+  const clientY = useRef(0)
 
   const getAgeGroupCenterPositions = useCallback(
     content =>
@@ -131,7 +139,31 @@ const AgeGroups = ({ theme }) => {
   const activeAgeGroup = ageGroups.find(
     ageGroup => ageGroup.order === activeIndex
   )
+
   const activeAgeGroupGuid = activeAgeGroup ? activeAgeGroup.guid : ''
+
+  useEffect(() => {
+    const container = containerRef.current
+    if (!container) return
+
+    const touchStart = event => {
+      clientY.current = event.touches[0].clientY
+    }
+
+    const touchEnd = event => {
+      const currY = event.changedTouches[0].clientY
+      if (clientY.current - currY >= 100) {
+        history.push(`/guid/${activeAgeGroupGuid}`)
+      }
+    }
+
+    container.addEventListener('touchstart', touchStart)
+    container.addEventListener('touchend', touchEnd)
+    return () => {
+      container.removeEventListener('touchstart', touchStart)
+      container.removeEventListener('touchend', touchEnd)
+    }
+  }, [history, activeAgeGroupGuid])
 
   if (itemsByGuid.length === 0 || !generalTranslations) return null
 
