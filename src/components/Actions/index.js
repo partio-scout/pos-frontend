@@ -4,20 +4,35 @@ import { MoreHorizontal } from 'react-feather'
 import { postTaskEntry, postTaskFavourite } from 'api'
 import { COMPLETION_STATUS, ITEM_TYPES } from 'consts'
 import { useDispatch, useSelector } from 'react-redux'
-import { setFavourites } from 'redux/actionCreators'
+import { setFavourites, setTasks } from 'redux/actionCreators'
 
 const Actions = ({ guid, itemType, className }) => {
   const [showActions, setShowActions] = useState(false)
   const favourites = useSelector(state => state.favourites)
+  const tasks = useSelector(state => state.tasks)
   const dispatch = useDispatch()
 
   const markTaskDone = async () => {
-    await postTaskEntry({
-      user_guid: 1,
-      created_by: 1,
-      task_guid: guid,
-      completion_status: COMPLETION_STATUS.COMPLETED,
-    })
+    try {
+      const newEntry = await postTaskEntry({
+        task_guid: guid,
+        completion_status: COMPLETION_STATUS.COMPLETED,
+      })
+      dispatch(
+        setTasks(
+          Object.entries(tasks)
+            .map(([key, value]) => {
+              return {
+                task_guid: key,
+                completion_status: value,
+              }
+            })
+            .concat([newEntry])
+        )
+      )
+    } catch (e) {
+      console.log(e)
+    }
     setShowActions(false)
   }
   const markTaskFavourite = async () => {
