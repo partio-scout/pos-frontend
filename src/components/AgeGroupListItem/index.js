@@ -13,7 +13,8 @@ const AgeGroupItem = ({ ageGroup, language, subTitle }) => {
       subTitle={subTitle}
       language={language}
       icon={
-        ageGroupIcons[`AgeGroupIcons${ageGroup.guid}`] || ageGroupIcons.default
+        ageGroupIcons[`AgeGroupIcon${ageGroup.guid}`] ||
+        ageGroupIcons.AgeGroupIconDefault
       }
     />
   )

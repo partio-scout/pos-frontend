@@ -83,7 +83,7 @@ export const getTaskGroupStatus = (taskGroup, userTasks, label) => {
   return `${label}: ${doneTasks} / ${taskGroup.tasks.length}`
 }
 
-const getGroupTasks = group => {
+export const getGroupTasks = group => {
   const taskTypes = {
     mandatory: [],
     optional: [],
@@ -112,7 +112,7 @@ const getGroupTasks = group => {
   return taskTypes
 }
 
-const getAgeGroupTasks = ageGroup => {
+export const getAgeGroupTasks = ageGroup => {
   return ageGroup.taskgroups
     .map(group => getGroupTasks(group))
     .reduce(

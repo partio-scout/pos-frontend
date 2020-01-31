@@ -6,9 +6,16 @@ import TaskGroupItem from 'components/TaskGroupItem'
 import AgeGroupListItem from 'components/AgeGroupListItem'
 
 import { X } from 'react-feather'
-import { determineLanguageFromUrl, getTermInLanguage } from 'helpers'
+import {
+  determineLanguageFromUrl,
+  getTermInLanguage,
+  getAgeGroupTasks,
+  getGroupTasks,
+  getAgeGroupCompletion,
+  getCompletedTaskGroups,
+} from 'helpers'
 import ListItem from 'components/ListItem'
-import { ITEM_TYPES } from 'consts'
+import { ITEM_TYPES, COMPLETION_STATUS } from 'consts'
 
 const Background = styled.div`
   min-height: 100vh;
@@ -96,17 +103,9 @@ const Profile = () => {
   const history = useHistory()
   const language = determineLanguageFromUrl(window.location)
   const user = useSelector(state => state.user)
-
-  //TODO: Get these from the api
-  const ageGroup1 = useSelector(
-    state => state.itemsByGuid['053fa231362e95cb211c5eb85c3cbedb']
-  )
-  const ageGroup2 = useSelector(
-    state => state.itemsByGuid['4ed7e03516698ffba67d342b529358c0']
-  )
-  const inProgress = useSelector(
-    state => state.itemsByGuid['fd0083b9a325c06430ba29cc6c6d1bac']
-  )
+  const userTasks = useSelector(state => state.tasks)
+  const ageGroups = useSelector(state => state.ageGroups)
+  const itemsByGuid = useSelector(state => state.itemsByGuid)
   const favourites = useSelector(state =>
     state.favourites.map(favourite => state.itemsByGuid[favourite])
   )
@@ -118,10 +117,96 @@ const Profile = () => {
   const getTranslation = taskOrTaskGroup => {
     return taskOrTaskGroup.languages.find(x => x.lang === language)
   }
-  if (!inProgress || !activityTranslations) return null
 
-  const taskGroups = inProgress.item.taskgroups.slice(1, 4)
-  const item = inProgress.item
+  if (!itemsByGuid || !activityTranslations) return null
+
+  const completedTasks = Object.keys(userTasks).filter(
+    guid => userTasks[guid] === COMPLETION_STATUS.COMPLETED
+  )
+
+  const completedAgeGroups = ageGroups
+    .filter(ageGroup => {
+      const ageGroupItem = itemsByGuid[ageGroup.guid].item
+      const isAgeGroupCompleted = getAgeGroupCompletion(ageGroupItem, userTasks)
+
+      if (isAgeGroupCompleted) {
+        const ageGroupTasks = getAgeGroupTasks(itemsByGuid[ageGroup.guid].item)
+        ageGroupTasks.mandatory.forEach(task => {
+          const taskIndex = completedTasks.indexOf(task)
+          if (taskIndex > -1) {
+            completedTasks.splice(taskIndex, 1)
+          }
+        })
+
+        ageGroupTasks.optional.forEach(task => {
+          const taskIndex = completedTasks.indexOf(task)
+          if (taskIndex > -1) {
+            completedTasks.splice(taskIndex, 1)
+          }
+        })
+      }
+      return isAgeGroupCompleted
+    })
+    .map(ageGroup => itemsByGuid[ageGroup.guid])
+
+  const taskGroups = ageGroups
+    .filter(ageGroup => !completedAgeGroups.includes(ageGroup.guid))
+    .map(ageGroup => {
+      const ageGroupItem = itemsByGuid[ageGroup.guid].item
+      const completedTaskGroups = getCompletedTaskGroups(
+        ageGroupItem,
+        userTasks
+      )
+
+      if (completedTaskGroups.length > 0) {
+        completedTaskGroups.forEach(taskGroupGuid => {
+          const taskGroupTasks = getGroupTasks(itemsByGuid[taskGroupGuid].item)
+
+          taskGroupTasks.mandatory.forEach(task => {
+            const taskIndex = completedTasks.indexOf(task)
+            if (taskIndex > -1) {
+              completedTasks.splice(taskIndex, 1)
+            }
+          })
+
+          taskGroupTasks.optional.forEach(task => {
+            const taskIndex = completedTasks.indexOf(task)
+            if (taskIndex > -1) {
+              completedTasks.splice(taskIndex, 1)
+            }
+          })
+        })
+      }
+
+      const completedSubGroups = ageGroupItem.taskgroups
+        .filter(taskGroup => !completedTaskGroups.includes(taskGroup.guid))
+        .map(taskGroup => getCompletedTaskGroups(taskGroup, userTasks))
+        .flat()
+
+      if (completedSubGroups.length > 0) {
+        completedSubGroups.forEach(taskGroupGuid => {
+          const taskGroupTasks = getGroupTasks(itemsByGuid[taskGroupGuid].item)
+
+          taskGroupTasks.mandatory.forEach(task => {
+            const taskIndex = completedTasks.indexOf(task)
+            if (taskIndex > -1) {
+              completedTasks.splice(taskIndex, 1)
+            }
+          })
+
+          taskGroupTasks.optional.forEach(task => {
+            const taskIndex = completedTasks.indexOf(task)
+            if (taskIndex > -1) {
+              completedTasks.splice(taskIndex, 1)
+            }
+          })
+        })
+      }
+
+      return completedTaskGroups.concat(completedSubGroups)
+    })
+    .flat()
+    .map(guid => itemsByGuid[guid])
 
   //TODO: Maybe we can get users age from PartioID and compare it to groups
   const ageGroupGuid = 'fd0083b9a325c06430ba29cc6c6d1bac'
@@ -177,30 +262,36 @@ const Profile = () => {
             {getTermInLanguage(generalTranslations, 'completed', language)}
           </h4>
           <TaskList>
-            {taskGroups.map(subTaskGroup => {
-              const tasksTerm =
-                item.subtask_term && item.subtask_term.name
-                  ? getTermInLanguage(
-                      activityTranslations,
-                      `${item.subtask_term.name}_plural`,
-                      language
-                    )
-                  : getTermInLanguage(
-                      activityTranslations,
-                      'aktiviteetti_plural',
-                      language
-                    )
+            {completedTasks.map(taskGuid => {
+              const task = itemsByGuid[taskGuid]
+              if (!task) return null
+
+              const taskTranslation = getTranslation(task.item)
+
               return (
-                <TaskGroupItem
-                  key={subTaskGroup.guid}
-                  taskGroup={subTaskGroup}
-                  ageGroupGuid={inProgress.ageGroupGuid}
+                <ListItem
+                  key={task.guid}
+                  guid={task.guid}
+                  ageGroupGuid={task.ageGroupGuid}
+                  title={
+                    taskTranslation ? taskTranslation.title : task.item.title
+                  }
                   language={language}
-                  tasksTerm={tasksTerm}
+                  itemType={ITEM_TYPES.TASK}
                 />
               )
             })}
-            {[ageGroup2, ageGroup1].map(ageGroup => {
+            {taskGroups.map(subTaskGroup => {
+              return (
+                <TaskGroupItem
+                  key={subTaskGroup.guid}
+                  taskGroup={subTaskGroup.item}
+                  ageGroupGuid={subTaskGroup.ageGroupGuid}
+                  language={language}
+                />
+              )
+            })}
+            {completedAgeGroups.map(ageGroup => {
               return (
                 <AgeGroupListItem
                   key={ageGroup.guid}
