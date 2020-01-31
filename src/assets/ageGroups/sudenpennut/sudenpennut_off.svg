@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1000px" height="1000px" viewBox="0 0 1000 1000" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 60.1 (88133) - https://sketch.com -->
+    <title>Sudenpennut OFF</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Sudenpennut-OFF" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <circle id="Oval" fill="#000000" fill-rule="nonzero" cx="500" cy="500" r="490"></circle>
+        <path d="M261.19931,418.978537 L253.400371,489.168988 L346.811361,591.921077 L470.10862,848 L529.89138,848 L653.188639,591.921077 L746.741672,489.012741 L738.744769,409.043714 L641.685929,214.926033 L617.738382,322.689991 L500,375.018161 L382.261618,322.689991 L358.753278,216.902461 L261.19931,418.978537 Z M230,410 L370,120 L410,300 L500,340 L590,300 L630,120 L770,400 L780,500 L680,610 L550,880 L450,880 L320,610 L220,500 L230,410 Z" id="Rectangle" fill="#3650A1" fill-rule="nonzero"></path>
+        <path d="M404.166092,508 L443.405369,508 L452.802608,475.109662 L379.725391,454.230457 L404.166092,508 Z M340,420 L480,460 L460,530 L390,530 L340,420 Z" id="Rectangle-5" fill="#3650A1" fill-rule="nonzero"></path>
+        <path d="M584.166092,508 L623.405369,508 L632.802608,475.109662 L559.725391,454.230457 L584.166092,508 Z M520,420 L660,460 L640,530 L570,530 L520,420 Z" id="Rectangle-5" fill="#3650A1" fill-rule="nonzero" transform="translate(590.000000, 475.000000) scale(-1, 1) translate(-590.000000, -475.000000) "></path>
+    </g>
+</svg>
