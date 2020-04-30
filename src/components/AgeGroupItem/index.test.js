@@ -6,14 +6,22 @@ import { renderWithTheme } from 'test'
 import AgeGroupItem from './index'
 
 const testAgeGroup = {
-  minAge: '7',
-  maxAge: '9',
+  ageGroupGuid: '053fa231362e95cb211c5eb85c3cbedb',
   guid: '053fa231362e95cb211c5eb85c3cbedb',
-  title: 'Sudenpennut (7-9 v.)',
-  languages: [
-    { lang: 'fi', title: 'Sudenpennut (7-9 v.)' },
-    { lang: 'sv', title: 'Vargungar (7-9 år)' },
-  ],
+  item: {
+    languages: [
+      { lang: 'fi', title: 'Sudenpennut (7-9 v.)' },
+      { lang: 'sv', title: 'Vargungar (7-9 år)' },
+      { lang: 'en', title: 'Cub scouts: 7-10 years old' },
+    ],
+    guid: '053fa231362e95cb211c5eb85c3cbedb',
+    lastModified: '2020-04-29 20:40:12',
+    lastModifiedBy: null,
+    maxAge: '9',
+    minAge: '7',
+    order: 0,
+    title: 'Sudenpennut (7-9 v.)',
+  },
 }
 
 describe('AgeGroupItem component', () => {
@@ -21,13 +29,13 @@ describe('AgeGroupItem component', () => {
     const language = 'sv'
     const { getByTestId } = renderWithTheme(
       <MemoryRouter>
-        <AgeGroupItem ageGroup={testAgeGroup} language={language} />
+        <AgeGroupItem ageGroup={testAgeGroup} language={language} user={{}} />
       </MemoryRouter>
     )
     const elem = getByTestId('title')
     expect(elem.innerHTML).toBe(
       getAgeGroupTitleWithoutAges(
-        testAgeGroup.languages.find(lang => lang.lang === language).title
+        testAgeGroup.item.languages.find(lang => lang.lang === language).title
       )
     )
   })
