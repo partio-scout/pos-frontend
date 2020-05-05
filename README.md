@@ -6,13 +6,15 @@ TODO
 
 # 2. Architecture
 
-This front end application is deployed to an Azure App Service.
+This frontend application is deployed to an Azure App Service.
 
 # 3. Development environment
 
 ## 3.1. Prerequisites, and what to do first
 
-TODO
+### Environmental variables
+
+You'll find the proper file for local development from LastPass.
 
 ## 3.2. Run tests
 
@@ -29,7 +31,7 @@ To start the dev env run `yarn start`.
 You can test the service worker only in production mode. In order to test it, run `yarn build`,
 followed by e.g. `yarn global add serve` and `serve -s build`.
 
-## 3.7. Version control
+## 3.4. Version control
 
 When working on a new feature or fixing a bug always create a new branch from the master branch. When the feature or fix is complete create a pull request (from now on PR) for the branch. There should always be at least one or two reviewers for the PR and once the PR has been approved it can be merged to master.
 
@@ -108,6 +110,6 @@ TODO
 
 ## 6. Continuous integration
 
-Github actions are used for CI.
+Github Actions is used for CI.
 
 # 7. More useful information

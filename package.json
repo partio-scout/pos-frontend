@@ -5,6 +5,7 @@
   "private": true,
   "dependencies": {
     "@sentry/browser": "5.10.2",
+    "dotenv": "^8.2.0",
     "react": "16.12.0",
     "react-dom": "16.12.0",
     "react-feather": "2.0.3",
@@ -17,6 +18,7 @@
   },
   "devDependencies": {
     "@testing-library/react": "9.3.2",
+    "env-cmd": "^10.1.0",
     "eslint": "6.6.0",
     "eslint-plugin-react": "7.16.0",
     "husky": "3.1.0",
@@ -27,8 +29,8 @@
     "workbox-cli": "^4.3.1"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build && yarn service-worker",
+    "start": "env-cmd -f .env react-scripts start",
+    "build": "env-cmd -f .env react-scripts build && yarn service-worker",
     "service-worker": "workbox copyLibraries build/workbox 6& yarn update-sw",
     "update-sw": "workbox injectManifest workbox.config.js",
     "test": "react-scripts test --verbose",
