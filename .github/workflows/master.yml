@@ -18,7 +18,6 @@ jobs:
         with:
           envkey_REACT_APP_API_URL=${{ secrets.API_URL_STAGING }}
           envkey_REACT_APP_PARTIO_API_URL=${{ secrets.PARTIO_API_URL }}
-          file_name: .env
       - uses: actions/checkout@v2
       - name: Use Node.js ${{ env.NODE_VERSION }}
         uses: actions/setup-node@v1
