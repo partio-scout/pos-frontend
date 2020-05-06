@@ -5,7 +5,7 @@ on:
 
 env:
   AZURE_WEBAPP_NAME: pos-staging # set this to your application's name
-  AZURE_WEBAPP_PACKAGE_PATH: '.' # set this to the path to your web app project, defaults to the repository root
+  AZURE_WEBAPP_PACKAGE_PATH: 'build' # set this to the path to your web app project, defaults to the repository root
   NODE_VERSION: '12.x' # set this to the node version to use
 
 jobs:
@@ -13,6 +13,12 @@ jobs:
     name: Build and Deploy
     runs-on: ubuntu-latest
     steps:
+      - name: Make envfile
+        uses: SpicyPizza/create-envfile@v1
+        with:
+          envkey_REACT_APP_API_URL=${{ secrets.API_URL_STAGING }}
+          envkey_REACT_APP_PARTIO_API_URL=${{ secrets.PARTIO_API_URL }}
+          file_name: .env
       - uses: actions/checkout@v2
       - name: Use Node.js ${{ env.NODE_VERSION }}
         uses: actions/setup-node@v1
