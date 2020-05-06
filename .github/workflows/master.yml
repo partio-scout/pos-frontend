@@ -18,11 +18,12 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ env.NODE_VERSION }}
-      - name: yarn install, build, and test
+      - name: Make envfile
         uses: SpicyPizza/create-envfile@v1
         with:
           envkey_REACT_APP_API_URL: ${{ secrets.API_URL_STAGING }}
           envkey_REACT_APP_PARTIO_API_URL: ${{ secrets.PARTIO_API_URL }}
+      - name: yarn install, build, and test
         run: |
           # Build and test the project, then
           # deploy to Azure Web App.
