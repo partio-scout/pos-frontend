@@ -12,20 +12,25 @@ jobs:
     name: Build and Deploy
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: Use Node.js ${{ env.NODE_VERSION }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ env.NODE_VERSION }}
-    - name: yarn install, build, and test
-      run: |
-        # Build and test the project, then
-        # deploy to Azure Web App.
-        yarn
-        yarn build
-    - name: 'Deploy to Azure WebApp'
-      uses: azure/webapps-deploy@v2
-      with:
-        app-name: ${{ env.AZURE_WEBAPP_NAME }}
-        publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE_PRODUCTION }}
-        package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - name: Make envfile
+        uses: SpicyPizza/create-envfile@v1
+        with:
+          envkey_REACT_APP_API_URL: ${{ secrets.API_URL_PRODUCTION }}
+          envkey_REACT_APP_PARTIO_API_URL: ${{ secrets.PARTIO_API_URL }}
+      - name: yarn install, build, and test
+        run: |
+          # Build and test the project, then
+          # deploy to Azure Web App.
+          yarn
+          yarn build
+      - name: 'Deploy to Azure WebApp'
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE_PRODUCTION }}
+          package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
