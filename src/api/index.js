@@ -3,7 +3,6 @@ export const fetchAllContent = async () => {
   const res = await fetch(process.env.REACT_APP_PARTIO_API_URL)
   const data = await res.json()
   const programData = data.program[0]
-  console.log(programData)
 
   const { agegroups: ageGroups } = programData
 
@@ -22,7 +21,6 @@ export const fetchTranslations = async () => {
     'https://pof-backend.partio.fi/tag-translations-json/'
   )
   const data = await res.json()
-  console.log(data)
   return data
 }
 
@@ -117,6 +115,26 @@ export const fetchUser = async () => {
     return data
   } catch (err) {
     console.log('User network error: ', err)
+    return {}
+  }
+}
+
+export const fetchProfile = async () => {
+  try {
+    const res = await fetch(`${API_URL}/profile`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+    })
+    if (!res.ok) {
+      return []
+    }
+    const data = await res.json()
+    return data
+  } catch (err) {
+    console.log('Error fetching profile: ', err)
     return {}
   }
 }

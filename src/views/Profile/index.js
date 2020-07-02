@@ -1,9 +1,10 @@
-import React from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
 import { useHistory } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import TaskGroupItem from 'components/TaskGroupItem'
 import AgeGroupListItem from 'components/AgeGroupListItem'
+import { fetchProfile } from 'api'
 
 import { X } from 'react-feather'
 import {
@@ -65,10 +66,15 @@ const HeadingContent = styled.div`
   padding-top: 7rem;
   margin: 0 auto;
   text-align: center;
+  margin-bottom: 24px;
 
   > h3 {
     font-size: 24px;
     font-weight: normal;
+    margin-bottom: 5px;
+  }
+  > span {
+    color: ${({ theme }) => theme.color.subText};
   }
 `
 
@@ -102,6 +108,8 @@ const TaskList = styled.div`
 const Profile = () => {
   const history = useHistory()
   const language = determineLanguageFromUrl(window.location)
+  const [userData, setUserData] = useState({})
+  const [isFetchingProfile, setIsFetchingProfile] = useState(false)
   const user = useSelector(state => state.user)
   const userTasks = useSelector(state => state.tasks)
   const ageGroups = useSelector(state => state.ageGroups)
@@ -126,7 +134,8 @@ const Profile = () => {
 
   const completedAgeGroups = ageGroups
     .filter(ageGroup => {
-      const ageGroupItem = itemsByGuid[ageGroup.guid].item
+      const items = itemsByGuid[ageGroup.guid]
+      const ageGroupItem = items && items.item
       const isAgeGroupCompleted = getAgeGroupCompletion(ageGroupItem, userTasks)
 
       if (isAgeGroupCompleted) {
@@ -208,6 +217,21 @@ const Profile = () => {
     .flat()
     .map(guid => itemsByGuid[guid])
 
+  if (!Object.entries(userData).length && !isFetchingProfile) {
+    setIsFetchingProfile(true)
+    fetchProfile()
+      .then(userProfileData => {
+        setUserData(userProfileData)
+      })
+      .catch(error => {
+        console.error(error)
+        return error
+      })
+      .finally(() => {
+        setIsFetchingProfile(false)
+      })
+  }
+
   //TODO: Maybe we can get users age from PartioID and compare it to groups
   const ageGroupGuid = 'fd0083b9a325c06430ba29cc6c6d1bac'
   return (
@@ -218,7 +242,12 @@ const Profile = () => {
         </CloseIcon>
         <HeadingContent>
           <Picture />
-          <h3>{user.name}</h3>
+          {userData.name && userData.troops && (
+            <>
+              <h3>{userData.name}</h3>
+              <span>{userData.troops[0].name}</span>
+            </>
+          )}
         </HeadingContent>
         <BodyContent>
           <h4>
