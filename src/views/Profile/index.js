@@ -16,7 +16,7 @@ import {
   getCompletedTaskGroups,
 } from 'helpers'
 import ListItem from 'components/ListItem'
-import { ITEM_TYPES, COMPLETION_STATUS } from 'consts'
+import { ITEM_TYPES, COMPLETION_STATUS, AGE_GROUPS } from 'consts'
 
 const Background = styled.div`
   min-height: 100vh;
@@ -229,9 +229,11 @@ const Profile = () => {
         const defaultTroop = userProfileData.troops.filter(
           x => x.id === userProfileData.defaultTroopId
         )[0]
+        const ageGroupGuid = AGE_GROUPS[userProfileData.ageGroupId]
         if (defaultTroop) {
           userProfileData = Object.assign(userProfileData, {
             defaultTroopName: defaultTroop.name,
+            ageGroupGuid: ageGroupGuid,
           })
         }
         setUserData(userProfileData)
@@ -245,9 +247,8 @@ const Profile = () => {
       })
   }
 
-  //TODO: Maybe we can get users age from PartioID and compare it to groups
   //TODO: KÄÄNNÖS OTSIKOLLE AKTIVITEETIT /TYÖN ALLA
-  const ageGroupGuid = userData.ageGroupId
+  const ageGroupGuid = userData.ageGroupGuid
   return (
     <Background ageGroupGuid={ageGroupGuid}>
       <Content>
