@@ -159,7 +159,8 @@ export const getAgeGroupCompletion = (ageGroup, userTasks) => {
     task => userTasks[task] === 'COMPLETED'
   )
 
-  return ageGroupTasks.mandatory.length === 0
-    ? true
-    : doneMandatory.length === ageGroupTasks.mandatory.length
+  return (
+    doneMandatory.length === ageGroupTasks.mandatory.length &&
+    doneMandatory.length > 0
+  )
 }

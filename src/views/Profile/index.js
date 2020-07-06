@@ -110,7 +110,6 @@ const Profile = () => {
   const language = determineLanguageFromUrl(window.location)
   const [userData, setUserData] = useState({})
   const [isFetchingProfile, setIsFetchingProfile] = useState(false)
-  const user = useSelector(state => state.user)
   const userTasks = useSelector(state => state.tasks)
   const ageGroups = useSelector(state => state.ageGroups)
   const itemsByGuid = useSelector(state => state.itemsByGuid)
@@ -130,6 +129,12 @@ const Profile = () => {
 
   const completedTasks = Object.keys(userTasks).filter(
     guid => userTasks[guid] === COMPLETION_STATUS.COMPLETED
+  )
+
+  const ongoingTasks = Object.keys(userTasks).filter(
+    guid =>
+      userTasks[guid] === COMPLETION_STATUS.ACTIVE ||
+      userTasks[guid] === COMPLETION_STATUS.COMPLETION_REQUESTED
   )
 
   const completedAgeGroups = ageGroups
@@ -221,6 +226,14 @@ const Profile = () => {
     setIsFetchingProfile(true)
     fetchProfile()
       .then(userProfileData => {
+        const defaultTroop = userProfileData.troops.filter(
+          x => x.id === userProfileData.defaultTroopId
+        )[0]
+        if (defaultTroop) {
+          userProfileData = Object.assign(userProfileData, {
+            defaultTroopName: defaultTroop.name,
+          })
+        }
         setUserData(userProfileData)
       })
       .catch(error => {
@@ -233,7 +246,8 @@ const Profile = () => {
   }
 
   //TODO: Maybe we can get users age from PartioID and compare it to groups
-  const ageGroupGuid = 'fd0083b9a325c06430ba29cc6c6d1bac'
+  //TODO: KÄÄNNÖS OTSIKOLLE AKTIVITEETIT /TYÖN ALLA
+  const ageGroupGuid = userData.ageGroupId
   return (
     <Background ageGroupGuid={ageGroupGuid}>
       <Content>
@@ -245,7 +259,7 @@ const Profile = () => {
           {userData.name && userData.troops && (
             <>
               <h3>{userData.name}</h3>
-              <span>{userData.troops[0].name}</span>
+              <span>{userData.defaultTroopName}</span>
             </>
           )}
         </HeadingContent>
@@ -254,35 +268,50 @@ const Profile = () => {
             {getTermInLanguage(generalTranslations, 'favourites', language)}
           </h4>
           <TaskList>
-            <ListItem
-              key={'test-favourite'}
-              ageGroupGuid={'fd0083b9a325c06430ba29cc6c6d1bac'}
-              title={'Example favourite'}
-              subTitle={'Esimerkki suosikki'}
-              language={'fi'}
-              itemType={ITEM_TYPES.TASK}
-              showFavourite
-              showActions
-              isFavourite
-            />
-            {favourites.map(favourite => {
-              const taskTranslation = getTranslation(favourite.item)
+            {favourites &&
+              favourites.map(favourite => {
+                const taskTranslation = getTranslation(favourite.item)
+                const parent = itemsByGuid[favourite.parentGuid]
+                return (
+                  <ListItem
+                    key={favourite.guid}
+                    guid={favourite.guid}
+                    ageGroupGuid={favourite.ageGroupGuid}
+                    title={
+                      taskTranslation
+                        ? taskTranslation.title
+                        : favourite.item.title
+                    }
+                    subTitle={parent.item.title}
+                    language={language}
+                    itemType={ITEM_TYPES.TASK}
+                    showActions
+                    showFavourite
+                    isFavourite
+                  />
+                )
+              })}
+          </TaskList>
+          <h4>Aktiviteetit / työn alla</h4>
+          <TaskList>
+            {ongoingTasks.map(taskGuid => {
+              const task = itemsByGuid[taskGuid]
+              if (!task) return null
+
+              const taskTranslation = getTranslation(task.item)
+              const parent = itemsByGuid[task.parentGuid]
 
               return (
                 <ListItem
-                  key={favourite.guid}
-                  guid={favourite.guid}
-                  ageGroupGuid={favourite.ageGroupGuid}
+                  key={task.guid}
+                  guid={task.guid}
+                  ageGroupGuid={task.ageGroupGuid}
                   title={
-                    taskTranslation
-                      ? taskTranslation.title
-                      : favourite.item.title
+                    taskTranslation ? taskTranslation.title : task.item.title
                   }
+                  subTitle={parent.item.title}
                   language={language}
                   itemType={ITEM_TYPES.TASK}
-                  showActions
-                  showFavourite
-                  isFavourite
                 />
               )
             })}
@@ -296,6 +325,7 @@ const Profile = () => {
               if (!task) return null
 
               const taskTranslation = getTranslation(task.item)
+              const parent = itemsByGuid[task.parentGuid]
 
               return (
                 <ListItem
@@ -305,6 +335,7 @@ const Profile = () => {
                   title={
                     taskTranslation ? taskTranslation.title : task.item.title
                   }
+                  subTitle={parent.item.title}
                   language={language}
                   itemType={ITEM_TYPES.TASK}
                 />
