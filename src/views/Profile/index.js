@@ -1,9 +1,10 @@
-import React from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
 import { useHistory } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import TaskGroupItem from 'components/TaskGroupItem'
 import AgeGroupListItem from 'components/AgeGroupListItem'
+import { fetchProfile } from 'api'
 
 import { X } from 'react-feather'
 import {
@@ -15,7 +16,7 @@ import {
   getCompletedTaskGroups,
 } from 'helpers'
 import ListItem from 'components/ListItem'
-import { ITEM_TYPES, COMPLETION_STATUS } from 'consts'
+import { ITEM_TYPES, COMPLETION_STATUS, AGE_GROUPS } from 'consts'
 
 const Background = styled.div`
   min-height: 100vh;
@@ -65,10 +66,15 @@ const HeadingContent = styled.div`
   padding-top: 7rem;
   margin: 0 auto;
   text-align: center;
+  margin-bottom: 24px;
 
   > h3 {
     font-size: 24px;
     font-weight: normal;
+    margin-bottom: 5px;
+  }
+  > span {
+    color: ${({ theme }) => theme.color.subText};
   }
 `
 
@@ -102,7 +108,8 @@ const TaskList = styled.div`
 const Profile = () => {
   const history = useHistory()
   const language = determineLanguageFromUrl(window.location)
-  const user = useSelector(state => state.user)
+  const [userData, setUserData] = useState({})
+  const [isFetchingProfile, setIsFetchingProfile] = useState(false)
   const userTasks = useSelector(state => state.tasks)
   const ageGroups = useSelector(state => state.ageGroups)
   const itemsByGuid = useSelector(state => state.itemsByGuid)
@@ -124,9 +131,16 @@ const Profile = () => {
     guid => userTasks[guid] === COMPLETION_STATUS.COMPLETED
   )
 
+  const ongoingTasks = Object.keys(userTasks).filter(
+    guid =>
+      userTasks[guid] === COMPLETION_STATUS.ACTIVE ||
+      userTasks[guid] === COMPLETION_STATUS.COMPLETION_REQUESTED
+  )
+
   const completedAgeGroups = ageGroups
     .filter(ageGroup => {
-      const ageGroupItem = itemsByGuid[ageGroup.guid].item
+      const items = itemsByGuid[ageGroup.guid]
+      const ageGroupItem = items && items.item
       const isAgeGroupCompleted = getAgeGroupCompletion(ageGroupItem, userTasks)
 
       if (isAgeGroupCompleted) {
@@ -208,8 +222,33 @@ const Profile = () => {
     .flat()
     .map(guid => itemsByGuid[guid])
 
-  //TODO: Maybe we can get users age from PartioID and compare it to groups
-  const ageGroupGuid = 'fd0083b9a325c06430ba29cc6c6d1bac'
+  if (!Object.entries(userData).length && !isFetchingProfile) {
+    setIsFetchingProfile(true)
+    fetchProfile()
+      .then(userProfileData => {
+        const defaultTroop = userProfileData.troops.filter(
+          x => x.id === userProfileData.defaultTroopId
+        )[0]
+        const ageGroupGuid = AGE_GROUPS[userProfileData.ageGroupId]
+        if (defaultTroop) {
+          userProfileData = Object.assign(userProfileData, {
+            defaultTroopName: defaultTroop.name,
+            ageGroupGuid: ageGroupGuid,
+          })
+        }
+        setUserData(userProfileData)
+      })
+      .catch(error => {
+        console.error(error)
+        return error
+      })
+      .finally(() => {
+        setIsFetchingProfile(false)
+      })
+  }
+
+  //TODO: KÄÄNNÖS OTSIKOLLE AKTIVITEETIT /TYÖN ALLA
+  const ageGroupGuid = userData.ageGroupGuid
   return (
     <Background ageGroupGuid={ageGroupGuid}>
       <Content>
@@ -218,42 +257,62 @@ const Profile = () => {
         </CloseIcon>
         <HeadingContent>
           <Picture />
-          <h3>{user.name}</h3>
+          {userData.name && userData.troops && (
+            <>
+              <h3>{userData.name}</h3>
+              <span>{userData.defaultTroopName}</span>
+            </>
+          )}
         </HeadingContent>
         <BodyContent>
           <h4>
             {getTermInLanguage(generalTranslations, 'favourites', language)}
           </h4>
           <TaskList>
-            <ListItem
-              key={'test-favourite'}
-              ageGroupGuid={'fd0083b9a325c06430ba29cc6c6d1bac'}
-              title={'Example favourite'}
-              subTitle={'Esimerkki suosikki'}
-              language={'fi'}
-              itemType={ITEM_TYPES.TASK}
-              showFavourite
-              showActions
-              isFavourite
-            />
-            {favourites.map(favourite => {
-              const taskTranslation = getTranslation(favourite.item)
+            {favourites &&
+              favourites.map(favourite => {
+                const taskTranslation = getTranslation(favourite.item)
+                const parent = itemsByGuid[favourite.parentGuid]
+                return (
+                  <ListItem
+                    key={favourite.guid}
+                    guid={favourite.guid}
+                    ageGroupGuid={favourite.ageGroupGuid}
+                    title={
+                      taskTranslation
+                        ? taskTranslation.title
+                        : favourite.item.title
+                    }
+                    subTitle={parent.item.title}
+                    language={language}
+                    itemType={ITEM_TYPES.TASK}
+                    showActions
+                    showFavourite
+                    isFavourite
+                  />
+                )
+              })}
+          </TaskList>
+          <h4>Aktiviteetit / työn alla</h4>
+          <TaskList>
+            {ongoingTasks.map(taskGuid => {
+              const task = itemsByGuid[taskGuid]
+              if (!task) return null
+
+              const taskTranslation = getTranslation(task.item)
+              const parent = itemsByGuid[task.parentGuid]
 
               return (
                 <ListItem
-                  key={favourite.guid}
-                  guid={favourite.guid}
-                  ageGroupGuid={favourite.ageGroupGuid}
+                  key={task.guid}
+                  guid={task.guid}
+                  ageGroupGuid={task.ageGroupGuid}
                   title={
-                    taskTranslation
-                      ? taskTranslation.title
-                      : favourite.item.title
+                    taskTranslation ? taskTranslation.title : task.item.title
                   }
+                  subTitle={parent.item.title}
                   language={language}
                   itemType={ITEM_TYPES.TASK}
-                  showActions
-                  showFavourite
-                  isFavourite
                 />
               )
             })}
@@ -267,6 +326,7 @@ const Profile = () => {
               if (!task) return null
 
               const taskTranslation = getTranslation(task.item)
+              const parent = itemsByGuid[task.parentGuid]
 
               return (
                 <ListItem
@@ -276,6 +336,7 @@ const Profile = () => {
                   title={
                     taskTranslation ? taskTranslation.title : task.item.title
                   }
+                  subTitle={parent.item.title}
                   language={language}
                   itemType={ITEM_TYPES.TASK}
                 />
