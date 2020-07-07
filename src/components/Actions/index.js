@@ -48,6 +48,29 @@ const Actions = ({ guid, itemType, className }) => {
     }
     setShowActions(false)
   }
+  const markTaskActive = async () => {
+    try {
+      const newEntry = await postTaskEntry({
+        task_guid: guid,
+        completion_status: COMPLETION_STATUS.ACTIVE,
+      })
+      dispatch(
+        setTasks(
+          Object.entries(tasks)
+            .map(([key, value]) => {
+              return {
+                task_guid: key,
+                completion_status: value,
+              }
+            })
+            .concat([newEntry])
+        )
+      )
+    } catch (e) {
+      console.log(e)
+    }
+    setShowActions(false)
+  }
 
   return (
     <>
@@ -60,6 +83,7 @@ const Actions = ({ guid, itemType, className }) => {
           onCancel={() => setShowActions(false)}
           onMarkDone={() => markTaskDone()}
           onMarkFavourite={() => markTaskFavourite()}
+          onMarkActive={() => markTaskActive()}
         />
       )}
     </>
