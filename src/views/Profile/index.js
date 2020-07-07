@@ -313,6 +313,8 @@ const Profile = () => {
                   subTitle={parent.item.title}
                   language={language}
                   itemType={ITEM_TYPES.TASK}
+                  showActions
+                  showFavourite
                 />
               )
             })}
