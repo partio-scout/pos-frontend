@@ -301,6 +301,8 @@ const Profile = () => {
 
               const taskTranslation = getTranslation(task.item)
               const parent = itemsByGuid[task.parentGuid]
+              const finder = favourite => taskGuid === favourite.guid
+              const isFavourite = !!favourites.find(finder)
 
               return (
                 <ListItem
@@ -315,6 +317,7 @@ const Profile = () => {
                   itemType={ITEM_TYPES.TASK}
                   showActions
                   showFavourite
+                  isFavourite={isFavourite}
                 />
               )
             })}
