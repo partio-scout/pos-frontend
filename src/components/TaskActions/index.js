@@ -1,6 +1,6 @@
 import React from 'react'
 import styled, { keyframes } from 'styled-components'
-import { CheckCircle, Heart } from 'react-feather'
+import { CheckCircle, Heart, Activity } from 'react-feather'
 
 const Overlay = styled.div`
   width: 100%;
@@ -60,10 +60,19 @@ const ActivityItem = styled.div`
   }
 `
 
-const TaskActions = ({ onMarkDone, onMarkFavourite, onCancel }) => (
+const TaskActions = ({
+  onMarkDone,
+  onMarkFavourite,
+  onMarkActive,
+  onCancel,
+}) => (
   <>
     <Overlay />
     <Content>
+      <ActivityItem onClick={onMarkActive}>
+        <Activity />
+        <span>Merkitse aloitetuksi</span>
+      </ActivityItem>
       <ActivityItem onClick={onMarkDone}>
         <CheckCircle />
         <span>Merkitse suoritetuksi</span>
