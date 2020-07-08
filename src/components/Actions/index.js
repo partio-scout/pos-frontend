@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import TaskActions from 'components/TaskActions'
 import { MoreHorizontal } from 'react-feather'
-import { postTaskEntry, postTaskFavourite } from 'api'
+import { postTaskEntry, postTaskFavourite, deleteFavouriteTask } from 'api'
 import { COMPLETION_STATUS, ITEM_TYPES } from 'consts'
 import { useDispatch, useSelector } from 'react-redux'
 import {
@@ -12,7 +12,6 @@ import {
 
 const Actions = ({ guid, itemType, className, isFavourite }) => {
   const [showActions, setShowActions] = useState(false)
-  const favourites = useSelector(state => state.favourites)
   const tasks = useSelector(state => state.tasks)
   const dispatch = useDispatch()
 
@@ -55,6 +54,14 @@ const Actions = ({ guid, itemType, className, isFavourite }) => {
   }
 
   const removeFavourite = async () => {
+    try {
+      await deleteFavouriteTask({
+        user_guid: 1,
+        task_guid: guid,
+      })
+    } catch (e) {
+      console.log(e)
+    }
     dispatch(deleteFavourite(guid))
     setShowActions(false)
   }
