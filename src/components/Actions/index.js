@@ -4,9 +4,13 @@ import { MoreHorizontal } from 'react-feather'
 import { postTaskEntry, postTaskFavourite } from 'api'
 import { COMPLETION_STATUS, ITEM_TYPES } from 'consts'
 import { useDispatch, useSelector } from 'react-redux'
-import { setFavourites, setTasks } from 'redux/actionCreators'
+import {
+  deleteFavourite,
+  addFavourite as addFavouriteTask,
+  setTasks,
+} from 'redux/actionCreators'
 
-const Actions = ({ guid, itemType, className }) => {
+const Actions = ({ guid, itemType, className, isFavourite }) => {
   const [showActions, setShowActions] = useState(false)
   const favourites = useSelector(state => state.favourites)
   const tasks = useSelector(state => state.tasks)
@@ -35,18 +39,32 @@ const Actions = ({ guid, itemType, className }) => {
     }
     setShowActions(false)
   }
-  const markTaskFavourite = async () => {
+
+  const addFavourite = async () => {
     try {
       await postTaskFavourite({
         user_guid: 1,
         task_guid: guid,
       })
-      dispatch(setFavourites([...favourites, guid]))
+      dispatch(addFavouriteTask(guid))
     } catch (e) {
       //TODO: Do error handling
       console.log(e)
     }
     setShowActions(false)
+  }
+
+  const removeFavourite = async () => {
+    dispatch(deleteFavourite(guid))
+    setShowActions(false)
+  }
+
+  const toggleFavourite = () => {
+    if (isFavourite) {
+      removeFavourite()
+    } else {
+      addFavourite()
+    }
   }
   const markTaskActive = async () => {
     try {
@@ -82,8 +100,9 @@ const Actions = ({ guid, itemType, className }) => {
         <TaskActions
           onCancel={() => setShowActions(false)}
           onMarkDone={() => markTaskDone()}
-          onMarkFavourite={() => markTaskFavourite()}
+          toggleFavourite={() => toggleFavourite()}
           onMarkActive={() => markTaskActive()}
+          isFavourite={isFavourite}
         />
       )}
     </>

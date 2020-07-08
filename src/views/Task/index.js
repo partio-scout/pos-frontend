@@ -135,7 +135,11 @@ const Task = () => {
       }
       title={translations ? translations.title : task.item.title}
     >
-      <StyledActions guid={task.guid} itemType={task.type} />
+      <StyledActions
+        guid={task.guid}
+        itemType={task.type}
+        isFavourite={task.isFavourite}
+      />
       {renderDetails()}
     </StyledDetailPage>
   )
