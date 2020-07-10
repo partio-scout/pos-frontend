@@ -4,6 +4,8 @@ import FavouriteIcon, {
   StyledDoneIcon,
   StyleActiveIcon,
 } from '../TaskActionsIcons'
+import { useSelector } from 'react-redux'
+import { COMPLETION_STATUS } from '../../consts'
 
 const Overlay = styled.div`
   width: 100%;
@@ -66,30 +68,45 @@ const ActivityItem = styled.div`
 const TaskActions = ({
   onMarkDone,
   toggleFavourite,
-  onMarkActive,
+  toggleActive,
   onCancel,
   isFavourite,
-}) => (
-  <>
-    <Overlay />
-    <Content>
-      <ActivityItem onClick={onMarkActive}>
-        <StyleActiveIcon />
-        <span>Merkitse aloitetuksi</span>
-      </ActivityItem>
-      <ActivityItem onClick={onMarkDone}>
-        <StyledDoneIcon />
-        <span>Merkitse suoritetuksi</span>
-      </ActivityItem>
-      <ActivityItem onClick={toggleFavourite}>
-        <FavouriteIcon filled={!isFavourite} />
-        <span>{isFavourite ? 'Poista suosikeista' : 'Lisää suosikiksi'}</span>
-      </ActivityItem>
-      <ActivityItem onClick={onCancel}>
-        <span>Peruuta</span>
-      </ActivityItem>
-    </Content>
-  </>
-)
+  guid,
+}) => {
+  const userTasks = useSelector(state => state.tasks)
+
+  const activeTasks = Object.keys(userTasks).filter(
+    guid =>
+      userTasks[guid] === COMPLETION_STATUS.ACTIVE ||
+      COMPLETION_STATUS.COMPLETION_REQUESTED
+  )
+
+  const isActive = !!activeTasks.find(taskGuid => taskGuid === guid)
+
+  return (
+    <>
+      <Overlay />
+      <Content>
+        <ActivityItem onClick={toggleActive}>
+          <StyleActiveIcon />
+          <span>
+            {isActive ? 'Poista aloitetuista' : 'Merkitse aloitetuksi'}
+          </span>
+        </ActivityItem>
+        <ActivityItem onClick={onMarkDone}>
+          <StyledDoneIcon />
+          <span>Merkitse suoritetuksi</span>
+        </ActivityItem>
+        <ActivityItem onClick={toggleFavourite}>
+          <FavouriteIcon filled={!isFavourite} />
+          <span>{isFavourite ? 'Poista suosikeista' : 'Lisää suosikiksi'}</span>
+        </ActivityItem>
+        <ActivityItem onClick={onCancel}>
+          <span>Peruuta</span>
+        </ActivityItem>
+      </Content>
+    </>
+  )
+}
 
 export default TaskActions

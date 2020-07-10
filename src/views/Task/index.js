@@ -139,6 +139,7 @@ const Task = () => {
         guid={task.guid}
         itemType={task.type}
         isFavourite={task.isFavourite}
+        isActive={task.isActive}
       />
       {renderDetails()}
     </StyledDetailPage>

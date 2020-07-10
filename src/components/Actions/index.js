@@ -1,13 +1,19 @@
 import React, { useState } from 'react'
 import TaskActions from 'components/TaskActions'
 import { MoreHorizontal } from 'react-feather'
-import { postTaskEntry, postTaskFavourite, deleteFavouriteTask } from 'api'
+import {
+  postTaskEntry,
+  postTaskFavourite,
+  deleteFavouriteTask,
+  deleteActiveTask,
+} from 'api'
 import { COMPLETION_STATUS, ITEM_TYPES } from 'consts'
 import { useDispatch, useSelector } from 'react-redux'
 import {
   deleteFavourite,
   addFavourite as addFavouriteTask,
   setTasks,
+  deleteActive,
 } from 'redux/actionCreators'
 
 const Actions = ({ guid, itemType, className, isFavourite }) => {
@@ -15,12 +21,21 @@ const Actions = ({ guid, itemType, className, isFavourite }) => {
   const tasks = useSelector(state => state.tasks)
   const dispatch = useDispatch()
 
+  const activeTasks = Object.keys(tasks).filter(
+    guid =>
+      tasks[guid] === COMPLETION_STATUS.ACTIVE ||
+      COMPLETION_STATUS.COMPLETION_REQUESTED
+  )
+
+  const isActive = !!activeTasks.find(taskGuid => taskGuid === guid)
+
   const markTaskDone = async () => {
     try {
       const newEntry = await postTaskEntry({
         task_guid: guid,
         completion_status: COMPLETION_STATUS.COMPLETED,
       })
+      setShowActions(false)
       dispatch(
         setTasks(
           Object.entries(tasks)
@@ -36,7 +51,6 @@ const Actions = ({ guid, itemType, className, isFavourite }) => {
     } catch (e) {
       console.log(e)
     }
-    setShowActions(false)
   }
 
   const addFavourite = async () => {
@@ -45,12 +59,12 @@ const Actions = ({ guid, itemType, className, isFavourite }) => {
         user_guid: 1,
         task_guid: guid,
       })
+      setShowActions(false)
       dispatch(addFavouriteTask(guid))
     } catch (e) {
       //TODO: Do error handling
       console.log(e)
     }
-    setShowActions(false)
   }
 
   const removeFavourite = async () => {
@@ -62,8 +76,8 @@ const Actions = ({ guid, itemType, className, isFavourite }) => {
     } catch (e) {
       console.log(e)
     }
-    dispatch(deleteFavourite(guid))
     setShowActions(false)
+    dispatch(deleteFavourite(guid))
   }
 
   const toggleFavourite = () => {
@@ -73,12 +87,14 @@ const Actions = ({ guid, itemType, className, isFavourite }) => {
       addFavourite()
     }
   }
-  const markTaskActive = async () => {
+
+  const addActive = async () => {
     try {
       const newEntry = await postTaskEntry({
         task_guid: guid,
         completion_status: COMPLETION_STATUS.ACTIVE,
       })
+      setShowActions(false)
       dispatch(
         setTasks(
           Object.entries(tasks)
@@ -94,7 +110,27 @@ const Actions = ({ guid, itemType, className, isFavourite }) => {
     } catch (e) {
       console.log(e)
     }
+  }
+
+  const removeActive = async () => {
+    try {
+      await deleteActiveTask({
+        user_guid: 1,
+        task_guid: guid,
+      })
+    } catch (e) {
+      console.log(e)
+    }
     setShowActions(false)
+    dispatch(deleteActive(guid))
+  }
+
+  const toggleActive = () => {
+    if (isActive) {
+      removeActive()
+    } else {
+      addActive()
+    }
   }
 
   return (
@@ -108,8 +144,9 @@ const Actions = ({ guid, itemType, className, isFavourite }) => {
           onCancel={() => setShowActions(false)}
           onMarkDone={() => markTaskDone()}
           toggleFavourite={() => toggleFavourite()}
-          onMarkActive={() => markTaskActive()}
+          toggleActive={() => toggleActive()}
           isFavourite={isFavourite}
+          guid={guid}
         />
       )}
     </>
