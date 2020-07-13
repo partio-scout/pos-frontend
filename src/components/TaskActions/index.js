@@ -66,9 +66,9 @@ const ActivityItem = styled.div`
 `
 
 const TaskActions = ({
-  onMarkDone,
   toggleFavourite,
   toggleActive,
+  toggleDone,
   onCancel,
   isFavourite,
   guid,
@@ -76,26 +76,46 @@ const TaskActions = ({
   const userTasks = useSelector(state => state.tasks)
 
   const activeTasks = Object.keys(userTasks).filter(
-    guid =>
-      userTasks[guid] === COMPLETION_STATUS.ACTIVE ||
-      COMPLETION_STATUS.COMPLETION_REQUESTED
+    guid => userTasks[guid] === COMPLETION_STATUS.ACTIVE
+  )
+
+  const completionRequestedTasks = Object.keys(userTasks).filter(
+    guid => userTasks[guid] === COMPLETION_STATUS.COMPLETION_REQUESTED
+  )
+
+  const doneTasks = Object.keys(userTasks).filter(
+    guid => userTasks[guid] === COMPLETION_STATUS.COMPLETED
   )
 
   const isActive = !!activeTasks.find(taskGuid => taskGuid === guid)
+
+  const isCompletionRequested = !!completionRequestedTasks.find(
+    taskGuid => taskGuid === guid
+  )
+
+  const isDone = !!doneTasks.find(taskGuid => taskGuid === guid)
 
   return (
     <>
       <Overlay />
       <Content>
-        <ActivityItem onClick={toggleActive}>
-          <StyleActiveIcon />
-          <span>
-            {isActive ? 'Poista aloitetuista' : 'Merkitse aloitetuksi'}
-          </span>
-        </ActivityItem>
-        <ActivityItem onClick={onMarkDone}>
+        {isCompletionRequested || isDone ? (
+          <></>
+        ) : (
+          <ActivityItem onClick={toggleActive}>
+            <StyleActiveIcon />
+            <span>
+              {isActive ? 'Poista aloitetuista' : 'Merkitse aloitetuksi'}
+            </span>
+          </ActivityItem>
+        )}
+        <ActivityItem onClick={toggleDone}>
           <StyledDoneIcon />
-          <span>Merkitse suoritetuksi</span>
+          <span>
+            {isDone || isCompletionRequested
+              ? 'Poista suoritetuista'
+              : 'Merkitse suoritetuksi'}
+          </span>
         </ActivityItem>
         <ActivityItem onClick={toggleFavourite}>
           <FavouriteIcon filled={!isFavourite} />

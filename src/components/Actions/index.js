@@ -22,12 +22,24 @@ const Actions = ({ guid, itemType, className, isFavourite }) => {
   const dispatch = useDispatch()
 
   const activeTasks = Object.keys(tasks).filter(
-    guid =>
-      tasks[guid] === COMPLETION_STATUS.ACTIVE ||
-      COMPLETION_STATUS.COMPLETION_REQUESTED
+    guid => tasks[guid] === COMPLETION_STATUS.ACTIVE
+  )
+
+  const completionRequestedTasks = Object.keys(tasks).filter(
+    guid => tasks[guid] === COMPLETION_STATUS.COMPLETION_REQUESTED
+  )
+
+  const doneTasks = Object.keys(tasks).filter(
+    guid => tasks[guid] === COMPLETION_STATUS.COMPLETED
   )
 
   const isActive = !!activeTasks.find(taskGuid => taskGuid === guid)
+
+  const isCompletionRequested = !!completionRequestedTasks.find(
+    taskGuid => taskGuid === guid
+  )
+
+  const isDone = !!doneTasks.find(taskGuid => taskGuid === guid)
 
   const markTaskDone = async () => {
     try {
@@ -50,6 +62,14 @@ const Actions = ({ guid, itemType, className, isFavourite }) => {
       )
     } catch (e) {
       console.log(e)
+    }
+  }
+
+  const toggleDone = () => {
+    if (isDone || isCompletionRequested) {
+      addActive()
+    } else {
+      markTaskDone()
     }
   }
 
@@ -145,6 +165,7 @@ const Actions = ({ guid, itemType, className, isFavourite }) => {
           onMarkDone={() => markTaskDone()}
           toggleFavourite={() => toggleFavourite()}
           toggleActive={() => toggleActive()}
+          toggleDone={() => toggleDone()}
           isFavourite={isFavourite}
           guid={guid}
         />
