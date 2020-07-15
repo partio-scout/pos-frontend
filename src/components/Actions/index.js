@@ -29,7 +29,7 @@ const Actions = ({ guid, itemType, className, isFavourite }) => {
     guid => tasks[guid] === COMPLETION_STATUS.COMPLETION_REQUESTED
   )
 
-  const doneTasks = Object.keys(tasks).filter(
+  const completedTasks = Object.keys(tasks).filter(
     guid => tasks[guid] === COMPLETION_STATUS.COMPLETED
   )
 
@@ -39,9 +39,9 @@ const Actions = ({ guid, itemType, className, isFavourite }) => {
     taskGuid => taskGuid === guid
   )
 
-  const isDone = !!doneTasks.find(taskGuid => taskGuid === guid)
+  const isCompleted = !!completedTasks.find(taskGuid => taskGuid === guid)
 
-  const markTaskDone = async () => {
+  const markTaskCompleted = async () => {
     try {
       const newEntry = await postTaskEntry({
         task_guid: guid,
@@ -65,11 +65,11 @@ const Actions = ({ guid, itemType, className, isFavourite }) => {
     }
   }
 
-  const toggleDone = () => {
-    if (isDone || isCompletionRequested) {
+  const toggleCompleted = () => {
+    if (isCompleted || isCompletionRequested) {
       addActive()
     } else {
-      markTaskDone()
+      markTaskCompleted()
     }
   }
 
@@ -162,10 +162,10 @@ const Actions = ({ guid, itemType, className, isFavourite }) => {
       {itemType === ITEM_TYPES.TASK && showActions && (
         <TaskActions
           onCancel={() => setShowActions(false)}
-          onMarkDone={() => markTaskDone()}
+          onMarkCompleted={() => markTaskCompleted()}
           toggleFavourite={() => toggleFavourite()}
           toggleActive={() => toggleActive()}
-          toggleDone={() => toggleDone()}
+          toggleCompleted={() => toggleCompleted()}
           isFavourite={isFavourite}
           guid={guid}
         />

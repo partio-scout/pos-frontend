@@ -1,7 +1,7 @@
 import React from 'react'
 import styled, { keyframes } from 'styled-components'
 import FavouriteIcon, {
-  StyledDoneIcon,
+  StyledCompletedIcon,
   StyleActiveIcon,
 } from '../TaskActionsIcons'
 import { useSelector } from 'react-redux'
@@ -68,7 +68,7 @@ const ActivityItem = styled.div`
 const TaskActions = ({
   toggleFavourite,
   toggleActive,
-  toggleDone,
+  toggleCompleted,
   onCancel,
   isFavourite,
   guid,
@@ -83,7 +83,7 @@ const TaskActions = ({
     guid => userTasks[guid] === COMPLETION_STATUS.COMPLETION_REQUESTED
   )
 
-  const doneTasks = Object.keys(userTasks).filter(
+  const completedTasks = Object.keys(userTasks).filter(
     guid => userTasks[guid] === COMPLETION_STATUS.COMPLETED
   )
 
@@ -93,13 +93,13 @@ const TaskActions = ({
     taskGuid => taskGuid === guid
   )
 
-  const isDone = !!doneTasks.find(taskGuid => taskGuid === guid)
+  const isCompleted = !!completedTasks.find(taskGuid => taskGuid === guid)
 
   return (
     <>
       <Overlay />
       <Content>
-        {isCompletionRequested || isDone ? (
+        {isCompletionRequested || isCompleted ? (
           <></>
         ) : (
           <ActivityItem onClick={toggleActive}>
@@ -109,10 +109,10 @@ const TaskActions = ({
             </span>
           </ActivityItem>
         )}
-        <ActivityItem onClick={toggleDone}>
-          <StyledDoneIcon />
+        <ActivityItem onClick={toggleCompleted}>
+          <StyledCompletedIcon />
           <span>
-            {isDone || isCompletionRequested
+            {isCompleted || isCompletionRequested
               ? 'Poista suoritetuista'
               : 'Merkitse suoritetuksi'}
           </span>

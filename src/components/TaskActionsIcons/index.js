@@ -8,7 +8,7 @@ const StyledFavouriteIcon = styled(Heart)`
 const StyleActiveIcon = styled(Activity)`
   margin-right: 0.5em;
 `
-const StyledDoneIcon = styled(CheckCircle)`
+const StyledCompletedIcon = styled(CheckCircle)`
   margin-right: 0.5em;
 `
 export default function FavouriteIcon({ filled }) {
@@ -19,4 +19,4 @@ export default function FavouriteIcon({ filled }) {
   )
 }
 
-export { StyleActiveIcon, StyledDoneIcon }
+export { StyleActiveIcon, StyledCompletedIcon }
