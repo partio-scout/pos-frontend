@@ -67,6 +67,11 @@ const Task = () => {
   const generalTranslations = useSelector(state => state.translations.yleiset)
   const [details, setDetails] = useState()
   const [suggestions, setSuggestions] = useState()
+  const favourites = useSelector(state =>
+    state.favourites.map(favourite => state.itemsByGuid[favourite])
+  )
+  const finder = favourite => task.item.guid === favourite.guid
+  const isFavourite = !!favourites.find(finder)
 
   const getSuggestionDetails = useCallback(
     async d => {
@@ -138,8 +143,7 @@ const Task = () => {
       <StyledActions
         guid={task.guid}
         itemType={task.type}
-        isFavourite={task.isFavourite}
-        isActive={task.isActive}
+        isFavourite={isFavourite}
       />
       {renderDetails()}
     </StyledDetailPage>

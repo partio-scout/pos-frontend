@@ -164,3 +164,5 @@ export const getAgeGroupCompletion = (ageGroup, userTasks) => {
     doneMandatory.length > 0
   )
 }
+
+//TODO: favourites, activeTasks, doneTasks, isFavourites, isActive and isDone helpers
