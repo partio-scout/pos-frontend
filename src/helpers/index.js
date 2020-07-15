@@ -74,13 +74,13 @@ export const deepFlatten = items => {
 }
 
 export const getTaskGroupStatus = (taskGroup, userTasks, label) => {
-  const doneTasks = taskGroup.tasks.reduce((taskCount, task) => {
+  const completedTasks = taskGroup.tasks.reduce((taskCount, task) => {
     if (userTasks[task.guid] === 'COMPLETED') {
       taskCount++
     }
     return taskCount
   }, 0)
-  return `${label}: ${doneTasks} / ${taskGroup.tasks.length}`
+  return `${label}: ${completedTasks} / ${taskGroup.tasks.length}`
 }
 
 export const getGroupTasks = group => {
@@ -130,16 +130,16 @@ export const getAgeGroupTasks = ageGroup => {
 
 export const getAgeGroupStatus = (ageGroup, userTasks) => {
   const ageGroupTasks = getAgeGroupTasks(ageGroup)
-  const doneMandatory = ageGroupTasks.mandatory.filter(
+  const completedMandatory = ageGroupTasks.mandatory.filter(
     task => userTasks[task] === 'COMPLETED'
   )
-  const doneOptional = ageGroupTasks.optional.filter(
+  const completedOptional = ageGroupTasks.optional.filter(
     task => userTasks[task] === 'COMPLETED'
   )
 
   return {
-    mandatory: `${doneMandatory.length} / ${ageGroupTasks.mandatory.length}`,
-    optional: `${doneOptional.length} / ${ageGroupTasks.optional.length}`,
+    mandatory: `${completedMandatory.length} / ${ageGroupTasks.mandatory.length}`,
+    optional: `${completedOptional.length} / ${ageGroupTasks.optional.length}`,
   }
 }
 
@@ -155,12 +155,14 @@ export const getCompletedTaskGroups = (ageGroup, userTasks) => {
 
 export const getAgeGroupCompletion = (ageGroup, userTasks) => {
   const ageGroupTasks = getAgeGroupTasks(ageGroup)
-  const doneMandatory = ageGroupTasks.mandatory.filter(
+  const completedMandatory = ageGroupTasks.mandatory.filter(
     task => userTasks[task] === 'COMPLETED'
   )
 
   return (
-    doneMandatory.length === ageGroupTasks.mandatory.length &&
-    doneMandatory.length > 0
+    completedMandatory.length === ageGroupTasks.mandatory.length &&
+    completedMandatory.length > 0
   )
 }
+
+//TODO: favourites, activeTasks, completedTasks, isFavourite, isActive and isCompleted helpers

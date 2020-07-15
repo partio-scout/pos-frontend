@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components'
 import { useHistory } from 'react-router-dom'
 import TaskIcon from 'assets/tasks/task.svg'
 import Actions from 'components/Actions'
-import { Heart } from 'react-feather'
+import FavouriteIcon from 'components/TaskActionsIcons'
 
 const StyledListItem = styled.div`
   position: relative;
@@ -59,10 +59,6 @@ const StyledActions = styled.div`
   color: ${({ theme }) => theme.color.subText};
 `
 
-const StyledFavouriteIcon = styled(Heart)`
-  margin-right: 0.5em;
-`
-
 const ListItem = ({
   guid,
   ageGroupGuid,
@@ -76,11 +72,7 @@ const ListItem = ({
   isFavourite,
 }) => {
   const history = useHistory()
-  const FavouriteIcon = isFavourite ? (
-    <StyledFavouriteIcon color="#DB1930" fill="#DB1930" />
-  ) : (
-    <StyledFavouriteIcon />
-  )
+
   return (
     <StyledListItem ageGroupGuid={ageGroupGuid} icon={icon}>
       <StyledListItemContent
@@ -93,9 +85,11 @@ const ListItem = ({
         {subTitle && <span>{subTitle}</span>}
       </StyledListItemContent>
 
-      <StyledActions guid="test">
-        {showFavourite && FavouriteIcon}
-        {showActions && itemType && <Actions guid={guid} itemType={itemType} />}
+      <StyledActions>
+        {showFavourite && <FavouriteIcon filled={isFavourite} />}
+        {showActions && itemType && (
+          <Actions guid={guid} itemType={itemType} isFavourite={isFavourite} />
+        )}
       </StyledActions>
     </StyledListItem>
   )

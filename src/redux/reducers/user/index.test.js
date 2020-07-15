@@ -10,7 +10,7 @@ describe('User reducer', () => {
     const testUser = [
       {
         name: 'Teppo Testaaja',
-        canMarkDone: false,
+        canMarkCompleted: false,
       },
     ]
     expect(

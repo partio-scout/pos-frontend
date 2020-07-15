@@ -75,6 +75,30 @@ export const postTaskFavourite = async entry => {
   return data
 }
 
+export const deleteFavouriteTask = async entry => {
+  const res = await fetch(`${API_URL}/favourite/${entry.task_guid}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    credentials: 'include',
+  })
+  const data = await res.json()
+  return data
+}
+
+export const deleteActiveTask = async entry => {
+  const res = await fetch(`${API_URL}/active/${entry.task_guid}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    credentials: 'include',
+  })
+  const data = await res.json()
+  return data
+}
+
 export const fetchFavourites = async () => {
   try {
     const res = await fetch(`${API_URL}/favourites`, {

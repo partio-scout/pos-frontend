@@ -1,6 +1,11 @@
 import React from 'react'
 import styled, { keyframes } from 'styled-components'
-import { CheckCircle, Heart, Activity } from 'react-feather'
+import FavouriteIcon, {
+  StyledCompletedIcon,
+  StyleActiveIcon,
+} from '../TaskActionsIcons'
+import { useSelector } from 'react-redux'
+import { COMPLETION_STATUS } from '../../consts'
 
 const Overlay = styled.div`
   width: 100%;
@@ -61,31 +66,67 @@ const ActivityItem = styled.div`
 `
 
 const TaskActions = ({
-  onMarkDone,
-  onMarkFavourite,
-  onMarkActive,
+  toggleFavourite,
+  toggleActive,
+  toggleCompleted,
   onCancel,
-}) => (
-  <>
-    <Overlay />
-    <Content>
-      <ActivityItem onClick={onMarkActive}>
-        <Activity />
-        <span>Merkitse aloitetuksi</span>
-      </ActivityItem>
-      <ActivityItem onClick={onMarkDone}>
-        <CheckCircle />
-        <span>Merkitse suoritetuksi</span>
-      </ActivityItem>
-      <ActivityItem onClick={onMarkFavourite}>
-        <Heart />
-        <span>Lisää suosikiksi</span>
-      </ActivityItem>
-      <ActivityItem onClick={onCancel}>
-        <span>Peruuta</span>
-      </ActivityItem>
-    </Content>
-  </>
-)
+  isFavourite,
+  guid,
+}) => {
+  const userTasks = useSelector(state => state.tasks)
+
+  const activeTasks = Object.keys(userTasks).filter(
+    guid => userTasks[guid] === COMPLETION_STATUS.ACTIVE
+  )
+
+  const completionRequestedTasks = Object.keys(userTasks).filter(
+    guid => userTasks[guid] === COMPLETION_STATUS.COMPLETION_REQUESTED
+  )
+
+  const completedTasks = Object.keys(userTasks).filter(
+    guid => userTasks[guid] === COMPLETION_STATUS.COMPLETED
+  )
+
+  const isActive = !!activeTasks.find(taskGuid => taskGuid === guid)
+
+  const isCompletionRequested = !!completionRequestedTasks.find(
+    taskGuid => taskGuid === guid
+  )
+
+  const isCompleted = !!completedTasks.find(taskGuid => taskGuid === guid)
+
+  return (
+    <>
+      <Overlay />
+      <Content>
+        {isCompletionRequested || isCompleted ? (
+          <></>
+        ) : (
+          <ActivityItem onClick={toggleActive}>
+            <StyleActiveIcon />
+            <span>
+              {isActive ? 'Poista aloitetuista' : 'Merkitse aloitetuksi'}
+            </span>
+          </ActivityItem>
+        )}
+        <ActivityItem onClick={toggleCompleted}>
+          <StyledCompletedIcon />
+          <span>
+            {isCompleted || isCompletionRequested
+              ? 'Poista suoritetuista'
+              : 'Merkitse suoritetuksi'}
+          </span>
+        </ActivityItem>
+        <ActivityItem onClick={toggleFavourite}>
+          <FavouriteIcon filled={!isFavourite} />
+          <span>{isFavourite ? 'Poista suosikeista' : 'Lisää suosikiksi'}</span>
+        </ActivityItem>
+        <ActivityItem onClick={onCancel}>
+          <span>Peruuta</span>
+        </ActivityItem>
+      </Content>
+    </>
+  )
+}
 
 export default TaskActions
