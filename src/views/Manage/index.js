@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
 import { useHistory } from 'react-router-dom'
 import { X } from 'react-feather'
@@ -6,6 +6,7 @@ import ListItem from 'components/ListItem'
 import { ITEM_TYPES } from 'consts'
 import { useSelector } from 'react-redux'
 import { determineLanguageFromUrl, getTermInLanguage } from 'helpers'
+import { fetchGroups } from 'api'
 
 const StyledManage = styled.div`
   height: 100%;
@@ -45,9 +46,27 @@ const Content = styled.div`
 const Manage = () => {
   const history = useHistory()
   const language = determineLanguageFromUrl(window.location)
+  const [groupsData, setGroupsData] = useState([])
+  const [isFetchingData, setIsFetchingData] = useState(false)
   const generalTranslations = useSelector(state => state.translations.yleiset)
   if (!generalTranslations) return null
 
+  if (!Object.entries(groupsData).length && !isFetchingData) {
+    setIsFetchingData(true)
+    fetchGroups()
+      .then(groupsData => {
+        setGroupsData(groupsData)
+      })
+      .catch(error => {
+        console.error(error)
+        return error
+      })
+      .finally(() => {
+        setIsFetchingData(false)
+      })
+  }
+
+  // TODO: käännös alla olevalle Omat laumat otsikolle
   return (
     <StyledManage>
       <Header>
@@ -57,6 +76,26 @@ const Manage = () => {
         <CloseIcon onClick={() => history.push('/')} />
       </Header>
       <Content>
+        <Subheading>Omat laumat</Subheading>
+        {groupsData.map(group => {
+          const groupName = group.name
+          const ageGroup = group.ageGroup
+          const ageGroupId = group.id
+          const groupMembers = group.members.length + ' partiolaista'
+          const title = '' + groupName + ' / ' + ageGroup
+          return (
+            <ListItem
+              key={ageGroupId}
+              ageGroupGuid={ageGroupId}
+              title={title}
+              subTitle={groupMembers}
+              language="fi"
+              icon={null}
+              itemType={ITEM_TYPES.TASK}
+              showActions
+            />
+          )
+        })}
         <Subheading>
           {getTermInLanguage(generalTranslations, 'notifications', language)}
         </Subheading>
