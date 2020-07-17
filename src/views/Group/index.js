@@ -2,7 +2,7 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 import styled from 'styled-components'
 import { X } from 'react-feather'
-import { determineLanguageFromUrl, getTermInLanguage } from '../../helpers'
+// import { determineLanguageFromUrl, getTermInLanguage } from '../../helpers'
 import { useHistory, useParams } from 'react-router-dom'
 import ListItem from '../../components/ListItem'
 
@@ -43,15 +43,13 @@ const Content = styled.div`
 
 const Group = () => {
   const history = useHistory()
-  const language = determineLanguageFromUrl(window.location)
+  // const language = determineLanguageFromUrl(window.location)
   const groupsData = useSelector(state => state.user.userGroups)
   const generalTranslations = useSelector(state => state.translations.yleiset)
   const { groupId } = useParams()
 
   if (!generalTranslations || !groupsData) return null
 
-  console.log('Group date', groupsData)
-  console.log('Group id', groupId)
   const group = groupsData.find(
     groups => groups.id.toString() === groupId.toString()
   )
@@ -64,13 +62,17 @@ const Group = () => {
         <CloseIcon onClick={() => history.push('/manage')} />
       </Header>
       <Content>
-        {members.map(member => (
-          <ListItem
-            key={member.memberId}
-            title={member.memberName}
-            subTitle="something"
-          />
-        ))}
+        {members.map(member => {
+          const subTitle =
+            member.memberTasks.length + ' aktiviteettia työn alla'
+          return (
+            <ListItem
+              key={member.memberId}
+              title={member.memberName}
+              subTitle={subTitle}
+            />
+          )
+        })}
       </Content>
     </StyledGroup>
   )
