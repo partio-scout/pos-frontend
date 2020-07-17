@@ -163,7 +163,7 @@ export const fetchProfile = async () => {
   }
 }
 
-export const fetchGroups = async () => {
+export const fetchUserGroups = async () => {
   try {
     const res = await fetch(`${API_URL}/groups`, {
       method: 'GET',

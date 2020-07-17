@@ -3,6 +3,7 @@ export const SET_AGE_GROUPS = 'SET_AGE_GROUPS'
 export const SET_SELECTED_AGE_GROUP = 'SET_SELECTED_AGE_GROUP'
 export const SET_TRANSLATIONS = 'SET_TRANSLATIONS'
 export const SET_USER = 'SET_USER'
+export const SET_USER_GROUPS = 'SET_USER_GROUPS'
 
 // Tasks
 export const SET_TASKS = 'SET_TASKS'

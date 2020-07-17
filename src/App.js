@@ -15,6 +15,7 @@ import {
   fetchFavourites,
   fetchUser,
   fetchUserTasks,
+  fetchUserGroups,
 } from 'api'
 import {
   setInitialData,
@@ -22,6 +23,7 @@ import {
   setFavourites,
   setUser,
   setTasks,
+  setUserGroups,
 } from 'redux/actionCreators'
 import { GlobalStyle, theme } from 'styles'
 import AgeGroups from 'views/AgeGroups'
@@ -31,6 +33,7 @@ import Task from 'views/Task'
 import Manage from 'views/Manage'
 import Profile from 'views/Profile'
 import Login from 'views/Login'
+import Group from 'views/Group'
 import { ITEM_TYPES } from 'consts'
 
 const App = () => {
@@ -51,6 +54,7 @@ const App = () => {
           dispatch(setFavourites(favourites))
         )
         fetchUserTasks().then(tasks => dispatch(setTasks(tasks)))
+        fetchUserGroups().then(groups => dispatch(setUserGroups(groups)))
       }
     })
   }, [dispatch])
@@ -66,6 +70,7 @@ const App = () => {
             <Route path="/guid/:guid" component={ComponentToRender} />
             <Route path="/profile" component={Profile} />
             <Route path="/login" component={Login} />
+            <Route path="/group/:groupId" component={Group} />
           </TransitioningRoutes>
         </>
       </ThemeProvider>

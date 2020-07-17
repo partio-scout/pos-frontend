@@ -70,11 +70,12 @@ const ListItem = ({
   icon = TaskIcon,
   showFavourite,
   isFavourite,
+  onClick,
 }) => {
   const history = useHistory()
 
   return (
-    <StyledListItem ageGroupGuid={ageGroupGuid} icon={icon}>
+    <StyledListItem ageGroupGuid={ageGroupGuid} icon={icon} onClick={onClick}>
       <StyledListItemContent
         data-testid="link"
         onClick={() =>
