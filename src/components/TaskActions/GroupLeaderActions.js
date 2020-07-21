@@ -1,6 +1,6 @@
 import React from 'react'
 import styled, { keyframes } from 'styled-components'
-import FavouriteIcon, { StyledCompletedIcon } from '../TaskActionsIcons'
+import { StyledAcceptIcon, StyledDeleteIcon } from '../TaskActionsIcons'
 
 const Overlay = styled.div`
   width: 100%;
@@ -66,11 +66,11 @@ const GroupLeaderActions = ({ markTaskCompleted, onCancel }) => {
       <Overlay />
       <Content>
         <ActivityItem onClick={markTaskCompleted}>
-          <StyledCompletedIcon />
+          <StyledAcceptIcon />
           <span>Hyväksy aktiviteetti</span>
         </ActivityItem>
         <ActivityItem>
-          <FavouriteIcon />
+          <StyledDeleteIcon />
           <span>Poista aktiviteetti</span>
         </ActivityItem>
         <ActivityItem onClick={onCancel}>
