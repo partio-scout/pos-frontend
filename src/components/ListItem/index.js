@@ -66,6 +66,7 @@ const ListItem = ({
   subTitle,
   language,
   showActions,
+  actionsComponent,
   itemType,
   icon = TaskIcon,
   showFavourite,
@@ -89,7 +90,12 @@ const ListItem = ({
       <StyledActions>
         {showFavourite && <FavouriteIcon filled={isFavourite} />}
         {showActions && itemType && (
-          <Actions guid={guid} itemType={itemType} isFavourite={isFavourite} />
+          <Actions
+            guid={guid}
+            itemType={itemType}
+            isFavourite={isFavourite}
+            actionsComponent={actionsComponent}
+          />
         )}
       </StyledActions>
     </StyledListItem>

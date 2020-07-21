@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux'
 import DetailPage from 'components/DetailPage'
 import ListItem from 'components/ListItem'
 import TaskGroupItem from 'components/TaskGroupItem'
+import ActionsComponent from 'components/Actions'
 import {
   determineLanguageFromUrl,
   getTermInLanguage,
@@ -108,7 +109,7 @@ const TaskGroup = () => {
               )}
               language={language}
               itemType={ITEM_TYPES.TASK}
-              showActions
+              actionsComponent={ActionsComponent}
               showFavourite
               isFavourite={favourites.includes(task.guid)}
             />

@@ -34,6 +34,7 @@ import Manage from 'views/Manage'
 import Profile from 'views/Profile'
 import Login from 'views/Login'
 import Group from 'views/Group'
+import Member from 'views/Member'
 import { ITEM_TYPES } from 'consts'
 
 const App = () => {
@@ -70,7 +71,12 @@ const App = () => {
             <Route path="/guid/:guid" component={ComponentToRender} />
             <Route path="/profile" component={Profile} />
             <Route path="/login" component={Login} />
-            <Route path="/group/:groupId" component={Group} />
+            <Route exact path="/group/:groupId" component={Group} />
+            <Route
+              exact
+              path="/group/:groupId/member/:memberId"
+              component={Member}
+            />
           </TransitioningRoutes>
         </>
       </ThemeProvider>
