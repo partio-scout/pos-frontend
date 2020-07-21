@@ -66,15 +66,17 @@ const ListItem = ({
   subTitle,
   language,
   showActions,
+  actionsComponent,
   itemType,
   icon = TaskIcon,
   showFavourite,
   isFavourite,
+  onClick,
 }) => {
   const history = useHistory()
 
   return (
-    <StyledListItem ageGroupGuid={ageGroupGuid} icon={icon}>
+    <StyledListItem ageGroupGuid={ageGroupGuid} icon={icon} onClick={onClick}>
       <StyledListItemContent
         data-testid="link"
         onClick={() =>
@@ -88,7 +90,12 @@ const ListItem = ({
       <StyledActions>
         {showFavourite && <FavouriteIcon filled={isFavourite} />}
         {showActions && itemType && (
-          <Actions guid={guid} itemType={itemType} isFavourite={isFavourite} />
+          <Actions
+            guid={guid}
+            itemType={itemType}
+            isFavourite={isFavourite}
+            actionsComponent={actionsComponent}
+          />
         )}
       </StyledActions>
     </StyledListItem>

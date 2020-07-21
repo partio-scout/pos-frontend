@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux'
 import DetailPage from 'components/DetailPage'
 import ListItem from 'components/ListItem'
 import TaskGroupItem from 'components/TaskGroupItem'
+
 import {
   determineLanguageFromUrl,
   getTermInLanguage,

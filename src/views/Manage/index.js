@@ -45,9 +45,11 @@ const Content = styled.div`
 const Manage = () => {
   const history = useHistory()
   const language = determineLanguageFromUrl(window.location)
+  const groupsData = useSelector(state => state.user.userGroups)
   const generalTranslations = useSelector(state => state.translations.yleiset)
-  if (!generalTranslations) return null
+  if (!generalTranslations || !groupsData) return null
 
+  // TODO: käännös alla olevalle Omat laumat otsikolle
   return (
     <StyledManage>
       <Header>
@@ -57,18 +59,29 @@ const Manage = () => {
         <CloseIcon onClick={() => history.push('/')} />
       </Header>
       <Content>
-        <Subheading>
-          {getTermInLanguage(generalTranslations, 'notifications', language)}
-        </Subheading>
-        <ListItem
-          ageGroupGuid={'default'}
-          title="Viittaveljet / Sudenpennut 2"
-          subTitle="Jäsen 1 liittyi"
-          language="fi"
-          icon={null}
-          itemType={ITEM_TYPES.TASK}
-          showActions
-        />
+        <Subheading>Omat laumat</Subheading>
+        {groupsData.map(group => {
+          const groupName = group.name
+          const ageGroup = group.ageGroup
+          const ageGroupId = group.id
+          const groupMembers = group.members.length + ' partiolaista'
+          const title = '' + groupName + ' / ' + ageGroup
+          return (
+            <ListItem
+              onClick={() =>
+                history.push(`/group/${ageGroupId}/?lang=${language}`)
+              }
+              key={ageGroupId}
+              ageGroupGuid={ageGroupId}
+              title={title}
+              subTitle={groupMembers}
+              language="fi"
+              icon={null}
+              itemType={ITEM_TYPES.TASK}
+              showActions
+            />
+          )
+        })}
       </Content>
     </StyledManage>
   )

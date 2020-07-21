@@ -15,8 +15,15 @@ import {
   setTasks,
   deleteActive,
 } from 'redux/actionCreators'
+import { GroupLeaderActions } from 'components/TaskActions'
 
-const Actions = ({ guid, itemType, className, isFavourite }) => {
+const Actions = ({
+  guid,
+  itemType,
+  className,
+  isFavourite,
+  actionsComponent,
+}) => {
   const [showActions, setShowActions] = useState(false)
   const tasks = useSelector(state => state.tasks)
   const dispatch = useDispatch()
@@ -153,6 +160,8 @@ const Actions = ({ guid, itemType, className, isFavourite }) => {
     }
   }
 
+  const ActionsComponent = getActionsComponent(actionsComponent)
+
   return (
     <>
       <MoreHorizontal
@@ -160,7 +169,7 @@ const Actions = ({ guid, itemType, className, isFavourite }) => {
         className={className}
       />
       {itemType === ITEM_TYPES.TASK && showActions && (
-        <TaskActions
+        <ActionsComponent
           onCancel={() => setShowActions(false)}
           onMarkCompleted={() => markTaskCompleted()}
           toggleFavourite={() => toggleFavourite()}
@@ -172,6 +181,22 @@ const Actions = ({ guid, itemType, className, isFavourite }) => {
       )}
     </>
   )
+}
+
+const getActionsComponent = actionsComponent => {
+  switch (actionsComponent) {
+    case actionTypes.userActions:
+      return TaskActions
+    case actionTypes.groupLeaderActions:
+      return GroupLeaderActions
+    default:
+      return TaskActions
+  }
+}
+
+export const actionTypes = {
+  userActions: 'USER_ACTIONS',
+  groupLeaderActions: 'GROUP_LEADER_ACTIONS',
 }
 
 export default Actions

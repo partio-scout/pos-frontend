@@ -162,3 +162,23 @@ export const fetchProfile = async () => {
     return {}
   }
 }
+
+export const fetchUserGroups = async () => {
+  try {
+    const res = await fetch(`${API_URL}/groups`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+    })
+    if (!res.ok) {
+      return []
+    }
+    const data = await res.json()
+    return data
+  } catch (err) {
+    console.log('Error fetching groups: ', err)
+    return {}
+  }
+}
