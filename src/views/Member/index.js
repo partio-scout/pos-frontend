@@ -125,14 +125,8 @@ const Member = () => {
 
   const memberTasks = member.memberTasks
 
-  const completedTasks = memberTasks.filter(
-    task => task.completion_status === COMPLETION_STATUS.COMPLETED
-  )
   const completionRequestedTasks = memberTasks.filter(
     task => task.completion_status === COMPLETION_STATUS.COMPLETION_REQUESTED
-  )
-  const activeTasks = memberTasks.filter(
-    task => task.completion_status === COMPLETION_STATUS.ACTIVE
   )
 
   const groupTitle = '' + group.name + ' / ' + group.ageGroup
