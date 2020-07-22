@@ -41,6 +41,19 @@ export const postTaskEntry = async entry => {
   return data
 }
 
+export const postMemberTaskEntry = async entry => {
+  const res = await fetch(`${API_URL}/member-entry`, {
+    method: 'POST',
+    body: JSON.stringify(entry),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    credentials: 'include',
+  })
+  const data = await res.json()
+  return data
+}
+
 export const fetchUserTasks = async () => {
   try {
     const res = await fetch(`${API_URL}/task-entries`, {

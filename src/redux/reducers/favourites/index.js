@@ -4,7 +4,7 @@ import {
   ADD_FAVOURITE,
 } from 'redux/actionTypes'
 
-const fn = (favourites, guid) => {
+const deleteFavourite = (favourites, guid) => {
   const deleteIndex = favourites.findIndex(favourite => favourite === guid)
   favourites.splice(deleteIndex, 1)
   return favourites
@@ -16,7 +16,7 @@ export const favourites = (state = [], action) => {
     case ADD_FAVOURITE:
       return [...state, action.payload]
     case DELETE_FAVOURITE:
-      return fn(state.slice(0), action.payload)
+      return deleteFavourite(state.slice(0), action.payload)
     default:
       return state
   }

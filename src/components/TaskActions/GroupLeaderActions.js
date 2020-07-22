@@ -60,12 +60,12 @@ const ActivityItem = styled.div`
   }
 `
 
-const GroupLeaderActions = ({ markTaskCompleted, onCancel }) => {
+const GroupLeaderActions = ({ acceptCompletionRequest, onCancel }) => {
   return (
     <>
       <Overlay />
       <Content>
-        <ActivityItem onClick={markTaskCompleted}>
+        <ActivityItem onClick={acceptCompletionRequest}>
           <StyledAcceptIcon />
           <span>Hyväksy aktiviteetti</span>
         </ActivityItem>
