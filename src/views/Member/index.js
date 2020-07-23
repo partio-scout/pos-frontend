@@ -5,7 +5,7 @@ import { X } from 'react-feather'
 import { determineLanguageFromUrl, getTermInLanguage } from '../../helpers'
 import { useHistory, useParams } from 'react-router-dom'
 import ListItem from 'components/ListItem'
-import { ITEM_TYPES, COMPLETION_STATUS } from '../../consts'
+import { ITEM_TYPES, COMPLETION_STATUS, AGE_GROUPS } from '../../consts'
 import { actionTypes } from 'components/Actions'
 
 const Background = styled.div`
@@ -125,13 +125,36 @@ const Member = () => {
 
   const memberTasks = member.memberTasks
 
-  const completionRequestedTasks = memberTasks.filter(
-    task => task.completion_status === COMPLETION_STATUS.COMPLETION_REQUESTED
+  const completedTasks = memberTasks.filter(
+    task => task.completion_status === COMPLETION_STATUS.COMPLETED
   )
 
+  const completionRequestedTasks = memberTasks.filter(
+    task =>
+      task.completion_status === COMPLETION_STATUS.COMPLETION_REQUESTED &&
+      !completedTasks.find(
+        completedTask => completedTask.task_guid === task.task_guid
+      )
+  )
+
+  const activeTasks = memberTasks.filter(
+    task =>
+      task.completion_status === COMPLETION_STATUS.ACTIVE &&
+      !completionRequestedTasks.find(
+        completionRequestedTask =>
+          completionRequestedTask.task_guid === task.task_guid
+      ) &&
+      !completedTasks.find(
+        completedTask => completedTask.task_guid === task.task_guid
+      )
+  )
+
+  const ageGroupGuid = AGE_GROUPS[group.ageGroupId]
+
   const groupTitle = '' + group.name + ' / ' + group.ageGroup
+
   return (
-    <Background>
+    <Background ageGroupGuid={ageGroupGuid}>
       <Content>
         <CloseIcon onClick={() => history.push(`/group/${groupId}`)} />
         <HeadingContent>
@@ -151,8 +174,61 @@ const Member = () => {
               language
             )}
           </h4>
+          <h4>
+            {getTermInLanguage(
+              generalTranslations,
+              'task_completion_requested',
+              language
+            )}
+          </h4>
           <TaskList>
-            {completionRequestedTasks.map((member, index) => {
+            {completionRequestedTasks.map((memberTask, index) => {
+              const task = itemsByGuid[memberTask.task_guid]
+              const taskTranslation = getTranslation(task.item)
+              const parent = itemsByGuid[task.parentGuid]
+              return (
+                <ListItem
+                  key={task.guid + index}
+                  guid={task.guid}
+                  groupGuid={Number(groupId)}
+                  userGuid={Number(memberId)}
+                  title={
+                    taskTranslation ? taskTranslation.title : task.item.title
+                  }
+                  subTitle={parent.item.title}
+                  itemType={ITEM_TYPES.TASK}
+                  actionsComponent={actionTypes.groupLeaderActions}
+                  showActions
+                />
+              )
+            })}
+          </TaskList>
+          <h4>Suoritetut</h4>
+          <TaskList>
+            {completedTasks.map((memberTask, index) => {
+              const task = itemsByGuid[memberTask.task_guid]
+              const taskTranslation = getTranslation(task.item)
+              const parent = itemsByGuid[task.parentGuid]
+              return (
+                <ListItem
+                  key={task.guid + index}
+                  guid={task.guid}
+                  userGuid={Number(memberId)}
+                  groupGuid={Number(groupId)}
+                  title={
+                    taskTranslation ? taskTranslation.title : task.item.title
+                  }
+                  subTitle={parent.item.title}
+                  itemType={ITEM_TYPES.TASK}
+                  actionsComponent={actionTypes.groupLeaderActions}
+                  showActions
+                />
+              )
+            })}
+          </TaskList>
+          <h4>Työn alla</h4>
+          <TaskList>
+            {activeTasks.map((member, index) => {
               const task = itemsByGuid[member.task_guid]
               const taskTranslation = getTranslation(task.item)
               const parent = itemsByGuid[task.parentGuid]
@@ -166,7 +242,6 @@ const Member = () => {
                   subTitle={parent.item.title}
                   itemType={ITEM_TYPES.TASK}
                   actionsComponent={actionTypes.groupLeaderActions}
-                  showActions
                 />
               )
             })}

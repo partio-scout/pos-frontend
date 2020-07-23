@@ -2,8 +2,11 @@ export const SET_ITEMS_BY_GUID = 'SET_ITEMS_BY_GUID'
 export const SET_AGE_GROUPS = 'SET_AGE_GROUPS'
 export const SET_SELECTED_AGE_GROUP = 'SET_SELECTED_AGE_GROUP'
 export const SET_TRANSLATIONS = 'SET_TRANSLATIONS'
+
+// User
 export const SET_USER = 'SET_USER'
 export const SET_USER_GROUPS = 'SET_USER_GROUPS'
+export const SET_GROUP_MEMBER_TASK = 'SET_GROUP_MEMBER_TASK'
 
 // Tasks
 export const SET_TASKS = 'SET_TASKS'

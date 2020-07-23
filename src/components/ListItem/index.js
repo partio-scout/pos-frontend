@@ -72,6 +72,8 @@ const ListItem = ({
   showFavourite,
   isFavourite,
   onClick,
+  userGuid,
+  groupGuid,
 }) => {
   const history = useHistory()
 
@@ -95,6 +97,8 @@ const ListItem = ({
             itemType={itemType}
             isFavourite={isFavourite}
             actionsComponent={actionsComponent}
+            userGuid={userGuid}
+            groupGuid={groupGuid}
           />
         )}
       </StyledActions>

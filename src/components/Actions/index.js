@@ -3,6 +3,7 @@ import TaskActions from 'components/TaskActions'
 import { MoreHorizontal } from 'react-feather'
 import {
   postTaskEntry,
+  postMemberTaskEntry,
   postTaskFavourite,
   deleteFavouriteTask,
   deleteActiveTask,
@@ -13,14 +14,17 @@ import {
   deleteFavourite,
   addFavourite as addFavouriteTask,
   setTasks,
+  updateGroupMemberTask,
   deleteActive,
 } from 'redux/actionCreators'
 import { GroupLeaderActions } from 'components/TaskActions'
 
 const Actions = ({
   guid,
+  userGuid,
   itemType,
   className,
+  groupGuid,
   isFavourite,
   actionsComponent,
 }) => {
@@ -77,6 +81,26 @@ const Actions = ({
       addActive()
     } else {
       markTaskCompleted()
+    }
+  }
+
+  const acceptCompletionRequest = async () => {
+    try {
+      const update = {
+        task_guid: guid,
+        user_guid: userGuid,
+        completion_status: COMPLETION_STATUS.COMPLETED,
+      }
+      await postMemberTaskEntry(update)
+      setShowActions(false)
+      dispatch(
+        updateGroupMemberTask({
+          ...update,
+          groupGuid,
+        })
+      )
+    } catch (e) {
+      console.log(e)
     }
   }
 
@@ -171,7 +195,7 @@ const Actions = ({
       {itemType === ITEM_TYPES.TASK && showActions && (
         <ActionsComponent
           onCancel={() => setShowActions(false)}
-          onMarkCompleted={() => markTaskCompleted()}
+          acceptCompletionRequest={() => acceptCompletionRequest()}
           toggleFavourite={() => toggleFavourite()}
           toggleActive={() => toggleActive()}
           toggleCompleted={() => toggleCompleted()}
