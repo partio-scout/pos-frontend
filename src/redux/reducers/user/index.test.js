@@ -7,12 +7,10 @@ describe('User reducer', () => {
   })
 
   it('should handle SET_USER', () => {
-    const testUser = [
-      {
-        name: 'Teppo Testaaja',
-        canMarkCompleted: false,
-      },
-    ]
+    const testUser = {
+      name: 'Teppo Testaaja',
+      canMarkCompleted: false,
+    }
     expect(
       user(
         {},
