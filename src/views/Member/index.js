@@ -5,7 +5,7 @@ import { X } from 'react-feather'
 import { determineLanguageFromUrl, getTermInLanguage } from '../../helpers'
 import { useHistory, useParams } from 'react-router-dom'
 import ListItem from 'components/ListItem'
-import { ITEM_TYPES, COMPLETION_STATUS } from '../../consts'
+import { ITEM_TYPES, COMPLETION_STATUS, AGE_GROUPS } from '../../consts'
 import { actionTypes } from 'components/Actions'
 
 const Background = styled.div`
@@ -149,9 +149,12 @@ const Member = () => {
       )
   )
 
+  const ageGroupGuid = AGE_GROUPS[group.ageGroupId]
+
   const groupTitle = '' + group.name + ' / ' + group.ageGroup
+
   return (
-    <Background>
+    <Background ageGroupGuid={ageGroupGuid}>
       <Content>
         <CloseIcon onClick={() => history.push(`/group/${groupId}`)} />
         <HeadingContent>

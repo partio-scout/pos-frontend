@@ -1,6 +1,9 @@
 import React from 'react'
 import styled, { keyframes } from 'styled-components'
 import { StyledAcceptIcon, StyledDeleteIcon } from '../TaskActionsIcons'
+import { COMPLETION_STATUS } from '../../consts'
+import { useSelector } from 'react-redux'
+import { useParams } from 'react-router-dom'
 
 const Overlay = styled.div`
   width: 100%;
@@ -60,15 +63,39 @@ const ActivityItem = styled.div`
   }
 `
 
-const GroupLeaderActions = ({ acceptCompletionRequest, onCancel }) => {
+const GroupLeaderActions = ({ acceptCompletionRequest, onCancel, guid }) => {
+  const { groupId } = useParams()
+  const { memberId } = useParams()
+
+  const groupsData = useSelector(state => state.user.userGroups)
+
+  const group = groupsData.find(
+    groups => groups.id.toString() === groupId.toString()
+  )
+  const members = group.members
+
+  const member = members.find(
+    members => members.memberId.toString() === memberId.toString()
+  )
+
+  const memberTasks = member.memberTasks
+
+  const completedTasks = memberTasks.filter(
+    task => task.completion_status === COMPLETION_STATUS.COMPLETED
+  )
+
+  const isCompleted = !!completedTasks.find(task => task.task_guid === guid)
+
   return (
     <>
       <Overlay />
       <Content>
-        <ActivityItem onClick={acceptCompletionRequest}>
-          <StyledAcceptIcon />
-          <span>Hyväksy aktiviteetti</span>
-        </ActivityItem>
+        {isCompleted ? null : (
+          <ActivityItem onClick={acceptCompletionRequest}>
+            <StyledAcceptIcon />
+            <span>Hyväksy aktiviteetti</span>
+          </ActivityItem>
+        )}
         <ActivityItem>
           <StyledDeleteIcon />
           <span>Poista aktiviteetti</span>
