@@ -2,6 +2,7 @@ import {
   SET_USER,
   SET_USER_GROUPS,
   SET_GROUP_MEMBER_TASK,
+  REMOVE_GROUP_MEMBER_TASK,
 } from 'redux/actionTypes'
 
 export const setUser = user => {
@@ -21,6 +22,13 @@ export const setUserGroups = groups => {
 export const updateGroupMemberTask = memberTask => {
   return {
     type: SET_GROUP_MEMBER_TASK,
+    payload: memberTask,
+  }
+}
+
+export const deleteMemberTaskEntry = memberTask => {
+  return {
+    type: REMOVE_GROUP_MEMBER_TASK,
     payload: memberTask,
   }
 }

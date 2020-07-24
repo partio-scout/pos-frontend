@@ -20,8 +20,7 @@ export const fetchTranslations = async () => {
   const res = await fetch(
     'https://pof-backend.partio.fi/tag-translations-json/'
   )
-  const data = await res.json()
-  return data
+  return await res.json()
 }
 
 // POS BACKEND
@@ -37,13 +36,24 @@ export const postTaskEntry = async entry => {
     },
     credentials: 'include',
   })
-  const data = await res.json()
-  return data
+  return await res.json()
 }
 
 export const postMemberTaskEntry = async entry => {
   const res = await fetch(`${API_URL}/member-entry`, {
     method: 'POST',
+    body: JSON.stringify(entry),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    credentials: 'include',
+  })
+  return res.json()
+}
+
+export const removeMemberTaskEntry = async entry => {
+  const res = await fetch(`${API_URL}/member-entry`, {
+    method: 'DELETE',
     body: JSON.stringify(entry),
     headers: {
       'Content-Type': 'application/json',
@@ -66,8 +76,7 @@ export const fetchUserTasks = async () => {
       console.log(`FetchUserTasks: ${res.status} ${res.statusText}`)
       return []
     }
-    const data = await res.json()
-    return data
+    return await res.json()
   } catch (error) {
     console.log('Error fetching users tasks')
     return []
@@ -83,8 +92,7 @@ export const postTaskFavourite = async entry => {
     },
     credentials: 'include',
   })
-  const data = await res.json()
-  return data
+  return await res.json()
 }
 
 export const deleteFavouriteTask = async entry => {
@@ -95,8 +103,7 @@ export const deleteFavouriteTask = async entry => {
     },
     credentials: 'include',
   })
-  const data = await res.json()
-  return data
+  return await res.json()
 }
 
 export const deleteActiveTask = async entry => {
@@ -107,8 +114,7 @@ export const deleteActiveTask = async entry => {
     },
     credentials: 'include',
   })
-  const data = await res.json()
-  return data
+  return await res.json()
 }
 
 export const fetchFavourites = async () => {
@@ -147,8 +153,7 @@ export const fetchUser = async () => {
 
       return {}
     }
-    const data = await res.json()
-    return data
+    return await res.json()
   } catch (err) {
     console.log('User network error: ', err)
     return {}
@@ -167,8 +172,7 @@ export const fetchProfile = async () => {
     if (!res.ok) {
       return []
     }
-    const data = await res.json()
-    return data
+    return await res.json()
   } catch (err) {
     console.log('Error fetching profile: ', err)
     return {}
@@ -187,8 +191,7 @@ export const fetchUserGroups = async () => {
     if (!res.ok) {
       return []
     }
-    const data = await res.json()
-    return data
+    return await res.json()
   } catch (err) {
     console.log('Error fetching groups: ', err)
     return {}

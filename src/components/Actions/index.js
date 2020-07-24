@@ -3,19 +3,21 @@ import TaskActions from 'components/TaskActions'
 import { MoreHorizontal } from 'react-feather'
 import {
   postTaskEntry,
-  postMemberTaskEntry,
-  postTaskFavourite,
-  deleteFavouriteTask,
   deleteActiveTask,
+  postTaskFavourite,
+  postMemberTaskEntry,
+  deleteFavouriteTask,
+  removeMemberTaskEntry,
 } from 'api'
 import { COMPLETION_STATUS, ITEM_TYPES } from 'consts'
 import { useDispatch, useSelector } from 'react-redux'
 import {
-  deleteFavourite,
-  addFavourite as addFavouriteTask,
   setTasks,
-  updateGroupMemberTask,
   deleteActive,
+  deleteFavourite,
+  deleteMemberTaskEntry,
+  updateGroupMemberTask,
+  addFavourite as addFavouriteTask,
 } from 'redux/actionCreators'
 import { GroupLeaderActions } from 'components/TaskActions'
 
@@ -95,6 +97,25 @@ const Actions = ({
       setShowActions(false)
       dispatch(
         updateGroupMemberTask({
+          ...update,
+          groupGuid,
+        })
+      )
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
+  const rejectMemberTask = async () => {
+    try {
+      const update = {
+        task_guid: guid,
+        user_guid: userGuid,
+      }
+      setShowActions(false)
+      await removeMemberTaskEntry(update)
+      dispatch(
+        deleteMemberTaskEntry({
           ...update,
           groupGuid,
         })
@@ -195,7 +216,8 @@ const Actions = ({
       {itemType === ITEM_TYPES.TASK && showActions && (
         <ActionsComponent
           onCancel={() => setShowActions(false)}
-          acceptCompletionRequest={() => acceptCompletionRequest()}
+          acceptCompletionRequest={acceptCompletionRequest}
+          rejectMemberTask={rejectMemberTask}
           toggleFavourite={() => toggleFavourite()}
           toggleActive={() => toggleActive()}
           toggleCompleted={() => toggleCompleted()}
