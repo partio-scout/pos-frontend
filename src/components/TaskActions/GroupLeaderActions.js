@@ -63,7 +63,12 @@ const ActivityItem = styled.div`
   }
 `
 
-const GroupLeaderActions = ({ acceptCompletionRequest, onCancel, guid }) => {
+const GroupLeaderActions = ({
+  acceptCompletionRequest,
+  rejectMemberTask,
+  onCancel,
+  guid,
+}) => {
   const { groupId } = useParams()
   const { memberId } = useParams()
 
@@ -96,9 +101,9 @@ const GroupLeaderActions = ({ acceptCompletionRequest, onCancel, guid }) => {
             <span>Hyväksy aktiviteetti</span>
           </ActivityItem>
         )}
-        <ActivityItem>
+        <ActivityItem onClick={rejectMemberTask}>
           <StyledDeleteIcon />
-          <span>Poista aktiviteetti</span>
+          <span>Hylkää aktiviteetti</span>
         </ActivityItem>
         <ActivityItem onClick={onCancel}>
           <span>Peruuta</span>
