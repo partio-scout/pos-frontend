@@ -64,11 +64,11 @@ const Group = () => {
       </Header>
       <Content>
         {members.map(member => {
-          const tasks = member.memberTasks.filter(
-            task =>
-              task.completion_status ===
+          const tasks = Object.keys(member.memberTasks).filter(
+            guid =>
+              member.memberTasks[guid] ===
                 COMPLETION_STATUS.COMPLETION_REQUESTED ||
-              task.completion_status === COMPLETION_STATUS.ACTIVE
+              member.memberTasks[guid] === COMPLETION_STATUS.ACTIVE
           )
           const subTitle = tasks.length + ' aktiviteettia työn alla'
           const memberId = member.memberId

@@ -85,11 +85,11 @@ const GroupLeaderActions = ({
 
   const memberTasks = member.memberTasks
 
-  const completedTasks = memberTasks.filter(
-    task => task.completion_status === COMPLETION_STATUS.COMPLETED
+  const completedTasks = Object.keys(memberTasks).filter(
+    guid => memberTasks[guid] === COMPLETION_STATUS.COMPLETED
   )
 
-  const isCompleted = !!completedTasks.find(task => task.task_guid === guid)
+  const isCompleted = !!completedTasks.find(taskGuid => taskGuid === guid)
 
   return (
     <>

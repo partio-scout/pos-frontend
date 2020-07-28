@@ -11,15 +11,6 @@ const deleteActive = (tasks, guid) => {
 export const tasks = (state = [], action) => {
   switch (action.type) {
     case SET_TASKS:
-      action.payload.sort((taskA, taskB) => {
-        if (taskA.completion_status === COMPLETION_STATUS.COMPLETED) return 1
-        if (taskB.completion_status === COMPLETION_STATUS.COMPLETED) return -1
-        if (taskA.completion_status === COMPLETION_STATUS.COMPLETION_REQUESTED)
-          return 1
-        if (taskB.completion_status === COMPLETION_STATUS.COMPLETION_REQUESTED)
-          return -1
-        return 0
-      })
       return action.payload.reduce((acc, curr) => {
         acc[curr.task_guid] = curr.completion_status
         return acc

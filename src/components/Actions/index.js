@@ -7,7 +7,6 @@ import {
   postTaskFavourite,
   postMemberTaskEntry,
   deleteFavouriteTask,
-  removeMemberTaskEntry,
 } from 'api'
 import { COMPLETION_STATUS, ITEM_TYPES } from 'consts'
 import { useDispatch, useSelector } from 'react-redux'
@@ -15,7 +14,6 @@ import {
   setTasks,
   deleteActive,
   deleteFavourite,
-  deleteMemberTaskEntry,
   updateGroupMemberTask,
   addFavourite as addFavouriteTask,
 } from 'redux/actionCreators'
@@ -111,11 +109,12 @@ const Actions = ({
       const update = {
         task_guid: guid,
         user_guid: userGuid,
+        completion_status: COMPLETION_STATUS.ACTIVE,
       }
       setShowActions(false)
-      await removeMemberTaskEntry(update)
+      await postMemberTaskEntry(update)
       dispatch(
-        deleteMemberTaskEntry({
+        updateGroupMemberTask({
           ...update,
           groupGuid,
         })

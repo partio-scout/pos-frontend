@@ -125,28 +125,16 @@ const Member = () => {
 
   const memberTasks = member.memberTasks
 
-  const completedTasks = memberTasks.filter(
-    task => task.completion_status === COMPLETION_STATUS.COMPLETED
+  const completedTasks = Object.keys(memberTasks).filter(
+    guid => memberTasks[guid] === COMPLETION_STATUS.COMPLETED
   )
 
-  const completionRequestedTasks = memberTasks.filter(
-    task =>
-      task.completion_status === COMPLETION_STATUS.COMPLETION_REQUESTED &&
-      !completedTasks.find(
-        completedTask => completedTask.task_guid === task.task_guid
-      )
+  const completionRequestedTasks = Object.keys(memberTasks).filter(
+    guid => memberTasks[guid] === COMPLETION_STATUS.COMPLETION_REQUESTED
   )
 
-  const activeTasks = memberTasks.filter(
-    task =>
-      task.completion_status === COMPLETION_STATUS.ACTIVE &&
-      !completionRequestedTasks.find(
-        completionRequestedTask =>
-          completionRequestedTask.task_guid === task.task_guid
-      ) &&
-      !completedTasks.find(
-        completedTask => completedTask.task_guid === task.task_guid
-      )
+  const activeTasks = Object.keys(memberTasks).filter(
+    guid => memberTasks[guid] === COMPLETION_STATUS.ACTIVE
   )
 
   const ageGroupGuid = AGE_GROUPS[group.ageGroupId]
@@ -182,8 +170,8 @@ const Member = () => {
             )}
           </h4>
           <TaskList>
-            {completionRequestedTasks.map((memberTask, index) => {
-              const task = itemsByGuid[memberTask.task_guid]
+            {completionRequestedTasks.map((taskGuid, index) => {
+              const task = itemsByGuid[taskGuid]
               const taskTranslation = getTranslation(task.item)
               const parent = itemsByGuid[task.parentGuid]
               return (
@@ -192,29 +180,6 @@ const Member = () => {
                   guid={task.guid}
                   groupGuid={Number(groupId)}
                   userGuid={Number(memberId)}
-                  title={
-                    taskTranslation ? taskTranslation.title : task.item.title
-                  }
-                  subTitle={parent.item.title}
-                  itemType={ITEM_TYPES.TASK}
-                  actionsComponent={actionTypes.groupLeaderActions}
-                  showActions
-                />
-              )
-            })}
-          </TaskList>
-          <h4>Suoritetut</h4>
-          <TaskList>
-            {completedTasks.map((memberTask, index) => {
-              const task = itemsByGuid[memberTask.task_guid]
-              const taskTranslation = getTranslation(task.item)
-              const parent = itemsByGuid[task.parentGuid]
-              return (
-                <ListItem
-                  key={task.guid + index}
-                  guid={task.guid}
-                  userGuid={Number(memberId)}
-                  groupGuid={Number(groupId)}
                   title={
                     taskTranslation ? taskTranslation.title : task.item.title
                   }
@@ -228,8 +193,9 @@ const Member = () => {
           </TaskList>
           <h4>Työn alla</h4>
           <TaskList>
-            {activeTasks.map((member, index) => {
-              const task = itemsByGuid[member.task_guid]
+            {activeTasks.map((taskGuid, index) => {
+              const task = itemsByGuid[taskGuid]
+              console.log(task)
               const taskTranslation = getTranslation(task.item)
               const parent = itemsByGuid[task.parentGuid]
               return (
@@ -242,6 +208,29 @@ const Member = () => {
                   subTitle={parent.item.title}
                   itemType={ITEM_TYPES.TASK}
                   actionsComponent={actionTypes.groupLeaderActions}
+                />
+              )
+            })}
+          </TaskList>
+          <h4>Suoritetut</h4>
+          <TaskList>
+            {completedTasks.map((taskGuid, index) => {
+              const task = itemsByGuid[taskGuid]
+              const taskTranslation = getTranslation(task.item)
+              const parent = itemsByGuid[task.parentGuid]
+              return (
+                <ListItem
+                  key={task.guid + index}
+                  guid={task.guid}
+                  userGuid={Number(memberId)}
+                  groupGuid={Number(groupId)}
+                  title={
+                    taskTranslation ? taskTranslation.title : task.item.title
+                  }
+                  subTitle={parent.item.title}
+                  itemType={ITEM_TYPES.TASK}
+                  actionsComponent={actionTypes.groupLeaderActions}
+                  showActions
                 />
               )
             })}
