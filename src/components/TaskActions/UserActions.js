@@ -6,6 +6,7 @@ import FavouriteIcon, {
 } from '../TaskActionsIcons'
 import { useSelector } from 'react-redux'
 import { COMPLETION_STATUS } from '../../consts'
+import { determineLanguageFromUrl, getTermInLanguage } from '../../helpers'
 
 const Overlay = styled.div`
   width: 100%;
@@ -74,6 +75,9 @@ const TaskActions = ({
   guid,
 }) => {
   const userTasks = useSelector(state => state.tasks)
+  const generalTranslations = useSelector(state => state.translations.yleiset)
+
+  const language = determineLanguageFromUrl(window.location)
 
   const activeTasks = Object.keys(userTasks).filter(
     guid => userTasks[guid] === COMPLETION_STATUS.ACTIVE
@@ -103,7 +107,17 @@ const TaskActions = ({
           <ActivityItem onClick={toggleActive}>
             <StyleActiveIcon />
             <span>
-              {isActive ? 'Poista aloitetuista' : 'Merkitse aloitetuksi'}
+              {isActive
+                ? getTermInLanguage(
+                    generalTranslations,
+                    'delete_from_started',
+                    language
+                  )
+                : getTermInLanguage(
+                    generalTranslations,
+                    'add_as_started',
+                    language
+                  )}
             </span>
           </ActivityItem>
         )}

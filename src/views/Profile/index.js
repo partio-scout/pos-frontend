@@ -247,7 +247,6 @@ const Profile = () => {
       })
   }
 
-  //TODO: KÄÄNNÖS OTSIKOLLE AKTIVITEETIT /TYÖN ALLA
   const ageGroupGuid = userData.ageGroupGuid
   return (
     <Background ageGroupGuid={ageGroupGuid}>
@@ -293,7 +292,15 @@ const Profile = () => {
                 )
               })}
           </TaskList>
-          <h4>Aktiviteetit / työn alla</h4>
+          <h4>
+            {getTermInLanguage(
+              activityTranslations,
+              'aktiviteetti_plural',
+              language
+            )}{' '}
+            /{' '}
+            {getTermInLanguage(generalTranslations, 'working_on_it', language)}
+          </h4>
           <TaskList>
             {ongoingTasks.map(taskGuid => {
               const task = itemsByGuid[taskGuid]

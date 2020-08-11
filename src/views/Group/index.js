@@ -2,7 +2,7 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 import styled from 'styled-components'
 import { X } from 'react-feather'
-import { determineLanguageFromUrl } from '../../helpers'
+import { determineLanguageFromUrl, getTermInLanguage } from '../../helpers'
 import { useHistory, useParams } from 'react-router-dom'
 import ListItem from '../../components/ListItem'
 import { COMPLETION_STATUS } from '../../consts'
@@ -70,7 +70,10 @@ const Group = () => {
                 COMPLETION_STATUS.COMPLETION_REQUESTED ||
               member.memberTasks[guid] === COMPLETION_STATUS.ACTIVE
           )
-          const subTitle = tasks.length + ' aktiviteettia työn alla'
+          const subTitle =
+            tasks.length +
+            ' aktiviteettia ' +
+            getTermInLanguage(generalTranslations, 'working_on_it', language)
           const memberId = member.memberId
           return (
             <ListItem
