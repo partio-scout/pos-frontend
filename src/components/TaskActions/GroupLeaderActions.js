@@ -117,7 +117,9 @@ const GroupLeaderActions = ({
           </span>
         </ActivityItem>
         <ActivityItem onClick={onCancel}>
-          <span>Peruuta</span>
+          <span>
+            {getTermInLanguage(generalTranslations, 'cancel', language)}
+          </span>
         </ActivityItem>
       </Content>
     </>

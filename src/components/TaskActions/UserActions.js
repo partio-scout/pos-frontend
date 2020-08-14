@@ -125,16 +125,34 @@ const TaskActions = ({
           <StyledCompletedIcon />
           <span>
             {isCompleted || isCompletionRequested
-              ? 'Poista suoritetuista'
-              : 'Merkitse suoritetuksi'}
+              ? getTermInLanguage(
+                  generalTranslations,
+                  'delete_from_done',
+                  language
+                )
+              : getTermInLanguage(generalTranslations, 'add_as_done', language)}
           </span>
         </ActivityItem>
         <ActivityItem onClick={toggleFavourite}>
           <FavouriteIcon filled={!isFavourite} />
-          <span>{isFavourite ? 'Poista suosikeista' : 'Lisää suosikiksi'}</span>
+          <span>
+            {isFavourite
+              ? getTermInLanguage(
+                  generalTranslations,
+                  'delete_from_favourites',
+                  language
+                )
+              : getTermInLanguage(
+                  generalTranslations,
+                  'add_as_favourite',
+                  language
+                )}
+          </span>
         </ActivityItem>
         <ActivityItem onClick={onCancel}>
-          <span>Peruuta</span>
+          <span>
+            {getTermInLanguage(generalTranslations, 'cancel', language)}
+          </span>
         </ActivityItem>
       </Content>
     </>
