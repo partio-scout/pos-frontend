@@ -4,6 +4,7 @@ import { StyledAcceptIcon, StyledDeleteIcon } from '../TaskActionsIcons'
 import { COMPLETION_STATUS } from '../../consts'
 import { useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
+import { determineLanguageFromUrl, getTermInLanguage } from '../../helpers'
 
 const Overlay = styled.div`
   width: 100%;
@@ -72,7 +73,11 @@ const GroupLeaderActions = ({
   const { groupId } = useParams()
   const { memberId } = useParams()
 
+  const language = determineLanguageFromUrl(window.location)
+
   const groupsData = useSelector(state => state.user.userGroups)
+  const generalTranslations = useSelector(state => state.translations.yleiset)
+  const apiTypeTranslations = useSelector(state => state.translations.api_type)
 
   const group = groupsData.find(
     groups => groups.id.toString() === groupId.toString()
@@ -98,15 +103,23 @@ const GroupLeaderActions = ({
         {isCompleted ? null : (
           <ActivityItem onClick={acceptCompletionRequest}>
             <StyledAcceptIcon />
-            <span>Hyväksy aktiviteetti</span>
+            <span>
+              {getTermInLanguage(generalTranslations, 'accept', language)}{' '}
+              {getTermInLanguage(apiTypeTranslations, 'task', language)}
+            </span>
           </ActivityItem>
         )}
         <ActivityItem onClick={rejectMemberTask}>
           <StyledDeleteIcon />
-          <span>Hylkää aktiviteetti</span>
+          <span>
+            {getTermInLanguage(generalTranslations, 'delete', language)}{' '}
+            {getTermInLanguage(apiTypeTranslations, 'task', language)}
+          </span>
         </ActivityItem>
         <ActivityItem onClick={onCancel}>
-          <span>Peruuta</span>
+          <span>
+            {getTermInLanguage(generalTranslations, 'cancel', language)}
+          </span>
         </ActivityItem>
       </Content>
     </>

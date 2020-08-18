@@ -191,11 +191,12 @@ const Member = () => {
               )
             })}
           </TaskList>
-          <h4>Työn alla</h4>
+          <h4>
+            {getTermInLanguage(generalTranslations, 'working_on_it', language)}
+          </h4>
           <TaskList>
             {activeTasks.map((taskGuid, index) => {
               const task = itemsByGuid[taskGuid]
-              console.log(task)
               const taskTranslation = getTranslation(task.item)
               const parent = itemsByGuid[task.parentGuid]
               return (
@@ -212,7 +213,9 @@ const Member = () => {
               )
             })}
           </TaskList>
-          <h4>Suoritetut</h4>
+          <h4>
+            {getTermInLanguage(generalTranslations, 'completed', language)}
+          </h4>
           <TaskList>
             {completedTasks.map((taskGuid, index) => {
               const task = itemsByGuid[taskGuid]

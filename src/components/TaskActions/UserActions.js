@@ -6,6 +6,7 @@ import FavouriteIcon, {
 } from '../TaskActionsIcons'
 import { useSelector } from 'react-redux'
 import { COMPLETION_STATUS } from '../../consts'
+import { determineLanguageFromUrl, getTermInLanguage } from '../../helpers'
 
 const Overlay = styled.div`
   width: 100%;
@@ -74,6 +75,9 @@ const TaskActions = ({
   guid,
 }) => {
   const userTasks = useSelector(state => state.tasks)
+  const generalTranslations = useSelector(state => state.translations.yleiset)
+
+  const language = determineLanguageFromUrl(window.location)
 
   const activeTasks = Object.keys(userTasks).filter(
     guid => userTasks[guid] === COMPLETION_STATUS.ACTIVE
@@ -103,7 +107,17 @@ const TaskActions = ({
           <ActivityItem onClick={toggleActive}>
             <StyleActiveIcon />
             <span>
-              {isActive ? 'Poista aloitetuista' : 'Merkitse aloitetuksi'}
+              {isActive
+                ? getTermInLanguage(
+                    generalTranslations,
+                    'delete_from_started',
+                    language
+                  )
+                : getTermInLanguage(
+                    generalTranslations,
+                    'add_as_started',
+                    language
+                  )}
             </span>
           </ActivityItem>
         )}
@@ -111,16 +125,34 @@ const TaskActions = ({
           <StyledCompletedIcon />
           <span>
             {isCompleted || isCompletionRequested
-              ? 'Poista suoritetuista'
-              : 'Merkitse suoritetuksi'}
+              ? getTermInLanguage(
+                  generalTranslations,
+                  'delete_from_done',
+                  language
+                )
+              : getTermInLanguage(generalTranslations, 'add_as_done', language)}
           </span>
         </ActivityItem>
         <ActivityItem onClick={toggleFavourite}>
           <FavouriteIcon filled={!isFavourite} />
-          <span>{isFavourite ? 'Poista suosikeista' : 'Lisää suosikiksi'}</span>
+          <span>
+            {isFavourite
+              ? getTermInLanguage(
+                  generalTranslations,
+                  'delete_from_favourites',
+                  language
+                )
+              : getTermInLanguage(
+                  generalTranslations,
+                  'add_as_favourite',
+                  language
+                )}
+          </span>
         </ActivityItem>
         <ActivityItem onClick={onCancel}>
-          <span>Peruuta</span>
+          <span>
+            {getTermInLanguage(generalTranslations, 'cancel', language)}
+          </span>
         </ActivityItem>
       </Content>
     </>

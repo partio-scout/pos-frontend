@@ -49,7 +49,6 @@ const Manage = () => {
   const generalTranslations = useSelector(state => state.translations.yleiset)
   if (!generalTranslations || !groupsData) return null
 
-  // TODO: käännös alla olevalle Omat laumat otsikolle
   return (
     <StyledManage>
       <Header>
@@ -59,12 +58,21 @@ const Manage = () => {
         <CloseIcon onClick={() => history.push('/')} />
       </Header>
       <Content>
-        <Subheading>Omat laumat</Subheading>
+        <Subheading>
+          {getTermInLanguage(generalTranslations, 'own_groups', language)}
+        </Subheading>
         {groupsData.map(group => {
           const groupName = group.name
           const ageGroup = group.ageGroup
           const ageGroupId = group.id
-          const groupMembers = group.members.length + ' partiolaista'
+          const groupMembers =
+            group.members.length +
+            ' ' +
+            getTermInLanguage(
+              generalTranslations,
+              'from_the_scout_law',
+              language
+            )
           const title = '' + groupName + ' / ' + ageGroup
           return (
             <ListItem

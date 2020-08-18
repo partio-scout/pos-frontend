@@ -96,6 +96,8 @@ const TaskGroup = () => {
           const status = userTasks[task.guid]
             ? userTasks[task.guid].toLowerCase()
             : ''
+          const task_status = status === 'active' ? 'started' : `task_${status}`
+
           return (
             <ListItem
               key={task.guid}
@@ -104,7 +106,7 @@ const TaskGroup = () => {
               title={taskTranslation ? taskTranslation.title : task.title}
               subTitle={getTermInLanguage(
                 generalTranslations,
-                `task_${status}`,
+                `${task_status}`,
                 language
               )}
               language={language}
