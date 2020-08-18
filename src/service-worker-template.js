@@ -46,6 +46,7 @@ workbox.precaching.precacheAndRoute([])
 
 // API calls precache
 workbox.precaching.precacheAndRoute([
+  self.__WB_MANIFEST,
   'https://pof-backend.partio.fi/spn-ohjelma-json-taysi/?postGUID=86b5b30817ce3649e590c5059ec88921',
   'https://pof-backend.partio.fi/tag-translations-json/',
 ])
