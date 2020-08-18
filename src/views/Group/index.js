@@ -72,7 +72,9 @@ const Group = () => {
           )
           const subTitle =
             tasks.length +
-            ' aktiviteettia ' +
+            ' ' +
+            getTermInLanguage(generalTranslations, 'activity', language) +
+            ' ' +
             getTermInLanguage(generalTranslations, 'working_on_it', language)
           const memberId = member.memberId
           return (
