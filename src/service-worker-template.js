@@ -42,7 +42,7 @@ self.addEventListener('fetch', event => {
   )
 })
 // GENERATED FILES ARE INJECTED HERE BY build-service-worker.js
-workbox.precaching.precacheAndRoute([self.__WB_MANIFEST])
+workbox.precaching.precacheAndRoute(self.__WB_MANIFEST)
 
 // API calls precache
 workbox.precaching.precacheAndRoute([
