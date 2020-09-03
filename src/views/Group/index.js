@@ -11,6 +11,7 @@ const StyledGroup = styled.div`
   height: 100%;
   background-color: ${({ theme }) => theme.color.background};
   pointer-events: all;
+  overflow: auto;
 `
 
 const Header = styled.div`
