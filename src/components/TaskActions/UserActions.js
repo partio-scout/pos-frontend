@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import styled, { keyframes } from 'styled-components'
 import FavouriteIcon, {
   StyledCompletedIcon,
@@ -52,6 +52,7 @@ const Content = styled.div`
 const ActivityItem = styled.div`
   display: flex;
   align-items: center;
+  ${props => (props.disabled ? 'opacity: 0.5;' : '')}
 
   > span {
     padding: 1rem;
@@ -74,6 +75,8 @@ const TaskActions = ({
   isFavourite,
   guid,
 }) => {
+  const [disabled, setDisabled] = useState(false)
+
   const userTasks = useSelector(state => state.tasks)
   const generalTranslations = useSelector(state => state.translations.yleiset)
 
@@ -99,12 +102,20 @@ const TaskActions = ({
 
   const isCompleted = !!completedTasks.find(taskGuid => taskGuid === guid)
 
+  const getOnClick = onClick =>
+    disabled
+      ? () => {}
+      : () => {
+          setDisabled(true)
+          onClick()
+        }
+
   return (
     <>
       <Overlay />
       <Content>
         {isCompletionRequested || isCompleted ? null : (
-          <ActivityItem onClick={toggleActive}>
+          <ActivityItem onClick={getOnClick(toggleActive)} disabled={disabled}>
             <StyleActiveIcon />
             <span>
               {isActive
@@ -121,7 +132,7 @@ const TaskActions = ({
             </span>
           </ActivityItem>
         )}
-        <ActivityItem onClick={toggleCompleted}>
+        <ActivityItem onClick={getOnClick(toggleCompleted)} disabled={disabled}>
           <StyledCompletedIcon />
           <span>
             {isCompleted || isCompletionRequested
@@ -133,7 +144,7 @@ const TaskActions = ({
               : getTermInLanguage(generalTranslations, 'add_as_done', language)}
           </span>
         </ActivityItem>
-        <ActivityItem onClick={toggleFavourite}>
+        <ActivityItem onClick={getOnClick(toggleFavourite)} disabled={disabled}>
           <FavouriteIcon filled={!isFavourite} />
           <span>
             {isFavourite
@@ -149,7 +160,7 @@ const TaskActions = ({
                 )}
           </span>
         </ActivityItem>
-        <ActivityItem onClick={onCancel}>
+        <ActivityItem onClick={getOnClick(onCancel)} disabled={disabled}>
           <span>
             {getTermInLanguage(generalTranslations, 'cancel', language)}
           </span>
