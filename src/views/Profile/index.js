@@ -4,7 +4,7 @@ import { useHistory } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import TaskGroupItem from 'components/TaskGroupItem'
 import AgeGroupListItem from 'components/AgeGroupListItem'
-import { fetchProfile } from 'api'
+import { API_URL, fetchProfile } from 'api'
 
 import { X } from 'react-feather'
 import {
@@ -63,7 +63,7 @@ const Content = styled.div`
 `
 
 const HeadingContent = styled.div`
-  padding-top: 7rem;
+  padding-top: 6rem;
   margin: 0 auto;
   text-align: center;
   margin-bottom: 24px;
@@ -260,6 +260,9 @@ const Profile = () => {
             <>
               <h3>{userData.name}</h3>
               <span>{userData.defaultTroopName}</span>
+              <div>
+                <a href={`${API_URL}/logout`}>Logout</a>
+              </div>
             </>
           )}
         </HeadingContent>
