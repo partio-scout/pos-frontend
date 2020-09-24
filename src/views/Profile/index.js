@@ -110,6 +110,7 @@ const Profile = () => {
   const language = determineLanguageFromUrl(window.location)
   const [userData, setUserData] = useState({})
   const [isFetchingProfile, setIsFetchingProfile] = useState(false)
+  const [errorFetchingProfile, setErrorFetchingProfile] = useState(false)
   const userTasks = useSelector(state => state.tasks)
   const ageGroups = useSelector(state => state.ageGroups)
   const itemsByGuid = useSelector(state => state.itemsByGuid)
@@ -222,7 +223,11 @@ const Profile = () => {
     .flat()
     .map(guid => itemsByGuid[guid])
 
-  if (!Object.entries(userData).length && !isFetchingProfile) {
+  if (
+    !Object.entries(userData).length &&
+    !isFetchingProfile &&
+    !errorFetchingProfile
+  ) {
     setIsFetchingProfile(true)
     fetchProfile()
       .then(userProfileData => {
@@ -239,7 +244,8 @@ const Profile = () => {
         setUserData(userProfileData)
       })
       .catch(error => {
-        console.error(error)
+        console.error('Fetch profile failed: ', error)
+        setErrorFetchingProfile(true)
         return error
       })
       .finally(() => {
