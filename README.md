@@ -76,11 +76,12 @@ TODO
 
 ## 5.1. Access
 
-The production app can be found [here](https://pos-production.azurewebsites.net/).
+The production app can be found [here](https://pos-production.azurewebsites.net/)
+and here: https://kompassi.partio.fi/
 
 ## 5.2. Deployment
 
-Create a release in GitHub.
+Create a release in GitHub. Fill out tag version and title and then publish the release.
 
 ## 5.3. Verifying that a deployment was successful
 
@@ -113,3 +114,5 @@ TODO
 Github Actions is used for CI.
 
 # 7. More useful information
+
+Useful links and information: https://partio-ohjelma.fi/partio-ohjelma-sovellus/
