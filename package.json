@@ -25,7 +25,7 @@
     "husky": "3.1.0",
     "prettier": "1.19.1",
     "pretty-quick": "2.0.1",
-    "react-scripts": "3.4.3",
+    "react-scripts": "3.4.4",
     "workbox-build": "^4.3.1",
     "workbox-cli": "5.1.4"
   },
