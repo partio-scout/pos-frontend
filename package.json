@@ -26,8 +26,8 @@
     "prettier": "1.19.1",
     "pretty-quick": "2.0.1",
     "react-scripts": "3.4.4",
-    "workbox-build": "5.1.4",
-    "workbox-cli": "5.1.4"
+    "workbox-build": "6.0.2",
+    "workbox-cli": "6.0.2"
   },
   "scripts": {
     "start": "env-cmd -f .env react-scripts start",
