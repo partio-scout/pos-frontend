@@ -79,6 +79,7 @@ const TaskActions = ({
 
   const userTasks = useSelector(state => state.tasks)
   const generalTranslations = useSelector(state => state.translations.yleiset)
+  const userGroups = useSelector(state => state.user.userGroups)
 
   const language = determineLanguageFromUrl(window.location)
 
@@ -160,6 +161,12 @@ const TaskActions = ({
                 )}
           </span>
         </ActivityItem>
+        {userGroups.length > 0 ? (
+          <ActivityItem disabled={disabled}>
+            <StyledCompletedIcon />
+            <span>Lisää ryhmäläisille</span>
+          </ActivityItem>
+        ) : null}
         <ActivityItem onClick={getOnClick(onCancel)} disabled={disabled}>
           <span>
             {getTermInLanguage(generalTranslations, 'cancel', language)}
