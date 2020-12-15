@@ -166,7 +166,7 @@ const TaskActions = ({
         </ActivityItem>
         {userGroups.length > 0 ? (
           <ActivityItem
-            onClick={() => history.push(`/groupMembers/?lang=${language}`)}
+            onClick={() => history.push(`/accept/${guid}/?lang=${language}`)}
             disabled={disabled}
           >
             <StyledCompletedIcon />

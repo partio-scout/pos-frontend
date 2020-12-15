@@ -73,7 +73,7 @@ const App = () => {
             <Route path="/profile" component={Profile} />
             <Route path="/login" component={Login} />
             <Route exact path="/group/:groupId" component={Group} />
-            <Route exact path="/groupMembers" component={AcceptTasks} />
+            <Route exact path="/accept/:guid" component={AcceptTasks} />
             <Route
               exact
               path="/group/:groupId/member/:memberId"

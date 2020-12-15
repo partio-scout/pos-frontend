@@ -53,9 +53,7 @@ const AcceptTasks = () => {
   return (
     <StyledAcceptTasks>
       <Header>
-        <Subheading>
-          {getTermInLanguage(generalTranslations, 'manage', language)}
-        </Subheading>
+        <Subheading>Lisää ryhmäläisille</Subheading>
         <CloseIcon onClick={() => history.push('/')} />
       </Header>
       <Content>
@@ -66,29 +64,25 @@ const AcceptTasks = () => {
           const groupName = group.name
           const ageGroup = group.ageGroup
           const ageGroupId = group.id
-          const groupMembers =
-            group.members.length +
-            ' ' +
-            getTermInLanguage(
-              generalTranslations,
-              'from_the_scout_law',
-              language
-            )
           const title = '' + groupName + ' / ' + ageGroup
           return (
-            <ListItem
-              onClick={() =>
-                history.push(`/group/${ageGroupId}/?lang=${language}`)
-              }
-              key={ageGroupId}
-              ageGroupGuid={ageGroupId}
-              title={title}
-              subTitle={groupMembers}
-              language="fi"
-              icon={null}
-              itemType={ITEM_TYPES.TASK}
-              showActions
-            />
+            <>
+              <ListItem
+                key={ageGroupId}
+                ageGroupGuid={ageGroupId}
+                title={title}
+                language="fi"
+                icon={null}
+                itemType={ITEM_TYPES.TASK}
+              />
+              <Content>
+                {group.members.map(member => {
+                  return (
+                    <ListItem key={member.memberId} title={member.memberName} />
+                  )
+                })}
+              </Content>
+            </>
           )
         })}
       </Content>
