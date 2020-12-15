@@ -7,6 +7,7 @@ import FavouriteIcon, {
 import { useSelector } from 'react-redux'
 import { COMPLETION_STATUS } from '../../consts'
 import { determineLanguageFromUrl, getTermInLanguage } from '../../helpers'
+import { useHistory } from 'react-router-dom'
 
 const Overlay = styled.div`
   width: 100%;
@@ -80,6 +81,8 @@ const TaskActions = ({
   const userTasks = useSelector(state => state.tasks)
   const generalTranslations = useSelector(state => state.translations.yleiset)
   const userGroups = useSelector(state => state.user.userGroups)
+
+  const history = useHistory()
 
   const language = determineLanguageFromUrl(window.location)
 
@@ -162,7 +165,10 @@ const TaskActions = ({
           </span>
         </ActivityItem>
         {userGroups.length > 0 ? (
-          <ActivityItem disabled={disabled}>
+          <ActivityItem
+            onClick={() => history.push(`/groupMembers/?lang=${language}`)}
+            disabled={disabled}
+          >
             <StyledCompletedIcon />
             <span>Lisää ryhmäläisille</span>
           </ActivityItem>
