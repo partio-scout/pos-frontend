@@ -3,6 +3,7 @@ import styled, { keyframes } from 'styled-components'
 import FavouriteIcon, {
   StyledCompletedIcon,
   StyleActiveIcon,
+  StyledAcceptIcon,
 } from '../TaskActionsIcons'
 import { useSelector } from 'react-redux'
 import { COMPLETION_STATUS } from '../../consts'
@@ -169,7 +170,7 @@ const TaskActions = ({
             onClick={() => history.push(`/accept/${guid}/?lang=${language}`)}
             disabled={disabled}
           >
-            <StyledCompletedIcon />
+            <StyledAcceptIcon />
             <span>Lisää ryhmäläisille</span>
           </ActivityItem>
         ) : null}
