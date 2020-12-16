@@ -51,8 +51,6 @@ const AcceptTasksAction = styled.div`
   box-sizing: border-box;
   width: 100%;
   padding: 4rem;
-  color: ${({ theme }) => theme.color.text};
-  background-color: ${({ theme }) => theme.color.background};
   z-index: 1;
   animation: ${keyframes`
     0% {
@@ -78,6 +76,15 @@ const ActivityItem = styled.div`
     > span {
       padding-top: 2rem;
     }
+  }
+`
+
+const StyledListItem = styled.div`
+  min-height: 2rem;
+  padding-left: 3.5rem;
+  padding-right: 3.5rem;
+  padding-bottom: 1rem;
+  text-decoration: none;
   }
 `
 
@@ -116,7 +123,26 @@ const AcceptTasks = () => {
               <Content>
                 {group.members.map(member => {
                   return (
-                    <ListItem key={member.memberId} title={member.memberName} />
+                    <StyledListItem key={member.memberId}>
+                      <label
+                        style={{ float: 'left', margin: 0 }}
+                        htmlFor={member.memberId}
+                      >
+                        {member.memberName}
+                      </label>
+                      <input
+                        style={{
+                          float: 'right',
+                          margin: 0,
+                          width: '1.3rem',
+                          height: '1.3rem',
+                        }}
+                        type="checkbox"
+                        value={member.memberId}
+                        onChange={null}
+                        id={member.memberId}
+                      />
+                    </StyledListItem>
                   )
                 })}
               </Content>
