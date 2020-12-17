@@ -1,6 +1,6 @@
 import React from 'react'
 import styled, { keyframes } from 'styled-components'
-import { useHistory } from 'react-router-dom'
+import { useHistory, useParams } from 'react-router-dom'
 import {
   Accordion,
   AccordionItem,
@@ -10,10 +10,13 @@ import {
 } from 'react-accessible-accordion'
 import { X } from 'react-feather'
 import ListItem from 'components/ListItem'
-import { ITEM_TYPES } from 'consts'
+import { COMPLETION_STATUS, ITEM_TYPES } from 'consts'
 import { useSelector } from 'react-redux'
 import { determineLanguageFromUrl, getTermInLanguage } from 'helpers'
 import { StyledAcceptIcon } from '../../components/TaskActionsIcons'
+import { useDispatch } from 'react-redux'
+import { updateGroupMemberTask } from '../../redux/actionCreators'
+import { acceptGroupMemeberTasks } from '../../api'
 
 const StyledAcceptTasks = styled.div`
   height: 100%;
@@ -94,28 +97,65 @@ const StyledListItem = styled.div`
   text-decoration: none;
   }
 `
+
+const AcceptButton = styled.button`
+  border: none;
+  background: rgba(0, 0, 0, 0);
+  color: white;
+`
 const initialList = []
 
 const AcceptTasks = () => {
+  const dispatch = useDispatch()
+  const { taskGuid } = useParams()
   const history = useHistory()
   const language = determineLanguageFromUrl(window.location)
   const groupsData = useSelector(state => state.user.userGroups)
   const generalTranslations = useSelector(state => state.translations.yleiset)
-  const [list, setList] = React.useState(initialList)
+  const [memberIdList, setMemberIdList] = React.useState(initialList)
+  const [selectedGroup, setSelectedGroup] = React.useState()
   if (!generalTranslations || !groupsData) return null
 
+  function updateGroup(group) {
+    if (selectedGroup) {
+      setSelectedGroup(null)
+    } else {
+      setSelectedGroup(group)
+    }
+  }
+
   function handleChange(event) {
-    const editableList = list.slice(0)
-    if (list.includes(event.target.value)) {
-      const index = list.findIndex(id => id === event.target.value)
+    const editableList = memberIdList.slice(0)
+    if (memberIdList.includes(event.target.value)) {
+      const index = memberIdList.findIndex(id => id === event.target.value)
       editableList.splice(index, 1)
     } else {
       editableList.push(event.target.value)
     }
-    setList(editableList)
+    setMemberIdList(editableList)
   }
 
-  function handleAdd() {}
+  async function handleSubmit() {
+    try {
+      const data = {
+        userIds: memberIdList,
+      }
+      await acceptGroupMemeberTasks(data, taskGuid)
+
+      for (let id of memberIdList) {
+        dispatch(
+          updateGroupMemberTask({
+            task_guid: taskGuid,
+            user_guid: id,
+            completion_status: COMPLETION_STATUS.ACTIVE,
+            groupGuid: selectedGroup,
+          })
+        )
+      }
+    } catch (e) {
+      console.log(e)
+    }
+  }
 
   return (
     <StyledAcceptTasks>
@@ -133,57 +173,59 @@ const AcceptTasks = () => {
           const ageGroupId = group.id
           const title = '' + groupName + ' / ' + ageGroup
           return (
-            <>
-              <Accordion allowZeroExpanded>
-                <AccordionItem key={ageGroupId}>
-                  <AccordionItemHeading>
-                    <AccordionItemButton>
-                      <ListItem
-                        key={ageGroupId}
-                        ageGroupGuid={ageGroupId}
-                        title={title}
-                        language="fi"
-                        icon={null}
-                        itemType={ITEM_TYPES.TASK}
-                      />
-                    </AccordionItemButton>
-                  </AccordionItemHeading>
-                  <AccordionItemPanel>
-                    <Content>
-                      {group.members.map(member => {
-                        return (
-                          <StyledListItem key={member.memberId}>
-                            <label
-                              style={{ float: 'left', margin: 0 }}
-                              htmlFor={member.memberId}
-                            >
-                              {member.memberName}
-                            </label>
-                            <input
-                              style={{
-                                float: 'right',
-                                margin: 0,
-                                width: '1.3rem',
-                                height: '1.3rem',
-                              }}
-                              type="checkbox"
-                              value={member.memberId}
-                              onChange={handleChange}
-                            />
-                          </StyledListItem>
-                        )
-                      })}
-                    </Content>
-                  </AccordionItemPanel>
-                </AccordionItem>
-              </Accordion>
-            </>
+            <Accordion
+              allowZeroExpanded
+              onChange={() => updateGroup(ageGroupId)}
+              key={ageGroupId}
+            >
+              <AccordionItem key={ageGroupId}>
+                <AccordionItemHeading>
+                  <AccordionItemButton>
+                    <ListItem
+                      key={ageGroupId}
+                      ageGroupGuid={ageGroupId}
+                      title={title}
+                      language="fi"
+                      icon={null}
+                      itemType={ITEM_TYPES.TASK}
+                    />
+                  </AccordionItemButton>
+                </AccordionItemHeading>
+                <AccordionItemPanel>
+                  <Content>
+                    {group.members.map(member => {
+                      return (
+                        <StyledListItem key={member.memberId}>
+                          <label
+                            style={{ float: 'left', margin: 0 }}
+                            htmlFor={member.memberId}
+                          >
+                            {member.memberName}
+                          </label>
+                          <input
+                            style={{
+                              float: 'right',
+                              margin: 0,
+                              width: '1.3rem',
+                              height: '1.3rem',
+                            }}
+                            type="checkbox"
+                            value={member.memberId}
+                            onChange={handleChange}
+                          />
+                        </StyledListItem>
+                      )
+                    })}
+                  </Content>
+                </AccordionItemPanel>
+              </AccordionItem>
+            </Accordion>
           )
         })}
       </Content>
       <AcceptTasksAction>
         <ActivityItem>
-          <StyledAcceptIcon onClick={handleAdd} />
+          <StyledAcceptIcon onClick={handleSubmit} />
           Lisää valituille
         </ActivityItem>
       </AcceptTasksAction>
