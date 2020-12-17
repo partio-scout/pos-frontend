@@ -94,13 +94,28 @@ const StyledListItem = styled.div`
   text-decoration: none;
   }
 `
+const initialList = []
 
 const AcceptTasks = () => {
   const history = useHistory()
   const language = determineLanguageFromUrl(window.location)
   const groupsData = useSelector(state => state.user.userGroups)
   const generalTranslations = useSelector(state => state.translations.yleiset)
+  const [list, setList] = React.useState(initialList)
   if (!generalTranslations || !groupsData) return null
+
+  function handleChange(event) {
+    const editableList = list.slice(0)
+    if (list.includes(event.target.value)) {
+      const index = list.findIndex(id => id === event.target.value)
+      editableList.splice(index, 1)
+    } else {
+      editableList.push(event.target.value)
+    }
+    setList(editableList)
+  }
+
+  function handleAdd() {}
 
   return (
     <StyledAcceptTasks>
@@ -153,8 +168,7 @@ const AcceptTasks = () => {
                               }}
                               type="checkbox"
                               value={member.memberId}
-                              onChange={null}
-                              id={member.memberId}
+                              onChange={handleChange}
                             />
                           </StyledListItem>
                         )
@@ -169,7 +183,7 @@ const AcceptTasks = () => {
       </Content>
       <AcceptTasksAction>
         <ActivityItem>
-          <StyledAcceptIcon />
+          <StyledAcceptIcon onClick={handleAdd} />
           Lisää valituille
         </ActivityItem>
       </AcceptTasksAction>
