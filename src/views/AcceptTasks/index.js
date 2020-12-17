@@ -118,50 +118,52 @@ const AcceptTasks = () => {
           const ageGroupId = group.id
           const title = '' + groupName + ' / ' + ageGroup
           return (
-            <Accordion allowZeroExpanded>
-              <AccordionItem key={ageGroupId}>
-                <AccordionItemHeading>
-                  <AccordionItemButton>
-                    <ListItem
-                      key={ageGroupId}
-                      ageGroupGuid={ageGroupId}
-                      title={title}
-                      language="fi"
-                      icon={null}
-                      itemType={ITEM_TYPES.TASK}
-                    />
-                  </AccordionItemButton>
-                </AccordionItemHeading>
-                <AccordionItemPanel>
-                  <Content>
-                    {group.members.map(member => {
-                      return (
-                        <StyledListItem key={member.memberId}>
-                          <label
-                            style={{ float: 'left', margin: 0 }}
-                            htmlFor={member.memberId}
-                          >
-                            {member.memberName}
-                          </label>
-                          <input
-                            style={{
-                              float: 'right',
-                              margin: 0,
-                              width: '1.3rem',
-                              height: '1.3rem',
-                            }}
-                            type="checkbox"
-                            value={member.memberId}
-                            onChange={null}
-                            id={member.memberId}
-                          />
-                        </StyledListItem>
-                      )
-                    })}
-                  </Content>
-                </AccordionItemPanel>
-              </AccordionItem>
-            </Accordion>
+            <>
+              <Accordion allowZeroExpanded>
+                <AccordionItem key={ageGroupId}>
+                  <AccordionItemHeading>
+                    <AccordionItemButton>
+                      <ListItem
+                        key={ageGroupId}
+                        ageGroupGuid={ageGroupId}
+                        title={title}
+                        language="fi"
+                        icon={null}
+                        itemType={ITEM_TYPES.TASK}
+                      />
+                    </AccordionItemButton>
+                  </AccordionItemHeading>
+                  <AccordionItemPanel>
+                    <Content>
+                      {group.members.map(member => {
+                        return (
+                          <StyledListItem key={member.memberId}>
+                            <label
+                              style={{ float: 'left', margin: 0 }}
+                              htmlFor={member.memberId}
+                            >
+                              {member.memberName}
+                            </label>
+                            <input
+                              style={{
+                                float: 'right',
+                                margin: 0,
+                                width: '1.3rem',
+                                height: '1.3rem',
+                              }}
+                              type="checkbox"
+                              value={member.memberId}
+                              onChange={null}
+                              id={member.memberId}
+                            />
+                          </StyledListItem>
+                        )
+                      })}
+                    </Content>
+                  </AccordionItemPanel>
+                </AccordionItem>
+              </Accordion>
+            </>
           )
         })}
       </Content>
