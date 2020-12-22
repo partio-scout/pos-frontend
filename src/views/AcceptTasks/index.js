@@ -90,19 +90,10 @@ const ActivityItem = styled.div`
 `
 
 const StyledListItem = styled.div`
-  min-height: 2rem;
-  padding-left: 3.5rem;
-  padding-right: 3.5rem;
-  padding-bottom: 1rem;
+  padding: 0 3.5rem 2rem 3.5rem;
   text-decoration: none;
-  }
 `
 
-const AcceptButton = styled.button`
-  border: none;
-  background: rgba(0, 0, 0, 0);
-  color: white;
-`
 const initialList = []
 
 const AcceptTasks = () => {
@@ -203,6 +194,7 @@ const AcceptTasks = () => {
                             {member.memberName}
                           </label>
                           <input
+                            id={member.memberId}
                             style={{
                               float: 'right',
                               margin: 0,
@@ -223,9 +215,9 @@ const AcceptTasks = () => {
           )
         })}
       </Content>
-      <AcceptTasksAction>
+      <AcceptTasksAction onClick={handleSubmit}>
         <ActivityItem>
-          <StyledAcceptIcon onClick={handleSubmit} />
+          <StyledAcceptIcon />
           Lisää valituille
         </ActivityItem>
       </AcceptTasksAction>
