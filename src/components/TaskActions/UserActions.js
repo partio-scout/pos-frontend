@@ -3,10 +3,12 @@ import styled, { keyframes } from 'styled-components'
 import FavouriteIcon, {
   StyledCompletedIcon,
   StyleActiveIcon,
+  StyledAcceptIcon,
 } from '../TaskActionsIcons'
 import { useSelector } from 'react-redux'
 import { COMPLETION_STATUS } from '../../consts'
 import { determineLanguageFromUrl, getTermInLanguage } from '../../helpers'
+import { useHistory } from 'react-router-dom'
 
 const Overlay = styled.div`
   width: 100%;
@@ -79,6 +81,9 @@ const TaskActions = ({
 
   const userTasks = useSelector(state => state.tasks)
   const generalTranslations = useSelector(state => state.translations.yleiset)
+  const userGroups = useSelector(state => state.user.userGroups)
+
+  const history = useHistory()
 
   const language = determineLanguageFromUrl(window.location)
 
@@ -160,6 +165,15 @@ const TaskActions = ({
                 )}
           </span>
         </ActivityItem>
+        {userGroups && userGroups.length > 0 ? (
+          <ActivityItem
+            onClick={() => history.push(`/accept/${guid}/?lang=${language}`)}
+            disabled={disabled}
+          >
+            <StyledAcceptIcon />
+            <span>Lisää ryhmäläisille</span>
+          </ActivityItem>
+        ) : null}
         <ActivityItem onClick={getOnClick(onCancel)} disabled={disabled}>
           <span>
             {getTermInLanguage(generalTranslations, 'cancel', language)}

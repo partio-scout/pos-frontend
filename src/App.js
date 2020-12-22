@@ -35,6 +35,7 @@ import Profile from 'views/Profile'
 import Login from 'views/Login'
 import Group from 'views/Group'
 import Member from 'views/Member'
+import AcceptTasks from 'views/AcceptTasks'
 import { ITEM_TYPES } from 'consts'
 
 const App = () => {
@@ -72,6 +73,7 @@ const App = () => {
             <Route path="/profile" component={Profile} />
             <Route path="/login" component={Login} />
             <Route exact path="/group/:groupId" component={Group} />
+            <Route exact path="/accept/:taskGuid" component={AcceptTasks} />
             <Route
               exact
               path="/group/:groupId/member/:memberId"

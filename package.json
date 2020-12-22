@@ -7,6 +7,7 @@
     "@sentry/browser": "5.10.2",
     "dotenv": "^8.2.0",
     "react": "16.12.0",
+    "react-accessible-accordion": "^3.3.3",
     "react-dom": "16.12.0",
     "react-feather": "2.0.3",
     "react-redux": "7.1.3",
