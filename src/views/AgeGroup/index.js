@@ -104,6 +104,7 @@ const AgeGroup = () => {
   const activityTranslations = useSelector(
     state => state.translations.aktiviteetin_ylakasite
   )
+  const generalTranslations = useSelector(state => state.translations.yleiset)
 
   const { guid } = useParams()
   const language = determineLanguageFromUrl(window.location)
@@ -121,6 +122,19 @@ const AgeGroup = () => {
   }
   const ageGroupGuid = ageGroup ? ageGroup.guid : 'default'
   const languageInfo = ageGroup.languages.find(x => x.lang === language)
+
+  const getTerm = (title, term) => {
+    term = getTermInLanguage(
+      activityTranslations,
+      `${term ? term.name : 'aktiviteetti'}_plural`,
+      language
+    )
+
+    if (title === 'Haasteet') {
+      term = getTermInLanguage(generalTranslations, 'challenges', language)
+    }
+    return term
+  }
 
   return (
     <Background ageGroupGuid={ageGroupGuid}>
@@ -160,15 +174,7 @@ const AgeGroup = () => {
                   taskGroup={taskGroup}
                   ageGroupGuid={ageGroupGuid}
                   language={language}
-                  tasksTerm={getTermInLanguage(
-                    activityTranslations,
-                    `${
-                      taskGroup.subtask_term
-                        ? taskGroup.subtask_term.name
-                        : 'aktiviteetti'
-                    }_plural`,
-                    language
-                  )}
+                  tasksTerm={getTerm(taskGroup.title, taskGroup.subtask_term)}
                 />
               ))}
         </BodyContent>
