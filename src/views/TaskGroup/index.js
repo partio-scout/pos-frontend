@@ -73,11 +73,7 @@ const TaskGroup = () => {
             ? getTaskGroupStatus(
                 subTaskGroup,
                 userTasks,
-                getTermInLanguage(
-                  generalTranslations,
-                  `task_completed`,
-                  language
-                )
+                getTermInLanguage(generalTranslations, 'done', language)
               )
             : null
           return (
