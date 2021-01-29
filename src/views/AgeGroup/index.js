@@ -134,7 +134,7 @@ const AgeGroup = () => {
       term = getTermInLanguage(generalTranslations, 'challenges', language)
     }
 
-    if (term === 'askeleet' && title != 'Tervetuloa' && title != 'Siirtymä') {
+    if (term === 'askeleet' && title !== 'Tervetuloa' && title !== 'Siirtymä') {
       term = getTermInLanguage(activityTranslations, 'paw_plural', language)
     }
     return term
