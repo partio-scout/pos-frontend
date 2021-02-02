@@ -104,6 +104,7 @@ const AgeGroup = () => {
   const activityTranslations = useSelector(
     state => state.translations.aktiviteetin_ylakasite
   )
+  const generalTranslations = useSelector(state => state.translations.yleiset)
 
   const { guid } = useParams()
   const language = determineLanguageFromUrl(window.location)
@@ -121,6 +122,36 @@ const AgeGroup = () => {
   }
   const ageGroupGuid = ageGroup ? ageGroup.guid : 'default'
   const languageInfo = ageGroup.languages.find(x => x.lang === language)
+
+  const getTerm = (title, subtask_term) => {
+    let term = getTermInLanguage(
+      activityTranslations,
+      `${subtask_term ? subtask_term.name : 'aktiviteetti'}_plural`,
+      language
+    )
+
+    if (title === 'Haasteet') {
+      term = getTermInLanguage(generalTranslations, 'challenges', language)
+    }
+
+    if (term === 'askeleet' && title !== 'Tervetuloa' && title !== 'Siirtymä') {
+      term = getTermInLanguage(activityTranslations, 'paw_plural', language)
+    }
+    return term
+  }
+
+  const getTitle = subtask_term => {
+    let title = getTermInLanguage(
+      groupHeadingTranslations,
+      `${subtask_term}_plural`,
+      language
+    )
+
+    if (subtask_term === 'askel') {
+      title = 'Jäljet'
+    }
+    return title
+  }
 
   return (
     <Background ageGroupGuid={ageGroupGuid}>
@@ -144,13 +175,7 @@ const AgeGroup = () => {
           </h3>
         </HeadingContent>
         <BodyContent>
-          <h4>
-            {getTermInLanguage(
-              groupHeadingTranslations,
-              `${ageGroup.subtaskgroup_term.name}_plural`,
-              language
-            )}
-          </h4>
+          <h4>{getTitle(ageGroup.subtaskgroup_term.name)}</h4>
           {ageGroup.taskgroups.length > 0 &&
             ageGroup.taskgroups
               .sort((a, b) => a.order - b.order)
@@ -160,15 +185,7 @@ const AgeGroup = () => {
                   taskGroup={taskGroup}
                   ageGroupGuid={ageGroupGuid}
                   language={language}
-                  tasksTerm={getTermInLanguage(
-                    activityTranslations,
-                    `${
-                      taskGroup.subtask_term
-                        ? taskGroup.subtask_term.name
-                        : 'aktiviteetti'
-                    }_plural`,
-                    language
-                  )}
+                  tasksTerm={getTerm(taskGroup.title, taskGroup.subtask_term)}
                 />
               ))}
         </BodyContent>
