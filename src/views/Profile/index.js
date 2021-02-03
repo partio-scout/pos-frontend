@@ -81,7 +81,6 @@ const HeadingContent = styled.div`
   }
   > div a {
     color: white;
-    text-decoration: none;
   }
 `
 
