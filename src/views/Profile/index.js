@@ -76,11 +76,19 @@ const HeadingContent = styled.div`
   > span {
     color: ${({ theme }) => theme.color.subText};
   }
+  > div {
+    margin-top: 10px;
+  }
+  > div a {
+    color: white;
+    text-decoration: none;
+  }
 `
 
 const BodyContent = styled.div`
   box-sizing: border-box;
   height: 100%;
+  margin-top: 2rem;
   padding: 1rem;
   padding-bottom: 2rem;
   overflow: scroll;
