@@ -165,7 +165,7 @@ const TaskActions = ({
                 )}
           </span>
         </ActivityItem>
-        {userGroups.length > 0 ? (
+        {userGroups && userGroups.length > 0 ? (
           <ActivityItem
             onClick={() => history.push(`/accept/${guid}/?lang=${language}`)}
             disabled={disabled}
