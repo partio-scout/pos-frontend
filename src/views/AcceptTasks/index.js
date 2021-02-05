@@ -8,7 +8,7 @@ import {
   AccordionItemButton,
   AccordionItemPanel,
 } from 'react-accessible-accordion'
-import { X } from 'react-feather'
+import { Check, X } from 'react-feather'
 import ListItem from 'components/ListItem'
 import { COMPLETION_STATUS, ITEM_TYPES } from 'consts'
 import { useSelector } from 'react-redux'
@@ -105,9 +105,16 @@ const AcceptTasks = () => {
   const generalTranslations = useSelector(state => state.translations.yleiset)
   const [memberIdList, setMemberIdList] = React.useState(initialList)
   const [selectedGroup, setSelectedGroup] = React.useState()
-  const [isSelected, setSelected] = React.useState(false)
   if (!generalTranslations || !groupsData) return null
 
+  function isCompleted(memberTasks) {
+    const completedTasks = Object.keys(memberTasks).filter(
+      guid => memberTasks[guid] === COMPLETION_STATUS.COMPLETED
+    )
+    const isCompleted = !!completedTasks.find(guid => guid === taskGuid)
+
+    return isCompleted
+  }
   function updateGroup(group) {
     if (selectedGroup) {
       setSelectedGroup(null)
@@ -117,9 +124,6 @@ const AcceptTasks = () => {
   }
 
   function handleChange(event) {
-    if (event.target.checked) {
-      setSelected(true)
-    }
     const editableList = memberIdList.slice(0)
     if (memberIdList.includes(event.target.value)) {
       const index = memberIdList.findIndex(id => id === event.target.value)
@@ -131,7 +135,6 @@ const AcceptTasks = () => {
   }
 
   async function handleSubmit() {
-    setSelected(false)
     try {
       const data = {
         userIds: memberIdList,
@@ -200,18 +203,29 @@ const AcceptTasks = () => {
                           >
                             {member.memberName}
                           </label>
-                          <input
-                            id={member.memberId}
-                            style={{
-                              float: 'right',
-                              margin: 0,
-                              width: '1.3rem',
-                              height: '1.3rem',
-                            }}
-                            type="checkbox"
-                            value={member.memberId}
-                            onChange={handleChange}
-                          />
+                          {isCompleted(member.memberTasks) ? (
+                            <Check
+                              style={{
+                                float: 'right',
+                                margin: 0,
+                                width: '1.3rem',
+                                height: '1.3rem',
+                              }}
+                            />
+                          ) : (
+                            <input
+                              id={member.memberId}
+                              style={{
+                                float: 'right',
+                                margin: 0,
+                                width: '1.3rem',
+                                height: '1.3rem',
+                              }}
+                              type="checkbox"
+                              value={member.memberId}
+                              onChange={handleChange}
+                            />
+                          )}
                         </StyledListItem>
                       )
                     })}
@@ -222,7 +236,7 @@ const AcceptTasks = () => {
           )
         })}
       </Content>
-      {isSelected ? (
+      {memberIdList.length > 0 ? (
         <AcceptTasksAction onClick={handleSubmit}>
           <ActivityItem>
             <StyledAcceptIcon />
