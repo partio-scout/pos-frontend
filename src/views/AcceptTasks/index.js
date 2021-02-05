@@ -105,6 +105,7 @@ const AcceptTasks = () => {
   const generalTranslations = useSelector(state => state.translations.yleiset)
   const [memberIdList, setMemberIdList] = React.useState(initialList)
   const [selectedGroup, setSelectedGroup] = React.useState()
+  const [isSelected, setSelected] = React.useState(false)
   if (!generalTranslations || !groupsData) return null
 
   function updateGroup(group) {
@@ -116,6 +117,9 @@ const AcceptTasks = () => {
   }
 
   function handleChange(event) {
+    if (event.target.checked) {
+      setSelected(true)
+    }
     const editableList = memberIdList.slice(0)
     if (memberIdList.includes(event.target.value)) {
       const index = memberIdList.findIndex(id => id === event.target.value)
@@ -127,6 +131,7 @@ const AcceptTasks = () => {
   }
 
   async function handleSubmit() {
+    setSelected(false)
     try {
       const data = {
         userIds: memberIdList,
@@ -217,12 +222,14 @@ const AcceptTasks = () => {
           )
         })}
       </Content>
-      <AcceptTasksAction onClick={handleSubmit}>
-        <ActivityItem>
-          <StyledAcceptIcon />
-          Lisää valituille
-        </ActivityItem>
-      </AcceptTasksAction>
+      {isSelected ? (
+        <AcceptTasksAction onClick={handleSubmit}>
+          <ActivityItem>
+            <StyledAcceptIcon />
+            Lisää valituille
+          </ActivityItem>
+        </AcceptTasksAction>
+      ) : null}
     </StyledAcceptTasks>
   )
 }
