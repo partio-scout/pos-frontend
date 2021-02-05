@@ -4,6 +4,7 @@ import { useHistory } from 'react-router-dom'
 import TaskIcon from 'assets/tasks/task.svg'
 import Actions from 'components/Actions'
 import FavouriteIcon from 'components/TaskActionsIcons'
+import { MoreHorizontal } from 'react-feather'
 
 const StyledListItem = styled.div`
   position: relative;
@@ -74,6 +75,7 @@ const ListItem = ({
   onClick,
   userGuid,
   groupGuid,
+  showActionsIcon,
 }) => {
   const history = useHistory()
 
@@ -91,16 +93,20 @@ const ListItem = ({
 
       <StyledActions>
         {showFavourite && <FavouriteIcon filled={isFavourite} />}
-        {showActions && itemType && (
-          <Actions
-            guid={guid}
-            itemType={itemType}
-            isFavourite={isFavourite}
-            actionsComponent={actionsComponent}
-            userGuid={userGuid}
-            groupGuid={groupGuid}
-          />
-        )}
+        {showActions &&
+          itemType &&
+          (showActionsIcon ? (
+            <MoreHorizontal />
+          ) : (
+            <Actions
+              guid={guid}
+              itemType={itemType}
+              isFavourite={isFavourite}
+              actionsComponent={actionsComponent}
+              userGuid={userGuid}
+              groupGuid={groupGuid}
+            />
+          ))}
       </StyledActions>
     </StyledListItem>
   )

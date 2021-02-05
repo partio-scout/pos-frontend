@@ -179,6 +179,8 @@ const AcceptTasks = () => {
                       language="fi"
                       icon={null}
                       itemType={ITEM_TYPES.TASK}
+                      showActions
+                      showActionsIcon
                     />
                   </AccordionItemButton>
                 </AccordionItemHeading>
