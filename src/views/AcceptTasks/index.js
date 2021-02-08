@@ -140,20 +140,20 @@ const AcceptTasks = () => {
         userIds: memberIdList,
       }
       await acceptGroupMemeberTasks(data, taskGuid)
-
       for (let id of memberIdList) {
         dispatch(
           updateGroupMemberTask({
             task_guid: taskGuid,
-            user_guid: id,
-            completion_status: COMPLETION_STATUS.ACTIVE,
-            groupGuid: selectedGroup,
+            user_guid: Number(id),
+            completion_status: COMPLETION_STATUS.COMPLETED,
+            groupGuid: Number(selectedGroup),
           })
         )
       }
     } catch (e) {
       console.log(e)
     }
+    setMemberIdList(initialList)
   }
 
   return (
