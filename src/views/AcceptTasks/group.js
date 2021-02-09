@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import styled, { keyframes } from 'styled-components'
 import { useParams } from 'react-router-dom'
 import {
@@ -98,6 +98,8 @@ const Group = ({ group }) => {
   const [checkboxData, setCheckboxData] = React.useState(
     getInitialCheckboxData(group)
   )
+  useEffect(() => setCheckboxData(getInitialCheckboxData(group)), [groupsData])
+
   if (!generalTranslations || !groupsData) return null
 
   const groupName = group.name
@@ -122,14 +124,21 @@ const Group = ({ group }) => {
   }
 
   function handleChange(event) {
-    handleCheckboxSelection(Number(event.target.value), event.target.checked)
-    const editableList = memberIdList.slice(0)
-    if (memberIdList.includes(event.target.value)) {
-      const index = memberIdList.findIndex(id => id === event.target.value)
-      editableList.splice(index, 1)
+    if (event.target.name === 'checkAll') {
+      checkboxData.map(member => {
+        handleCheckboxSelection(Number(member.id), event.target.checked)
+      })
     } else {
-      editableList.push(event.target.value)
+      handleCheckboxSelection(Number(event.target.value), event.target.checked)
     }
+
+    const editableList = checkboxData.reduce((idList, data) => {
+      if (data.selected) {
+        idList.push(data.id.toString())
+      }
+      return idList
+    }, [])
+
     setMemberIdList(editableList)
   }
 
@@ -165,7 +174,6 @@ const Group = ({ group }) => {
         member.selected = false
       }
     })
-
     setCheckboxData(editableCheckboxData)
   }
 
@@ -194,16 +202,38 @@ const Group = ({ group }) => {
             </AccordionItemHeading>
             <AccordionItemPanel>
               <Content>
-                {group.members.map(member => {
+                <StyledListItem>
+                  <label
+                    style={{ float: 'left', margin: 0 }}
+                    htmlFor={group.id}
+                  >
+                    {' '}
+                    Valitse kaikki
+                  </label>
+                  <input
+                    id={group.id}
+                    value="checkAll"
+                    name="checkAll"
+                    style={{
+                      float: 'right',
+                      margin: 0,
+                      width: '1.3rem',
+                      height: '1.3rem',
+                    }}
+                    type="checkbox"
+                    onChange={handleChange}
+                  />
+                </StyledListItem>
+                {checkboxData.map(member => {
                   return (
-                    <StyledListItem key={member.memberId}>
+                    <StyledListItem key={member.id}>
                       <label
                         style={{ float: 'left', margin: 0 }}
-                        htmlFor={member.memberId}
+                        htmlFor={member.id}
                       >
-                        {member.memberName}
+                        {member.name}
                       </label>
-                      {isCompleted(member.memberTasks) ? (
+                      {isCompleted(member.tasks) ? (
                         <Check
                           style={{
                             float: 'right',
@@ -215,7 +245,7 @@ const Group = ({ group }) => {
                         />
                       ) : (
                         <input
-                          id={member.memberId}
+                          id={member.id}
                           style={{
                             float: 'right',
                             margin: 0,
@@ -223,8 +253,9 @@ const Group = ({ group }) => {
                             height: '1.3rem',
                           }}
                           type="checkbox"
-                          value={member.memberId}
+                          value={member.id}
                           onChange={handleChange}
+                          checked={member.selected}
                         />
                       )}
                     </StyledListItem>
