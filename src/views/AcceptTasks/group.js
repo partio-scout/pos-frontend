@@ -78,6 +78,10 @@ const StyledListItem = styled.div`
   text-decoration: none;
 `
 
+const HorizontalLine = styled.hr`
+  margin: 0 3.5rem 2.5rem 3.5rem;
+`
+
 const initialList = []
 
 const getInitialCheckboxData = group =>
@@ -207,7 +211,6 @@ const Group = ({ group }) => {
                     style={{ float: 'left', margin: 0 }}
                     htmlFor={group.id}
                   >
-                    {' '}
                     Valitse kaikki
                   </label>
                   <input
@@ -224,6 +227,7 @@ const Group = ({ group }) => {
                     onChange={handleChange}
                   />
                 </StyledListItem>
+                <HorizontalLine />
                 {checkboxData.map(member => {
                   return (
                     <StyledListItem key={member.id}>
