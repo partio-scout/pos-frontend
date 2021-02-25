@@ -182,6 +182,13 @@ const Group = ({ group }) => {
     })
   }
 
+  const CHECK_STYLE = {
+    float: 'right',
+    margin: 0,
+    width: '1.3rem',
+    height: '1.3rem',
+  }
+
   return (
     <StyledAcceptTasks>
       <Content>
@@ -218,12 +225,7 @@ const Group = ({ group }) => {
                     id={group.id}
                     value="checkAll"
                     name="checkAll"
-                    style={{
-                      float: 'right',
-                      margin: 0,
-                      width: '1.3rem',
-                      height: '1.3rem',
-                    }}
+                    style={CHECK_STYLE}
                     type="checkbox"
                     onChange={handleChange}
                   />
@@ -239,24 +241,11 @@ const Group = ({ group }) => {
                         {member.name}
                       </label>
                       {isCompleted(member.tasks) ? (
-                        <Check
-                          style={{
-                            float: 'right',
-                            margin: 0,
-                            width: '1.3rem',
-                            height: '1.3rem',
-                            color: 'green',
-                          }}
-                        />
+                        <Check style={{ ...CHECK_STYLE, color: 'green' }} />
                       ) : (
                         <input
                           id={member.id}
-                          style={{
-                            float: 'right',
-                            margin: 0,
-                            width: '1.3rem',
-                            height: '1.3rem',
-                          }}
+                          style={CHECK_STYLE}
                           type="checkbox"
                           value={member.id}
                           onChange={handleChange}
