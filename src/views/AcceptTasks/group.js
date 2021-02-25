@@ -131,7 +131,7 @@ const Group = ({ group }) => {
   function handleChange(event) {
     if (event.target.name === 'checkAll') {
       checkboxData.map(member => {
-        handleCheckboxSelection(Number(member.id), event.target.checked)
+        return handleCheckboxSelection(Number(member.id), event.target.checked)
       })
     } else {
       handleCheckboxSelection(Number(event.target.value), event.target.checked)
@@ -178,8 +178,8 @@ const Group = ({ group }) => {
       if (member.id === memberId && !isChecked) {
         member.selected = false
       }
+      return setCheckboxData(editableCheckboxData)
     })
-    setCheckboxData(editableCheckboxData)
   }
 
   return (
