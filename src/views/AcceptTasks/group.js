@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import styled, { keyframes } from 'styled-components'
 import { useParams } from 'react-router-dom'
 import {
@@ -31,8 +31,6 @@ const Subheading = styled.h3`
 `
 
 const Content = styled.div`
-  padding: 1rem;
-
   > ${Subheading} {
     margin-bottom: 1rem;
   }
@@ -102,7 +100,10 @@ const Group = ({ group }) => {
   const [checkboxData, setCheckboxData] = React.useState(
     getInitialCheckboxData(group)
   )
-  useEffect(() => setCheckboxData(getInitialCheckboxData(group)), [groupsData])
+  useEffect(() => setCheckboxData(getInitialCheckboxData(group)), [
+    groupsData,
+    group,
+  ])
 
   if (!generalTranslations || !groupsData) return null
 
