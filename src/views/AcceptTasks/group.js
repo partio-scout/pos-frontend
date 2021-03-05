@@ -16,6 +16,7 @@ import { StyledAcceptIcon } from '../../components/TaskActionsIcons'
 import { useDispatch } from 'react-redux'
 import { updateGroupMemberTask } from '../../redux/actionCreators'
 import { acceptGroupMemeberTasks } from '../../api'
+import { determineLanguageFromUrl, getTermInLanguage } from '../../helpers'
 
 const StyledAcceptTasks = styled.div`
   height: 100%;
@@ -92,6 +93,7 @@ const getInitialCheckboxData = group =>
 
 const Group = ({ group }) => {
   const dispatch = useDispatch()
+  const language = determineLanguageFromUrl(window.location)
   const { taskGuid } = useParams()
   const groupsData = useSelector(state => state.user.userGroups)
   const generalTranslations = useSelector(state => state.translations.yleiset)
@@ -219,7 +221,11 @@ const Group = ({ group }) => {
                     style={{ float: 'left', margin: 0 }}
                     htmlFor={group.id}
                   >
-                    Valitse kaikki
+                    {getTermInLanguage(
+                      generalTranslations,
+                      'select_all',
+                      language
+                    )}
                   </label>
                   <input
                     id={group.id}
@@ -264,7 +270,11 @@ const Group = ({ group }) => {
         <AcceptTasksAction onClick={handleSubmit}>
           <ActivityItem>
             <StyledAcceptIcon />
-            Lisää valituille
+            {getTermInLanguage(
+              generalTranslations,
+              'add_to_selected',
+              language
+            )}
           </ActivityItem>
         </AcceptTasksAction>
       ) : null}

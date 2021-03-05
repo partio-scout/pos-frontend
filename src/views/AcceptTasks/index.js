@@ -51,7 +51,13 @@ const AcceptTasks = () => {
   return (
     <StyledAcceptTasks>
       <Header>
-        <Subheading>Lisää ryhmäläisille</Subheading>
+        <Subheading>
+          {getTermInLanguage(
+            generalTranslations,
+            'add_to_group_members',
+            language
+          )}
+        </Subheading>
         <CloseIcon onClick={() => history.push('/')} />
       </Header>
       <Content>
