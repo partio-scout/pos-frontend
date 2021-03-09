@@ -171,7 +171,13 @@ const TaskActions = ({
             disabled={disabled}
           >
             <StyledAcceptIcon />
-            <span>Lisää ryhmäläisille</span>
+            <span>
+              {getTermInLanguage(
+                generalTranslations,
+                'add_to_group_members',
+                language
+              )}
+            </span>
           </ActivityItem>
         ) : null}
         <ActivityItem onClick={getOnClick(onCancel)} disabled={disabled}>
