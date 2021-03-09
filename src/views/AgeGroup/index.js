@@ -148,7 +148,7 @@ const AgeGroup = () => {
     )
 
     if (subtask_term === 'askel') {
-      title = 'Jäljet'
+      title = getTermInLanguage(activityTranslations, 'paw_plural', language)
     }
     return title
   }

@@ -5,6 +5,12 @@ import TaskIcon from 'assets/tasks/task.svg'
 import Actions from 'components/Actions'
 import FavouriteIcon from 'components/TaskActionsIcons'
 import { MoreHorizontal } from 'react-feather'
+import { deleteFavouriteTask, postTaskFavourite } from '../../api'
+import {
+  addFavourite as addFavouriteTask,
+  deleteFavourite,
+} from '../../redux/actionCreators'
+import { useDispatch } from 'react-redux'
 
 const StyledListItem = styled.div`
   position: relative;
@@ -78,6 +84,40 @@ const ListItem = ({
   showActionsIcon,
 }) => {
   const history = useHistory()
+  const dispatch = useDispatch()
+
+  const toggleFavourite = () => {
+    if (isFavourite) {
+      removeFavourite()
+    } else {
+      addFavourite()
+    }
+  }
+
+  const addFavourite = async () => {
+    try {
+      await postTaskFavourite({
+        user_guid: 1,
+        task_guid: guid,
+      })
+      dispatch(addFavouriteTask(guid))
+    } catch (e) {
+      //TODO: Do error handling
+      console.log(e)
+    }
+  }
+
+  const removeFavourite = async () => {
+    try {
+      await deleteFavouriteTask({
+        user_guid: 1,
+        task_guid: guid,
+      })
+    } catch (e) {
+      console.log(e)
+    }
+    dispatch(deleteFavourite(guid))
+  }
 
   return (
     <StyledListItem ageGroupGuid={ageGroupGuid} icon={icon} onClick={onClick}>
@@ -92,7 +132,11 @@ const ListItem = ({
       </StyledListItemContent>
 
       <StyledActions>
-        {showFavourite && <FavouriteIcon filled={isFavourite} />}
+        {showFavourite && (
+          <span onClick={() => toggleFavourite()}>
+            <FavouriteIcon filled={isFavourite} />
+          </span>
+        )}
         {showActions &&
           itemType &&
           (showActionsIcon ? (
