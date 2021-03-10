@@ -135,9 +135,7 @@ const Task = () => {
   if (!task) return null
   return (
     <StyledDetailPage
-      onBackClick={() =>
-        history.push(`/guid/${task.parentGuid}?lang=${language}`)
-      }
+      onBackClick={() => history.goBack()}
       title={translations ? translations.title : task.item.title}
     >
       <StyledActions
