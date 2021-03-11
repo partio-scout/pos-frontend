@@ -1,3 +1,4 @@
+//Seikkailijat
 import seikkailijat_e from 'assets/ageGroups/seikkailijat/seikkailijat_e.svg'
 import seikkailijat_es from 'assets/ageGroups/seikkailijat/seikkailijat_es.svg'
 import seikkailijat_esw from 'assets/ageGroups/seikkailijat/seikkailijat_esw.svg'
@@ -22,7 +23,10 @@ const ageGroupGraphics = [
     image: seikkailijat_off,
   },
   {
-    taskGroups: ['4ed7e03516698ffba67d342b529358c0'],
+    taskGroups: [
+      '4ed7e03516698ffba67d342b529358c0',
+      'b0bc122b1995418b828fa558c7d33414',
+    ],
     image: seikkailijat,
   },
   {

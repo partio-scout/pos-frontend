@@ -29,6 +29,9 @@ import AgeGroupIcone13d38602cec28781ed110c008385552 from 'assets/ageGroups/e13d3
 
 import { getAgeGroupCompletion, getCompletedTaskGroups } from 'helpers'
 
+// Map new Seikkalija to old Seikkailija
+const AgeGroupb0bc122b1995418b828fa558c7d33414 = AgeGroup4ed7e03516698ffba67d342b529358c0
+
 const ageGroupGraphics = {
   AgeGroup053fa231362e95cb211c5eb85c3cbedb,
   AgeGroup4ed7e03516698ffba67d342b529358c0,
@@ -36,6 +39,7 @@ const ageGroupGraphics = {
   AgeGroup3ef690e4499894ed34577c83fdae7786,
   AgeGroup0fe4dd441b0708f6bbff580d62392080,
   AgeGroupe13d38602cec28781ed110c008385552,
+  AgeGroupb0bc122b1995418b828fa558c7d33414,
   AgeGroupDefault,
 }
 
