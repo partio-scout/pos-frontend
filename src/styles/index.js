@@ -25,6 +25,7 @@ export const theme = {
     ageGroups: {
       '053fa231362e95cb211c5eb85c3cbedb': '#3650A1',
       '4ed7e03516698ffba67d342b529358c0': '#D4791E',
+      b0bc122b1995418b828fa558c7d33414: '#D4791E',
       fd0083b9a325c06430ba29cc6c6d1bac: '#5E0F75',
       '3ef690e4499894ed34577c83fdae7786': '#33652E',
       '0fe4dd441b0708f6bbff580d62392080': '#6E470A',
@@ -34,6 +35,7 @@ export const theme = {
     ageGroupGradients: {
       '053fa231362e95cb211c5eb85c3cbedb': '#D8CD41',
       '4ed7e03516698ffba67d342b529358c0': '#DB8F43',
+      b0bc122b1995418b828fa558c7d33414: '#DB8F43',
       fd0083b9a325c06430ba29cc6c6d1bac: '#78368B',
       '3ef690e4499894ed34577c83fdae7786': '#547E50',
       '0fe4dd441b0708f6bbff580d62392080': '#856532',
@@ -43,6 +45,7 @@ export const theme = {
     ageGroupGradientsDark: {
       '053fa231362e95cb211c5eb85c3cbedb': '#211F05',
       '4ed7e03516698ffba67d342b529358c0': '#221305',
+      b0bc122b1995418b828fa558c7d33414: '#221305',
       fd0083b9a325c06430ba29cc6c6d1bac: '#100F10',
       '3ef690e4499894ed34577c83fdae7786': '#0F100F',
       '0fe4dd441b0708f6bbff580d62392080': '#120C02',
