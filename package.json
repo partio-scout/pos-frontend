@@ -21,12 +21,12 @@
   "devDependencies": {
     "@testing-library/react": "9.3.2",
     "env-cmd": "^10.1.0",
-    "eslint": "6.6.0",
+    "eslint": "7.21.0",
     "eslint-plugin-react": "7.16.0",
     "husky": "3.1.0",
     "prettier": "1.19.1",
     "pretty-quick": "2.0.1",
-    "react-scripts": "3.4.4",
+    "react-scripts": "4.0.3",
     "workbox-build": "6.0.2",
     "workbox-cli": "6.0.2"
   },
