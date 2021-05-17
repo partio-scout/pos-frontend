@@ -128,6 +128,82 @@ export const getAgeGroupTasks = ageGroup => {
     )
 }
 
+/**
+ * Get a list of the task group guids for the task groups that have their title translated
+ * and contain at least one translated task from the given language
+ * @param ageGroup The ageGroup object to get the task groups for
+ * @param itemsByGuid An object containing all items with guid as the key
+ * @param language The selected language
+ * @returns {Array[string]} An array of TaskGroup guids
+ */
+export const getAgeGroupsTranslatedTaskGroups = (
+  ageGroup,
+  itemsByGuid,
+  language
+) => {
+  return ageGroup.taskgroups.reduce((acc, taskGroupGuid) => {
+    const taskGroup = itemsByGuid[taskGroupGuid.guid].item
+    const taskGroupTranslations = taskGroup.languages.find(
+      group => group.lang === language
+    )
+    const hasTranslatedTasks = taskGroupHasTranslatedTasks(taskGroup, language)
+    if (
+      taskGroupTranslations &&
+      taskGroupTranslations.title &&
+      hasTranslatedTasks
+    ) {
+      acc.push(taskGroupGuid.guid)
+    }
+    return acc
+  }, [])
+}
+
+/**
+ * Get all the translated tasks for a task group for a specific language
+ * @param taskGroup The task group to get the tasks for
+ * @param language The language to filter by
+ * @returns {Array[Task]} Return an array of task objects
+ */
+export const getTaskGroupsTranslatedTasks = (taskGroup, language) => {
+  return taskGroup.tasks.reduce((acc, task) => {
+    const translations = task.languages.find(lang => lang.lang === language)
+    if (translations && translations.title) {
+      acc.push(task)
+    }
+    return acc
+  }, [])
+}
+
+/**
+ * Check if a task group has 1 or more tasks translated to the given language
+ * @param taskGroup The task group to check
+ * @param language The language to check the translations for
+ * @returns {boolean} True if task group has translated tasks and false otherwise
+ */
+export const taskGroupHasTranslatedTasks = (taskGroup, language) => {
+  return getTaskGroupsTranslatedTasks(taskGroup, language).length > 0
+}
+
+/**
+ * Checks if The given age group has translated task groups
+ * @param ageGroup The ageGroup object to check
+ * @param itemsByGuid An object containing all items with guid as the key
+ * @param language The selected language
+ * @returns {boolean} True if age groups has translated task groups and false otherwise
+ */
+export const ageGroupHasTranslatedTaskGroups = (
+  ageGroup,
+  itemsByGuid,
+  language
+) => {
+  const taskGroups = getAgeGroupsTranslatedTaskGroups(
+    ageGroup,
+    itemsByGuid,
+    language
+  )
+  return taskGroups.length > 0
+}
+
 export const getAgeGroupStatus = (ageGroup, userTasks) => {
   const ageGroupTasks = getAgeGroupTasks(ageGroup)
   const completedMandatory = ageGroupTasks.mandatory.filter(

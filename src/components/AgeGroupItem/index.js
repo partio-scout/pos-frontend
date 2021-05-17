@@ -5,8 +5,10 @@ import {
   getAgeGroupTitleWithoutAges,
   getTermInLanguage,
   getAgeGroupStatus,
+  ageGroupHasTranslatedTaskGroups,
 } from 'helpers'
 import { getAgeGroupIcon } from 'graphics/ageGroups'
+import { useSelector } from 'react-redux'
 
 const StyledAgeGroupItem = styled.div`
   width: 50vw;
@@ -57,6 +59,16 @@ const AgeGroupItem = ({
   user,
   userTasks,
 }) => {
+  const itemsByGuid = useSelector(state => state.itemsByGuid)
+  const hasTranslatedTaskGroups = ageGroupHasTranslatedTaskGroups(
+    ageGroup.item,
+    itemsByGuid,
+    language
+  )
+
+  // Hide the age group if it does not have any translated task groups
+  if (!hasTranslatedTaskGroups) return null
+
   const languageInfo = ageGroup.item.languages.find(x => x.lang === language)
 
   const status = user.loggedIn
