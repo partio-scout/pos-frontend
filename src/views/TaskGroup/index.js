@@ -94,26 +94,24 @@ const TaskGroup = () => {
             : ''
           const task_status = status === 'active' ? 'started' : `task_${status}`
 
-          return (
-            taskTranslation && (
-              <ListItem
-                key={task.guid}
-                guid={task.guid}
-                ageGroupGuid={taskGroup.ageGroupGuid}
-                title={taskTranslation.title}
-                subTitle={getTermInLanguage(
-                  generalTranslations,
-                  `${task_status}`,
-                  language
-                )}
-                language={language}
-                itemType={ITEM_TYPES.TASK}
-                showActions
-                showFavourite
-                isFavourite={favourites.includes(task.guid)}
-              />
-            )
-          )
+          return taskTranslation && taskTranslation.title ? (
+            <ListItem
+              key={task.guid}
+              guid={task.guid}
+              ageGroupGuid={taskGroup.ageGroupGuid}
+              title={taskTranslation.title}
+              subTitle={getTermInLanguage(
+                generalTranslations,
+                `${task_status}`,
+                language
+              )}
+              language={language}
+              itemType={ITEM_TYPES.TASK}
+              showActions
+              showFavourite
+              isFavourite={favourites.includes(task.guid)}
+            />
+          ) : null
         })}
       </TaskList>
     </StyledDetailPage>
