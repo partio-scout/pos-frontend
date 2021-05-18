@@ -8,7 +8,6 @@ import {
   ageGroupHasTranslatedTaskGroups,
 } from 'helpers'
 import { getAgeGroupIcon } from 'graphics/ageGroups'
-import { useSelector } from 'react-redux'
 
 const StyledAgeGroupItem = styled.div`
   width: 50vw;
@@ -54,12 +53,12 @@ const Status = styled.div`
 
 const AgeGroupItem = ({
   ageGroup,
+  itemsByGuid,
   language,
   translations,
   user,
   userTasks,
 }) => {
-  const itemsByGuid = useSelector(state => state.itemsByGuid)
   const hasTranslatedTaskGroups = ageGroupHasTranslatedTaskGroups(
     ageGroup.item,
     itemsByGuid,
