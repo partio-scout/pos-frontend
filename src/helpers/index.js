@@ -137,7 +137,10 @@ export const getAgeGroupTasks = ageGroup => {
  */
 export const getTranslatedTaskGroups = (taskGroups, itemsByGuid, language) => {
   return taskGroups.reduce((acc, taskGroupGuid) => {
-    const taskGroup = itemsByGuid[taskGroupGuid.guid].item
+    const taskGroup =
+      itemsByGuid[taskGroupGuid.guid] && itemsByGuid[taskGroupGuid.guid].item
+    if (!taskGroup) return acc
+
     const taskGroupTranslations = taskGroup.languages.find(
       group => group.lang === language
     )

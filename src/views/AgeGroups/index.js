@@ -146,6 +146,7 @@ const AgeGroups = ({ theme }) => {
               <AgeGroupItem
                 key={i}
                 ageGroup={itemsByGuid[ageGroup.guid]}
+                itemsByGuid={itemsByGuid}
                 language={language}
                 user={user}
                 userTasks={userTasks}

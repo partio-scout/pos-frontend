@@ -5,6 +5,29 @@ import { renderWithTheme } from 'test'
 
 import AgeGroupItem from './index'
 
+const testTask = {
+  guid: '4',
+  languages: [
+    {
+      lang: 'sv',
+      title: 'Test task',
+    },
+  ],
+}
+
+const testTaskGroup = {
+  item: {
+    guid: '1',
+    languages: [
+      {
+        lang: 'sv',
+        title: 'Test task group',
+      },
+    ],
+    tasks: [testTask],
+  },
+}
+
 const testAgeGroup = {
   ageGroupGuid: '053fa231362e95cb211c5eb85c3cbedb',
   guid: '053fa231362e95cb211c5eb85c3cbedb',
@@ -21,7 +44,14 @@ const testAgeGroup = {
     minAge: '7',
     order: 0,
     title: 'Sudenpennut (7-9 v.)',
+    taskgroups: [{ guid: '1' }, { guid: '2' }, { guid: '3' }],
   },
+}
+
+const itemsByGuid = {
+  '1': testTaskGroup,
+  '2': { guid: '2' },
+  '3': { guid: '3' },
 }
 
 describe('AgeGroupItem component', () => {
@@ -29,7 +59,12 @@ describe('AgeGroupItem component', () => {
     const language = 'sv'
     const { getByTestId } = renderWithTheme(
       <MemoryRouter>
-        <AgeGroupItem ageGroup={testAgeGroup} language={language} user={{}} />
+        <AgeGroupItem
+          ageGroup={testAgeGroup}
+          language={language}
+          user={{}}
+          itemsByGuid={itemsByGuid}
+        />
       </MemoryRouter>
     )
     const elem = getByTestId('title')
