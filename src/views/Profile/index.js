@@ -57,8 +57,6 @@ const Content = styled.div`
   right: 0;
   bottom: 0;
   height: 100vh;
-  display: grid;
-  grid-template-rows: 19rem minmax(0, 1fr);
   overflow: hidden;
 `
 
