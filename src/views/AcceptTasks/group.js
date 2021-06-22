@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import styled, { keyframes } from 'styled-components'
+import styled, { keyframes, css } from 'styled-components'
 import { useParams } from 'react-router-dom'
 import {
   Accordion,
@@ -23,18 +23,15 @@ const StyledAcceptTasks = styled.div`
   background-color: ${({ theme }) => theme.color.background};
   pointer-events: all;
   overflow: auto;
-`
-
-const Subheading = styled.h3`
-  margin: 0;
-  font-size: 18px;
-  font-weight: normal;
+  ${({ isLast }) =>
+    isLast &&
+    css`
+      margin-bottom: 5rem;
+    `};
 `
 
 const Content = styled.div`
-  > ${Subheading} {
-    margin-bottom: 1rem;
-  }
+  margin-bottom: 2rem;
 `
 
 const AcceptTasksAction = styled.div`
@@ -43,7 +40,9 @@ const AcceptTasksAction = styled.div`
   left: 0;
   box-sizing: border-box;
   width: 100%;
-  padding: 4rem;
+  padding: 3rem;
+  color: ${({ theme }) => theme.color.text};
+  background-color: ${({ theme }) => theme.color.background};
   z-index: 1;
   animation: ${keyframes`
     0% {
@@ -91,7 +90,7 @@ const getInitialCheckboxData = group =>
     tasks: member.memberTasks,
   }))
 
-const Group = ({ group }) => {
+const Group = ({ group, isLast }) => {
   const dispatch = useDispatch()
   const language = determineLanguageFromUrl(window.location)
   const { taskGuid } = useParams()
@@ -192,80 +191,219 @@ const Group = ({ group }) => {
   }
 
   return (
-    <StyledAcceptTasks>
-      <Content>
-        <Accordion
-          allowZeroExpanded
-          onChange={() => updateGroup(ageGroupId)}
-          key={ageGroupId}
-        >
-          <AccordionItem key={ageGroupId}>
-            <AccordionItemHeading>
-              <AccordionItemButton>
-                <ListItem
-                  key={ageGroupId}
-                  ageGroupGuid={ageGroupId}
-                  title={title}
-                  language="fi"
-                  icon={null}
-                  itemType={ITEM_TYPES.TASK}
-                  showActions
-                  showActionsIcon
+    <StyledAcceptTasks isLast={isLast}>
+      <Accordion
+        allowZeroExpanded
+        onChange={() => updateGroup(ageGroupId)}
+        key={ageGroupId}
+      >
+        <AccordionItem key={ageGroupId}>
+          <AccordionItemHeading>
+            <AccordionItemButton>
+              <ListItem
+                key={ageGroupId}
+                ageGroupGuid={ageGroupId}
+                title={title}
+                language="fi"
+                icon={null}
+                itemType={ITEM_TYPES.TASK}
+                showActions
+                showActionsIcon
+              />
+            </AccordionItemButton>
+          </AccordionItemHeading>
+          <AccordionItemPanel>
+            <Content>
+              <StyledListItem>
+                <label style={{ float: 'left', margin: 0 }} htmlFor={group.id}>
+                  {getTermInLanguage(
+                    generalTranslations,
+                    'select_all',
+                    language
+                  )}
+                </label>
+                <input
+                  id={group.id}
+                  value="checkAll"
+                  name="checkAll"
+                  style={CHECK_STYLE}
+                  type="checkbox"
+                  onChange={handleChange}
                 />
-              </AccordionItemButton>
-            </AccordionItemHeading>
-            <AccordionItemPanel>
-              <Content>
-                <StyledListItem>
-                  <label
-                    style={{ float: 'left', margin: 0 }}
-                    htmlFor={group.id}
-                  >
-                    {getTermInLanguage(
-                      generalTranslations,
-                      'select_all',
-                      language
+              </StyledListItem>
+              <HorizontalLine />
+              {checkboxData.map(member => {
+                return (
+                  <StyledListItem key={member.id}>
+                    <label
+                      style={{ float: 'left', margin: 0 }}
+                      htmlFor={member.id}
+                    >
+                      {member.name}
+                    </label>
+                    {isCompleted(member.tasks) ? (
+                      <Check style={{ ...CHECK_STYLE, color: 'green' }} />
+                    ) : (
+                      <input
+                        id={member.id}
+                        style={CHECK_STYLE}
+                        type="checkbox"
+                        value={member.id}
+                        onChange={handleChange}
+                        checked={member.selected}
+                      />
                     )}
-                  </label>
-                  <input
-                    id={group.id}
-                    value="checkAll"
-                    name="checkAll"
-                    style={CHECK_STYLE}
-                    type="checkbox"
-                    onChange={handleChange}
-                  />
-                </StyledListItem>
-                <HorizontalLine />
-                {checkboxData.map(member => {
-                  return (
-                    <StyledListItem key={member.id}>
-                      <label
-                        style={{ float: 'left', margin: 0 }}
-                        htmlFor={member.id}
-                      >
-                        {member.name}
-                      </label>
-                      {isCompleted(member.tasks) ? (
-                        <Check style={{ ...CHECK_STYLE, color: 'green' }} />
-                      ) : (
-                        <input
-                          id={member.id}
-                          style={CHECK_STYLE}
-                          type="checkbox"
-                          value={member.id}
-                          onChange={handleChange}
-                          checked={member.selected}
-                        />
-                      )}
-                    </StyledListItem>
-                  )
-                })}
-              </Content>
-            </AccordionItemPanel>
-          </AccordionItem>
-        </Accordion>
-      </Content>
+                  </StyledListItem>
+                )
+              })}
+              {checkboxData.map(member => {
+                return (
+                  <StyledListItem key={member.id}>
+                    <label
+                      style={{ float: 'left', margin: 0 }}
+                      htmlFor={member.id}
+                    >
+                      {member.name}
+                    </label>
+                    {isCompleted(member.tasks) ? (
+                      <Check style={{ ...CHECK_STYLE, color: 'green' }} />
+                    ) : (
+                      <input
+                        id={member.id}
+                        style={CHECK_STYLE}
+                        type="checkbox"
+                        value={member.id}
+                        onChange={handleChange}
+                        checked={member.selected}
+                      />
+                    )}
+                  </StyledListItem>
+                )
+              })}
+              {checkboxData.map(member => {
+                return (
+                  <StyledListItem key={member.id}>
+                    <label
+                      style={{ float: 'left', margin: 0 }}
+                      htmlFor={member.id}
+                    >
+                      {member.name}
+                    </label>
+                    {isCompleted(member.tasks) ? (
+                      <Check style={{ ...CHECK_STYLE, color: 'green' }} />
+                    ) : (
+                      <input
+                        id={member.id}
+                        style={CHECK_STYLE}
+                        type="checkbox"
+                        value={member.id}
+                        onChange={handleChange}
+                        checked={member.selected}
+                      />
+                    )}
+                  </StyledListItem>
+                )
+              })}
+              {checkboxData.map(member => {
+                return (
+                  <StyledListItem key={member.id}>
+                    <label
+                      style={{ float: 'left', margin: 0 }}
+                      htmlFor={member.id}
+                    >
+                      {member.name}
+                    </label>
+                    {isCompleted(member.tasks) ? (
+                      <Check style={{ ...CHECK_STYLE, color: 'green' }} />
+                    ) : (
+                      <input
+                        id={member.id}
+                        style={CHECK_STYLE}
+                        type="checkbox"
+                        value={member.id}
+                        onChange={handleChange}
+                        checked={member.selected}
+                      />
+                    )}
+                  </StyledListItem>
+                )
+              })}
+              {checkboxData.map(member => {
+                return (
+                  <StyledListItem key={member.id}>
+                    <label
+                      style={{ float: 'left', margin: 0 }}
+                      htmlFor={member.id}
+                    >
+                      {member.name}
+                    </label>
+                    {isCompleted(member.tasks) ? (
+                      <Check style={{ ...CHECK_STYLE, color: 'green' }} />
+                    ) : (
+                      <input
+                        id={member.id}
+                        style={CHECK_STYLE}
+                        type="checkbox"
+                        value={member.id}
+                        onChange={handleChange}
+                        checked={member.selected}
+                      />
+                    )}
+                  </StyledListItem>
+                )
+              })}
+              {checkboxData.map(member => {
+                return (
+                  <StyledListItem key={member.id}>
+                    <label
+                      style={{ float: 'left', margin: 0 }}
+                      htmlFor={member.id}
+                    >
+                      {member.name}
+                    </label>
+                    {isCompleted(member.tasks) ? (
+                      <Check style={{ ...CHECK_STYLE, color: 'green' }} />
+                    ) : (
+                      <input
+                        id={member.id}
+                        style={CHECK_STYLE}
+                        type="checkbox"
+                        value={member.id}
+                        onChange={handleChange}
+                        checked={member.selected}
+                      />
+                    )}
+                  </StyledListItem>
+                )
+              })}
+              {checkboxData.map(member => {
+                return (
+                  <StyledListItem key={member.id}>
+                    <label
+                      style={{ float: 'left', margin: 0 }}
+                      htmlFor={member.id}
+                    >
+                      {member.name}
+                    </label>
+                    {isCompleted(member.tasks) ? (
+                      <Check style={{ ...CHECK_STYLE, color: 'green' }} />
+                    ) : (
+                      <input
+                        id={member.id}
+                        style={CHECK_STYLE}
+                        type="checkbox"
+                        value={member.id}
+                        onChange={handleChange}
+                        checked={member.selected}
+                      />
+                    )}
+                  </StyledListItem>
+                )
+              })}
+            </Content>
+          </AccordionItemPanel>
+        </AccordionItem>
+      </Accordion>
       {memberIdList.length > 0 ? (
         <AcceptTasksAction onClick={handleSubmit}>
           <ActivityItem>
