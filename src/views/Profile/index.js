@@ -57,6 +57,8 @@ const Content = styled.div`
   right: 0;
   bottom: 0;
   height: 100vh;
+  display: flex;
+  flex-direction: column;
   overflow: hidden;
 `
 
