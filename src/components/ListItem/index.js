@@ -10,7 +10,7 @@ import {
   addFavourite as addFavouriteTask,
   deleteFavourite,
 } from '../../redux/actionCreators'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 
 const StyledListItem = styled.div`
   position: relative;
@@ -85,6 +85,9 @@ const ListItem = ({
 }) => {
   const history = useHistory()
   const dispatch = useDispatch()
+  const user = useSelector(state => state.user)
+
+  const isLoggedIn = user.loggedIn
 
   const toggleFavourite = () => {
     if (isFavourite) {
@@ -132,12 +135,13 @@ const ListItem = ({
       </StyledListItemContent>
 
       <StyledActions>
-        {showFavourite && (
+        {showFavourite && isLoggedIn && (
           <span onClick={() => toggleFavourite()}>
             <FavouriteIcon filled={isFavourite} />
           </span>
         )}
         {showActions &&
+          isLoggedIn &&
           itemType &&
           (showActionsIcon ? (
             <MoreHorizontal />

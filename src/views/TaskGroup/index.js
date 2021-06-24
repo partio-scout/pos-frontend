@@ -110,6 +110,7 @@ const TaskGroup = () => {
               showActions
               showFavourite
               isFavourite={favourites.includes(task.guid)}
+              isLoggedIn={status}
             />
           ) : null
         })}

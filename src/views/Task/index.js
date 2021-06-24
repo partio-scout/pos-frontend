@@ -64,6 +64,7 @@ const Task = () => {
   const history = useHistory()
   const language = determineLanguageFromUrl(window.location)
   const task = useSelector(state => state.itemsByGuid[guid])
+  const user = useSelector(state => state.user)
   const generalTranslations = useSelector(state => state.translations.yleiset)
   const [details, setDetails] = useState()
   const [suggestions, setSuggestions] = useState()
@@ -72,6 +73,7 @@ const Task = () => {
   )
   const finder = favourite => task.item.guid === favourite.guid
   const isFavourite = !!favourites.find(finder)
+  const isLoggedIn = user.loggedIn
 
   const getSuggestionDetails = useCallback(
     async d => {
@@ -138,11 +140,13 @@ const Task = () => {
       onBackClick={() => history.goBack()}
       title={translations ? translations.title : task.item.title}
     >
-      <StyledActions
-        guid={task.guid}
-        itemType={task.type}
-        isFavourite={isFavourite}
-      />
+      {isLoggedIn && (
+        <StyledActions
+          guid={task.guid}
+          itemType={task.type}
+          isFavourite={isFavourite}
+        />
+      )}
       {renderDetails()}
     </StyledDetailPage>
   )
