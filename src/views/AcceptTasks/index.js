@@ -64,8 +64,14 @@ const AcceptTasks = () => {
         <Subheading>
           {getTermInLanguage(generalTranslations, 'own_groups', language)}
         </Subheading>
-        {groupsData.map(group => {
-          return <Group key={group.id} group={group} />
+        {groupsData.map((group, i) => {
+          return (
+            <Group
+              key={group.id}
+              group={group}
+              isLast={i === groupsData.length - 1}
+            />
+          )
         })}
       </Content>
     </StyledAcceptTasks>
