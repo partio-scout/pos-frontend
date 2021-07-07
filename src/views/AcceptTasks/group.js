@@ -72,12 +72,17 @@ const ActivityItem = styled.div`
 `
 
 const StyledListItem = styled.div`
-  padding: 0 3.5rem 2rem 3.5rem;
+  padding: 0.25rem;
   text-decoration: none;
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  min-width: 15rem;
+  overflow-x: scroll;
 `
 
 const HorizontalLine = styled.hr`
-  margin: 0 3.5rem 2.5rem 3.5rem;
+  margin: 0 3 0.5rem;
 `
 
 const initialList = []
