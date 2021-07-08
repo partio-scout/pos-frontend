@@ -1,6 +1,8 @@
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import styled from 'styled-components'
 import { Bell } from 'react-feather'
+import useOnClickOutside from '../../hooks/onClickOutSide'
+//import {useSelector} from "react-redux";
 
 const NotificationsContainer = styled.div`
   position: relative;
@@ -27,18 +29,23 @@ const Dropdown = styled.div`
   color: white;
   padding: 1rem;
   position: fixed;
-  box-shadow: 0.5rem 0.5rem 0.3rem grey;
-  background: black;
+  box-shadow: ${({ theme }) => {
+    console.log('THEME:', theme)
+    return `0.3rem 0.3rem 0.2rem rgba(0,0,0,0.2)`
+  }};
+  background: ${({ theme }) => theme.color.gradientDark};
 `
 
 const Notifications = () => {
+  const containerRef = useRef()
   const [showDropdown, setShowDropdown] = useState(false)
   const [hasUnread, setHasUnread] = useState(false)
+  useOnClickOutside(containerRef, () => showDropdown && setShowDropdown(false))
 
   if (!hasUnread) setHasUnread(true)
 
   return (
-    <NotificationsContainer>
+    <NotificationsContainer ref={containerRef}>
       <BellContainer>
         <Bell onClick={() => setShowDropdown(!showDropdown)} />
         {hasUnread && <UnreadNotificator />}
