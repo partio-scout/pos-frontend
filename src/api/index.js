@@ -209,3 +209,22 @@ export const fetchUserGroups = async () => {
     return {}
   }
 }
+
+export const fetchNotifications = async () => {
+  try {
+    const res = await fetch(`${API_URL}/user/notifications`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+    })
+    if (!res.ok) {
+      return []
+    }
+    return await res.json()
+  } catch (err) {
+    console.log('Error fetching notifications:', err)
+    return []
+  }
+}

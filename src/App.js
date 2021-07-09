@@ -16,6 +16,7 @@ import {
   fetchUser,
   fetchUserTasks,
   fetchUserGroups,
+  fetchNotifications,
 } from 'api'
 import {
   setInitialData,
@@ -24,6 +25,7 @@ import {
   setUser,
   setTasks,
   setUserGroups,
+  setNotifications,
 } from 'redux/actionCreators'
 import { GlobalStyle, theme } from 'styles'
 import AgeGroups from 'views/AgeGroups'
@@ -57,6 +59,9 @@ const App = () => {
         )
         fetchUserTasks().then(tasks => dispatch(setTasks(tasks)))
         fetchUserGroups().then(groups => dispatch(setUserGroups(groups)))
+        fetchNotifications().then(notifications =>
+          dispatch(setNotifications(notifications))
+        )
       }
     })
   }, [dispatch])
