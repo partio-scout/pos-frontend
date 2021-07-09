@@ -13,6 +13,15 @@ export const UnreadNotificator = styled.div`
 
 const NotificationContainer = styled.span`
   position: relative;
+  padding: 0.1rem 0.65rem;
+
+  :first-child {
+    padding-top: 0rem;
+  }
+
+  :last-child {
+    padding-bottom: 1rem;
+  }
 `
 
 const Notification = ({ notification }) => {

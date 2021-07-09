@@ -2,6 +2,7 @@ import {
   SET_NOTIFICATIONS,
   SET_NOTIFICATION,
   MARK_NOTIFICATION_READ,
+  MARK_ALL_NOTIFICATIONS_READ,
 } from 'redux/actionTypes'
 
 const findIndex = (array, id) =>
@@ -21,6 +22,15 @@ const markNotificationRead = (notificationId, notifications) => {
   return newState
 }
 
+const markAllNotificationRead = notifications => {
+  const newState = notifications.reduce((newArray, notification) => {
+    notification.viewed = true
+    newArray.push(notification)
+    return newArray
+  }, [])
+  return newState
+}
+
 export const notifications = (state = [], action) => {
   switch (action.type) {
     case SET_NOTIFICATIONS:
@@ -29,6 +39,8 @@ export const notifications = (state = [], action) => {
       return updateNotification(action.payload, state)
     case MARK_NOTIFICATION_READ:
       return markNotificationRead(action.payload, state)
+    case MARK_ALL_NOTIFICATIONS_READ:
+      return markAllNotificationRead(state)
     default:
       return state
   }

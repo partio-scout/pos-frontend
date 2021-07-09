@@ -5,6 +5,8 @@ import { useSelector } from 'react-redux'
 
 import useOnClickOutside from '../../hooks/onClickOutSide'
 import Notification, { UnreadNotificator } from './Notification'
+import { markNotificationsViewed } from '../../api'
+import { markAllNotificationsRead } from '../../redux/actionCreators'
 
 const BUTTON_HEIGHT = '0.7rem'
 
@@ -22,7 +24,7 @@ const Dropdown = styled.div`
   right: 1rem;
   color: white;
   width: 10rem;
-  height: 20rem;
+  max-height: 20rem;
   padding: 1rem;
   position: fixed;
   box-shadow: 0.3rem 0.3rem 0.2rem rgba(0, 0, 0, 0.2);
@@ -54,6 +56,16 @@ const MarkAllRead = styled.div`
   padding: 0.5rem 0rem;
 `
 
+const markNotificationsRead = async () => {
+  const result = await markNotificationsViewed()
+  console.log('RESULT:', result)
+  if (result) {
+    markAllNotificationsRead()
+  } else {
+    // TODO: Error handling
+  }
+}
+
 const Notifications = () => {
   const containerRef = useRef()
   const [showDropdown, setShowDropdown] = useState(false)
@@ -81,7 +93,9 @@ const Notifications = () => {
                 />
               ))}
           </NotificationsContainer>
-          <MarkAllRead>Mark all as read</MarkAllRead>
+          <MarkAllRead onClick={markNotificationsRead}>
+            Mark all as read
+          </MarkAllRead>
         </Dropdown>
       )}
     </Container>

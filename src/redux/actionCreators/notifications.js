@@ -2,6 +2,7 @@ import {
   SET_NOTIFICATION,
   SET_NOTIFICATIONS,
   MARK_NOTIFICATION_READ,
+  MARK_ALL_NOTIFICATIONS_READ,
 } from 'redux/actionTypes'
 
 export const setNotification = notification => {
@@ -22,5 +23,12 @@ export const markNotificationRead = notificationId => {
   return {
     type: MARK_NOTIFICATION_READ,
     payload: notificationId,
+  }
+}
+
+export const markAllNotificationsRead = () => {
+  return {
+    type: MARK_ALL_NOTIFICATIONS_READ,
+    payload: null,
   }
 }
