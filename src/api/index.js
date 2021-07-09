@@ -24,8 +24,12 @@ export const fetchTranslations = async () => {
 }
 
 // POS BACKEND
-
-export const API_URL = process.env.REACT_APP_API_URL
+import { API_URL } from './variables'
+import {
+  fetchNotifications,
+  markNotificationViewed,
+  markNotificationsViewed,
+} from './notifications'
 
 export const postTaskEntry = async entry => {
   const res = await fetch(`${API_URL}/task-entry`, {
@@ -210,21 +214,9 @@ export const fetchUserGroups = async () => {
   }
 }
 
-export const fetchNotifications = async () => {
-  try {
-    const res = await fetch(`${API_URL}/user/notifications`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-    })
-    if (!res.ok) {
-      return []
-    }
-    return await res.json()
-  } catch (err) {
-    console.log('Error fetching notifications:', err)
-    return []
-  }
+export {
+  API_URL,
+  fetchNotifications,
+  markNotificationViewed,
+  markNotificationsViewed,
 }
