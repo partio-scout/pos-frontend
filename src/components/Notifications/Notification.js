@@ -12,6 +12,7 @@ export const UnreadNotificator = styled.div`
 `
 
 const NotificationContainer = styled.span`
+  font-size: 0.875rem;
   position: relative;
   padding: 0.1rem 0.65rem;
 
@@ -27,7 +28,7 @@ const NotificationContainer = styled.span`
 const Notification = ({ notification }) => {
   return (
     <NotificationContainer>
-      {notification.id + ' - ' + notification.item_type}
+      {notification.id + ' - ' + notification.created_at}
       {!notification.viewed && <UnreadNotificator position="left" />}
     </NotificationContainer>
   )

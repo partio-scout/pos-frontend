@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { Bell } from 'react-feather'
 import { useSelector } from 'react-redux'
@@ -8,7 +8,7 @@ import Notification, { UnreadNotificator } from './Notification'
 import { markNotificationsViewed } from '../../api'
 import { markAllNotificationsRead } from '../../redux/actionCreators'
 
-const BUTTON_HEIGHT = '0.7rem'
+const BUTTON_HEIGHT = '1rem'
 
 const Container = styled.div`
   position: relative;
@@ -19,11 +19,24 @@ const BellContainer = styled.div`
   position: relative;
 `
 
+const ARROW_SIZE = '0.5rem'
+const ArrowUp = styled.div`
+  width: 0;
+  height: 0;
+  border-left: ${ARROW_SIZE} solid transparent;
+  border-right: ${ARROW_SIZE} solid transparent;
+  border-bottom: ${ARROW_SIZE} solid ${({ theme }) => theme.color.gradientDark};
+
+  position: absolute;
+  top: -${ARROW_SIZE};
+  right: 3rem;
+`
+
 const Dropdown = styled.div`
-  top: 4.5rem;
+  top: 4rem;
   right: 1rem;
   color: white;
-  width: 10rem;
+  max-width: 80vw;
   max-height: 20rem;
   padding: 1rem;
   position: fixed;
@@ -53,7 +66,8 @@ const MarkAllRead = styled.div`
   color: white;
   margin-top: auto;
   border-top: 1px solid ${({ theme }) => theme.color.default};
-  padding: 0.5rem 0rem;
+  padding: 0rem;
+  padding-top: 0.3rem;
 `
 
 const markNotificationsRead = async () => {
@@ -66,6 +80,14 @@ const markNotificationsRead = async () => {
   }
 }
 
+const containsUnread = notifications => {
+  if (!notifications) return false
+
+  const unread = notifications.find(notification => !notification.viewed)
+
+  return !!unread
+}
+
 const Notifications = () => {
   const containerRef = useRef()
   const [showDropdown, setShowDropdown] = useState(false)
@@ -74,7 +96,9 @@ const Notifications = () => {
 
   useOnClickOutside(containerRef, () => showDropdown && setShowDropdown(false))
 
-  if (!hasUnread) setHasUnread(true)
+  useEffect(() => {
+    if (containsUnread(notifications)) setHasUnread(true)
+  }, [notifications])
 
   return (
     <Container ref={containerRef}>
@@ -84,6 +108,7 @@ const Notifications = () => {
       </BellContainer>
       {showDropdown && (
         <Dropdown>
+          <ArrowUp />
           <NotificationsContainer>
             {notifications &&
               notifications.map(notification => (

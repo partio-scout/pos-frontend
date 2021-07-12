@@ -60,6 +60,9 @@ const Languages = styled.div`
 `
 
 const AgeGroups = ({ theme }) => {
+  window.addEventListener('scroll', () =>
+    console.log('WINDOW SCROLL --- WHOOP WHOOP')
+  )
   const ageGroups = useSelector(state => state.ageGroups)
   const selectedAgeGroup = useSelector(state => state.selectedAgeGroup)
   const user = useSelector(state => state.user)
