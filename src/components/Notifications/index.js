@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { Bell } from 'react-feather'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 
 import useOnClickOutside from '../../hooks/onClickOutSide'
 import Notification, { UnreadNotificator } from './Notification'
@@ -70,16 +70,6 @@ const MarkAllRead = styled.div`
   padding-top: 0.3rem;
 `
 
-const markNotificationsRead = async () => {
-  const result = await markNotificationsViewed()
-  console.log('RESULT:', result)
-  if (result) {
-    markAllNotificationsRead()
-  } else {
-    // TODO: Error handling
-  }
-}
-
 const containsUnread = notifications => {
   if (!notifications) return false
 
@@ -93,12 +83,25 @@ const Notifications = () => {
   const [showDropdown, setShowDropdown] = useState(false)
   const [hasUnread, setHasUnread] = useState(false)
   const notifications = useSelector(state => state.notifications)
+  const dispatch = useDispatch()
 
   useOnClickOutside(containerRef, () => showDropdown && setShowDropdown(false))
 
   useEffect(() => {
-    if (containsUnread(notifications)) setHasUnread(true)
+    const unread = containsUnread(notifications)
+    if (unread) setHasUnread(true)
+    else if (!unread && hasUnread) setHasUnread(false)
   }, [notifications])
+
+  const markNotificationsRead = async () => {
+    const result = await markNotificationsViewed()
+    if (result.success) {
+      dispatch(markAllNotificationsRead())
+      setShowDropdown(false)
+    } else {
+      // TODO: Error handling
+    }
+  }
 
   return (
     <Container ref={containerRef}>
