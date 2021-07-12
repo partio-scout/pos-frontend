@@ -29,23 +29,23 @@ const ArrowUp = styled.div`
 
   position: absolute;
   top: -${ARROW_SIZE};
-  right: 3rem;
+  right: 4.15rem;
 `
 
+const PADDING = 1
+const TOP = 4
 const Dropdown = styled.div`
-  top: 4rem;
-  right: 1rem;
+  top: ${TOP}rem;
+  right: 0;
   color: white;
-  max-width: 80vw;
-  max-height: 20rem;
-  padding: 1rem;
+  width: calc(100vw - ${2 * PADDING}rem);
+  height: calc(100vh - ${2 * PADDING}rem - ${TOP}rem);
+  padding: ${PADDING}rem;
   position: fixed;
-  box-shadow: 0.3rem 0.3rem 0.2rem rgba(0, 0, 0, 0.2);
   background: ${({ theme }) => theme.color.gradientDark};
   padding-bottom: ${BUTTON_HEIGHT};
   display: flex;
   flex-direction: column;
-  border-radius: 5px;
 `
 
 const NotificationsContainer = styled.div`
