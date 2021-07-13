@@ -1,6 +1,8 @@
 import React from 'react'
 import styled from 'styled-components'
 
+import TaskNotification from './TaskNotification'
+
 export const UnreadNotificator = styled.div`
   width: 0.65rem;
   height: 0.65rem;
@@ -8,13 +10,13 @@ export const UnreadNotificator = styled.div`
   background: red;
   border-radius: 50%;
   ${({ position }) => position || 'right'}: 0rem;
-  top: 0em;
+  top: ${({ center }) => (!center ? '0' : '0.4rem')};
 `
 
-const NotificationContainer = styled.span`
+const NotificationContainer = styled.div`
   font-size: 0.875rem;
   position: relative;
-  padding: 0.1rem 0.65rem;
+  padding: 0.1rem 1rem;
 
   :first-child {
     padding-top: 0rem;
@@ -23,13 +25,28 @@ const NotificationContainer = styled.span`
   :last-child {
     padding-bottom: 1rem;
   }
+
+  :not(:last-child) {
+    border-bottom: 1px solid ${({ theme }) => theme.color.subText};
+  }
 `
 
-const Notification = ({ notification }) => {
+const components = {
+  TaskNotification,
+}
+
+const getNotificationsComponent = (notification, markRead) => {
+  const itemType = notification.item_type
+  const componentPrefix = itemType.charAt(0) + itemType.slice(1).toLowerCase()
+  const Component = components[componentPrefix + 'Notification']
+  return <Component notification={notification} markRead={markRead} />
+}
+
+const Notification = ({ notification, markRead }) => {
   return (
     <NotificationContainer>
-      {notification.id + ' - ' + notification.created_at}
-      {!notification.viewed && <UnreadNotificator position="left" />}
+      {getNotificationsComponent(notification, markRead)}
+      {!notification.viewed && <UnreadNotificator position="left" center />}
     </NotificationContainer>
   )
 }

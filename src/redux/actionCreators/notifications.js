@@ -3,7 +3,15 @@ import {
   SET_NOTIFICATIONS,
   MARK_NOTIFICATION_READ,
   MARK_ALL_NOTIFICATIONS_READ,
+  TOGGLE_SHOW_NOTIFICATIONS,
 } from 'redux/actionTypes'
+
+export const toggleShowNotifications = () => {
+  return {
+    type: TOGGLE_SHOW_NOTIFICATIONS,
+    payload: null,
+  }
+}
 
 export const setNotification = notification => {
   return {

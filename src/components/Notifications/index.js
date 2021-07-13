@@ -5,8 +5,12 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import useOnClickOutside from '../../hooks/onClickOutSide'
 import Notification, { UnreadNotificator } from './Notification'
-import { markNotificationsViewed } from '../../api'
-import { markAllNotificationsRead } from '../../redux/actionCreators'
+import { markNotificationsViewed, markNotificationViewed } from '../../api'
+import {
+  markAllNotificationsRead,
+  markNotificationRead,
+  toggleShowNotifications,
+} from '../../redux/actionCreators'
 
 const BUTTON_HEIGHT = '1rem'
 
@@ -80,12 +84,15 @@ const containsUnread = notifications => {
 
 const Notifications = () => {
   const containerRef = useRef()
-  const [showDropdown, setShowDropdown] = useState(false)
   const [hasUnread, setHasUnread] = useState(false)
-  const notifications = useSelector(state => state.notifications)
+  const notifications = useSelector(state => state.notifications.list)
+  const showDropdown = useSelector(state => state.notifications.show)
   const dispatch = useDispatch()
 
-  useOnClickOutside(containerRef, () => showDropdown && setShowDropdown(false))
+  useOnClickOutside(
+    containerRef,
+    () => showDropdown && dispatch(toggleShowNotifications())
+  )
 
   useEffect(() => {
     const unread = containsUnread(notifications)
@@ -97,7 +104,16 @@ const Notifications = () => {
     const result = await markNotificationsViewed()
     if (result.success) {
       dispatch(markAllNotificationsRead())
-      setShowDropdown(false)
+      dispatch(toggleShowNotifications())
+    } else {
+      // TODO: Error handling
+    }
+  }
+
+  const markSingleNotificationRead = async notification => {
+    const result = await markNotificationViewed(notification.id)
+    if (result.success) {
+      dispatch(markNotificationRead(notification.id))
     } else {
       // TODO: Error handling
     }
@@ -106,7 +122,7 @@ const Notifications = () => {
   return (
     <Container ref={containerRef}>
       <BellContainer>
-        <Bell onClick={() => setShowDropdown(!showDropdown)} />
+        <Bell onClick={() => dispatch(toggleShowNotifications())} />
         {hasUnread && <UnreadNotificator />}
       </BellContainer>
       {showDropdown && (
@@ -118,6 +134,7 @@ const Notifications = () => {
                 <Notification
                   key={notification.id}
                   notification={notification}
+                  markRead={() => markSingleNotificationRead(notification)}
                 />
               ))}
           </NotificationsContainer>

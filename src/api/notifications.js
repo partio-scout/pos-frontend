@@ -22,7 +22,6 @@ export const fetchNotifications = async () => {
 }
 
 export const markNotificationsViewed = async () => {
-  console.log('markNotificationsViewed')
   try {
     const res = await fetch(`${API_URL}${BASE_URL}/mark_viewed`, {
       method: 'POST',
@@ -39,7 +38,6 @@ export const markNotificationsViewed = async () => {
 }
 
 export const markNotificationViewed = async notificationId => {
-  console.log('markNotificationsViewed')
   try {
     const res = await fetch(
       `${API_URL}${BASE_URL}/${notificationId}/mark_viewed`,

@@ -2,6 +2,7 @@ import {
   SET_NOTIFICATIONS,
   SET_NOTIFICATION,
   MARK_NOTIFICATION_READ,
+  TOGGLE_SHOW_NOTIFICATIONS,
   MARK_ALL_NOTIFICATIONS_READ,
 } from 'redux/actionTypes'
 
@@ -31,16 +32,33 @@ const markAllNotificationRead = notifications => {
   return newState
 }
 
-export const notifications = (state = [], action) => {
+export const notifications = (state = { list: [], show: false }, action) => {
   switch (action.type) {
+    case TOGGLE_SHOW_NOTIFICATIONS:
+      return {
+        ...state,
+        show: !state.show,
+      }
     case SET_NOTIFICATIONS:
-      return action.payload
+      return {
+        ...state,
+        list: action.payload,
+      }
     case SET_NOTIFICATION:
-      return updateNotification(action.payload, state)
+      return {
+        ...state,
+        list: updateNotification(action.payload, state.list),
+      }
     case MARK_NOTIFICATION_READ:
-      return markNotificationRead(action.payload, state)
+      return {
+        ...state,
+        list: markNotificationRead(action.payload, state.list),
+      }
     case MARK_ALL_NOTIFICATIONS_READ:
-      return markAllNotificationRead(state)
+      return {
+        ...state,
+        list: markAllNotificationRead(state.list),
+      }
     default:
       return state
   }
