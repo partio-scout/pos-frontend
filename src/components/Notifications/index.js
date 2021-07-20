@@ -139,7 +139,7 @@ const Notifications = () => {
               ))}
           </NotificationsContainer>
           <MarkAllRead onClick={markNotificationsRead}>
-            Mark all as read
+            Merkitse kaikki luetuiksi
           </MarkAllRead>
         </Dropdown>
       )}
