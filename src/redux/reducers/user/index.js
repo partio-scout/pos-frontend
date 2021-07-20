@@ -32,7 +32,6 @@ const setTask = (user, taskData) => {
 export const user = (state = {}, action) => {
   switch (action.type) {
     case SET_USER:
-      action.payload.canMarkDone = true
       return {
         ...state,
         ...action.payload,
