@@ -2,9 +2,10 @@ import React, { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { Bell } from 'react-feather'
 import { useDispatch, useSelector } from 'react-redux'
+import InfiniteScroll from 'react-infinite-scroll-component'
 
-import useOnClickOutside from '../../hooks/onClickOutSide'
 import Notification, { UnreadNotificator } from './Notification'
+import useOnClickOutside from '../../hooks/onClickOutSide'
 import { markNotificationsViewed, markNotificationViewed } from '../../api'
 import {
   markAllNotificationsRead,
@@ -73,7 +74,6 @@ const MarkAllRead = styled.div`
   padding: 0rem;
   padding-top: 0.3rem;
 `
-
 const containsUnread = notifications => {
   if (!notifications) return false
 
@@ -88,6 +88,9 @@ const Notifications = () => {
   const notifications = useSelector(state => state.notifications.list)
   const showDropdown = useSelector(state => state.notifications.show)
   const dispatch = useDispatch()
+  const [hasMore, setHasMore] = useState(true)
+  const [displayNotifications, setDisplayNotifications] = useState([])
+  const [slice, setSlice] = useState(12)
 
   useOnClickOutside(
     containerRef,
@@ -98,7 +101,41 @@ const Notifications = () => {
     const unread = containsUnread(notifications)
     if (unread) setHasUnread(true)
     else if (!unread && hasUnread) setHasUnread(false)
+
+    setDisplayNotifications(
+      notifications
+        .slice(0, slice)
+        .sort((a, b) => (a.viewed > b.viewed ? 1 : -1))
+        .map(notification => (
+          <Notification
+            key={notification.id}
+            notification={notification}
+            markRead={() => markSingleNotificationRead(notification)}
+          />
+        ))
+    )
+    setHasMore(true)
   }, [notifications])
+
+  const addSlice = () => {
+    setDisplayNotifications([...displayNotifications, ...nextSlice()])
+    setSlice(slice + 10)
+    if (slice >= notifications.length) {
+      setHasMore(false)
+    }
+  }
+
+  const nextSlice = () => {
+    return notifications
+      .slice(slice, slice + 10)
+      .map(notification => (
+        <Notification
+          key={notification.id}
+          notification={notification}
+          markRead={() => markSingleNotificationRead(notification)}
+        />
+      ))
+  }
 
   const markNotificationsRead = async () => {
     const result = await markNotificationsViewed()
@@ -128,15 +165,19 @@ const Notifications = () => {
       {showDropdown && (
         <Dropdown>
           <ArrowUp />
-          <NotificationsContainer>
-            {notifications &&
-              notifications.map(notification => (
-                <Notification
-                  key={notification.id}
-                  notification={notification}
-                  markRead={() => markSingleNotificationRead(notification)}
-                />
-              ))}
+          <NotificationsContainer id="scrollableDiv">
+            {notifications && (
+              <InfiniteScroll
+                dataLength={displayNotifications.length}
+                next={addSlice}
+                scrollableTarget="scrollableDiv"
+                scrollThreshold={0.8}
+                hasMore={hasMore}
+                loader={<h4>Ladataan...</h4>}
+              >
+                <div>{displayNotifications}</div>
+              </InfiniteScroll>
+            )}
           </NotificationsContainer>
           <MarkAllRead onClick={markNotificationsRead}>
             Merkitse kaikki luetuiksi

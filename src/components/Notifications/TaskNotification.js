@@ -15,6 +15,12 @@ const Message = styled.div``
 const Timestamp = styled.div`
   font-size: 0.5rem;
 `
+const StyledLink = styled(Link)`
+  color: #c9bf32;
+  :visited {
+    color: #c86418;
+  }
+`
 
 // TODO: Refactor when we have translations
 const getStateMessage = state => {
@@ -48,9 +54,9 @@ const TaskNotification = ({ notification, markRead }) => {
           Ryhmänjohtaja {user.memberName} on{' '}
           {getStateMessage(notification.notification_type)} tehtäväsi{' '}
         </span>
-        <Link to={getTaskUrl(task)} onClick={markRead}>
+        <StyledLink to={getTaskUrl(task)} onClick={markRead}>
           {task.item.title}
-        </Link>
+        </StyledLink>
       </Message>
       <Timestamp>{timestamp}</Timestamp>
     </Container>
