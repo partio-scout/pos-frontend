@@ -2,10 +2,11 @@ import React, { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { Bell } from 'react-feather'
 import { useDispatch, useSelector } from 'react-redux'
+import InfiniteScroll from 'react-infinite-scroll-component'
+
 import Notification, { UnreadNotificator } from './Notification'
 import useOnClickOutside from '../../hooks/onClickOutSide'
 import { markNotificationsViewed, markNotificationViewed } from '../../api'
-import InfiniteScroll from 'react-infinite-scroll-component'
 import {
   markAllNotificationsRead,
   markNotificationRead,
