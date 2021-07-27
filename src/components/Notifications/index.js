@@ -166,16 +166,16 @@ const Notifications = () => {
         <Dropdown>
           <ArrowUp />
           <NotificationsContainer id="scrollableDiv">
-            {notifications && (
+            {displayNotifications.length === 0 && <h4>Ei ilmoituksia</h4>}
+            {displayNotifications && (
               <InfiniteScroll
                 dataLength={displayNotifications.length}
                 next={addSlice}
                 scrollableTarget="scrollableDiv"
                 scrollThreshold={0.8}
                 hasMore={hasMore}
-                loader={<h4>Ladataan...</h4>}
               >
-                <div>{displayNotifications}</div>
+                {displayNotifications}
               </InfiniteScroll>
             )}
           </NotificationsContainer>
