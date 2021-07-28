@@ -24,8 +24,12 @@ export const fetchTranslations = async () => {
 }
 
 // POS BACKEND
-
-export const API_URL = process.env.REACT_APP_API_URL
+import { API_URL } from './variables'
+import {
+  fetchNotifications,
+  markNotificationViewed,
+  markNotificationsViewed,
+} from './notifications'
 
 export const postTaskEntry = async entry => {
   const res = await fetch(`${API_URL}/task-entry`, {
@@ -208,4 +212,11 @@ export const fetchUserGroups = async () => {
     console.log('Error fetching groups: ', err)
     return {}
   }
+}
+
+export {
+  API_URL,
+  fetchNotifications,
+  markNotificationViewed,
+  markNotificationsViewed,
 }
