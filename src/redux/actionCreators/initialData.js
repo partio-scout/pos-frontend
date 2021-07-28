@@ -1,6 +1,7 @@
 import { setAgeGroups } from './ageGroups'
 import { setItemsByGuid } from './itemsByGuid'
-import { deepFlatten } from 'helpers'
+import { deepFlatten, getTaskGroupRequirements } from 'helpers'
+import { setTaskGroupRequirements } from './taskGroupRequirements'
 
 export const setInitialData = ageGroups => dispatch => {
   dispatch(
@@ -15,4 +16,7 @@ export const setInitialData = ageGroups => dispatch => {
   dispatch(
     setItemsByGuid(deepFlatten(ageGroups.sort((a, b) => a.order - b.order)))
   )
+
+  const taskGroupRequirements = getTaskGroupRequirements(ageGroups)
+  dispatch(setTaskGroupRequirements(taskGroupRequirements))
 }
