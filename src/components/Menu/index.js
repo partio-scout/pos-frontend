@@ -28,7 +28,7 @@ const Profile = styled.div`
 
 const Icons = styled.div`
   display: flex;
-  justify-content: end;
+  justify-content: flex-end;
 `
 
 const Menu = ({ language, user }) => {
