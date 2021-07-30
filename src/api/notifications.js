@@ -1,4 +1,5 @@
 import { API_URL } from './variables'
+import { fetchMember } from './index'
 
 const BASE_URL = '/user/notifications'
 
@@ -14,7 +15,20 @@ export const fetchNotifications = async () => {
     if (!res.ok) {
       return []
     }
-    return await res.json()
+    const notifications = await res.json()
+
+    const leaders = notifications.reduce(async (acc, notification) => {
+      if (!acc[notification.user_guid]) {
+        const member = await fetchMember(notification.user_guid)
+        acc[notification.user_guid] = member.name
+      }
+      return acc
+    }, {})
+
+    return {
+      list: notifications,
+      leaders: leaders,
+    }
   } catch (err) {
     console.log('Error fetching notifications:', err)
     return []

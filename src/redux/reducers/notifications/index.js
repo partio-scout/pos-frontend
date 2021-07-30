@@ -42,7 +42,7 @@ export const notifications = (state = { list: [], show: false }, action) => {
     case SET_NOTIFICATIONS:
       return {
         ...state,
-        list: action.payload,
+        ...action.payload,
       }
     case SET_NOTIFICATION:
       return {
