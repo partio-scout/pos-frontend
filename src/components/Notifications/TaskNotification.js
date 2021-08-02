@@ -34,24 +34,14 @@ const getStateMessage = state => {
 
 const TaskNotification = ({ notification, markRead }) => {
   const itemsByGuid = useSelector(state => state.itemsByGuid)
-  const groups = useSelector(state => state.user.userGroups)
   const task = itemsByGuid[notification.item_guid]
   const timestamp = getTimestamp(notification.created_at)
-  const user = groups.reduce((cur, group) => {
-    if (cur) {
-      return cur
-    }
-    const found = group.members.find(member => {
-      return member.memberId.toString() === notification.created_by
-    })
-    return found
-  }, null)
 
   return (
     <Container>
       <Message>
         <span>
-          Ryhmänjohtaja {user.memberName} on{' '}
+          Ryhmänjohtaja {notification.group_leader_name} on{' '}
           {getStateMessage(notification.notification_type)} tehtäväsi{' '}
         </span>
         <StyledLink to={getTaskUrl(task)} onClick={markRead}>
