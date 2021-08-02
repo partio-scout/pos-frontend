@@ -27,6 +27,7 @@ const Actions = ({
   groupGuid,
   isFavourite,
   actionsComponent,
+  name,
 }) => {
   const [showActions, setShowActions] = useState(false)
   const tasks = useSelector(state => state.tasks)
@@ -90,6 +91,7 @@ const Actions = ({
         task_guid: guid,
         user_guid: userGuid,
         completion_status: COMPLETION_STATUS.COMPLETED,
+        group_leader_name: name,
       }
       await postMemberTaskEntry(update)
       setShowActions(false)

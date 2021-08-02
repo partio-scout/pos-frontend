@@ -153,6 +153,7 @@ const ListItem = ({
               actionsComponent={actionsComponent}
               userGuid={userGuid}
               groupGuid={groupGuid}
+              name={user.name}
             />
           ))}
       </StyledActions>
