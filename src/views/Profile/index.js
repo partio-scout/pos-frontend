@@ -5,6 +5,13 @@ import { useSelector } from 'react-redux'
 import TaskGroupItem from 'components/TaskGroupItem'
 import AgeGroupListItem from 'components/AgeGroupListItem'
 import { API_URL, fetchProfile } from 'api'
+import {
+  Accordion,
+  AccordionItem,
+  AccordionItemHeading,
+  AccordionItemButton,
+  AccordionItemPanel,
+} from 'react-accessible-accordion'
 
 import { X } from 'react-feather'
 import {
@@ -40,6 +47,15 @@ const Background = styled.div`
     );
     `};
   }
+`
+const StyledListItem = styled.div`
+  padding: 0.25rem 0 0 3.5rem;
+  text-decoration: none;
+  // display: flex;
+  // flex-wrap: nowrap;
+  justify-content: space-between;
+  min-width: 15rem;
+  overflow-x: scroll;
 `
 
 // TODO take icon from feather icons and remove px width & height
@@ -124,6 +140,8 @@ const Profile = () => {
   const favourites = useSelector(state =>
     state.favourites.map(favourite => state.itemsByGuid[favourite])
   )
+  const parents = []
+  const completedTaskItems = []
 
   const activityTranslations = useSelector(
     state => state.translations.aktiviteetin_ylakasite
@@ -144,6 +162,14 @@ const Profile = () => {
       userTasks[guid] === COMPLETION_STATUS.ACTIVE ||
       userTasks[guid] === COMPLETION_STATUS.COMPLETION_REQUESTED
   )
+
+  completedTasks.map(taskGuid => {
+    const task = itemsByGuid[taskGuid]
+    completedTaskItems.push(task.item)
+    const parent = itemsByGuid[task.parentGuid]
+    parents.push(parent)
+  })
+  const filtered = Array.from(new Set(parents))
 
   const completedAgeGroups = ageGroups
     .filter(ageGroup => {
@@ -349,25 +375,66 @@ const Profile = () => {
             {getTermInLanguage(generalTranslations, 'completed', language)}
           </h4>
           <TaskList>
-            {completedTasks.map(taskGuid => {
-              const task = itemsByGuid[taskGuid]
-              if (!task) return null
+            {filtered.map(parent => {
+              // console.log(filtered, 'parent')
+              // console.log(completedTasks, 'completedTasks')
+              console.log(parent, 'PARENT')
 
-              const taskTranslation = getTranslation(task.item)
-              const parent = itemsByGuid[task.parentGuid]
+              const items = []
+              for (let i = 0; i < completedTasks.length; i++) {
+                const task = itemsByGuid[completedTasks[i]]
+                // console.log(task.parentGuid, 'TASK')
 
+                if (task.parentGuid === parent.guid) {
+                  items.push(task)
+                }
+              }
+              console.log(items, 'ITEMS')
               return (
-                <ListItem
-                  key={task.guid}
-                  guid={task.guid}
-                  ageGroupGuid={task.ageGroupGuid}
-                  title={
-                    taskTranslation ? taskTranslation.title : task.item.title
-                  }
-                  subTitle={parent.item.title}
-                  language={language}
-                  itemType={ITEM_TYPES.TASK}
-                />
+                <Accordion key={parent.item.guid} allowZeroExpanded>
+                  <AccordionItem>
+                    <AccordionItemHeading>
+                      <AccordionItemButton>
+                        <ListItem
+                          key={parent.parentGuid}
+                          title={parent.item.title}
+                          itemType={ITEM_TYPES.TASK_GROUP}
+                          ageGroupGuid={parent.ageGroupGuid}
+                        />
+                      </AccordionItemButton>
+                    </AccordionItemHeading>
+                    {items.map(item => {
+                      return (
+                        <AccordionItemPanel key={item.guid}>
+                          {/* <ListItem
+                          // key={item.guid}
+                          // guid={item.guid}
+                          // ageGroupGuid={item.ageGroupGuid}
+                          // title={item.item.title}
+                          // language={language}
+                          // itemType={ITEM_TYPES.TASK}
+                          > */}
+                          <StyledListItem
+                            data-testid="link"
+                            onClick={() =>
+                              item.guid &&
+                              item.language &&
+                              history.push(
+                                `/guid/${item.guid}?lang=${item.language}`
+                              )
+                            }
+                          >
+                            <ul>
+                              <li>
+                                <p>{item.item.title}</p>
+                              </li>
+                            </ul>
+                          </StyledListItem>
+                        </AccordionItemPanel>
+                      )
+                    })}
+                  </AccordionItem>
+                </Accordion>
               )
             })}
             {taskGroups.map(subTaskGroup => {
