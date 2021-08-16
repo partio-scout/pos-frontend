@@ -285,12 +285,29 @@ const Profile = () => {
         setIsFetchingProfile(false)
       })
   }
-
+  const parentGuidList = []
   const ageGroupGuid = userData.ageGroupGuid
 
   const findParentGuidData = guid => {
-    return Object.values(itemsByGuid).find(x => x.guid === guid)
+    const data = Object.values(itemsByGuid).find(x => x.guid === guid)
+    parentGuidList.push(data.item.guid)
+    return data
   }
+
+  console.log(parentGuidList, 'parentguidlist')
+
+  // const findSingleParentGroups = (guid) => {
+  //   let result = []
+  //   for (let i = 0; i < parentGuidList.length; i++) {
+  //     if (!parentGuidList.includes(parentGuidList[i].item.guid)) {
+  //       result.push(parentGuidList[i].item)
+  //     }
+  //   }
+  //   const filteredParentsList = Array.from(new Set(result))
+
+  //   console.log('this', filteredParentsList)
+  //   return filteredParentsList
+  // }
 
   return (
     <Background ageGroupGuid={ageGroupGuid}>
@@ -381,41 +398,43 @@ const Profile = () => {
           </h4>
           <TaskList>
             {filtered.map(parent => {
-              // console.log(filtered, 'parent')
-              // console.log(completedTasks, 'completedTasks')
-              //console.log(parent, 'PARENT')
-
+              console.log(parent, 'parent')
               const items = []
               for (let i = 0; i < completedTasks.length; i++) {
                 const task = itemsByGuid[completedTasks[i]]
-                // console.log(task.parentGuid, 'TASK')
 
                 if (task.parentGuid === parent.guid) {
                   items.push(task)
                 }
               }
               const parentGuidData = findParentGuidData(parent.parentGuid)
-              console.log('parentGuidData', parentGuidData)
+              console.log(parentGuidData, 'parentGuidData')
 
               return (
                 <Accordion key={parent.item.guid} allowZeroExpanded>
                   <AccordionItem>
                     <AccordionItemHeading>
                       <AccordionItemButton>
-                        {parentGuidData.type === 'TASK_GROUP' ? (
-                          <ListItem
-                            key={parent.parentGuid}
-                            title={parentGuidData.item.title}
-                            itemType={ITEM_TYPES.TASK_GROUP}
-                            ageGroupGuid={parentGuidData.ageGroupGuid}
-                          />
+                        {!parentGuidList.includes(parent.parentGuid) ? (
+                          <>
+                            {parentGuidData.type === 'TASK_GROUP' ? (
+                              <ListItem
+                                key={parent.parentGuid}
+                                title={parentGuidData.item.title}
+                                itemType={ITEM_TYPES.TASK_GROUP}
+                                ageGroupGuid={parentGuidData.item.ageGroupGuid}
+                              />
+                            ) : (
+                              <ListItem
+                                key={parent.parentGuid}
+                                title={parent.item.title}
+                                itemType={ITEM_TYPES.TASK_GROUP}
+                                ageGroupGuid={parent.ageGroupGuid}
+                              />
+                            )}
+                          </>
                         ) : (
-                          <ListItem
-                            key={parent.parentGuid}
-                            title={parent.item.title}
-                            itemType={ITEM_TYPES.TASK_GROUP}
-                            ageGroupGuid={parent.ageGroupGuid}
-                          />
+                          <div></div>
                         )}
                       </AccordionItemButton>
                     </AccordionItemHeading>
