@@ -287,6 +287,11 @@ const Profile = () => {
   }
 
   const ageGroupGuid = userData.ageGroupGuid
+
+  const findParentGuidData = guid => {
+    return Object.values(itemsByGuid).find(x => x.guid === guid)
+  }
+
   return (
     <Background ageGroupGuid={ageGroupGuid}>
       <Content>
@@ -378,7 +383,7 @@ const Profile = () => {
             {filtered.map(parent => {
               // console.log(filtered, 'parent')
               // console.log(completedTasks, 'completedTasks')
-              console.log(parent, 'PARENT')
+              //console.log(parent, 'PARENT')
 
               const items = []
               for (let i = 0; i < completedTasks.length; i++) {
@@ -389,18 +394,29 @@ const Profile = () => {
                   items.push(task)
                 }
               }
-              console.log(items, 'ITEMS')
+              const parentGuidData = findParentGuidData(parent.parentGuid)
+              console.log('parentGuidData', parentGuidData)
+
               return (
                 <Accordion key={parent.item.guid} allowZeroExpanded>
                   <AccordionItem>
                     <AccordionItemHeading>
                       <AccordionItemButton>
-                        <ListItem
-                          key={parent.parentGuid}
-                          title={parent.item.title}
-                          itemType={ITEM_TYPES.TASK_GROUP}
-                          ageGroupGuid={parent.ageGroupGuid}
-                        />
+                        {parentGuidData.type === 'TASK_GROUP' ? (
+                          <ListItem
+                            key={parent.parentGuid}
+                            title={parentGuidData.item.title}
+                            itemType={ITEM_TYPES.TASK_GROUP}
+                            ageGroupGuid={parentGuidData.ageGroupGuid}
+                          />
+                        ) : (
+                          <ListItem
+                            key={parent.parentGuid}
+                            title={parent.item.title}
+                            itemType={ITEM_TYPES.TASK_GROUP}
+                            ageGroupGuid={parent.ageGroupGuid}
+                          />
+                        )}
                       </AccordionItemButton>
                     </AccordionItemHeading>
                     {items.map(item => {
