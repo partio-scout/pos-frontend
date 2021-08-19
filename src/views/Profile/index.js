@@ -157,6 +157,21 @@ const Profile = () => {
     guid => userTasks[guid] === COMPLETION_STATUS.COMPLETED
   )
 
+  const taskGroupsWithItems = Object.values(itemsByGuid)
+    .filter(item => item.type === 'TASK_GROUP' && item.depth === 2)
+    .reduce((acc, item) => {
+      acc[item.parentGuid] = acc[item.parentGuid] || []
+      acc[item.parentGuid].push(item.item)
+      return acc
+    }, {})
+
+  console.log(taskGroupsWithItems, 'TASKGROUPS')
+
+  // for (let i = 0; i < taskGroupsWithItems.length; i++) {
+  //   const item = taskGroupsWithItems[i].item
+
+  // }
+
   const ongoingTasks = Object.keys(userTasks).filter(
     guid =>
       userTasks[guid] === COMPLETION_STATUS.ACTIVE ||
@@ -294,7 +309,7 @@ const Profile = () => {
     return data
   }
 
-  console.log(parentGuidList, 'parentguidlist')
+  // console.log(parentGuidList, 'parentguidlist')
 
   // const findSingleParentGroups = (guid) => {
   //   let result = []
@@ -398,7 +413,7 @@ const Profile = () => {
           </h4>
           <TaskList>
             {filtered.map(parent => {
-              console.log(parent, 'parent')
+              // console.log(parent, 'parent')
               const items = []
               for (let i = 0; i < completedTasks.length; i++) {
                 const task = itemsByGuid[completedTasks[i]]
@@ -408,14 +423,20 @@ const Profile = () => {
                 }
               }
               const parentGuidData = findParentGuidData(parent.parentGuid)
-              console.log(parentGuidData, 'parentGuidData')
+              // console.log(parentGuidData, 'parentGuidData')
+              // for (let i = 0; i < taskGroupsWithItems.length; i++) {
+              //   if ( taskGroupsWithItems[i].item.type === 'TASK_GROUP') {
+
+              //   }
+
+              // }
 
               return (
                 <Accordion key={parent.item.guid} allowZeroExpanded>
                   <AccordionItem>
                     <AccordionItemHeading>
                       <AccordionItemButton>
-                        {!parentGuidList.includes(parent.parentGuid) ? (
+                        {parentGuidList.includes(parent.parentGuid) ? (
                           <>
                             {parentGuidData.type === 'TASK_GROUP' ? (
                               <ListItem
