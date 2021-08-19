@@ -25,7 +25,7 @@
     "env-cmd": "^10.1.0",
     "eslint": "7.32.0",
     "eslint-plugin-react": "7.16.0",
-    "husky": "3.1.0",
+    "husky": "^7.0.0",
     "prettier": "2.3.2",
     "pretty-quick": "3.1.1",
     "react-scripts": "4.0.3",
@@ -39,7 +39,8 @@
     "update-sw": "workbox injectManifest workbox.config.js",
     "test": "react-scripts test --verbose",
     "lint": "eslint src",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "prepare": "husky install"
   },
   "browserslist": {
     "production": [
@@ -52,10 +53,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "pretty-quick --staged"
-    }
   }
 }
