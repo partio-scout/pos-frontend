@@ -48,15 +48,15 @@ const Background = styled.div`
     `};
   }
 `
-const StyledListItem = styled.div`
-  padding: 0.25rem 0 0 3.5rem;
-  text-decoration: none;
-  // display: flex;
-  // flex-wrap: nowrap;
-  justify-content: space-between;
-  min-width: 15rem;
-  overflow-x: scroll;
-`
+// const StyledListItem = styled.div`
+//   padding: 0.25rem 0 0 3.5rem;
+//   text-decoration: none;
+//   // display: flex;
+//   // flex-wrap: nowrap;
+//   justify-content: space-between;
+//   min-width: 15rem;
+//   overflow-x: scroll;
+// `
 
 // TODO take icon from feather icons and remove px width & height
 const CloseIcon = styled.div`
@@ -157,34 +157,80 @@ const Profile = () => {
     guid => userTasks[guid] === COMPLETION_STATUS.COMPLETED
   )
 
-  const taskGroupsWithItems = Object.values(itemsByGuid)
-    .filter(item => item.type === 'TASK_GROUP' && item.depth === 2)
-    .reduce((acc, item) => {
-      acc[item.parentGuid] = acc[item.parentGuid] || []
-      acc[item.parentGuid].push(item.item)
-      return acc
-    }, {})
-
-  console.log(taskGroupsWithItems, 'TASKGROUPS')
-
-  // for (let i = 0; i < taskGroupsWithItems.length; i++) {
-  //   const item = taskGroupsWithItems[i].item
-
-  // }
-
-  const ongoingTasks = Object.keys(userTasks).filter(
-    guid =>
-      userTasks[guid] === COMPLETION_STATUS.ACTIVE ||
-      userTasks[guid] === COMPLETION_STATUS.COMPLETION_REQUESTED
-  )
-
   completedTasks.map(taskGuid => {
     const task = itemsByGuid[taskGuid]
     completedTaskItems.push(task.item)
     const parent = itemsByGuid[task.parentGuid]
     parents.push(parent)
   })
-  const filtered = Array.from(new Set(parents))
+  // const filtered = Array.from(new Set(parents))
+
+  const taskGroupsWithItems = Object.values(itemsByGuid)
+    .filter(item => item.type === 'TASK_GROUP' && item.item.tasks.length)
+    .reduce((acc, item) => {
+      const itemTasks = completedTaskItems.filter(task => {
+        return item.item.tasks.find(groupTask => {
+          return groupTask.guid === task.guid
+        })
+      })
+      if (itemTasks.length) {
+        acc[item.item.guid] = itemTasks
+      }
+      return acc
+    }, {})
+
+  const getGroupParent = (groupGuid, groupTasks) => {
+    const group = itemsByGuid[groupGuid]
+    if (group.parentGuid === group.ageGroupGuid) {
+      if (groupTasks) {
+        return {
+          [group.guid]: groupTasks,
+        }
+      }
+      return group.guid
+    }
+    return {
+      [getGroupParent(group.parentGuid)]: {
+        [groupGuid]: groupTasks,
+      },
+    }
+  }
+
+  const taskGroupsWithChildTaskGroups = Object.keys(taskGroupsWithItems).reduce(
+    (acc, taskGroupGuid) => {
+      const parent = getGroupParent(
+        taskGroupGuid,
+        taskGroupsWithItems[taskGroupGuid]
+      )
+      const parentGuid = Object.keys(parent)[0]
+      console.log('ParentGuid: ', parentGuid)
+      if (acc[parentGuid]) {
+        const parentValue = Object.values(parent)[0]
+        console.log('PARENTVALUE:', parentValue)
+        // const child = acc[parentGuid][parentValue]
+        // console.log('CHILD:', child)
+        acc[parentGuid] = {
+          ...acc[parentGuid],
+          ...parentValue,
+        }
+        console.log('ACC', Object.assign({}, acc))
+        return acc
+      }
+      return {
+        ...acc,
+        ...parent,
+      }
+    },
+    {}
+  )
+
+  console.log(taskGroupsWithChildTaskGroups, 'TASKGROUPS')
+
+  const ongoingTasks = Object.keys(userTasks).filter(
+    guid =>
+      userTasks[guid] === COMPLETION_STATUS.ACTIVE ||
+      userTasks[guid] === COMPLETION_STATUS.COMPLETION_REQUESTED
+  )
 
   const completedAgeGroups = ageGroups
     .filter(ageGroup => {
@@ -300,14 +346,14 @@ const Profile = () => {
         setIsFetchingProfile(false)
       })
   }
-  const parentGuidList = []
+  // const parentGuidList = []
   const ageGroupGuid = userData.ageGroupGuid
 
-  const findParentGuidData = guid => {
-    const data = Object.values(itemsByGuid).find(x => x.guid === guid)
-    parentGuidList.push(data.item.guid)
-    return data
-  }
+  // const findParentGuidData = guid => {
+  //   const data = Object.values(itemsByGuid).find(x => x.guid === guid)
+  //   parentGuidList.push(data.item.guid)
+  //   return data
+  // }
 
   // console.log(parentGuidList, 'parentguidlist')
 
@@ -412,83 +458,75 @@ const Profile = () => {
             {getTermInLanguage(generalTranslations, 'completed', language)}
           </h4>
           <TaskList>
-            {filtered.map(parent => {
-              // console.log(parent, 'parent')
-              const items = []
-              for (let i = 0; i < completedTasks.length; i++) {
-                const task = itemsByGuid[completedTasks[i]]
-
-                if (task.parentGuid === parent.guid) {
-                  items.push(task)
-                }
-              }
-              const parentGuidData = findParentGuidData(parent.parentGuid)
-              // console.log(parentGuidData, 'parentGuidData')
-              // for (let i = 0; i < taskGroupsWithItems.length; i++) {
-              //   if ( taskGroupsWithItems[i].item.type === 'TASK_GROUP') {
-
-              //   }
-
-              // }
+            {Object.keys(taskGroupsWithChildTaskGroups).map(parent => {
+              // console.log('PARENT:', parent)
+              const parentItem = itemsByGuid[parent]
+              // console.log('PARENTITEM: ', parentItem)
+              const parentItemValues = taskGroupsWithChildTaskGroups[parent]
+              // console.log(parentItemValues, 'object')
 
               return (
-                <Accordion key={parent.item.guid} allowZeroExpanded>
+                <Accordion key={parent.guid} allowZeroExpanded>
                   <AccordionItem>
                     <AccordionItemHeading>
                       <AccordionItemButton>
-                        {parentGuidList.includes(parent.parentGuid) ? (
-                          <>
-                            {parentGuidData.type === 'TASK_GROUP' ? (
-                              <ListItem
-                                key={parent.parentGuid}
-                                title={parentGuidData.item.title}
-                                itemType={ITEM_TYPES.TASK_GROUP}
-                                ageGroupGuid={parentGuidData.item.ageGroupGuid}
-                              />
-                            ) : (
-                              <ListItem
-                                key={parent.parentGuid}
-                                title={parent.item.title}
-                                itemType={ITEM_TYPES.TASK_GROUP}
-                                ageGroupGuid={parent.ageGroupGuid}
-                              />
-                            )}
-                          </>
-                        ) : (
-                          <div></div>
-                        )}
+                        <ListItem
+                          key={parentItem.guid}
+                          title={parentItem.item.title}
+                          itemType={ITEM_TYPES.TASK_GROUP}
+                          ageGroupGuid={parentItem.ageGroupGuid}
+                        />
                       </AccordionItemButton>
                     </AccordionItemHeading>
-                    {items.map(item => {
-                      return (
-                        <AccordionItemPanel key={item.guid}>
-                          {/* <ListItem
-                          // key={item.guid}
-                          // guid={item.guid}
-                          // ageGroupGuid={item.ageGroupGuid}
-                          // title={item.item.title}
-                          // language={language}
-                          // itemType={ITEM_TYPES.TASK}
-                          > */}
-                          <StyledListItem
-                            data-testid="link"
-                            onClick={() =>
-                              item.guid &&
-                              item.language &&
-                              history.push(
-                                `/guid/${item.guid}?lang=${item.language}`
+                    <AccordionItemPanel key={parentItem.guid}>
+                      {Array.isArray(parentItemValues) ? (
+                        <>
+                          {parentItemValues.map(task => {
+                            return (
+                              <ListItem
+                                key={task.guid}
+                                guid={task.guid}
+                                ageGroupGuid={task.ageGroupGuid}
+                                title={task.title}
+                                language={language}
+                                itemType={ITEM_TYPES.TASK}
+                              />
+                            )
+                          })}
+                        </>
+                      ) : (
+                        <>
+                          {Object.keys(parentItemValues).map(
+                            taskGroupParent => {
+                              console.log('taskgorp', taskGroupParent)
+                              const parentItemObj = itemsByGuid[taskGroupParent]
+                              console.log('parentITemObject: ', parentItemObj)
+                              return (
+                                <>
+                                  <AccordionItemButton>
+                                    {/* <ListItem
+                                key={values.guid}
+                                title={values.title}
+                                itemType={ITEM_TYPES.TASK_GROUP}
+                                ageGroupGuid={values.ageGroupGuid}
+                              /> */}
+                                  </AccordionItemButton>
+
+                                  {/* <ListItem 
+                              key={parentItem.guid}
+                              guid={parentItem.guid}
+                              ageGroupGuid={parentItem.ageGroupGuid}
+                              title={parentItem.title}
+                              language={language}
+                              itemType={ITEM_TYPES.TASK}
+                            />  */}
+                                </>
                               )
                             }
-                          >
-                            <ul>
-                              <li>
-                                <p>{item.item.title}</p>
-                              </li>
-                            </ul>
-                          </StyledListItem>
-                        </AccordionItemPanel>
-                      )
-                    })}
+                          )}
+                        </>
+                      )}
+                    </AccordionItemPanel>
                   </AccordionItem>
                 </Accordion>
               )
