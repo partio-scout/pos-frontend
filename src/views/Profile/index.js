@@ -125,8 +125,6 @@ const Profile = () => {
   const favourites = useSelector(state =>
     state.favourites.map(favourite => state.itemsByGuid[favourite])
   )
-  const parents = []
-  const completedTaskItems = []
 
   const activityTranslations = useSelector(
     state => state.translations.aktiviteetin_ylakasite
@@ -142,12 +140,9 @@ const Profile = () => {
     guid => userTasks[guid] === COMPLETION_STATUS.COMPLETED
   )
 
-  completedTasks.map(taskGuid => {
-    const task = itemsByGuid[taskGuid]
-    completedTaskItems.push(task.item)
-    const parent = itemsByGuid[task.parentGuid]
-    parents.push(parent)
-  })
+  const completedTaskItems = completedTasks.map(
+    taskGuid => itemsByGuid[taskGuid]
+  )
 
   const taskGroupsWithItems = Object.values(itemsByGuid)
     .filter(item => item.type === 'TASK_GROUP' && item.item.tasks.length)
