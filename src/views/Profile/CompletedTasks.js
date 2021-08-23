@@ -7,9 +7,11 @@ import {
   AccordionItemPanel,
 } from 'react-accessible-accordion'
 import styled from 'styled-components'
+import { useSelector } from 'react-redux'
 
 import { ITEM_TYPES } from 'consts'
 import ListItem from 'components/ListItem'
+import { getTermInLanguage, getTaskGroupStatus } from 'helpers'
 
 const StyledAccordionItem = styled(AccordionItemPanel)`
   padding-left: 2.5rem;
@@ -41,19 +43,41 @@ const AccordionList = ({
   completedTasks,
   language,
 }) => {
+  const userTasks = useSelector(state => state.tasks)
+  const generalTranslations = useSelector(state => state.translations.yleiset)
   const taskGroup = itemsByGuid[taskGroupGuid]
+
+  const status = getTaskGroupStatus(
+    taskGroup.item,
+    userTasks,
+    getTermInLanguage(generalTranslations, 'done', language)
+  )
 
   return (
     <Accordion key={taskGroupGuid} allowZeroExpanded>
       <AccordionItem>
         <AccordionItemHeading>
           <AccordionItemButton>
-            <ListItem
-              title={taskGroup.item.title}
-              itemType={ITEM_TYPES.TASK_GROUP}
-              ageGroupGuid={taskGroup.ageGroupGuid}
-              language={language}
-            />
+            {!taskGroup.item.taskgroups.length > 0 ? (
+              <ListItem
+                title={taskGroup.item.title}
+                itemType={ITEM_TYPES.TASK_GROUP}
+                ageGroupGuid={taskGroup.ageGroupGuid}
+                language={language}
+                subTitle={status}
+                showActions
+                showActionsIcon
+              />
+            ) : (
+              <ListItem
+                title={taskGroup.item.title}
+                itemType={ITEM_TYPES.TASK_GROUP}
+                ageGroupGuid={taskGroup.ageGroupGuid}
+                language={language}
+                showActions
+                showActionsIcon
+              />
+            )}
           </AccordionItemButton>
         </AccordionItemHeading>
         <StyledAccordionItem>
@@ -73,6 +97,7 @@ const AccordionList = ({
                     taskGroupGuid={childTaskGroupGuid}
                     completedTasks={completedTasks[taskGroupGuid]}
                     language={language}
+                    subTitle={status}
                   />
                 )
               }
@@ -89,8 +114,8 @@ const TaskList = ({ tasks, taskGroup, language }) => {
     return (
       <ListItem
         key={task.guid}
-        title={task.title}
-        itemType={ITEM_TYPES.TASK_GROUP}
+        title={task.item.title}
+        itemType={ITEM_TYPES.TASK}
         ageGroupGuid={taskGroup.ageGroupGuid}
         language={language}
       />
