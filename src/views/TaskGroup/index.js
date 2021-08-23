@@ -11,7 +11,7 @@ import {
   getTermInLanguage,
   getTaskGroupStatus,
 } from 'helpers'
-import { ITEM_TYPES } from 'consts'
+import {ITEM_TYPES} from 'consts'
 
 const StyledDetailPage = styled(DetailPage)`
   display: grid;
@@ -37,6 +37,7 @@ const TaskGroup = () => {
   const generalTranslations = useSelector(state => state.translations.yleiset)
   const favourites = useSelector(state => state.favourites)
 
+  const mandatoryTasksGuids = taskGroup.item.tasks.length > 0 ? useSelector(state => state.taskGroupRequirements.taskGroupRequirements[guid].mandatoryTasks) : []
   if (!taskGroup || !activityTranslations) {
     return null
   }
@@ -47,6 +48,20 @@ const TaskGroup = () => {
 
   const { item } = taskGroup
   const taskGroupTranslation = getTranslation(item)
+
+  const mandatoryTasks = []
+  const optionalTasks = []
+
+  console.log('item', item)
+
+  item.tasks.map(task => {
+     if (mandatoryTasksGuids.includes(task.guid)) {
+       mandatoryTasks.push(task)
+     } else {
+       optionalTasks.push(task)
+     }
+    }
+  )
 
   return (
     <StyledDetailPage
@@ -87,33 +102,68 @@ const TaskGroup = () => {
             />
           )
         })}
-        {item.tasks.map(task => {
-          const taskTranslation = getTranslation(task)
-          const status = userTasks[task.guid]
-            ? userTasks[task.guid].toLowerCase()
-            : ''
-          const task_status = status === 'active' ? 'started' : `task_${status}`
+        {item.tasks.length > 0 ?
+          <>
+            <h4>Pakolliset</h4>
+            {mandatoryTasks.map(task => {
+              const taskTranslation = getTranslation(task)
+              const status = userTasks[task.guid]
+                ? userTasks[task.guid].toLowerCase()
+                : ''
+              const task_status = status === 'active' ? 'started' : `task_${status}`
 
-          return taskTranslation && taskTranslation.title ? (
-            <ListItem
-              key={task.guid}
-              guid={task.guid}
-              ageGroupGuid={taskGroup.ageGroupGuid}
-              title={taskTranslation.title}
-              subTitle={getTermInLanguage(
-                generalTranslations,
-                `${task_status}`,
-                language
-              )}
-              language={language}
-              itemType={ITEM_TYPES.TASK}
-              showActions
-              showFavourite
-              isFavourite={favourites.includes(task.guid)}
-              isLoggedIn={status}
-            />
-          ) : null
-        })}
+              return taskTranslation && taskTranslation.title ? (
+                <ListItem
+                  key={task.guid}
+                  guid={task.guid}
+                  ageGroupGuid={taskGroup.ageGroupGuid}
+                  title={taskTranslation.title}
+                  subTitle={getTermInLanguage(
+                    generalTranslations,
+                    `${task_status}`,
+                    language
+                  )}
+                  language={language}
+                  itemType={ITEM_TYPES.TASK}
+                  showActions
+                  showFavourite
+                  isFavourite={favourites.includes(task.guid)}
+                  isLoggedIn={status}
+                />
+              ) : null
+            })}
+            <h4>Valinnaiset</h4>
+            {optionalTasks.map(task => {
+              const taskTranslation = getTranslation(task)
+              const status = userTasks[task.guid]
+                ? userTasks[task.guid].toLowerCase()
+                : ''
+              const task_status = status === 'active' ? 'started' : `task_${status}`
+
+              return taskTranslation && taskTranslation.title ? (
+                <ListItem
+                  key={task.guid}
+                  guid={task.guid}
+                  ageGroupGuid={taskGroup.ageGroupGuid}
+                  title={taskTranslation.title}
+                  subTitle={getTermInLanguage(
+                    generalTranslations,
+                    `${task_status}`,
+                    language
+                  )}
+                  language={language}
+                  itemType={ITEM_TYPES.TASK}
+                  showActions
+                  showFavourite
+                  isFavourite={favourites.includes(task.guid)}
+                  isLoggedIn={status}
+                />
+              ) : null
+            })}
+          </>
+          :
+          <></>
+        }
       </TaskList>
     </StyledDetailPage>
   )
