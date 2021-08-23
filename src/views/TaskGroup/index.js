@@ -131,13 +131,17 @@ const TaskGroup = () => {
         {item.tasks.length > 0 ?
           <>
             <h4>Pakolliset</h4>
-            {mandatoryTasks.map(task => {
-              return getTask(task)
-            })}
+            {mandatoryTasks.length > 0
+              ? mandatoryTasks.map(task => {
+                return getTask(task)
+              })
+              : <p>Ei pakollisia tehtäviä</p>}
             <h4>Valinnaiset</h4>
-            {optionalTasks.map(task => {
-              return getTask(task)
-            })}
+            {optionalTasks.length > 0
+              ? optionalTasks.map(task => {
+                return getTask(task)
+              })
+              : <p>Ei valinnaisia tehtäviä</p>}
           </>
           :
           <></>
