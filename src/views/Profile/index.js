@@ -5,13 +5,6 @@ import { useSelector } from 'react-redux'
 import TaskGroupItem from 'components/TaskGroupItem'
 import AgeGroupListItem from 'components/AgeGroupListItem'
 import { API_URL, fetchProfile } from 'api'
-import {
-  Accordion,
-  AccordionItem,
-  AccordionItemHeading,
-  AccordionItemButton,
-  AccordionItemPanel,
-} from 'react-accessible-accordion'
 
 import { X } from 'react-feather'
 import {
@@ -24,6 +17,7 @@ import {
 } from 'helpers'
 import ListItem from 'components/ListItem'
 import { ITEM_TYPES, COMPLETION_STATUS, AGE_GROUPS } from 'consts'
+import CompletedTasks from './CompletedTasks'
 
 const Background = styled.div`
   min-height: 100vh;
@@ -48,15 +42,6 @@ const Background = styled.div`
     `};
   }
 `
-// const StyledListItem = styled.div`
-//   padding: 0.25rem 0 0 3.5rem;
-//   text-decoration: none;
-//   // display: flex;
-//   // flex-wrap: nowrap;
-//   justify-content: space-between;
-//   min-width: 15rem;
-//   overflow-x: scroll;
-// `
 
 // TODO take icon from feather icons and remove px width & height
 const CloseIcon = styled.div`
@@ -163,7 +148,6 @@ const Profile = () => {
     const parent = itemsByGuid[task.parentGuid]
     parents.push(parent)
   })
-  // const filtered = Array.from(new Set(parents))
 
   const taskGroupsWithItems = Object.values(itemsByGuid)
     .filter(item => item.type === 'TASK_GROUP' && item.item.tasks.length)
@@ -203,17 +187,13 @@ const Profile = () => {
         taskGroupsWithItems[taskGroupGuid]
       )
       const parentGuid = Object.keys(parent)[0]
-      console.log('ParentGuid: ', parentGuid)
       if (acc[parentGuid]) {
         const parentValue = Object.values(parent)[0]
-        console.log('PARENTVALUE:', parentValue)
-        // const child = acc[parentGuid][parentValue]
-        // console.log('CHILD:', child)
+
         acc[parentGuid] = {
           ...acc[parentGuid],
           ...parentValue,
         }
-        console.log('ACC', Object.assign({}, acc))
         return acc
       }
       return {
@@ -223,8 +203,6 @@ const Profile = () => {
     },
     {}
   )
-
-  console.log(taskGroupsWithChildTaskGroups, 'TASKGROUPS')
 
   const ongoingTasks = Object.keys(userTasks).filter(
     guid =>
@@ -346,29 +324,8 @@ const Profile = () => {
         setIsFetchingProfile(false)
       })
   }
-  // const parentGuidList = []
+
   const ageGroupGuid = userData.ageGroupGuid
-
-  // const findParentGuidData = guid => {
-  //   const data = Object.values(itemsByGuid).find(x => x.guid === guid)
-  //   parentGuidList.push(data.item.guid)
-  //   return data
-  // }
-
-  // console.log(parentGuidList, 'parentguidlist')
-
-  // const findSingleParentGroups = (guid) => {
-  //   let result = []
-  //   for (let i = 0; i < parentGuidList.length; i++) {
-  //     if (!parentGuidList.includes(parentGuidList[i].item.guid)) {
-  //       result.push(parentGuidList[i].item)
-  //     }
-  //   }
-  //   const filteredParentsList = Array.from(new Set(result))
-
-  //   console.log('this', filteredParentsList)
-  //   return filteredParentsList
-  // }
 
   return (
     <Background ageGroupGuid={ageGroupGuid}>
@@ -458,79 +415,13 @@ const Profile = () => {
             {getTermInLanguage(generalTranslations, 'completed', language)}
           </h4>
           <TaskList>
-            {Object.keys(taskGroupsWithChildTaskGroups).map(parent => {
-              // console.log('PARENT:', parent)
-              const parentItem = itemsByGuid[parent]
-              // console.log('PARENTITEM: ', parentItem)
-              const parentItemValues = taskGroupsWithChildTaskGroups[parent]
-              // console.log(parentItemValues, 'object')
-
-              return (
-                <Accordion key={parent.guid} allowZeroExpanded>
-                  <AccordionItem>
-                    <AccordionItemHeading>
-                      <AccordionItemButton>
-                        <ListItem
-                          key={parentItem.guid}
-                          title={parentItem.item.title}
-                          itemType={ITEM_TYPES.TASK_GROUP}
-                          ageGroupGuid={parentItem.ageGroupGuid}
-                        />
-                      </AccordionItemButton>
-                    </AccordionItemHeading>
-                    <AccordionItemPanel key={parentItem.guid}>
-                      {Array.isArray(parentItemValues) ? (
-                        <>
-                          {parentItemValues.map(task => {
-                            return (
-                              <ListItem
-                                key={task.guid}
-                                guid={task.guid}
-                                ageGroupGuid={task.ageGroupGuid}
-                                title={task.title}
-                                language={language}
-                                itemType={ITEM_TYPES.TASK}
-                              />
-                            )
-                          })}
-                        </>
-                      ) : (
-                        <>
-                          {Object.keys(parentItemValues).map(
-                            taskGroupParent => {
-                              console.log('taskgorp', taskGroupParent)
-                              const parentItemObj = itemsByGuid[taskGroupParent]
-                              console.log('parentITemObject: ', parentItemObj)
-                              return (
-                                <>
-                                  <AccordionItemButton>
-                                    {/* <ListItem
-                                key={values.guid}
-                                title={values.title}
-                                itemType={ITEM_TYPES.TASK_GROUP}
-                                ageGroupGuid={values.ageGroupGuid}
-                              /> */}
-                                  </AccordionItemButton>
-
-                                  {/* <ListItem 
-                              key={parentItem.guid}
-                              guid={parentItem.guid}
-                              ageGroupGuid={parentItem.ageGroupGuid}
-                              title={parentItem.title}
-                              language={language}
-                              itemType={ITEM_TYPES.TASK}
-                            />  */}
-                                </>
-                              )
-                            }
-                          )}
-                        </>
-                      )}
-                    </AccordionItemPanel>
-                  </AccordionItem>
-                </Accordion>
-              )
-            })}
+            {taskGroupsWithChildTaskGroups && (
+              <CompletedTasks
+                language={language}
+                itemsByGuid={itemsByGuid}
+                taskGroupsWithChildTaskGroups={taskGroupsWithChildTaskGroups}
+              />
+            )}
             {taskGroups.map(subTaskGroup => {
               return (
                 <TaskGroupItem
