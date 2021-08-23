@@ -52,8 +52,6 @@ const TaskGroup = () => {
   const mandatoryTasks = []
   const optionalTasks = []
 
-  console.log('item', item)
-
   item.tasks.map(task => {
      if (mandatoryTasksGuids.includes(task.guid)) {
        mandatoryTasks.push(task)
@@ -62,6 +60,34 @@ const TaskGroup = () => {
      }
     }
   )
+
+  const getTask = task => {
+    const taskTranslation = getTranslation(task)
+    const status = userTasks[task.guid]
+      ? userTasks[task.guid].toLowerCase()
+      : ''
+    const task_status = status === 'active' ? 'started' : `task_${status}`
+
+    return taskTranslation && taskTranslation.title ? (
+      <ListItem
+        key={task.guid}
+        guid={task.guid}
+        ageGroupGuid={taskGroup.ageGroupGuid}
+        title={taskTranslation.title}
+        subTitle={getTermInLanguage(
+          generalTranslations,
+          `${task_status}`,
+          language
+        )}
+        language={language}
+        itemType={ITEM_TYPES.TASK}
+        showActions
+        showFavourite
+        isFavourite={favourites.includes(task.guid)}
+        isLoggedIn={status}
+      />
+    ) : null
+  }
 
   return (
     <StyledDetailPage
@@ -106,59 +132,11 @@ const TaskGroup = () => {
           <>
             <h4>Pakolliset</h4>
             {mandatoryTasks.map(task => {
-              const taskTranslation = getTranslation(task)
-              const status = userTasks[task.guid]
-                ? userTasks[task.guid].toLowerCase()
-                : ''
-              const task_status = status === 'active' ? 'started' : `task_${status}`
-
-              return taskTranslation && taskTranslation.title ? (
-                <ListItem
-                  key={task.guid}
-                  guid={task.guid}
-                  ageGroupGuid={taskGroup.ageGroupGuid}
-                  title={taskTranslation.title}
-                  subTitle={getTermInLanguage(
-                    generalTranslations,
-                    `${task_status}`,
-                    language
-                  )}
-                  language={language}
-                  itemType={ITEM_TYPES.TASK}
-                  showActions
-                  showFavourite
-                  isFavourite={favourites.includes(task.guid)}
-                  isLoggedIn={status}
-                />
-              ) : null
+              return getTask(task)
             })}
             <h4>Valinnaiset</h4>
             {optionalTasks.map(task => {
-              const taskTranslation = getTranslation(task)
-              const status = userTasks[task.guid]
-                ? userTasks[task.guid].toLowerCase()
-                : ''
-              const task_status = status === 'active' ? 'started' : `task_${status}`
-
-              return taskTranslation && taskTranslation.title ? (
-                <ListItem
-                  key={task.guid}
-                  guid={task.guid}
-                  ageGroupGuid={taskGroup.ageGroupGuid}
-                  title={taskTranslation.title}
-                  subTitle={getTermInLanguage(
-                    generalTranslations,
-                    `${task_status}`,
-                    language
-                  )}
-                  language={language}
-                  itemType={ITEM_TYPES.TASK}
-                  showActions
-                  showFavourite
-                  isFavourite={favourites.includes(task.guid)}
-                  isLoggedIn={status}
-                />
-              ) : null
+              return getTask(task)
             })}
           </>
           :
