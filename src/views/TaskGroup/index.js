@@ -52,14 +52,13 @@ const TaskGroup = () => {
   const mandatoryTasks = []
   const optionalTasks = []
 
-  item.tasks.map(task => {
-     if (mandatoryTasksGuids.includes(task.guid)) {
-       mandatoryTasks.push(task)
-     } else {
-       optionalTasks.push(task)
-     }
+  item.tasks.forEach(task => {
+    if (mandatoryTasksGuids.includes(task.guid)) {
+      mandatoryTasks.push(task)
+    } else {
+      optionalTasks.push(task)
     }
-  )
+  })
 
   const getTask = task => {
     const taskTranslation = getTranslation(task)
