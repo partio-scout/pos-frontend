@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 import { useHistory } from 'react-router-dom'
 import { useSelector } from 'react-redux'
-import TaskGroupItem from 'components/TaskGroupItem'
 import AgeGroupListItem from 'components/AgeGroupListItem'
 import { API_URL, fetchProfile } from 'api'
 
@@ -11,9 +10,7 @@ import {
   determineLanguageFromUrl,
   getTermInLanguage,
   getAgeGroupTasks,
-  getGroupTasks,
   getAgeGroupCompletion,
-  getCompletedTaskGroups,
 } from 'helpers'
 import ListItem from 'components/ListItem'
 import { ITEM_TYPES, COMPLETION_STATUS, AGE_GROUPS } from 'consts'
@@ -231,65 +228,6 @@ const Profile = () => {
     })
     .map(ageGroup => itemsByGuid[ageGroup.guid])
 
-  const taskGroups = ageGroups
-    .filter(ageGroup => !completedAgeGroups.includes(ageGroup.guid))
-    .map(ageGroup => {
-      const ageGroupItem = itemsByGuid[ageGroup.guid].item
-      const completedTaskGroups = getCompletedTaskGroups(
-        ageGroupItem,
-        userTasks
-      )
-
-      if (completedTaskGroups.length > 0) {
-        completedTaskGroups.forEach(taskGroupGuid => {
-          const taskGroupTasks = getGroupTasks(itemsByGuid[taskGroupGuid].item)
-
-          taskGroupTasks.mandatory.forEach(task => {
-            const taskIndex = completedTasks.indexOf(task)
-            if (taskIndex > -1) {
-              completedTasks.splice(taskIndex, 1)
-            }
-          })
-
-          taskGroupTasks.optional.forEach(task => {
-            const taskIndex = completedTasks.indexOf(task)
-            if (taskIndex > -1) {
-              completedTasks.splice(taskIndex, 1)
-            }
-          })
-        })
-      }
-
-      const completedSubGroups = ageGroupItem.taskgroups
-        .filter(taskGroup => !completedTaskGroups.includes(taskGroup.guid))
-        .map(taskGroup => getCompletedTaskGroups(taskGroup, userTasks))
-        .flat()
-
-      if (completedSubGroups.length > 0) {
-        completedSubGroups.forEach(taskGroupGuid => {
-          const taskGroupTasks = getGroupTasks(itemsByGuid[taskGroupGuid].item)
-
-          taskGroupTasks.mandatory.forEach(task => {
-            const taskIndex = completedTasks.indexOf(task)
-            if (taskIndex > -1) {
-              completedTasks.splice(taskIndex, 1)
-            }
-          })
-
-          taskGroupTasks.optional.forEach(task => {
-            const taskIndex = completedTasks.indexOf(task)
-            if (taskIndex > -1) {
-              completedTasks.splice(taskIndex, 1)
-            }
-          })
-        })
-      }
-
-      return completedTaskGroups.concat(completedSubGroups)
-    })
-    .flat()
-    .map(guid => itemsByGuid[guid])
-
   if (
     !Object.entries(userData).length &&
     !isFetchingProfile &&
@@ -417,16 +355,6 @@ const Profile = () => {
                 taskGroupsWithChildTaskGroups={taskGroupsWithChildTaskGroups}
               />
             )}
-            {taskGroups.map(subTaskGroup => {
-              return (
-                <TaskGroupItem
-                  key={subTaskGroup.guid}
-                  taskGroup={subTaskGroup.item}
-                  ageGroupGuid={subTaskGroup.ageGroupGuid}
-                  language={language}
-                />
-              )
-            })}
             {completedAgeGroups.map(ageGroup => {
               return (
                 <AgeGroupListItem
