@@ -17,7 +17,7 @@ import {
   updateGroupMemberTask,
   addFavourite as addFavouriteTask,
 } from 'redux/actionCreators'
-import { GroupLeaderActions } from 'components/TaskActions'
+import { GroupLeaderActions, OpenTaskActions } from 'components/TaskActions'
 
 const Actions = ({
   guid,
@@ -236,6 +236,8 @@ const getActionsComponent = actionsComponent => {
       return TaskActions
     case actionTypes.groupLeaderActions:
       return GroupLeaderActions
+    case actionTypes.openTaskActions:
+      return OpenTaskActions
     default:
       return TaskActions
   }
@@ -244,6 +246,7 @@ const getActionsComponent = actionsComponent => {
 export const actionTypes = {
   userActions: 'USER_ACTIONS',
   groupLeaderActions: 'GROUP_LEADER_ACTIONS',
+  openTaskActions: 'OPEN_TASK_ACTIONS',
 }
 
 export default Actions
