@@ -66,7 +66,7 @@ const AccordionList = ({
                 language={language}
                 subTitle={status}
                 showActions
-                showActionsIcon
+                showDropDownIcon
               />
             ) : (
               <ListItem
@@ -75,7 +75,7 @@ const AccordionList = ({
                 ageGroupGuid={taskGroup.ageGroupGuid}
                 language={language}
                 showActions
-                showActionsIcon
+                showDropDownIcon
               />
             )}
           </AccordionItemButton>
