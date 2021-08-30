@@ -12,6 +12,7 @@ import { useSelector } from 'react-redux'
 import { ITEM_TYPES } from 'consts'
 import ListItem from 'components/ListItem'
 import { getTermInLanguage, getTaskGroupStatus } from 'helpers'
+import { actionTypes } from 'components/Actions'
 
 const StyledAccordionItem = styled(AccordionItemPanel)`
   padding-left: 2.5rem;
@@ -66,7 +67,7 @@ const AccordionList = ({
                 language={language}
                 subTitle={status}
                 showActions
-                showActionsIcon
+                showDropDownIcon
               />
             ) : (
               <ListItem
@@ -75,7 +76,7 @@ const AccordionList = ({
                 ageGroupGuid={taskGroup.ageGroupGuid}
                 language={language}
                 showActions
-                showActionsIcon
+                showDropDownIcon
               />
             )}
           </AccordionItemButton>
@@ -114,10 +115,13 @@ const TaskList = ({ tasks, taskGroup, language }) => {
     return (
       <ListItem
         key={task.guid}
+        guid={task.guid}
         title={task.item.title}
         itemType={ITEM_TYPES.TASK}
         ageGroupGuid={taskGroup.ageGroupGuid}
         language={language}
+        actionsComponent={actionTypes.openTaskActions}
+        showActions
       />
     )
   })

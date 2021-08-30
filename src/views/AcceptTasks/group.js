@@ -213,7 +213,7 @@ const Group = ({ group, isLast }) => {
                 icon={null}
                 itemType={ITEM_TYPES.TASK}
                 showActions
-                showActionsIcon
+                showDropDownIcon
               />
             </AccordionItemButton>
           </AccordionItemHeading>

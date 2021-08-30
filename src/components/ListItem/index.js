@@ -4,7 +4,7 @@ import { useHistory } from 'react-router-dom'
 import TaskIcon from 'assets/tasks/task.svg'
 import Actions from 'components/Actions'
 import FavouriteIcon from 'components/TaskActionsIcons'
-import { MoreHorizontal } from 'react-feather'
+import { MoreHorizontal, ChevronDown } from 'react-feather'
 import { deleteFavouriteTask, postTaskFavourite } from '../../api'
 import {
   addFavourite as addFavouriteTask,
@@ -82,6 +82,7 @@ const ListItem = ({
   userGuid,
   groupGuid,
   showActionsIcon,
+  showDropDownIcon,
 }) => {
   const history = useHistory()
   const dispatch = useDispatch()
@@ -143,7 +144,9 @@ const ListItem = ({
         {showActions &&
           isLoggedIn &&
           itemType &&
-          (showActionsIcon ? (
+          (showDropDownIcon ? (
+            <ChevronDown />
+          ) : showActionsIcon ? (
             <MoreHorizontal />
           ) : (
             <Actions
