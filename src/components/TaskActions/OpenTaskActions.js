@@ -64,7 +64,7 @@ const ActivityItem = styled.div`
 `
 const StyledLink = styled(Link)`
   color: white;
-  textdecoration: none;
+  text-decoration: none;
   :visited {
     color: white;
   }
