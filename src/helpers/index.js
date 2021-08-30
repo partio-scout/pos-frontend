@@ -248,4 +248,50 @@ export const getAgeGroupCompletion = (ageGroup, userTasks) => {
   )
 }
 
+const reduceTaskGroup = (accumulator, taskGroup) => {
+  if (taskGroup.taskgroups.length > 0) {
+    const subtaskgroupRequirements = taskGroup.taskgroups.reduce(
+      reduceTaskGroup,
+      { taskGroupRequirements: {}, mandatoryTasks: [] }
+    )
+    accumulator.mandatoryTasks.push(...subtaskgroupRequirements.mandatoryTasks)
+    accumulator.taskGroupRequirements = {
+      ...accumulator.taskGroupRequirements,
+      ...subtaskgroupRequirements.taskGroupRequirements,
+    }
+  } else {
+    if (taskGroup.mandatory_tasks.length) {
+      accumulator.mandatoryTasks.push(...taskGroup.mandatory_tasks.split(','))
+    }
+    accumulator.taskGroupRequirements[taskGroup.guid] = {
+      additionalTasksCount: taskGroup.additional_tasks_count,
+      mandatoryTasks: taskGroup.mandatory_tasks.split(','),
+    }
+  }
+  return accumulator
+}
+
+export const getTaskGroupRequirements = ageGroups => {
+  return ageGroups.reduce(
+    (value, ageGroup) => {
+      const taskGroupRequirements = ageGroup.taskgroups.reduce(
+        reduceTaskGroup,
+        { taskGroupRequirements: {}, mandatoryTasks: [] }
+      )
+      value = {
+        taskGroupRequirements: {
+          ...value.taskGroupRequirements,
+          ...taskGroupRequirements.taskGroupRequirements,
+        },
+        mandatoryTasks: [
+          ...value.mandatoryTasks,
+          ...taskGroupRequirements.mandatoryTasks,
+        ],
+      }
+      return value
+    },
+    { taskGroupRequirements: {}, mandatoryTasks: [] }
+  )
+}
+
 //TODO: favourites, activeTasks, completedTasks, isFavourite, isActive and isCompleted helpers
