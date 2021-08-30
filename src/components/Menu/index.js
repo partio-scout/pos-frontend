@@ -2,6 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { useHistory } from 'react-router-dom'
 import { MoreHorizontal, User, LogIn } from 'react-feather'
+import Notifications from '../Notifications'
 
 const StyledMenu = styled.div`
   position: fixed;
@@ -25,6 +26,11 @@ const Profile = styled.div`
   text-align: right;
 `
 
+const Icons = styled.div`
+  display: flex;
+  justify-content: flex-end;
+`
+
 const Menu = ({ language, user }) => {
   const history = useHistory()
   return (
@@ -44,7 +50,10 @@ const Menu = ({ language, user }) => {
         {!user.loggedIn ? (
           <LogIn onClick={() => history.push('login')} />
         ) : (
-          <User onClick={() => history.push(`/profile?lang=${language}`)} />
+          <Icons>
+            <Notifications />
+            <User onClick={() => history.push(`/profile?lang=${language}`)} />
+          </Icons>
         )}
       </Profile>
     </StyledMenu>
