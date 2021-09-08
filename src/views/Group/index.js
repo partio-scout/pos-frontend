@@ -57,6 +57,37 @@ const Group = () => {
   )
   const members = group.members
 
+  const groupLeaders = members.filter(member => member.isGroupLeader === true)
+  const groupMembers = members.filter(member => member.isGroupLeader === false )
+
+  const getMember = (member) => {
+    const tasks = Object.keys(member.memberTasks).filter(
+      guid =>
+        member.memberTasks[guid] ===
+          COMPLETION_STATUS.COMPLETION_REQUESTED ||
+        member.memberTasks[guid] === COMPLETION_STATUS.ACTIVE
+    )
+    const subTitle =
+      tasks.length +
+      ' ' +
+      getTermInLanguage(generalTranslations, 'activity', language) +
+      ' ' +
+      getTermInLanguage(generalTranslations, 'working_on_it', language)
+    const memberId = member.memberId
+    return (
+      <ListItem
+        onClick={() =>
+          history.push(
+            `/group/${groupId}/member/${memberId}/?lang=${language}`
+          )
+        }
+        key={member.memberId}
+        title={member.memberName}
+        subTitle={subTitle}
+      />
+    )
+  }
+
   return (
     <StyledGroup>
       <Header>
@@ -64,33 +95,18 @@ const Group = () => {
         <CloseIcon onClick={() => history.push('/manage')} />
       </Header>
       <Content>
-        {members.map(member => {
-          const tasks = Object.keys(member.memberTasks).filter(
-            guid =>
-              member.memberTasks[guid] ===
-                COMPLETION_STATUS.COMPLETION_REQUESTED ||
-              member.memberTasks[guid] === COMPLETION_STATUS.ACTIVE
-          )
-          const subTitle =
-            tasks.length +
-            ' ' +
-            getTermInLanguage(generalTranslations, 'activity', language) +
-            ' ' +
-            getTermInLanguage(generalTranslations, 'working_on_it', language)
-          const memberId = member.memberId
-          return (
-            <ListItem
-              onClick={() =>
-                history.push(
-                  `/group/${groupId}/member/${memberId}/?lang=${language}`
-                )
-              }
-              key={member.memberId}
-              title={member.memberName}
-              subTitle={subTitle}
-            />
-          )
-        })}
+        <h4>Ryhmänjohtajat</h4>
+        {groupLeaders.length > 0
+        ? groupLeaders.map(member => {
+          return getMember(member)
+        })
+        : <p>Ei Ryhmänjohtajaa</p>}
+        <h4>Ryhmäläiset</h4>
+        {groupMembers.length > 0
+        ? groupMembers.map(member => {
+          return getMember(member)
+        })
+        : <p>Ei ryhmäläisiä</p>}
       </Content>
     </StyledGroup>
   )
