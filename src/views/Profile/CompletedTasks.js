@@ -12,6 +12,7 @@ import { useSelector } from 'react-redux'
 import { ITEM_TYPES } from 'consts'
 import ListItem from 'components/ListItem'
 import { getTermInLanguage, getTaskGroupStatus } from 'helpers'
+import { getMemberTasks } from '../../helpers/groupMembers'
 import { actionTypes } from 'components/Actions'
 
 const StyledAccordionItem = styled(AccordionItemPanel)`
@@ -22,10 +23,11 @@ const CompletedTasks = ({
   itemsByGuid,
   taskGroupsWithChildTaskGroups,
   language,
+  groupMember,
 }) => {
   const parentTaskGroupGuids = Object.keys(taskGroupsWithChildTaskGroups)
 
-  return parentTaskGroupGuids.map(taskGroupGuid => {
+  return parentTaskGroupGuids.map((taskGroupGuid) => {
     return (
       <AccordionList
         key={taskGroupGuid}
@@ -33,6 +35,7 @@ const CompletedTasks = ({
         completedTasks={taskGroupsWithChildTaskGroups}
         itemsByGuid={itemsByGuid}
         language={language}
+        groupMemberId={groupMember}
       />
     )
   })
@@ -43,9 +46,16 @@ const AccordionList = ({
   itemsByGuid,
   completedTasks,
   language,
+  groupMember,
 }) => {
-  const userTasks = useSelector(state => state.tasks)
-  const generalTranslations = useSelector(state => state.translations.yleiset)
+  const userTasks = groupMember
+    ? getMemberTasks(
+        groupMember.id,
+        groupMember.groupId,
+        useSelector((state) => state.userGroups)
+      )
+    : useSelector((state) => state.tasks)
+  const generalTranslations = useSelector((state) => state.translations.yleiset)
   const taskGroup = itemsByGuid[taskGroupGuid]
 
   const status = getTaskGroupStatus(
@@ -90,7 +100,7 @@ const AccordionList = ({
             />
           ) : (
             Object.keys(completedTasks[taskGroupGuid]).map(
-              childTaskGroupGuid => {
+              (childTaskGroupGuid) => {
                 return (
                   <AccordionList
                     key={childTaskGroupGuid}
@@ -111,7 +121,7 @@ const AccordionList = ({
 }
 
 const TaskList = ({ tasks, taskGroup, language }) => {
-  return tasks.map(task => {
+  return tasks.map((task) => {
     return (
       <ListItem
         key={task.guid}

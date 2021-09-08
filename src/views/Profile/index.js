@@ -15,6 +15,7 @@ import {
 import ListItem from 'components/ListItem'
 import { ITEM_TYPES, COMPLETION_STATUS, AGE_GROUPS } from 'consts'
 import CompletedTasks from './CompletedTasks'
+import { getTaskGroupsWithChildTaskGroups } from '../../helpers/groupMembers'
 
 const Background = styled.div`
   min-height: 100vh;
@@ -32,8 +33,10 @@ const Background = styled.div`
     background: ${({ theme, ageGroupGuid }) => `
     linear-gradient(
       to bottom,
-      ${theme.color.ageGroupGradients[ageGroupGuid] ||
-        theme.color.ageGroupGradients.default},
+      ${
+        theme.color.ageGroupGradients[ageGroupGuid] ||
+        theme.color.ageGroupGradients.default
+      },
       ${theme.color.gradientDark}
     );
     `};
@@ -116,108 +119,54 @@ const Profile = () => {
   const [userData, setUserData] = useState({})
   const [isFetchingProfile, setIsFetchingProfile] = useState(false)
   const [errorFetchingProfile, setErrorFetchingProfile] = useState(false)
-  const userTasks = useSelector(state => state.tasks)
-  const ageGroups = useSelector(state => state.ageGroups)
-  const itemsByGuid = useSelector(state => state.itemsByGuid)
-  const favourites = useSelector(state =>
-    state.favourites.map(favourite => state.itemsByGuid[favourite])
+  const userTasks = useSelector((state) => state.tasks)
+  const ageGroups = useSelector((state) => state.ageGroups)
+  const itemsByGuid = useSelector((state) => state.itemsByGuid)
+  const favourites = useSelector((state) =>
+    state.favourites.map((favourite) => state.itemsByGuid[favourite])
   )
 
   const activityTranslations = useSelector(
-    state => state.translations.aktiviteetin_ylakasite
+    (state) => state.translations.aktiviteetin_ylakasite
   )
-  const generalTranslations = useSelector(state => state.translations.yleiset)
-  const getTranslation = taskOrTaskGroup => {
-    return taskOrTaskGroup.languages.find(x => x.lang === language)
+  const generalTranslations = useSelector((state) => state.translations.yleiset)
+  const getTranslation = (taskOrTaskGroup) => {
+    return taskOrTaskGroup.languages.find((x) => x.lang === language)
   }
 
   if (!itemsByGuid || !activityTranslations) return null
 
   const completedTasks = Object.keys(userTasks).filter(
-    guid => userTasks[guid] === COMPLETION_STATUS.COMPLETED
+    (guid) => userTasks[guid] === COMPLETION_STATUS.COMPLETED
   )
 
-  const completedTaskItems = completedTasks.map(
-    taskGuid => itemsByGuid[taskGuid]
-  )
-
-  const taskGroupsWithItems = Object.values(itemsByGuid)
-    .filter(item => item.type === 'TASK_GROUP' && item.item.tasks.length)
-    .reduce((acc, item) => {
-      const itemTasks = completedTaskItems.filter(task => {
-        return item.item.tasks.find(groupTask => {
-          return groupTask.guid === task.guid
-        })
-      })
-      if (itemTasks.length) {
-        acc[item.item.guid] = itemTasks
-      }
-      return acc
-    }, {})
-
-  const getGroupParent = (groupGuid, groupTasks) => {
-    const group = itemsByGuid[groupGuid]
-    if (group.parentGuid === group.ageGroupGuid) {
-      if (groupTasks) {
-        return {
-          [group.guid]: groupTasks,
-        }
-      }
-      return group.guid
-    }
-    return {
-      [getGroupParent(group.parentGuid)]: {
-        [groupGuid]: groupTasks,
-      },
-    }
-  }
-
-  const taskGroupsWithChildTaskGroups = Object.keys(taskGroupsWithItems).reduce(
-    (acc, taskGroupGuid) => {
-      const parent = getGroupParent(
-        taskGroupGuid,
-        taskGroupsWithItems[taskGroupGuid]
-      )
-      const parentGuid = Object.keys(parent)[0]
-      if (acc[parentGuid]) {
-        const parentValue = Object.values(parent)[0]
-
-        acc[parentGuid] = {
-          ...acc[parentGuid],
-          ...parentValue,
-        }
-        return acc
-      }
-      return {
-        ...acc,
-        ...parent,
-      }
-    },
-    {}
+  const taskGroupsWithChildTaskGroups = getTaskGroupsWithChildTaskGroups(
+    itemsByGuid,
+    completedTasks
   )
 
   const ongoingTasks = Object.keys(userTasks).filter(
-    guid =>
+    (guid) =>
       userTasks[guid] === COMPLETION_STATUS.ACTIVE ||
       userTasks[guid] === COMPLETION_STATUS.COMPLETION_REQUESTED
   )
 
   const completedAgeGroups = ageGroups
-    .filter(ageGroup => {
+    .filter((ageGroup) => {
       const items = itemsByGuid[ageGroup.guid]
       const ageGroupItem = items && items.item
       const isAgeGroupCompleted = getAgeGroupCompletion(ageGroupItem, userTasks)
 
       if (isAgeGroupCompleted) {
         const ageGroupTasks = getAgeGroupTasks(itemsByGuid[ageGroup.guid].item)
-        ageGroupTasks.mandatory.forEach(task => {
+        ageGroupTasks.mandatory.forEach((task) => {
           const taskIndex = completedTasks.indexOf(task)
           if (taskIndex > -1) {
             completedTasks.splice(taskIndex, 1)
           }
         })
 
-        ageGroupTasks.optional.forEach(task => {
+        ageGroupTasks.optional.forEach((task) => {
           const taskIndex = completedTasks.indexOf(task)
           if (taskIndex > -1) {
             completedTasks.splice(taskIndex, 1)
@@ -226,7 +175,7 @@ const Profile = () => {
       }
       return isAgeGroupCompleted
     })
-    .map(ageGroup => itemsByGuid[ageGroup.guid])
+    .map((ageGroup) => itemsByGuid[ageGroup.guid])
 
   if (
     !Object.entries(userData).length &&
@@ -235,9 +184,9 @@ const Profile = () => {
   ) {
     setIsFetchingProfile(true)
     fetchProfile()
-      .then(userProfileData => {
+      .then((userProfileData) => {
         const defaultTroop = userProfileData.troops.filter(
-          x => x.id === userProfileData.defaultTroopId
+          (x) => x.id === userProfileData.defaultTroopId
         )[0]
         const ageGroupGuid = AGE_GROUPS[userProfileData.ageGroupId]
         if (defaultTroop) {
@@ -248,7 +197,7 @@ const Profile = () => {
         }
         setUserData(userProfileData)
       })
-      .catch(error => {
+      .catch((error) => {
         console.error('Fetch profile failed: ', error)
         setErrorFetchingProfile(true)
         return error
@@ -284,7 +233,7 @@ const Profile = () => {
           </h4>
           <TaskList>
             {favourites &&
-              favourites.map(favourite => {
+              favourites.map((favourite) => {
                 const taskTranslation = getTranslation(favourite.item)
                 const parent = itemsByGuid[favourite.parentGuid]
                 return (
@@ -317,13 +266,13 @@ const Profile = () => {
             {getTermInLanguage(generalTranslations, 'working_on_it', language)}
           </h4>
           <TaskList>
-            {ongoingTasks.map(taskGuid => {
+            {ongoingTasks.map((taskGuid) => {
               const task = itemsByGuid[taskGuid]
               if (!task) return null
 
               const taskTranslation = getTranslation(task.item)
               const parent = itemsByGuid[task.parentGuid]
-              const finder = favourite => taskGuid === favourite.guid
+              const finder = (favourite) => taskGuid === favourite.guid
               const isFavourite = !!favourites.find(finder)
 
               return (
@@ -355,7 +304,7 @@ const Profile = () => {
                 taskGroupsWithChildTaskGroups={taskGroupsWithChildTaskGroups}
               />
             )}
-            {completedAgeGroups.map(ageGroup => {
+            {completedAgeGroups.map((ageGroup) => {
               return (
                 <AgeGroupListItem
                   key={ageGroup.guid}
