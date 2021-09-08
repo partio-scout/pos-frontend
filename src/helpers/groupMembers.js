@@ -4,9 +4,9 @@
  * @param memberId
  */
 export const getMemberTasks = (groupId, memberId, groups) => {
-  const group = groups.find((group) => group.id === groupId)
-  const member = group && group.find((member) => member.id === memberId)
-  return member && member.tasks
+  const group = groups.find(group => group.id === Number(groupId) );
+  const member = group && group.members.find((member) => member.memberId === Number(memberId))
+  return member && member.memberTasks
 }
 
 /**

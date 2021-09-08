@@ -35,7 +35,7 @@ const CompletedTasks = ({
         completedTasks={taskGroupsWithChildTaskGroups}
         itemsByGuid={itemsByGuid}
         language={language}
-        groupMemberId={groupMember}
+        groupMember={groupMember}
       />
     )
   })
@@ -48,16 +48,17 @@ const AccordionList = ({
   language,
   groupMember,
 }) => {
+
   const userTasks = groupMember
     ? getMemberTasks(
-        groupMember.id,
         groupMember.groupId,
-        useSelector((state) => state.userGroups)
-      )
+        groupMember.memberId,
+        useSelector((state) => state.user.userGroups))
     : useSelector((state) => state.tasks)
+
   const generalTranslations = useSelector((state) => state.translations.yleiset)
   const taskGroup = itemsByGuid[taskGroupGuid]
-
+  
   const status = getTaskGroupStatus(
     taskGroup.item,
     userTasks,
@@ -108,6 +109,7 @@ const AccordionList = ({
                     taskGroupGuid={childTaskGroupGuid}
                     completedTasks={completedTasks[taskGroupGuid]}
                     language={language}
+                    groupMember={groupMember}
                     subTitle={status}
                   />
                 )
