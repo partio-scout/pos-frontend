@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux'
 import styled from 'styled-components'
 import { X } from 'react-feather'
 import { useHistory, useParams } from 'react-router-dom'
-import GetMember from './GetMember'
+import Member from './Member'
 
 const StyledGroup = styled.div`
   height: 100%;
@@ -64,17 +64,13 @@ const Group = () => {
       </Header>
       <Content>
         <h4>Ryhmänjohtajat</h4>
-        {groupLeaders.length > 0
-        ? groupLeaders.map(member => {
-          return <GetMember key={member.memberId} member={member} />
-        })
-        : <p>Ei Ryhmänjohtajaa</p>}
+        {groupLeaders.map(member => {
+          return <Member key={member.memberId} member={member} />
+        })}
         <h4>Ryhmäläiset</h4>
-        {groupMembers.length > 0
-        ? groupMembers.map(member => {
-          return <GetMember key={member.memberId} member={member} />
-        })
-        : <p>Ei ryhmäläisiä</p>}
+        {groupMembers.map(member => {
+          return <Member key={member.memberId} member={member} />
+        })}
       </Content>
     </StyledGroup>
   )
