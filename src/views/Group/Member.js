@@ -5,7 +5,7 @@ import ListItem from '../../components/ListItem'
 import { COMPLETION_STATUS } from '../../consts'
 import { determineLanguageFromUrl, getTermInLanguage } from '../../helpers'
 
-const GetMember = ({ member }) => {
+const Member = ({ member }) => {
     const history = useHistory()
     const language = determineLanguageFromUrl(window.location)
     const generalTranslations = useSelector(state => state.translations.yleiset)
@@ -37,4 +37,4 @@ const GetMember = ({ member }) => {
     )
   }
 
-export default GetMember
+export default Member
