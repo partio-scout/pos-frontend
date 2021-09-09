@@ -27,6 +27,8 @@ const TaskGroupItem = ({
   language,
   tasksTerm,
   subTitle,
+  itemType,
+  actionsComponent,
 }) => {
   const itemsByGuid = useSelector(state => state.itemsByGuid)
   const languageInfo = taskGroup.languages.find(x => x.lang === language)
@@ -46,6 +48,10 @@ const TaskGroupItem = ({
   return languageInfo && languageInfo.title && hasTasksOrSubGroups ? (
     <ListItem
       guid={taskGroup.guid}
+      showActions
+      showActionsIcon
+      itemType={itemType}
+      actionsComponent={actionsComponent}
       ageGroupGuid={ageGroupGuid}
       title={languageInfo.title}
       subTitle={

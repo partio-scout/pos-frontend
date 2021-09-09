@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux'
 import DetailPage from 'components/DetailPage'
 import ListItem from 'components/ListItem'
 import TaskGroupItem from 'components/TaskGroupItem'
+import { actionTypes } from 'components/Actions'
 
 import {
   determineLanguageFromUrl,
@@ -124,6 +125,8 @@ const TaskGroup = () => {
               subTitle={status}
               language={language}
               tasksTerm={tasksTerm}
+              itemType={ITEM_TYPES.TASK_GROUP}
+              actionsComponent={actionTypes.groupLeaderActions}
             />
           )
         })}

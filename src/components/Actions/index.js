@@ -214,7 +214,18 @@ const Actions = ({
         onClick={() => setShowActions(true)}
         className={className}
       />
-      {itemType === ITEM_TYPES.TASK && showActions && (
+      {itemType === ITEM_TYPES.TASK && showActions ? (
+        <ActionsComponent
+          onCancel={() => setShowActions(false)}
+          acceptCompletionRequest={acceptCompletionRequest}
+          rejectMemberTask={rejectMemberTask}
+          toggleFavourite={() => toggleFavourite()}
+          toggleActive={() => toggleActive()}
+          toggleCompleted={() => toggleCompleted()}
+          isFavourite={isFavourite}
+          guid={guid}
+        />
+      ) : itemType === ITEM_TYPES.TASK_GROUP && showActions (
         <ActionsComponent
           onCancel={() => setShowActions(false)}
           acceptCompletionRequest={acceptCompletionRequest}
