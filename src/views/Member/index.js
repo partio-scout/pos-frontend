@@ -9,7 +9,7 @@ import ListItem from 'components/ListItem'
 import { ITEM_TYPES, COMPLETION_STATUS, AGE_GROUPS } from '../../consts'
 import { actionTypes } from 'components/Actions'
 import CompletedTasks from '../Profile/CompletedTasks'
-import { getTaskGroupsWithChildTaskGroups } from '../../helpers/groupMembers'
+import { getTaskGroupsWithChildTaskGroups } from '../../helpers/groupTasks'
 
 const Background = styled.div`
   min-height: 100vh;

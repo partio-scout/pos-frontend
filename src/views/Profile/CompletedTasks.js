@@ -12,7 +12,7 @@ import { useSelector } from 'react-redux'
 import { ITEM_TYPES } from 'consts'
 import ListItem from 'components/ListItem'
 import { getTermInLanguage, getTaskGroupStatus } from 'helpers'
-import { getMemberTasks } from '../../helpers/groupMembers'
+import { getMemberTasks } from '../../helpers/groupTasks'
 import { actionTypes } from 'components/Actions'
 
 const StyledAccordionItem = styled(AccordionItemPanel)`
