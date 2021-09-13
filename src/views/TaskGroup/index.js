@@ -127,6 +127,8 @@ const TaskGroup = () => {
               tasksTerm={tasksTerm}
               itemType={ITEM_TYPES.TASK_GROUP}
               actionsComponent={actionTypes.groupLeaderActions}
+              groupGuid={subTaskGroup.guid}
+              showActions
             />
           )
         })}

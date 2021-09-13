@@ -8,7 +8,7 @@ import {
   postMemberTaskEntry,
   deleteFavouriteTask,
 } from 'api'
-import { COMPLETION_STATUS, ITEM_TYPES } from 'consts'
+import { COMPLETION_STATUS } from 'consts'
 import { useDispatch, useSelector } from 'react-redux'
 import {
   setTasks,
@@ -22,7 +22,6 @@ import { GroupLeaderActions, OpenTaskActions } from 'components/TaskActions'
 const Actions = ({
   guid,
   userGuid,
-  itemType,
   className,
   groupGuid,
   isFavourite,
@@ -214,8 +213,8 @@ const Actions = ({
         onClick={() => setShowActions(true)}
         className={className}
       />
-      {itemType === ITEM_TYPES.TASK && showActions ? (
-        <ActionsComponent
+      { showActions && (
+          <ActionsComponent
           onCancel={() => setShowActions(false)}
           acceptCompletionRequest={acceptCompletionRequest}
           rejectMemberTask={rejectMemberTask}
@@ -225,18 +224,8 @@ const Actions = ({
           isFavourite={isFavourite}
           guid={guid}
         />
-      ) : itemType === ITEM_TYPES.TASK_GROUP && showActions (
-        <ActionsComponent
-          onCancel={() => setShowActions(false)}
-          acceptCompletionRequest={acceptCompletionRequest}
-          rejectMemberTask={rejectMemberTask}
-          toggleFavourite={() => toggleFavourite()}
-          toggleActive={() => toggleActive()}
-          toggleCompleted={() => toggleCompleted()}
-          isFavourite={isFavourite}
-          guid={guid}
-        />
-      )}
+      )
+      }
     </>
   )
 }
