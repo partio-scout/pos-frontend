@@ -15,7 +15,7 @@ import { useSelector } from 'react-redux'
 import { StyledAcceptIcon } from '../../components/TaskActionsIcons'
 import { useDispatch } from 'react-redux'
 import { updateGroupMemberTask } from '../../redux/actionCreators'
-import { acceptGroupMemeberTasks } from '../../api'
+import { acceptGroupMemberTasks } from '../../api'
 import { determineLanguageFromUrl, getTermInLanguage } from '../../helpers'
 
 const StyledAcceptTasks = styled.div`
@@ -158,7 +158,7 @@ const Group = ({ group, isLast }) => {
       const data = {
         userIds: memberIdList,
       }
-      await acceptGroupMemeberTasks(data, taskGuid)
+      await acceptGroupMemberTasks(data, taskGuid)
       for (let id of memberIdList) {
         dispatch(
           updateGroupMemberTask({
