@@ -14,21 +14,25 @@ export const getMemberTasks = (groupId, memberId, groups) => {
  * @param member
  * @returns {null|*}
  */
-export const getMemberCompletedTasks = (member, tasksByGuid) => {
-  if (member && member.memberTasks && member.memberTasks.length) {
-    return Object.keys(member.memberTasks).reduce(
-      (acc, taskGuid) => {
-        console.log(taskGuid)
-        console.log(tasksByGuid)
-        /* TODO: Check if member task is completed and then check whether the task is required or optional
-                and add +1 to the corresponding value in the accumulator
-            */
-      },
-      { required: 0, optional: 0 }
-    )
-  }
-  return null
-}
+export const getMemberCompletedTasks = (member, taskGroupTasks) => {
+  if (member && member.tasks) {
+    const completedTasks = taskGroupTasks.reduce((acc, task) => {
+      console.log('TASK', task)
+      if (member.tasks[task.guid] === 'COMPLETED') {
+        acc++
+      }
+      return acc
+    }, 0)
+    console.log(completedTasks)
+    return completedTasks
+ 
+    }
+}    
+/* TODO: Check if member task is completed and then check whether the task is required or optional
+  *  and add +1 to the corresponding value in the accumulator
+  *
+  *  { mandatory: 0, optional: 0 }
+  */
 
 /**
  * Get a list of task group items from completed tasks

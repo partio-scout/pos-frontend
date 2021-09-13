@@ -17,6 +17,7 @@ import { useDispatch } from 'react-redux'
 import { updateGroupMemberTask } from '../../redux/actionCreators'
 import { acceptGroupMemberTasks } from '../../api'
 import { determineLanguageFromUrl, getTermInLanguage } from '../../helpers'
+import { getMemberCompletedTasks } from '../../helpers/groupTasks'
 
 const StyledAcceptTasks = styled.div`
   height: 100%;
@@ -81,6 +82,11 @@ const StyledListItem = styled.div`
   overflow-x: scroll;
 `
 
+const StyledSubtitle = styled.span`
+  padding: 0.25rem;
+  color: ${({ theme }) => theme.color.subText};
+`
+
 const HorizontalLine = styled.hr`
   margin: 0 3 0.5rem;
 `
@@ -130,6 +136,7 @@ const Group = ({ group, isLast }) => {
 
     return isCompleted
   }
+
   function updateGroup(group) {
     if (selectedGroup) {
       setSelectedGroup(null)
@@ -267,26 +274,34 @@ const Group = ({ group, isLast }) => {
               <HorizontalLine />
               {checkboxData.map(member => {
                 return (
-                  <StyledListItem key={member.id}>
-                    <label
-                      style={{ float: 'left', margin: 0 }}
-                      htmlFor={member.id}
-                    >
-                      {member.name}
-                    </label>
-                    {isCompleted(member.tasks) ? (
-                      <Check style={{ ...CHECK_STYLE, color: 'green' }} />
-                    ) : (
-                      <input
-                        id={member.id}
-                        style={CHECK_STYLE}
-                        type="checkbox"
-                        value={member.id}
-                        onChange={handleChange}
-                        checked={member.selected}
-                      />
+                  <>
+                    <StyledListItem key={member.id}>
+                      <label
+                        style={{ float: 'left', margin: 0 }}
+                        htmlFor={member.id}
+                      >
+                        {member.name}
+                      </label>
+                      {isCompleted(member.tasks) && !taskGroupTasks ? (
+                          <Check style={{ ...CHECK_STYLE, color: 'green' }} />
+                        ) : getMemberCompletedTasks(member, taskGroupTasks) === taskGroupTasks.length ? (
+                          <Check style={{ ...CHECK_STYLE, color: 'green' }} />
+                        ) : (
+                          <input
+                            id={member.id}
+                            style={CHECK_STYLE}
+                            type="checkbox"
+                            value={member.id}
+                            onChange={handleChange}
+                            checked={member.selected}
+                          />
+                        )
+                      }
+                    </StyledListItem>
+                    {taskGroupTasks && (
+                      <StyledSubtitle>Tehdyt: {getMemberCompletedTasks(member, taskGroupTasks)} / {taskGroupTasks.length}</StyledSubtitle>
                     )}
-                  </StyledListItem>
+                  </>
                 )
               })}
             </Content>
