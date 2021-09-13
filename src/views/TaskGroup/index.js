@@ -88,7 +88,7 @@ const TaskGroup = () => {
       />
     ) : null
   }
-
+ 
   return (
     <StyledDetailPage
       onBackClick={() =>
@@ -126,7 +126,7 @@ const TaskGroup = () => {
               language={language}
               tasksTerm={tasksTerm}
               itemType={ITEM_TYPES.TASK_GROUP}
-              actionsComponent={actionTypes.groupLeaderActions}
+              actionsComponent={actionTypes.taskGroupActions}
               groupGuid={subTaskGroup.guid}
               showActions
             />

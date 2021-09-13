@@ -17,7 +17,7 @@ import {
   updateGroupMemberTask,
   addFavourite as addFavouriteTask,
 } from 'redux/actionCreators'
-import { GroupLeaderActions, OpenTaskActions } from 'components/TaskActions'
+import { GroupLeaderActions, OpenTaskActions, TaskGroupActions } from 'components/TaskActions'
 
 const Actions = ({
   guid,
@@ -223,6 +223,7 @@ const Actions = ({
           toggleCompleted={() => toggleCompleted()}
           isFavourite={isFavourite}
           guid={guid}
+          groupGuid={groupGuid}
         />
       )
       }
@@ -238,6 +239,8 @@ const getActionsComponent = actionsComponent => {
       return GroupLeaderActions
     case actionTypes.openTaskActions:
       return OpenTaskActions
+    case actionTypes.taskGroupActions:
+      return TaskGroupActions
     default:
       return TaskActions
   }
@@ -247,6 +250,7 @@ export const actionTypes = {
   userActions: 'USER_ACTIONS',
   groupLeaderActions: 'GROUP_LEADER_ACTIONS',
   openTaskActions: 'OPEN_TASK_ACTIONS',
+  taskGroupActions: 'TASK_GROUP_ACTIONS',
 }
 
 export default Actions

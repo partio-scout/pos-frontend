@@ -101,6 +101,7 @@ const Group = ({ group, isLast }) => {
   const { taskGuid } = useParams()
   const groupsData = useSelector(state => state.user.userGroups)
   const generalTranslations = useSelector(state => state.translations.yleiset)
+  const itemsByGuid = useSelector(state => state.itemsByGuid)
   const [memberIdList, setMemberIdList] = React.useState(initialList)
   const [selectedGroup, setSelectedGroup] = React.useState()
   const [checkboxData, setCheckboxData] = React.useState(
@@ -117,6 +118,9 @@ const Group = ({ group, isLast }) => {
   const ageGroup = group.ageGroup
   const ageGroupId = group.id
   const title = '' + groupName + ' / ' + ageGroup
+
+  const taskGroup = itemsByGuid[taskGuid]
+  const taskGroupTasks = taskGroup.item.tasks
 
   function isCompleted(memberTasks) {
     const completedTasks = Object.keys(memberTasks).filter(
@@ -169,6 +173,30 @@ const Group = ({ group, isLast }) => {
           })
         )
       }
+    } catch (e) {
+      console.log(e)
+    }
+    setMemberIdList(initialList)
+  }
+
+  async function handleTaskGroupSubmit() {
+    try {
+      const data = {
+        userIds: memberIdList,
+      }
+      await taskGroupTasks.map(task => {
+        acceptGroupMemberTasks(data, taskGuid)
+        for (let id of memberIdList) {
+          dispatch(
+            updateGroupMemberTask({
+              task_guid: task.guid,
+              user_guid: Number(id),
+              completion_status: COMPLETION_STATUS.COMPLETED,
+              groupGuid: Number(selectedGroup),
+            })
+          )
+        }
+      })
     } catch (e) {
       console.log(e)
     }
@@ -265,7 +293,7 @@ const Group = ({ group, isLast }) => {
           </AccordionItemPanel>
         </AccordionItem>
       </Accordion>
-      {memberIdList.length > 0 ? (
+      {memberIdList.length > 0 && !taskGroupTasks ? (
         <AcceptTasksAction onClick={handleSubmit}>
           <ActivityItem>
             <StyledAcceptIcon />
@@ -276,7 +304,18 @@ const Group = ({ group, isLast }) => {
             )}
           </ActivityItem>
         </AcceptTasksAction>
-      ) : null}
+      ) : memberIdList.length > 0 && taskGroupTasks ? (
+        <AcceptTasksAction onClick={handleTaskGroupSubmit}>
+          <ActivityItem>
+            <StyledAcceptIcon />
+            {getTermInLanguage(
+              generalTranslations,
+              'add_to_selected',
+              language
+            )}
+          </ActivityItem>
+        </AcceptTasksAction>
+      ): null }
     </StyledAcceptTasks>
   )
 }
