@@ -12,6 +12,10 @@ import {
   markNotificationRead,
   toggleShowNotifications,
 } from '../../redux/actionCreators'
+import {
+  determineLanguageFromUrl,
+  getTermInLanguage,
+} from 'helpers'
 
 const BUTTON_HEIGHT = '1rem'
 
@@ -84,7 +88,9 @@ const containsUnread = notifications => {
 
 const Notifications = () => {
   const containerRef = useRef()
+  const language = determineLanguageFromUrl(window.location)
   const [hasUnread, setHasUnread] = useState(false)
+  const generalTranslations = useSelector(state => state.translations.yleiset)
   const notifications = useSelector(state => state.notifications.list)
   const showDropdown = useSelector(state => state.notifications.show)
   const dispatch = useDispatch()
@@ -166,7 +172,7 @@ const Notifications = () => {
         <Dropdown>
           <ArrowUp />
           <NotificationsContainer id="scrollableDiv">
-            {displayNotifications.length === 0 && <h4>Ei ilmoituksia</h4>}
+            {displayNotifications.length === 0 && <h4><span>{getTermInLanguage(generalTranslations, 'no_notifications', language)}</span></h4>}
             {displayNotifications && (
               <InfiniteScroll
                 dataLength={displayNotifications.length}
@@ -180,7 +186,7 @@ const Notifications = () => {
             )}
           </NotificationsContainer>
           <MarkAllRead onClick={markNotificationsRead}>
-            Merkitse kaikki luetuiksi
+            <span>{getTermInLanguage(generalTranslations, 'mark_all_read', language)}</span>
           </MarkAllRead>
         </Dropdown>
       )}

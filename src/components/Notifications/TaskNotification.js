@@ -4,6 +4,10 @@ import { Link } from 'react-router-dom'
 
 import { useSelector } from 'react-redux'
 import { getTaskUrl, getTimestamp } from './utils'
+import {
+  determineLanguageFromUrl,
+  getTermInLanguage,
+} from 'helpers'
 
 const Container = styled.div`
   display: flex;
@@ -33,6 +37,8 @@ const getStateMessage = state => {
 }
 
 const TaskNotification = ({ notification, markRead }) => {
+  const language = determineLanguageFromUrl(window.location)
+  const generalTranslations = useSelector(state => state.translations.yleiset)
   const itemsByGuid = useSelector(state => state.itemsByGuid)
   const task = itemsByGuid[notification.item_guid]
   const timestamp = getTimestamp(notification.created_at)
@@ -41,8 +47,8 @@ const TaskNotification = ({ notification, markRead }) => {
     <Container>
       <Message>
         <span>
-          Ryhmänjohtaja {notification.group_leader_name} on{' '}
-          {getStateMessage(notification.notification_type)} tehtäväsi{' '}
+          {getTermInLanguage(generalTranslations, 'group_leader', language)} {notification.group_leader_name} {getTermInLanguage(generalTranslations, 'has', language)} {' '}
+          {getStateMessage(notification.notification_type)} {getTermInLanguage(generalTranslations, 'your_task', language)} {' '}
         </span>
         <StyledLink to={getTaskUrl(task)} onClick={markRead}>
           {task.item.title}
