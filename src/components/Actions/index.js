@@ -213,7 +213,7 @@ const Actions = ({
         onClick={() => setShowActions(true)}
         className={className}
       />
-      { showActions && (
+      {showActions && (
           <ActionsComponent
           onCancel={() => setShowActions(false)}
           acceptCompletionRequest={acceptCompletionRequest}

@@ -133,7 +133,6 @@ const Group = ({ group, isLast }) => {
       guid => memberTasks[guid] === COMPLETION_STATUS.COMPLETED
     )
     const isCompleted = !!completedTasks.find(guid => guid === taskGuid)
-
     return isCompleted
   }
 
@@ -192,7 +191,7 @@ const Group = ({ group, isLast }) => {
         userIds: memberIdList,
       }
       await taskGroupTasks.map(task => {
-        acceptGroupMemberTasks(data, taskGuid)
+        acceptGroupMemberTasks(data, task.guid)
         for (let id of memberIdList) {
           dispatch(
             updateGroupMemberTask({
@@ -282,11 +281,11 @@ const Group = ({ group, isLast }) => {
                       >
                         {member.name}
                       </label>
-                      {isCompleted(member.tasks) && !taskGroupTasks ? (
+                      {taskGroupTasks !== undefined && getMemberCompletedTasks(member, taskGroupTasks) === taskGroupTasks.length ? 
                           <Check style={{ ...CHECK_STYLE, color: 'green' }} />
-                        ) : getMemberCompletedTasks(member, taskGroupTasks) === taskGroupTasks.length ? (
+                        : isCompleted(member.tasks) ? 
                           <Check style={{ ...CHECK_STYLE, color: 'green' }} />
-                        ) : (
+                        : 
                           <input
                             id={member.id}
                             style={CHECK_STYLE}
@@ -295,11 +294,11 @@ const Group = ({ group, isLast }) => {
                             onChange={handleChange}
                             checked={member.selected}
                           />
-                        )
+                       
                       }
                     </StyledListItem>
                     {taskGroupTasks && (
-                      <StyledSubtitle>Tehdyt: {getMemberCompletedTasks(member, taskGroupTasks)} / {taskGroupTasks.length}</StyledSubtitle>
+                      <StyledSubtitle>{getTermInLanguage(generalTranslations, 'done', language)}: {getMemberCompletedTasks(member, taskGroupTasks)} / {taskGroupTasks.length}</StyledSubtitle>
                     )}
                   </>
                 )

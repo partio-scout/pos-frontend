@@ -17,13 +17,11 @@ export const getMemberTasks = (groupId, memberId, groups) => {
 export const getMemberCompletedTasks = (member, taskGroupTasks) => {
   if (member && member.tasks) {
     const completedTasks = taskGroupTasks.reduce((acc, task) => {
-      console.log('TASK', task)
       if (member.tasks[task.guid] === 'COMPLETED') {
         acc++
       }
       return acc
     }, 0)
-    console.log(completedTasks)
     return completedTasks
  
     }
