@@ -12,6 +12,7 @@ import { useSelector } from 'react-redux'
 import { ITEM_TYPES } from 'consts'
 import ListItem from 'components/ListItem'
 import { getTermInLanguage, getTaskGroupStatus } from 'helpers'
+import { getMemberTasks } from '../../helpers/groupTasks'
 import { actionTypes } from 'components/Actions'
 
 const StyledAccordionItem = styled(AccordionItemPanel)`
@@ -22,10 +23,11 @@ const CompletedTasks = ({
   itemsByGuid,
   taskGroupsWithChildTaskGroups,
   language,
+  groupMember,
 }) => {
   const parentTaskGroupGuids = Object.keys(taskGroupsWithChildTaskGroups)
 
-  return parentTaskGroupGuids.map(taskGroupGuid => {
+  return parentTaskGroupGuids.map((taskGroupGuid) => {
     return (
       <AccordionList
         key={taskGroupGuid}
@@ -33,6 +35,7 @@ const CompletedTasks = ({
         completedTasks={taskGroupsWithChildTaskGroups}
         itemsByGuid={itemsByGuid}
         language={language}
+        groupMember={groupMember}
       />
     )
   })
@@ -43,20 +46,24 @@ const AccordionList = ({
   itemsByGuid,
   completedTasks,
   language,
+  groupMember,
 }) => {
-  const userTasks = useSelector(state => state.tasks)
-  const generalTranslations = useSelector(state => state.translations.yleiset)
-  const taskGroup = itemsByGuid[taskGroupGuid]
-  const getTranslation = taskOrTaskGroup => {
-    return taskOrTaskGroup.languages.find(x => x.lang === language)
-  }
 
+  const userTasks = groupMember
+    ? getMemberTasks(
+        groupMember.groupId,
+        groupMember.memberId,
+        useSelector((state) => state.user.userGroups))
+    : useSelector((state) => state.tasks)
+
+  const generalTranslations = useSelector((state) => state.translations.yleiset)
+  const taskGroup = itemsByGuid[taskGroupGuid]
+  
   const status = getTaskGroupStatus(
     taskGroup.item,
     userTasks,
     getTermInLanguage(generalTranslations, 'done', language)
   )
-  const taskTranslation = getTranslation(taskGroup.item)
 
   return (
     <Accordion key={taskGroupGuid} allowZeroExpanded>
@@ -65,7 +72,7 @@ const AccordionList = ({
           <AccordionItemButton>
             {!taskGroup.item.taskgroups.length > 0 ? (
               <ListItem
-                title={taskTranslation ? taskTranslation.title : taskGroup.item.title}
+                title={taskGroup.item.title}
                 itemType={ITEM_TYPES.TASK_GROUP}
                 ageGroupGuid={taskGroup.ageGroupGuid}
                 language={language}
@@ -75,7 +82,7 @@ const AccordionList = ({
               />
             ) : (
               <ListItem
-                title={taskTranslation ? taskTranslation.title : taskGroup.item.title}
+                title={taskGroup.item.title}
                 itemType={ITEM_TYPES.TASK_GROUP}
                 ageGroupGuid={taskGroup.ageGroupGuid}
                 language={language}
@@ -94,7 +101,7 @@ const AccordionList = ({
             />
           ) : (
             Object.keys(completedTasks[taskGroupGuid]).map(
-              childTaskGroupGuid => {
+              (childTaskGroupGuid) => {
                 return (
                   <AccordionList
                     key={childTaskGroupGuid}
@@ -102,6 +109,7 @@ const AccordionList = ({
                     taskGroupGuid={childTaskGroupGuid}
                     completedTasks={completedTasks[taskGroupGuid]}
                     language={language}
+                    groupMember={groupMember}
                     subTitle={status}
                   />
                 )
@@ -115,18 +123,12 @@ const AccordionList = ({
 }
 
 const TaskList = ({ tasks, taskGroup, language }) => {
-  return tasks.map(task => {
-    
-    const getTranslation = taskOrTaskGroup => {
-      return taskOrTaskGroup.languages.find(x => x.lang === language)
-    }
-    const taskTranslation = getTranslation(task.item)
-    
+  return tasks.map((task) => {
     return (
       <ListItem
         key={task.guid}
         guid={task.guid}
-        title={taskTranslation ? taskTranslation.title : task.item.title}
+        title={task.item.title}
         itemType={ITEM_TYPES.TASK}
         ageGroupGuid={taskGroup.ageGroupGuid}
         language={language}

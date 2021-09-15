@@ -2,11 +2,14 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 import styled from 'styled-components'
 import { X } from 'react-feather'
-import { determineLanguageFromUrl, getTermInLanguage } from '../../helpers'
 import { useHistory, useParams } from 'react-router-dom'
+
+import { determineLanguageFromUrl, getTermInLanguage } from '../../helpers'
 import ListItem from 'components/ListItem'
 import { ITEM_TYPES, COMPLETION_STATUS, AGE_GROUPS } from '../../consts'
 import { actionTypes } from 'components/Actions'
+import CompletedTasks from '../Profile/CompletedTasks'
+import { getTaskGroupsWithChildTaskGroups } from '../../helpers/groupTasks'
 
 const Background = styled.div`
   min-height: 100vh;
@@ -24,8 +27,10 @@ const Background = styled.div`
     background: ${({ theme, ageGroupGuid }) => `
     linear-gradient(
       to bottom,
-      ${theme.color.ageGroupGradients[ageGroupGuid] ||
-        theme.color.ageGroupGradients.default},
+      ${
+        theme.color.ageGroupGradients[ageGroupGuid] ||
+        theme.color.ageGroupGradients.default
+      },
       ${theme.color.gradientDark}
     );
     `};
@@ -97,15 +102,15 @@ const TaskList = styled.div`
 const Member = () => {
   const history = useHistory()
   const language = determineLanguageFromUrl(window.location)
-  const groupsData = useSelector(state => state.user.userGroups)
-  const generalTranslations = useSelector(state => state.translations.yleiset)
-  const itemsByGuid = useSelector(state => state.itemsByGuid)
+  const groupsData = useSelector((state) => state.user.userGroups)
+  const generalTranslations = useSelector((state) => state.translations.yleiset)
+  const itemsByGuid = useSelector((state) => state.itemsByGuid)
   const activityTranslations = useSelector(
-    state => state.translations.aktiviteetin_ylakasite
+    (state) => state.translations.aktiviteetin_ylakasite
   )
 
-  const getTranslation = taskOrTaskGroup => {
-    return taskOrTaskGroup.languages.find(x => x.lang === language)
+  const getTranslation = (taskOrTaskGroup) => {
+    return taskOrTaskGroup.languages.find((x) => x.lang === language)
   }
   const { groupId } = useParams()
   const { memberId } = useParams()
@@ -115,26 +120,31 @@ const Member = () => {
   if (!itemsByGuid || !activityTranslations) return null
 
   const group = groupsData.find(
-    groups => groups.id.toString() === groupId.toString()
+    (groups) => groups.id.toString() === groupId.toString()
   )
   const members = group.members
 
   const member = members.find(
-    members => members.memberId.toString() === memberId.toString()
+    (members) => members.memberId.toString() === memberId.toString()
   )
 
   const memberTasks = member.memberTasks
 
   const completedTasks = Object.keys(memberTasks).filter(
-    guid => memberTasks[guid] === COMPLETION_STATUS.COMPLETED
+    (guid) => memberTasks[guid] === COMPLETION_STATUS.COMPLETED
+  )
+
+  const taskGroupsWithChildTaskGroups = getTaskGroupsWithChildTaskGroups(
+    itemsByGuid,
+    completedTasks
   )
 
   const completionRequestedTasks = Object.keys(memberTasks).filter(
-    guid => memberTasks[guid] === COMPLETION_STATUS.COMPLETION_REQUESTED
+    (guid) => memberTasks[guid] === COMPLETION_STATUS.COMPLETION_REQUESTED
   )
 
   const activeTasks = Object.keys(memberTasks).filter(
-    guid => memberTasks[guid] === COMPLETION_STATUS.ACTIVE
+    (guid) => memberTasks[guid] === COMPLETION_STATUS.ACTIVE
   )
 
   const ageGroupGuid = AGE_GROUPS[group.ageGroupId]
@@ -217,26 +227,14 @@ const Member = () => {
             {getTermInLanguage(generalTranslations, 'completed', language)}
           </h4>
           <TaskList>
-            {completedTasks.map((taskGuid, index) => {
-              const task = itemsByGuid[taskGuid]
-              const taskTranslation = getTranslation(task.item)
-              const parent = itemsByGuid[task.parentGuid]
-              return (
-                <ListItem
-                  key={task.guid + index}
-                  guid={task.guid}
-                  userGuid={Number(memberId)}
-                  groupGuid={Number(groupId)}
-                  title={
-                    taskTranslation ? taskTranslation.title : task.item.title
-                  }
-                  subTitle={parent.item.title}
-                  itemType={ITEM_TYPES.TASK}
-                  actionsComponent={actionTypes.groupLeaderActions}
-                  showActions
-                />
-              )
-            })}
+            {taskGroupsWithChildTaskGroups && (
+              <CompletedTasks
+                language={language}
+                itemsByGuid={itemsByGuid}
+                taskGroupsWithChildTaskGroups={taskGroupsWithChildTaskGroups}
+                groupMember={{ groupId, memberId }}
+              />
+            )}
           </TaskList>
         </BodyContent>
       </Content>

@@ -15,8 +15,9 @@ import { useSelector } from 'react-redux'
 import { StyledAcceptIcon } from '../../components/TaskActionsIcons'
 import { useDispatch } from 'react-redux'
 import { updateGroupMemberTask } from '../../redux/actionCreators'
-import { acceptGroupMemeberTasks } from '../../api'
+import { acceptGroupMemberTasks } from '../../api'
 import { determineLanguageFromUrl, getTermInLanguage } from '../../helpers'
+import { getMemberCompletedTasks } from '../../helpers/groupTasks'
 
 const StyledAcceptTasks = styled.div`
   height: 100%;
@@ -81,6 +82,11 @@ const StyledListItem = styled.div`
   overflow-x: scroll;
 `
 
+const StyledSubtitle = styled.span`
+  padding: 0.25rem;
+  color: ${({ theme }) => theme.color.subText};
+`
+
 const HorizontalLine = styled.hr`
   margin: 0 3 0.5rem;
 `
@@ -101,6 +107,7 @@ const Group = ({ group, isLast }) => {
   const { taskGuid } = useParams()
   const groupsData = useSelector(state => state.user.userGroups)
   const generalTranslations = useSelector(state => state.translations.yleiset)
+  const itemsByGuid = useSelector(state => state.itemsByGuid)
   const [memberIdList, setMemberIdList] = React.useState(initialList)
   const [selectedGroup, setSelectedGroup] = React.useState()
   const [checkboxData, setCheckboxData] = React.useState(
@@ -118,14 +125,17 @@ const Group = ({ group, isLast }) => {
   const ageGroupId = group.id
   const title = '' + groupName + ' / ' + ageGroup
 
+  const taskGroup = itemsByGuid[taskGuid]
+  const taskGroupTasks = taskGroup.item.tasks
+
   function isCompleted(memberTasks) {
     const completedTasks = Object.keys(memberTasks).filter(
       guid => memberTasks[guid] === COMPLETION_STATUS.COMPLETED
     )
     const isCompleted = !!completedTasks.find(guid => guid === taskGuid)
-
     return isCompleted
   }
+
   function updateGroup(group) {
     if (selectedGroup) {
       setSelectedGroup(null)
@@ -158,7 +168,7 @@ const Group = ({ group, isLast }) => {
       const data = {
         userIds: memberIdList,
       }
-      await acceptGroupMemeberTasks(data, taskGuid)
+      await acceptGroupMemberTasks(data, taskGuid)
       for (let id of memberIdList) {
         dispatch(
           updateGroupMemberTask({
@@ -169,6 +179,30 @@ const Group = ({ group, isLast }) => {
           })
         )
       }
+    } catch (e) {
+      console.log(e)
+    }
+    setMemberIdList(initialList)
+  }
+
+  async function handleTaskGroupSubmit() {
+    try {
+      await taskGroupTasks.map(task => {
+        const data = {
+          userIds: getUserIds(checkboxData, task.guid),
+        }
+        acceptGroupMemberTasks(data, task.guid)
+        for (let id of memberIdList) {
+          dispatch(
+            updateGroupMemberTask({
+              task_guid: task.guid,
+              user_guid: Number(id),
+              completion_status: COMPLETION_STATUS.COMPLETED,
+              groupGuid: Number(selectedGroup),
+            })
+          )
+        }
+      })
     } catch (e) {
       console.log(e)
     }
@@ -239,33 +273,40 @@ const Group = ({ group, isLast }) => {
               <HorizontalLine />
               {checkboxData.map(member => {
                 return (
-                  <StyledListItem key={member.id}>
-                    <label
-                      style={{ float: 'left', margin: 0 }}
-                      htmlFor={member.id}
-                    >
-                      {member.name}
-                    </label>
-                    {isCompleted(member.tasks) ? (
-                      <Check style={{ ...CHECK_STYLE, color: 'green' }} />
-                    ) : (
-                      <input
-                        id={member.id}
-                        style={CHECK_STYLE}
-                        type="checkbox"
-                        value={member.id}
-                        onChange={handleChange}
-                        checked={member.selected}
-                      />
+                  <div key={member.id}>
+                    <StyledListItem>
+                      <label
+                        style={{ float: 'left', margin: 0 }}
+                        htmlFor={member.id}
+                      >
+                        {member.name}
+                      </label>
+                      {taskGroupTasks !== undefined && getMemberCompletedTasks(member, taskGroupTasks) === taskGroupTasks.length ? 
+                        <Check style={{ ...CHECK_STYLE, color: 'green' }} />
+                      : isCompleted(member.tasks) ? 
+                        <Check style={{ ...CHECK_STYLE, color: 'green' }} />
+                      : 
+                        <input
+                          id={member.id}
+                          style={CHECK_STYLE}
+                          type="checkbox"
+                          value={member.id}
+                          onChange={handleChange}
+                          checked={member.selected}
+                        />
+                      }
+                    </StyledListItem>
+                    {taskGroupTasks && (
+                      <StyledSubtitle>{getTermInLanguage(generalTranslations, 'done', language)}: {getMemberCompletedTasks(member, taskGroupTasks)} / {taskGroupTasks.length}</StyledSubtitle>
                     )}
-                  </StyledListItem>
+                  </div>
                 )
               })}
             </Content>
           </AccordionItemPanel>
         </AccordionItem>
       </Accordion>
-      {memberIdList.length > 0 ? (
+      {memberIdList.length > 0 && !taskGroupTasks ? (
         <AcceptTasksAction onClick={handleSubmit}>
           <ActivityItem>
             <StyledAcceptIcon />
@@ -276,9 +317,29 @@ const Group = ({ group, isLast }) => {
             )}
           </ActivityItem>
         </AcceptTasksAction>
-      ) : null}
+      ) : memberIdList.length > 0 && taskGroupTasks ? (
+        <AcceptTasksAction onClick={handleTaskGroupSubmit}>
+          <ActivityItem>
+            <StyledAcceptIcon />
+            {getTermInLanguage(
+              generalTranslations,
+              'add_to_selected',
+              language
+            )}
+          </ActivityItem>
+        </AcceptTasksAction>
+      ): null }
     </StyledAcceptTasks>
   )
+}
+
+const getUserIds = (checkboxData, taskGuid) => {
+  return checkboxData.reduce((acc, data) => {
+    if (data.tasks[taskGuid] !== 'COMPLETED') {
+      acc.push(data.id)
+    }
+    return acc
+  }, [])
 }
 
 export default Group
