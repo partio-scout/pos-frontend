@@ -4,7 +4,6 @@ import {
   StyledAcceptIcon
 } from '../TaskActionsIcons'
 import { useSelector } from 'react-redux'
-// import { COMPLETION_STATUS } from '../../consts'
 import { determineLanguageFromUrl, getTermInLanguage } from '../../helpers'
 import { useHistory } from 'react-router-dom'
 
@@ -72,8 +71,6 @@ const TaskGroupActions = ({
   guid,
 }) => {
   const [disabled, setDisabled] = useState(false)
-
-  // const userTasks = useSelector(state => state.tasks)
   const generalTranslations = useSelector(state => state.translations.yleiset)
   const userGroups = useSelector(state => state.user.userGroups)
 
