@@ -2,10 +2,8 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 import styled from 'styled-components'
 import { X } from 'react-feather'
-import { determineLanguageFromUrl, getTermInLanguage } from '../../helpers'
 import { useHistory, useParams } from 'react-router-dom'
-import ListItem from '../../components/ListItem'
-import { COMPLETION_STATUS } from '../../consts'
+import Member from './Member'
 
 const StyledGroup = styled.div`
   height: 100%;
@@ -45,7 +43,6 @@ const Content = styled.div`
 
 const Group = () => {
   const history = useHistory()
-  const language = determineLanguageFromUrl(window.location)
   const groupsData = useSelector(state => state.user.userGroups)
   const generalTranslations = useSelector(state => state.translations.yleiset)
   const { groupId } = useParams()
@@ -55,7 +52,9 @@ const Group = () => {
   const group = groupsData.find(
     groups => groups.id.toString() === groupId.toString()
   )
-  const members = group.members
+
+  const groupLeaders = group.members.filter(member => member.isGroupLeader === true)
+  const groupMembers = group.members.filter(member => member.isGroupLeader === false)
 
   return (
     <StyledGroup>
@@ -64,32 +63,13 @@ const Group = () => {
         <CloseIcon onClick={() => history.push('/manage')} />
       </Header>
       <Content>
-        {members.map(member => {
-          const tasks = Object.keys(member.memberTasks).filter(
-            guid =>
-              member.memberTasks[guid] ===
-                COMPLETION_STATUS.COMPLETION_REQUESTED ||
-              member.memberTasks[guid] === COMPLETION_STATUS.ACTIVE
-          )
-          const subTitle =
-            tasks.length +
-            ' ' +
-            getTermInLanguage(generalTranslations, 'activity', language) +
-            ' ' +
-            getTermInLanguage(generalTranslations, 'working_on_it', language)
-          const memberId = member.memberId
-          return (
-            <ListItem
-              onClick={() =>
-                history.push(
-                  `/group/${groupId}/member/${memberId}/?lang=${language}`
-                )
-              }
-              key={member.memberId}
-              title={member.memberName}
-              subTitle={subTitle}
-            />
-          )
+        <h4>Ryhmänjohtajat</h4>
+        {groupLeaders.map(member => {
+          return <Member key={member.memberId} member={member} />
+        })}
+        <h4>Ryhmäläiset</h4>
+        {groupMembers.map(member => {
+          return <Member key={member.memberId} member={member} />
         })}
       </Content>
     </StyledGroup>

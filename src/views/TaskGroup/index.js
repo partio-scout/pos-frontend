@@ -134,13 +134,13 @@ const TaskGroup = () => {
         })}
         {item.tasks.length > 0 ?
           <>
-            <h4>Pakolliset</h4>
+            <h4><span>{getTermInLanguage(generalTranslations, 'mandatory_plural', language)}</span></h4>
             {mandatoryTasks.length > 0
               ? mandatoryTasks.map(task => {
                 return getTask(task)
               })
-              : <p>Ei pakollisia tehtäviä</p>}
-            <h4>Valinnaiset</h4>
+              : <p><span>{getTermInLanguage(generalTranslations, 'no_mandatory_tasks', language)}</span></p>}
+            <h4><span>{getTermInLanguage(generalTranslations, 'optional_plural', language)}</span></h4>
             {optionalTasks.length > 0
               ? optionalTasks.map(task => {
                 return getTask(task)

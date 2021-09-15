@@ -236,6 +236,7 @@ const Profile = () => {
               favourites.map((favourite) => {
                 const taskTranslation = getTranslation(favourite.item)
                 const parent = itemsByGuid[favourite.parentGuid]
+                const parentTranslation = getTranslation(parent.item)
                 return (
                   <ListItem
                     key={favourite.guid}
@@ -246,7 +247,9 @@ const Profile = () => {
                         ? taskTranslation.title
                         : favourite.item.title
                     }
-                    subTitle={parent.item.title}
+                    subTitle={
+                      parentTranslation ? parentTranslation.title : parent.item.title
+                    }
                     language={language}
                     itemType={ITEM_TYPES.TASK}
                     showActions
@@ -272,7 +275,8 @@ const Profile = () => {
 
               const taskTranslation = getTranslation(task.item)
               const parent = itemsByGuid[task.parentGuid]
-              const finder = (favourite) => taskGuid === favourite.guid
+              const parentTranslation = getTranslation(parent.item)
+              const finder = favourite => taskGuid === favourite.guid
               const isFavourite = !!favourites.find(finder)
 
               return (
@@ -283,7 +287,9 @@ const Profile = () => {
                   title={
                     taskTranslation ? taskTranslation.title : task.item.title
                   }
-                  subTitle={parent.item.title}
+                  subTitle={
+                    parentTranslation ? parentTranslation.title : parent.item.title
+                  }
                   language={language}
                   itemType={ITEM_TYPES.TASK}
                   showActions
