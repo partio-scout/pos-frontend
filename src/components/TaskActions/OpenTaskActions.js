@@ -94,7 +94,11 @@ const OpenTaskActions = ({ guid, onCancel }) => {
         <ActivityItem disabled={disabled}>
           <StyledCompletedIcon />
           <span>
-            <StyledLink to={getTaskUrl(guid)}>Aukaise tehtävä</StyledLink>
+            <StyledLink to={getTaskUrl(guid)}>
+              <span>
+              {getTermInLanguage(generalTranslations, 'open_task', language)}
+            </span>
+              </StyledLink>
           </span>
         </ActivityItem>
         <ActivityItem onClick={getOnClick(onCancel)} disabled={disabled}>
