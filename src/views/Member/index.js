@@ -122,6 +122,7 @@ const Member = () => {
   const group = groupsData.find(
     (groups) => groups.id.toString() === groupId.toString()
   )
+
   const members = group.members
 
   const member = members.find(
@@ -233,6 +234,9 @@ const Member = () => {
                 itemsByGuid={itemsByGuid}
                 taskGroupsWithChildTaskGroups={taskGroupsWithChildTaskGroups}
                 groupMember={{ groupId, memberId }}
+                actionsComponent={actionTypes.groupLeaderActions}
+                userGuid={Number(memberId)}
+                groupGuid={group.id}
               />
             )}
           </TaskList>

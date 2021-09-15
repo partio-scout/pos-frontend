@@ -13,7 +13,6 @@ import { ITEM_TYPES } from 'consts'
 import ListItem from 'components/ListItem'
 import { getTermInLanguage, getTaskGroupStatus } from 'helpers'
 import { getMemberTasks } from '../../helpers/groupTasks'
-import { actionTypes } from 'components/Actions'
 
 const StyledAccordionItem = styled(AccordionItemPanel)`
   padding-left: 2.5rem;
@@ -24,9 +23,11 @@ const CompletedTasks = ({
   taskGroupsWithChildTaskGroups,
   language,
   groupMember,
+  actionsComponent,
+  userGuid,
+  groupGuid
 }) => {
   const parentTaskGroupGuids = Object.keys(taskGroupsWithChildTaskGroups)
-
   return parentTaskGroupGuids.map((taskGroupGuid) => {
     return (
       <AccordionList
@@ -36,6 +37,9 @@ const CompletedTasks = ({
         itemsByGuid={itemsByGuid}
         language={language}
         groupMember={groupMember}
+        actionsComponent={actionsComponent}
+        userGuid={userGuid}
+        groupGuid={groupGuid}
       />
     )
   })
@@ -47,8 +51,10 @@ const AccordionList = ({
   completedTasks,
   language,
   groupMember,
+  actionsComponent,
+  userGuid,
+  groupGuid,
 }) => {
-
   const userTasks = groupMember
     ? getMemberTasks(
         groupMember.groupId,
@@ -102,6 +108,9 @@ const AccordionList = ({
               tasks={completedTasks[taskGroupGuid]}
               taskGroup={taskGroup}
               language={language}
+              actionsComponent={actionsComponent}
+              userGuid={userGuid}
+              groupGuid={groupGuid}
             />
           ) : (
             Object.keys(completedTasks[taskGroupGuid]).map(
@@ -115,6 +124,9 @@ const AccordionList = ({
                     language={language}
                     groupMember={groupMember}
                     subTitle={status}
+                    actionsComponent={actionsComponent}
+                    userGuid={userGuid}
+                    groupGuid={groupGuid}
                   />
                 )
               }
@@ -126,7 +138,7 @@ const AccordionList = ({
   )
 }
 
-const TaskList = ({ tasks, taskGroup, language }) => {
+const TaskList = ({ tasks, taskGroup, language, actionsComponent, userGuid, groupGuid }) => {
   return tasks.map((task) => {
 
     const getTranslation = taskOrTaskGroup => {
@@ -142,7 +154,9 @@ const TaskList = ({ tasks, taskGroup, language }) => {
         itemType={ITEM_TYPES.TASK}
         ageGroupGuid={taskGroup.ageGroupGuid}
         language={language}
-        actionsComponent={actionTypes.openTaskActions}
+        actionsComponent={actionsComponent}
+        userGuid={userGuid}
+        groupGuid={groupGuid}
         showActions
       />
     )
