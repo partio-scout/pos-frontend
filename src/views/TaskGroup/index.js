@@ -1,10 +1,11 @@
-import React from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import styled from 'styled-components'
 import { useParams, useHistory } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import DetailPage from 'components/DetailPage'
 import ListItem from 'components/ListItem'
 import TaskGroupItem from 'components/TaskGroupItem'
+import { fetchTaskDetails } from 'api'
 import { actionTypes } from 'components/Actions'
 
 import {
@@ -25,12 +26,12 @@ const TaskList = styled.div`
 `
 
 const TaskGroup = () => {
+  const [details, setDetails] = useState()
   const { guid } = useParams()
   const history = useHistory()
   const language = determineLanguageFromUrl(window.location)
   const userTasks = useSelector(state => state.tasks)
   const user = useSelector(state => state.user)
-
   const taskGroup = useSelector(state => state.itemsByGuid[guid])
   const activityTranslations = useSelector(
     state => state.translations.aktiviteetin_ylakasite
@@ -46,6 +47,15 @@ const TaskGroup = () => {
   const getTranslation = taskOrTaskGroup => {
     return taskOrTaskGroup.languages.find(x => x.lang === language)
   }
+
+  const getTaskDetails = useCallback(async () => {
+    const res = await fetchTaskDetails(taskGroup.item.guid, language)
+    setDetails(res)
+  }, [taskGroup, language])
+
+  useEffect(() => {
+    getTaskDetails()
+  }, [getTaskDetails])
 
   const { item } = taskGroup
   const taskGroupTranslation = getTranslation(item)
@@ -132,8 +142,10 @@ const TaskGroup = () => {
             />
           )
         })}
-        {item.tasks.length > 0 ?
+        {item.tasks.length > 0 && details ?
           <>
+            <p>{details.ingress}</p>
+            <p>{details.content}</p>
             <h4><span>{getTermInLanguage(generalTranslations, 'mandatory_plural', language)}</span></h4>
             {mandatoryTasks.length > 0
               ? mandatoryTasks.map(task => {
