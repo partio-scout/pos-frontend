@@ -1,6 +1,6 @@
 import React from 'react'
 import styled, { keyframes } from 'styled-components'
-import { StyledAcceptIcon, StyledDeleteIcon } from '../TaskActionsIcons'
+import { StyledAcceptIcon, StyleActiveIcon } from '../TaskActionsIcons'
 import { COMPLETION_STATUS } from '../../consts'
 import { useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
@@ -66,6 +66,7 @@ const ActivityItem = styled.div`
 
 const GroupLeaderActions = ({
   acceptCompletionRequest,
+  // removeMemberTask,
   rejectMemberTask,
   onCancel,
   guid,
@@ -109,13 +110,19 @@ const GroupLeaderActions = ({
             </span>
           </ActivityItem>
         )}
-        <ActivityItem onClick={rejectMemberTask}>
+        {isCompleted === true && (
+          <ActivityItem onClick={rejectMemberTask}>
+            <StyleActiveIcon />
+            <span>Siirrä takaisin työn alle</span>
+          </ActivityItem>
+        )}
+        {/* <ActivityItem onClick={removeMemberTask}>
           <StyledDeleteIcon />
           <span>
             {getTermInLanguage(generalTranslations, 'delete', language)}{' '}
             {getTermInLanguage(apiTypeTranslations, 'task', language)}
           </span>
-        </ActivityItem>
+        </ActivityItem> */}
         <ActivityItem onClick={onCancel}>
           <span>
             {getTermInLanguage(generalTranslations, 'cancel', language)}

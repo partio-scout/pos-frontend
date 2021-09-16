@@ -7,6 +7,7 @@ import {
   postTaskFavourite,
   postMemberTaskEntry,
   deleteFavouriteTask,
+  // removeMemberTaskEntry,
 } from 'api'
 import { COMPLETION_STATUS } from 'consts'
 import { useDispatch, useSelector } from 'react-redux'
@@ -125,6 +126,19 @@ const Actions = ({
     }
   }
 
+  // const removeMemberTask = async () => {
+  //   try {
+  //     await removeMemberTaskEntry({
+  //       user_guid: userGuid,
+  //       task_guid: guid,
+  //     })
+  //   } catch (e) {
+  //     console.log(e)
+  //   }
+  //   setShowActions(false)
+  //   dispatch(removeMemberTaskEntry())
+  // }
+
   const addFavourite = async () => {
     try {
       await postTaskFavourite({
@@ -218,6 +232,7 @@ const Actions = ({
           onCancel={() => setShowActions(false)}
           acceptCompletionRequest={acceptCompletionRequest}
           rejectMemberTask={rejectMemberTask}
+          // removeMemberTask={removeMemberTask}
           toggleFavourite={() => toggleFavourite()}
           toggleActive={() => toggleActive()}
           toggleCompleted={() => toggleCompleted()}

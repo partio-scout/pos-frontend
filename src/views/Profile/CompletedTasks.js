@@ -13,7 +13,6 @@ import { ITEM_TYPES } from 'consts'
 import ListItem from 'components/ListItem'
 import { getTermInLanguage, getTaskGroupStatus } from 'helpers'
 import { getMemberTasks } from '../../helpers/groupTasks'
-import { actionTypes } from 'components/Actions'
 
 const StyledAccordionItem = styled(AccordionItemPanel)`
   padding-left: 2.5rem;
@@ -24,9 +23,11 @@ const CompletedTasks = ({
   taskGroupsWithChildTaskGroups,
   language,
   groupMember,
+  actionsComponent,
+  userGuid,
+  groupGuid
 }) => {
   const parentTaskGroupGuids = Object.keys(taskGroupsWithChildTaskGroups)
-
   return parentTaskGroupGuids.map((taskGroupGuid) => {
     return (
       <AccordionList
@@ -36,6 +37,9 @@ const CompletedTasks = ({
         itemsByGuid={itemsByGuid}
         language={language}
         groupMember={groupMember}
+        actionsComponent={actionsComponent}
+        userGuid={userGuid}
+        groupGuid={groupGuid}
       />
     )
   })
@@ -47,8 +51,10 @@ const AccordionList = ({
   completedTasks,
   language,
   groupMember,
+  actionsComponent,
+  userGuid,
+  groupGuid,
 }) => {
-
   const userTasks = groupMember
     ? getMemberTasks(
         groupMember.groupId,
@@ -58,12 +64,16 @@ const AccordionList = ({
 
   const generalTranslations = useSelector((state) => state.translations.yleiset)
   const taskGroup = itemsByGuid[taskGroupGuid]
+  const getTranslation = taskOrTaskGroup => {
+    return taskOrTaskGroup.languages.find(x => x.lang === language)
+  }
   
   const status = getTaskGroupStatus(
     taskGroup.item,
     userTasks,
     getTermInLanguage(generalTranslations, 'done', language)
   )
+  const taskTranslation = getTranslation(taskGroup.item)
 
   return (
     <Accordion key={taskGroupGuid} allowZeroExpanded>
@@ -72,7 +82,7 @@ const AccordionList = ({
           <AccordionItemButton>
             {!taskGroup.item.taskgroups.length > 0 ? (
               <ListItem
-                title={taskGroup.item.title}
+                title={taskTranslation ? taskTranslation.title : taskGroup.item.title}
                 itemType={ITEM_TYPES.TASK_GROUP}
                 ageGroupGuid={taskGroup.ageGroupGuid}
                 language={language}
@@ -82,7 +92,7 @@ const AccordionList = ({
               />
             ) : (
               <ListItem
-                title={taskGroup.item.title}
+                title={taskTranslation ? taskTranslation.title : taskGroup.item.title}
                 itemType={ITEM_TYPES.TASK_GROUP}
                 ageGroupGuid={taskGroup.ageGroupGuid}
                 language={language}
@@ -98,6 +108,9 @@ const AccordionList = ({
               tasks={completedTasks[taskGroupGuid]}
               taskGroup={taskGroup}
               language={language}
+              actionsComponent={actionsComponent}
+              userGuid={userGuid}
+              groupGuid={groupGuid}
             />
           ) : (
             Object.keys(completedTasks[taskGroupGuid]).map(
@@ -111,6 +124,9 @@ const AccordionList = ({
                     language={language}
                     groupMember={groupMember}
                     subTitle={status}
+                    actionsComponent={actionsComponent}
+                    userGuid={userGuid}
+                    groupGuid={groupGuid}
                   />
                 )
               }
@@ -122,17 +138,25 @@ const AccordionList = ({
   )
 }
 
-const TaskList = ({ tasks, taskGroup, language }) => {
+const TaskList = ({ tasks, taskGroup, language, actionsComponent, userGuid, groupGuid }) => {
   return tasks.map((task) => {
+
+    const getTranslation = taskOrTaskGroup => {
+      return taskOrTaskGroup.languages.find(x => x.lang === language)
+    }
+    const taskTranslation = getTranslation(task.item)
+
     return (
       <ListItem
         key={task.guid}
         guid={task.guid}
-        title={task.item.title}
+        title={taskTranslation ? taskTranslation.title : task.item.title}
         itemType={ITEM_TYPES.TASK}
         ageGroupGuid={taskGroup.ageGroupGuid}
         language={language}
-        actionsComponent={actionTypes.openTaskActions}
+        actionsComponent={actionsComponent}
+        userGuid={userGuid}
+        groupGuid={groupGuid}
         showActions
       />
     )

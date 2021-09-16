@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import { X } from 'react-feather'
 import { useHistory, useParams } from 'react-router-dom'
 import Member from './Member'
+import { getTermInLanguage, determineLanguageFromUrl } from 'helpers'
 
 const StyledGroup = styled.div`
   height: 100%;
@@ -43,6 +44,7 @@ const Content = styled.div`
 
 const Group = () => {
   const history = useHistory()
+  const language = determineLanguageFromUrl(window.location)
   const groupsData = useSelector(state => state.user.userGroups)
   const generalTranslations = useSelector(state => state.translations.yleiset)
   const { groupId } = useParams()
@@ -63,11 +65,11 @@ const Group = () => {
         <CloseIcon onClick={() => history.push('/manage')} />
       </Header>
       <Content>
-        <h4>Ryhmänjohtajat</h4>
+        <h4><span>{getTermInLanguage(generalTranslations, 'group_leaders', language)}</span></h4>
         {groupLeaders.map(member => {
           return <Member key={member.memberId} member={member} />
         })}
-        <h4>Ryhmäläiset</h4>
+        <h4><span>{getTermInLanguage(generalTranslations, 'group_members', language)}</span></h4>
         {groupMembers.map(member => {
           return <Member key={member.memberId} member={member} />
         })}

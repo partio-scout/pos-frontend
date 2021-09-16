@@ -16,6 +16,7 @@ import ListItem from 'components/ListItem'
 import { ITEM_TYPES, COMPLETION_STATUS, AGE_GROUPS } from 'consts'
 import CompletedTasks from './CompletedTasks'
 import { getTaskGroupsWithChildTaskGroups } from '../../helpers/groupTasks'
+import { actionTypes } from 'components/Actions'
 
 const Background = styled.div`
   min-height: 100vh;
@@ -308,6 +309,7 @@ const Profile = () => {
                 language={language}
                 itemsByGuid={itemsByGuid}
                 taskGroupsWithChildTaskGroups={taskGroupsWithChildTaskGroups}
+                actionsComponent={actionTypes.openTaskActions}
               />
             )}
             {completedAgeGroups.map((ageGroup) => {
