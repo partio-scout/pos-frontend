@@ -8,7 +8,6 @@ import {
   AccordionItemButton,
   AccordionItemPanel,
 } from 'react-accessible-accordion'
-import { Check } from 'react-feather'
 import ListItem from 'components/ListItem'
 import { COMPLETION_STATUS, ITEM_TYPES } from 'consts'
 import { useSelector } from 'react-redux'
@@ -17,7 +16,7 @@ import { useDispatch } from 'react-redux'
 import { updateGroupMemberTask } from '../../redux/actionCreators'
 import { acceptGroupMemberTasks } from '../../api'
 import { determineLanguageFromUrl, getTermInLanguage } from '../../helpers'
-import { getMemberCompletedTasks } from '../../helpers/groupTasks'
+import GroupMember from './GroupMember'
 
 const StyledAcceptTasks = styled.div`
   height: 100%;
@@ -82,15 +81,14 @@ const StyledListItem = styled.div`
   overflow-x: scroll;
 `
 
-const StyledSubtitle = styled.span`
-  padding: 0.25rem;
-  color: ${({ theme }) => theme.color.subText};
-`
-
 const HorizontalLine = styled.hr`
   margin: 0 3 0.5rem;
 `
 
+const StyledListHeading = styled.h4`
+  padding: 0 0 0 0.25rem;
+  text-decoration: underline;
+`
 const initialList = []
 
 const getInitialCheckboxData = group =>
@@ -128,12 +126,12 @@ const Group = ({ group, isLast }) => {
   const taskGroup = itemsByGuid[taskGuid]
   const taskGroupTasks = taskGroup.item.tasks
 
-  function isCompleted(memberTasks) {
-    const completedTasks = Object.keys(memberTasks).filter(
-      guid => memberTasks[guid] === COMPLETION_STATUS.COMPLETED
+  function isGroupLeader(member) {
+    const groupLeaders = group.members.filter(
+      member => member.isGroupLeader === true
     )
-    const isCompleted = !!completedTasks.find(guid => guid === taskGuid)
-    return isCompleted
+    const isGroupLeader = groupLeaders.some(groupLeader => groupLeader['memberId'] === member.id )
+    return isGroupLeader
   }
 
   function updateGroup(group) {
@@ -161,6 +159,19 @@ const Group = ({ group, isLast }) => {
     }, [])
 
     setMemberIdList(editableList)
+  }
+
+  function handleCheckboxSelection(memberId, isChecked) {
+    const editableCheckboxData = checkboxData
+    editableCheckboxData.map(member => {
+      if (member.id === memberId && isChecked) {
+        member.selected = true
+      }
+      if (member.id === memberId && !isChecked) {
+        member.selected = false
+      }
+      return setCheckboxData(editableCheckboxData)
+    })
   }
 
   async function handleSubmit() {
@@ -207,19 +218,6 @@ const Group = ({ group, isLast }) => {
       console.log(e)
     }
     setMemberIdList(initialList)
-  }
-
-  function handleCheckboxSelection(memberId, isChecked) {
-    const editableCheckboxData = checkboxData
-    editableCheckboxData.map(member => {
-      if (member.id === memberId && isChecked) {
-        member.selected = true
-      }
-      if (member.id === memberId && !isChecked) {
-        member.selected = false
-      }
-      return setCheckboxData(editableCheckboxData)
-    })
   }
 
   const CHECK_STYLE = {
@@ -271,37 +269,38 @@ const Group = ({ group, isLast }) => {
                 />
               </StyledListItem>
               <HorizontalLine />
+              <StyledListHeading><span>{getTermInLanguage(generalTranslations, 'group_leaders', language)}</span></StyledListHeading>
               {checkboxData.map(member => {
                 return (
-                  <div key={member.id}>
-                    <StyledListItem>
-                      <label
-                        style={{ float: 'left', margin: 0 }}
-                        htmlFor={member.id}
-                      >
-                        {member.name}
-                      </label>
-                      {taskGroupTasks !== undefined && getMemberCompletedTasks(member, taskGroupTasks) === taskGroupTasks.length ? 
-                        <Check style={{ ...CHECK_STYLE, color: 'green' }} />
-                      : isCompleted(member.tasks) ? 
-                        <Check style={{ ...CHECK_STYLE, color: 'green' }} />
-                      : 
-                        <input
-                          id={member.id}
-                          style={CHECK_STYLE}
-                          type="checkbox"
-                          value={member.id}
-                          onChange={handleChange}
-                          checked={member.selected}
-                        />
-                      }
-                    </StyledListItem>
-                    {taskGroupTasks && (
-                      <StyledSubtitle>{getTermInLanguage(generalTranslations, 'done', language)}: {getMemberCompletedTasks(member, taskGroupTasks)} / {taskGroupTasks.length}</StyledSubtitle>
-                    )}
-                  </div>
+                isGroupLeader(member) && (
+                    <div key={member.id}>
+                      <GroupMember 
+                        member={member}
+                        taskGroupTasks={taskGroupTasks}
+                        language={language}
+                        taskGuid={taskGuid}
+                        handleChange={handleChange}
+                      />
+                    </div>
+                  )
                 )
-              })}
+              })} 
+              <StyledListHeading><span>{getTermInLanguage(generalTranslations, 'group_members', language)}</span></StyledListHeading>
+              {checkboxData.map(member => {
+                return (
+                  !isGroupLeader(member) && (
+                    <div key={member.id}>
+                      <GroupMember 
+                        member={member}
+                        taskGroupTasks={taskGroupTasks}
+                        language={language}
+                        taskGuid={taskGuid}
+                        handleChange={handleChange}
+                      />
+                    </div>
+                  )
+                )
+              })} 
             </Content>
           </AccordionItemPanel>
         </AccordionItem>
