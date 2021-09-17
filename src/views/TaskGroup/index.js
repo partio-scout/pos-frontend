@@ -144,8 +144,12 @@ const TaskGroup = () => {
         })}
         {item.tasks.length > 0 && details ?
           <>
-            <p>{details.ingress}</p>
-            <p>{details.content}</p>
+            {details.ingress && (
+              <p dangerouslySetInnerHTML={{ __html: details.ingress }} />
+            )}
+            {details.content && (
+              <p dangerouslySetInnerHTML={{ __html: details.content }} />
+            )}
             <h4><span>{getTermInLanguage(generalTranslations, 'mandatory_plural', language)}</span></h4>
             {mandatoryTasks.length > 0
               ? mandatoryTasks.map(task => {
