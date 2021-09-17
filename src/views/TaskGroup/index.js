@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import styled from 'styled-components'
+import striptags from 'striptags'
 import { useParams, useHistory } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import DetailPage from 'components/DetailPage'
@@ -13,7 +14,7 @@ import {
   getTermInLanguage,
   getTaskGroupStatus,
 } from 'helpers'
-import {ITEM_TYPES} from 'consts'
+import { ITEM_TYPES } from 'consts'
 
 const StyledDetailPage = styled(DetailPage)`
   display: grid;
@@ -30,22 +31,29 @@ const TaskGroup = () => {
   const { guid } = useParams()
   const history = useHistory()
   const language = determineLanguageFromUrl(window.location)
-  const userTasks = useSelector(state => state.tasks)
-  const user = useSelector(state => state.user)
-  const taskGroup = useSelector(state => state.itemsByGuid[guid])
+  const userTasks = useSelector((state) => state.tasks)
+  const user = useSelector((state) => state.user)
+  const taskGroup = useSelector((state) => state.itemsByGuid[guid])
   const activityTranslations = useSelector(
-    state => state.translations.aktiviteetin_ylakasite
+    (state) => state.translations.aktiviteetin_ylakasite
   )
-  const generalTranslations = useSelector(state => state.translations.yleiset)
-  const favourites = useSelector(state => state.favourites)
+  const generalTranslations = useSelector((state) => state.translations.yleiset)
+  const favourites = useSelector((state) => state.favourites)
 
-  const mandatoryTasksGuids = taskGroup.item.tasks.length > 0 ? useSelector(state => state.taskGroupRequirements.taskGroupRequirements[guid].mandatoryTasks) : []
+  const mandatoryTasksGuids =
+    taskGroup.item.tasks.length > 0
+      ? useSelector(
+          (state) =>
+            state.taskGroupRequirements.taskGroupRequirements[guid]
+              .mandatoryTasks
+        )
+      : []
   if (!taskGroup || !activityTranslations) {
     return null
   }
 
-  const getTranslation = taskOrTaskGroup => {
-    return taskOrTaskGroup.languages.find(x => x.lang === language)
+  const getTranslation = (taskOrTaskGroup) => {
+    return taskOrTaskGroup.languages.find((x) => x.lang === language)
   }
 
   const getTaskDetails = useCallback(async () => {
@@ -63,7 +71,7 @@ const TaskGroup = () => {
   const mandatoryTasks = []
   const optionalTasks = []
 
-  item.tasks.forEach(task => {
+  item.tasks.forEach((task) => {
     if (mandatoryTasksGuids.includes(task.guid)) {
       mandatoryTasks.push(task)
     } else {
@@ -71,7 +79,7 @@ const TaskGroup = () => {
     }
   })
 
-  const getTask = task => {
+  const getTask = (task) => {
     const taskTranslation = getTranslation(task)
     const status = userTasks[task.guid]
       ? userTasks[task.guid].toLowerCase()
@@ -98,7 +106,7 @@ const TaskGroup = () => {
       />
     ) : null
   }
- 
+
   return (
     <StyledDetailPage
       onBackClick={() =>
@@ -107,7 +115,7 @@ const TaskGroup = () => {
       title={taskGroupTranslation ? taskGroupTranslation.title : item.title}
     >
       <TaskList>
-        {item.taskgroups.map(subTaskGroup => {
+        {item.taskgroups.map((subTaskGroup) => {
           const tasksTerm =
             item.subtask_term && item.subtask_term.name
               ? getTermInLanguage(
@@ -142,30 +150,54 @@ const TaskGroup = () => {
             />
           )
         })}
-        {item.tasks.length > 0 && details ?
+        {item.tasks.length > 0 && details ? (
           <>
-            {details.ingress && (
-              <p dangerouslySetInnerHTML={{ __html: details.ingress }} />
-            )}
-            {details.content && (
-              <p dangerouslySetInnerHTML={{ __html: details.content }} />
-            )}
-            <h4><span>{getTermInLanguage(generalTranslations, 'mandatory_plural', language)}</span></h4>
-            {mandatoryTasks.length > 0
-              ? mandatoryTasks.map(task => {
+            {details.ingress && <p>{striptags(details.ingress)}</p>}
+            {details.content && <p>{striptags(details.content)}</p>}
+            <h4>
+              <span>
+                {getTermInLanguage(
+                  generalTranslations,
+                  'mandatory_plural',
+                  language
+                )}
+              </span>
+            </h4>
+            {mandatoryTasks.length > 0 ? (
+              mandatoryTasks.map((task) => {
                 return getTask(task)
               })
-              : <p><span>{getTermInLanguage(generalTranslations, 'no_mandatory_tasks', language)}</span></p>}
-            <h4><span>{getTermInLanguage(generalTranslations, 'optional_plural', language)}</span></h4>
-            {optionalTasks.length > 0
-              ? optionalTasks.map(task => {
+            ) : (
+              <p>
+                <span>
+                  {getTermInLanguage(
+                    generalTranslations,
+                    'no_mandatory_tasks',
+                    language
+                  )}
+                </span>
+              </p>
+            )}
+            <h4>
+              <span>
+                {getTermInLanguage(
+                  generalTranslations,
+                  'optional_plural',
+                  language
+                )}
+              </span>
+            </h4>
+            {optionalTasks.length > 0 ? (
+              optionalTasks.map((task) => {
                 return getTask(task)
               })
-              : <p>Ei valinnaisia tehtäviä</p>}
+            ) : (
+              <p>Ei valinnaisia tehtäviä</p>
+            )}
           </>
-          :
+        ) : (
           <></>
-        }
+        )}
       </TaskList>
     </StyledDetailPage>
   )
