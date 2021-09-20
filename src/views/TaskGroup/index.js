@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useCallback } from 'react'
 import styled from 'styled-components'
 import striptags from 'striptags'
 import { useParams, useHistory } from 'react-router-dom'
@@ -56,14 +56,14 @@ const TaskGroup = () => {
     return taskOrTaskGroup.languages.find((x) => x.lang === language)
   }
 
-  const getTaskDetails = useCallback(async () => {
+  const getTaskGroupDetails = useCallback(async () => {
     const res = await fetchTaskDetails(taskGroup.item.guid, language)
     setDetails(res)
   }, [taskGroup, language])
 
-  useEffect(() => {
-    getTaskDetails()
-  }, [getTaskDetails])
+  if (!details) {
+    getTaskGroupDetails()
+  }
 
   const { item } = taskGroup
   const taskGroupTranslation = getTranslation(item)
