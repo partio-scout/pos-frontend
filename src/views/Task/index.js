@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react'
 import styled, { keyframes } from 'styled-components'
 import { useParams, useHistory } from 'react-router-dom'
 import { useSelector } from 'react-redux'
+import striptags from 'striptags'
 import DetailPage from 'components/DetailPage'
 import Actions from 'components/Actions'
 import { fetchTaskDetails } from 'api'
@@ -63,22 +64,22 @@ const Task = () => {
   const { guid } = useParams()
   const history = useHistory()
   const language = determineLanguageFromUrl(window.location)
-  const task = useSelector(state => state.itemsByGuid[guid])
-  const user = useSelector(state => state.user)
-  const generalTranslations = useSelector(state => state.translations.yleiset)
+  const task = useSelector((state) => state.itemsByGuid[guid])
+  const user = useSelector((state) => state.user)
+  const generalTranslations = useSelector((state) => state.translations.yleiset)
   const [details, setDetails] = useState()
   const [suggestions, setSuggestions] = useState()
-  const favourites = useSelector(state =>
-    state.favourites.map(favourite => state.itemsByGuid[favourite])
+  const favourites = useSelector((state) =>
+    state.favourites.map((favourite) => state.itemsByGuid[favourite])
   )
-  const finder = favourite => task.item.guid === favourite.guid
+  const finder = (favourite) => task.item.guid === favourite.guid
   const isFavourite = !!favourites.find(finder)
   const isLoggedIn = user.loggedIn
 
   const getSuggestionDetails = useCallback(
-    async d => {
+    async (d) => {
       const suggestionsInLanguage = d.suggestions_details.find(
-        s => s.lang === language
+        (s) => s.lang === language
       )
       if (suggestionsInLanguage) {
         const res = await fetch(suggestionsInLanguage.details)
@@ -99,22 +100,20 @@ const Task = () => {
     getTaskDetails()
   }, [getTaskDetails])
 
-  const translations = task.item.languages.find(x => x.lang === language)
+  const translations = task.item.languages.find((x) => x.lang === language)
 
   const renderDetails = () => {
     if (!details || !generalTranslations) return null
     const { ingress, content } = details
     return (
       <DetailsContainer>
-        {content && (
-          <div dangerouslySetInnerHTML={{ __html: details.content }} />
-        )}
+        {content && <p>{striptags(details.content)}</p>}
         {ingress && (
           <>
             <SubHeading>
               {getTermInLanguage(generalTranslations, 'task_target', language)}
             </SubHeading>
-            <div dangerouslySetInnerHTML={{ __html: details.ingress }} />
+            <p>{striptags(details.ingress)}</p>
           </>
         )}
         {suggestions && (
@@ -122,7 +121,7 @@ const Task = () => {
             <SubHeading>
               {getTermInLanguage(generalTranslations, 'tips', language)}
             </SubHeading>
-            {suggestions.map(suggestion => (
+            {suggestions.map((suggestion) => (
               <div
                 key={suggestion.guid}
                 dangerouslySetInnerHTML={{ __html: suggestion.content }}
