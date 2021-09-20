@@ -51,12 +51,10 @@ const GroupMember = ({
         <label style={{ float: 'left', margin: 0 }} htmlFor={member.id}>
           {member.name}
         </label>
-        {taskGroupTasks &&
-        (getMemberCompletedTasks(member, taskGroupTasks) ===
-          taskGroupTasks.length ||
-          (!taskGroupTasks && isCompleted(member.tasks))) ? (
-          <Check style={{ ...CHECK_STYLE, color: 'green' }} />
-        ) : isCompleted(member.tasks) ? (
+        {(taskGroupTasks !== undefined &&
+          getMemberCompletedTasks(member, taskGroupTasks) ===
+            taskGroupTasks.length) ||
+        isCompleted(member.tasks) ? (
           <Check style={{ ...CHECK_STYLE, color: 'green' }} />
         ) : (
           <input
