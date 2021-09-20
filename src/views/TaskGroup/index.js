@@ -136,6 +136,7 @@ const TaskGroup = () => {
               )
             : null
           return (
+            user.userGroups.length > 0 ? (
             <TaskGroupItem
               key={subTaskGroup.guid}
               taskGroup={subTaskGroup}
@@ -148,6 +149,19 @@ const TaskGroup = () => {
               groupGuid={subTaskGroup.guid}
               showActions
             />
+            ):(
+              <TaskGroupItem
+              key={subTaskGroup.guid}
+              taskGroup={subTaskGroup}
+              ageGroupGuid={taskGroup.ageGroupGuid}
+              subTitle={status}
+              language={language}
+              tasksTerm={tasksTerm}
+              itemType={ITEM_TYPES.TASK_GROUP}
+              actionsComponent={actionTypes.taskGroupActions}
+              groupGuid={subTaskGroup.guid}
+            />
+            )
           )
         })}
         {item.tasks.length > 0 && details ? (
