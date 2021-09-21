@@ -202,7 +202,12 @@ const Group = ({ group, isLast }) => {
     try {
       await taskGroupTasks.map((task) => {
         const data = {
-          userIds: getUserIds(checkboxData, task.guid),
+          userIds: memberIdList.filter((memberId) => {
+            const cbData = checkboxData.find(
+              (cbData) => cbData.id === Number(memberId)
+            )
+            return cbData.tasks[task.guid] !== 'COMPLETED'
+          }),
         }
         acceptGroupMemberTasks(data, task.guid)
         for (let id of memberIdList) {
@@ -340,15 +345,6 @@ const Group = ({ group, isLast }) => {
       ) : null}
     </StyledAcceptTasks>
   )
-}
-
-const getUserIds = (checkboxData, taskGuid) => {
-  return checkboxData.reduce((acc, data) => {
-    if (data.tasks[taskGuid] !== 'COMPLETED') {
-      acc.push(data.id)
-    }
-    return acc
-  }, [])
 }
 
 export default Group
