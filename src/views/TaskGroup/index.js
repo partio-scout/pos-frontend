@@ -41,7 +41,7 @@ const TaskGroup = () => {
   const favourites = useSelector((state) => state.favourites)
 
   const mandatoryTasksGuids =
-    taskGroup.item.tasks.length > 0
+    taskGroup.item.tasks.length > 0 && !taskGroup.item.taskgroups
       ? useSelector(
           (state) =>
             state.taskGroupRequirements.taskGroupRequirements[guid]
@@ -115,6 +115,10 @@ const TaskGroup = () => {
       title={taskGroupTranslation ? taskGroupTranslation.title : item.title}
     >
       <TaskList>
+        {details && details.ingress && <p>{striptags(details.ingress)}</p>}
+        {details && details.content && details.content.length < 700 && (
+          <p>{striptags(details.content)}</p>
+        )}
         {item.taskgroups.map((subTaskGroup) => {
           const tasksTerm =
             item.subtask_term && item.subtask_term.name
@@ -135,8 +139,7 @@ const TaskGroup = () => {
                 getTermInLanguage(generalTranslations, 'done', language)
               )
             : null
-          return (
-            user.userGroups.length > 0 ? (
+          return user.userGroups.length > 0 ? (
             <TaskGroupItem
               key={subTaskGroup.guid}
               taskGroup={subTaskGroup}
@@ -149,8 +152,8 @@ const TaskGroup = () => {
               groupGuid={subTaskGroup.guid}
               showActions
             />
-            ):(
-              <TaskGroupItem
+          ) : (
+            <TaskGroupItem
               key={subTaskGroup.guid}
               taskGroup={subTaskGroup}
               ageGroupGuid={taskGroup.ageGroupGuid}
@@ -161,13 +164,10 @@ const TaskGroup = () => {
               actionsComponent={actionTypes.taskGroupActions}
               groupGuid={subTaskGroup.guid}
             />
-            )
           )
         })}
-        {item.tasks.length > 0 && details ? (
+        {item.tasks.length > 0 ? (
           <>
-            {details.ingress && <p>{striptags(details.ingress)}</p>}
-            {details.content && <p>{striptags(details.content)}</p>}
             <h4>
               <span>
                 {getTermInLanguage(
@@ -206,7 +206,15 @@ const TaskGroup = () => {
                 return getTask(task)
               })
             ) : (
-              <p>Ei valinnaisia tehtäviä</p>
+              <p>
+                <span>
+                  {getTermInLanguage(
+                    generalTranslations,
+                    'no_optional_tasks',
+                    language
+                  )}
+                </span>
+              </p>
             )}
           </>
         ) : (
