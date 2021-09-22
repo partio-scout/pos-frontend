@@ -1,6 +1,10 @@
 import React from 'react'
 import styled, { keyframes } from 'styled-components'
-import { StyledAcceptIcon, StyleActiveIcon } from '../TaskActionsIcons'
+import {
+  StyledAcceptIcon,
+  StyleActiveIcon,
+  StyledDeleteIcon,
+} from '../TaskActionsIcons'
 import { COMPLETION_STATUS } from '../../consts'
 import { useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
@@ -66,7 +70,7 @@ const ActivityItem = styled.div`
 
 const GroupLeaderActions = ({
   acceptCompletionRequest,
-  // removeMemberTask,
+  removeMemberTask,
   rejectMemberTask,
   onCancel,
   guid,
@@ -76,26 +80,28 @@ const GroupLeaderActions = ({
 
   const language = determineLanguageFromUrl(window.location)
 
-  const groupsData = useSelector(state => state.user.userGroups)
-  const generalTranslations = useSelector(state => state.translations.yleiset)
-  const apiTypeTranslations = useSelector(state => state.translations.api_type)
+  const groupsData = useSelector((state) => state.user.userGroups)
+  const generalTranslations = useSelector((state) => state.translations.yleiset)
+  const apiTypeTranslations = useSelector(
+    (state) => state.translations.api_type
+  )
 
   const group = groupsData.find(
-    groups => groups.id.toString() === groupId.toString()
+    (groups) => groups.id.toString() === groupId.toString()
   )
   const members = group.members
 
   const member = members.find(
-    members => members.memberId.toString() === memberId.toString()
+    (members) => members.memberId.toString() === memberId.toString()
   )
 
   const memberTasks = member.memberTasks
 
   const completedTasks = Object.keys(memberTasks).filter(
-    guid => memberTasks[guid] === COMPLETION_STATUS.COMPLETED
+    (guid) => memberTasks[guid] === COMPLETION_STATUS.COMPLETED
   )
 
-  const isCompleted = !!completedTasks.find(taskGuid => taskGuid === guid)
+  const isCompleted = !!completedTasks.find((taskGuid) => taskGuid === guid)
 
   return (
     <>
@@ -116,13 +122,13 @@ const GroupLeaderActions = ({
             <span>Siirrä takaisin työn alle</span>
           </ActivityItem>
         )}
-        {/* <ActivityItem onClick={removeMemberTask}>
+        <ActivityItem onClick={removeMemberTask}>
           <StyledDeleteIcon />
           <span>
             {getTermInLanguage(generalTranslations, 'delete', language)}{' '}
             {getTermInLanguage(apiTypeTranslations, 'task', language)}
           </span>
-        </ActivityItem> */}
+        </ActivityItem>
         <ActivityItem onClick={onCancel}>
           <span>
             {getTermInLanguage(generalTranslations, 'cancel', language)}
