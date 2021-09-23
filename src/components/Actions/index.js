@@ -7,7 +7,7 @@ import {
   postTaskFavourite,
   postMemberTaskEntry,
   deleteFavouriteTask,
-  // removeMemberTaskEntry,
+  removeMemberTaskEntry,
 } from 'api'
 import { COMPLETION_STATUS } from 'consts'
 import { useDispatch, useSelector } from 'react-redux'
@@ -18,7 +18,11 @@ import {
   updateGroupMemberTask,
   addFavourite as addFavouriteTask,
 } from 'redux/actionCreators'
-import { GroupLeaderActions, OpenTaskActions, TaskGroupActions } from 'components/TaskActions'
+import {
+  GroupLeaderActions,
+  OpenTaskActions,
+  TaskGroupActions,
+} from 'components/TaskActions'
 
 const Actions = ({
   guid,
@@ -30,28 +34,28 @@ const Actions = ({
   name,
 }) => {
   const [showActions, setShowActions] = useState(false)
-  const tasks = useSelector(state => state.tasks)
+  const tasks = useSelector((state) => state.tasks)
   const dispatch = useDispatch()
 
   const activeTasks = Object.keys(tasks).filter(
-    guid => tasks[guid] === COMPLETION_STATUS.ACTIVE
+    (guid) => tasks[guid] === COMPLETION_STATUS.ACTIVE
   )
 
   const completionRequestedTasks = Object.keys(tasks).filter(
-    guid => tasks[guid] === COMPLETION_STATUS.COMPLETION_REQUESTED
+    (guid) => tasks[guid] === COMPLETION_STATUS.COMPLETION_REQUESTED
   )
 
   const completedTasks = Object.keys(tasks).filter(
-    guid => tasks[guid] === COMPLETION_STATUS.COMPLETED
+    (guid) => tasks[guid] === COMPLETION_STATUS.COMPLETED
   )
 
-  const isActive = !!activeTasks.find(taskGuid => taskGuid === guid)
+  const isActive = !!activeTasks.find((taskGuid) => taskGuid === guid)
 
   const isCompletionRequested = !!completionRequestedTasks.find(
-    taskGuid => taskGuid === guid
+    (taskGuid) => taskGuid === guid
   )
 
-  const isCompleted = !!completedTasks.find(taskGuid => taskGuid === guid)
+  const isCompleted = !!completedTasks.find((taskGuid) => taskGuid === guid)
 
   const markTaskCompleted = async () => {
     try {
@@ -126,18 +130,25 @@ const Actions = ({
     }
   }
 
-  // const removeMemberTask = async () => {
-  //   try {
-  //     await removeMemberTaskEntry({
-  //       user_guid: userGuid,
-  //       task_guid: guid,
-  //     })
-  //   } catch (e) {
-  //     console.log(e)
-  //   }
-  //   setShowActions(false)
-  //   dispatch(removeMemberTaskEntry())
-  // }
+  const removeMemberTask = async () => {
+    try {
+      const update = {
+        task_guid: guid,
+        user_guid: userGuid,
+        completion_status: COMPLETION_STATUS.UNSTARTED,
+      }
+      setShowActions(false)
+      await removeMemberTaskEntry(update)
+      dispatch(
+        updateGroupMemberTask({
+          ...update,
+          groupGuid,
+        })
+      )
+    } catch (e) {
+      console.log(e)
+    }
+  }
 
   const addFavourite = async () => {
     try {
@@ -228,11 +239,11 @@ const Actions = ({
         className={className}
       />
       {showActions && (
-          <ActionsComponent
+        <ActionsComponent
           onCancel={() => setShowActions(false)}
           acceptCompletionRequest={acceptCompletionRequest}
           rejectMemberTask={rejectMemberTask}
-          // removeMemberTask={removeMemberTask}
+          removeMemberTask={removeMemberTask}
           toggleFavourite={() => toggleFavourite()}
           toggleActive={() => toggleActive()}
           toggleCompleted={() => toggleCompleted()}
@@ -240,13 +251,12 @@ const Actions = ({
           guid={guid}
           groupGuid={groupGuid}
         />
-      )
-      }
+      )}
     </>
   )
 }
 
-const getActionsComponent = actionsComponent => {
+const getActionsComponent = (actionsComponent) => {
   switch (actionsComponent) {
     case actionTypes.userActions:
       return TaskActions

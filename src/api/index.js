@@ -31,7 +31,7 @@ import {
   markNotificationsViewed,
 } from './notifications'
 
-export const postTaskEntry = async entry => {
+export const postTaskEntry = async (entry) => {
   const res = await fetch(`${API_URL}/task-entry`, {
     method: 'POST',
     body: JSON.stringify(entry),
@@ -43,7 +43,7 @@ export const postTaskEntry = async entry => {
   return await res.json()
 }
 
-export const postMemberTaskEntry = async entry => {
+export const postMemberTaskEntry = async (entry) => {
   const res = await fetch(`${API_URL}/member-entry`, {
     method: 'POST',
     body: JSON.stringify(entry),
@@ -55,9 +55,9 @@ export const postMemberTaskEntry = async entry => {
   return res.json()
 }
 
-export const removeMemberTaskEntry = async entry => {
+export const removeMemberTaskEntry = async (entry) => {
   const res = await fetch(`${API_URL}/member-entry`, {
-    method: 'DELETE',
+    method: 'POST',
     body: JSON.stringify(entry),
     headers: {
       'Content-Type': 'application/json',
@@ -99,7 +99,7 @@ export const fetchUserTasks = async () => {
   }
 }
 
-export const postTaskFavourite = async entry => {
+export const postTaskFavourite = async (entry) => {
   const res = await fetch(`${API_URL}/favourite`, {
     method: 'POST',
     body: JSON.stringify(entry),
@@ -111,7 +111,7 @@ export const postTaskFavourite = async entry => {
   return await res.json()
 }
 
-export const deleteFavouriteTask = async entry => {
+export const deleteFavouriteTask = async (entry) => {
   const res = await fetch(`${API_URL}/favourite/${entry.task_guid}`, {
     method: 'DELETE',
     headers: {
@@ -122,7 +122,7 @@ export const deleteFavouriteTask = async entry => {
   return await res.json()
 }
 
-export const deleteActiveTask = async entry => {
+export const deleteActiveTask = async (entry) => {
   const res = await fetch(`${API_URL}/active/${entry.task_guid}`, {
     method: 'DELETE',
     headers: {
@@ -146,7 +146,7 @@ export const fetchFavourites = async () => {
       return []
     }
     const data = await res.json()
-    const favourites = data.map(favourite => favourite.task_guid)
+    const favourites = data.map((favourite) => favourite.task_guid)
     return favourites
   } catch (error) {
     console.log('error fetching favourites', error)
