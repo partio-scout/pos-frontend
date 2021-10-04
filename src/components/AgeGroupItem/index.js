@@ -2,12 +2,13 @@ import React from 'react'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 import {
-  getAgeGroupTitleWithoutAges,
+  // getAgeGroupTitleWithoutAges,
   getTermInLanguage,
   getAgeGroupStatus,
-  ageGroupHasTranslatedTaskGroups,
+  // ageGroupHasTranslatedTaskGroups,
 } from 'helpers'
-import { getAgeGroupIcon } from 'graphics/ageGroups'
+// import { getAgeGroupIcon } from 'graphics/ageGroups'
+// import { ageGroups } from 'redux/reducers'
 
 const StyledAgeGroupItem = styled.div`
   width: 50vw;
@@ -53,36 +54,38 @@ const Status = styled.div`
 
 const AgeGroupItem = ({
   ageGroup,
-  itemsByGuid,
+  // itemsByGuid,
   language,
   translations,
   user,
   userTasks,
 }) => {
-  const hasTranslatedTaskGroups = ageGroupHasTranslatedTaskGroups(
-    ageGroup.item,
-    itemsByGuid,
-    language
-  )
+  // }) => {
+  //   const hasTranslatedTaskGroups = ageGroupHasTranslatedTaskGroups(
+  //     ageGroup.item,
+  //     itemsByGuid,
+  //     language
+  //   )
 
   // Hide the age group if it does not have any translated task groups
-  if (!hasTranslatedTaskGroups) return null
+  // if (!hasTranslatedTaskGroups) return null
 
-  const languageInfo = ageGroup.item.languages.find(x => x.lang === language)
+  // const languageInfo = ageGroup.localizations.find(x => x.locale === language)
+  console.log(ageGroup)
+  const status = user.loggedIn ? getAgeGroupStatus(ageGroup, userTasks) : null
 
-  const status = user.loggedIn
-    ? getAgeGroupStatus(ageGroup.item, userTasks)
-    : null
-
-  const icon = getAgeGroupIcon(ageGroup, userTasks, user.loggedIn)
+  const icon = ageGroup.logo.url
+  // const icon = getAgeGroupIcon(ageGroup, userTasks, user.loggedIn)
   return (
     <StyledAgeGroupItem>
       <AgeGroupLink to={`/guid/${ageGroup.guid}?lang=${language}`}>
         <AgeGroupIllustration alt={ageGroup.title} src={icon} />
         <h3 data-testid="title">
-          {getAgeGroupTitleWithoutAges(
-            languageInfo ? languageInfo.title : ageGroup.title
-          )}
+          {
+            /* {getAgeGroupTitleWithoutAges( */
+            // languageInfo ? languageInfo.title : ageGroup.title
+            ageGroup.title
+          }
         </h3>
         {status && (
           <>

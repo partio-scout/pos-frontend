@@ -1,11 +1,12 @@
 // CONTENT (Partio API)
+import { PARTIO_API_URL } from './variables'
+
 export const fetchAllContent = async () => {
-  const res = await fetch(process.env.REACT_APP_PARTIO_API_URL)
-  const data = await res.json()
-  const programData = data.program[0]
-
-  const { agegroups: ageGroups } = programData
-
+  const res = await fetch(`${PARTIO_API_URL}/age-groups/`)
+  const ageGroups = await res.json()
+  // const programData = data.program[0]
+  // const { agegroups: ageGroups } = programData
+  console.log('a', ageGroups)
   return ageGroups
 }
 

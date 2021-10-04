@@ -126,6 +126,7 @@ const Profile = () => {
   const favourites = useSelector((state) =>
     state.favourites.map((favourite) => state.itemsByGuid[favourite])
   )
+  console.log(ageGroups, 'fff')
 
   const activityTranslations = useSelector(
     (state) => state.translations.aktiviteetin_ylakasite
@@ -153,13 +154,14 @@ const Profile = () => {
   )
 
   const completedAgeGroups = ageGroups
+
     .filter((ageGroup) => {
-      const items = itemsByGuid[ageGroup.guid]
+      const items = itemsByGuid[ageGroup.id]
       const ageGroupItem = items && items.item
       const isAgeGroupCompleted = getAgeGroupCompletion(ageGroupItem, userTasks)
 
       if (isAgeGroupCompleted) {
-        const ageGroupTasks = getAgeGroupTasks(itemsByGuid[ageGroup.guid].item)
+        const ageGroupTasks = getAgeGroupTasks(ageGroup)
         ageGroupTasks.mandatory.forEach((task) => {
           const taskIndex = completedTasks.indexOf(task)
           if (taskIndex > -1) {
@@ -249,7 +251,9 @@ const Profile = () => {
                         : favourite.item.title
                     }
                     subTitle={
-                      parentTranslation ? parentTranslation.title : parent.item.title
+                      parentTranslation
+                        ? parentTranslation.title
+                        : parent.item.title
                     }
                     language={language}
                     itemType={ITEM_TYPES.TASK}
@@ -277,7 +281,7 @@ const Profile = () => {
               const taskTranslation = getTranslation(task.item)
               const parent = itemsByGuid[task.parentGuid]
               const parentTranslation = getTranslation(parent.item)
-              const finder = favourite => taskGuid === favourite.guid
+              const finder = (favourite) => taskGuid === favourite.guid
               const isFavourite = !!favourites.find(finder)
 
               return (
@@ -289,7 +293,9 @@ const Profile = () => {
                     taskTranslation ? taskTranslation.title : task.item.title
                   }
                   subTitle={
-                    parentTranslation ? parentTranslation.title : parent.item.title
+                    parentTranslation
+                      ? parentTranslation.title
+                      : parent.item.title
                   }
                   language={language}
                   itemType={ITEM_TYPES.TASK}

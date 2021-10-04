@@ -1,22 +1,26 @@
 import { setAgeGroups } from './ageGroups'
 import { setItemsByGuid } from './itemsByGuid'
-import { deepFlatten, getTaskGroupRequirements } from 'helpers'
-import { setTaskGroupRequirements } from './taskGroupRequirements'
+import { deepFlatten } from 'helpers'
+// getTaskGroupRequirements
+// import { setTaskGroupRequirements } from './taskGroupRequirements'
 
-export const setInitialData = ageGroups => dispatch => {
+export const setInitialData = (ageGroups) => (dispatch) => {
+  console.log('agegorups', ageGroups)
   dispatch(
     setAgeGroups(
-      ageGroups.map(ageGroup => {
-        const { taskgroups, ...rest } = ageGroup // eslint-disable-line
+      ageGroups.map((ageGroup) => {
+        const { activity_groups, ...rest } = ageGroup // eslint-disable-line
         return rest
       })
     )
   )
 
   dispatch(
-    setItemsByGuid(deepFlatten(ageGroups.sort((a, b) => a.order - b.order)))
+    setItemsByGuid(
+      deepFlatten(ageGroups.sort((a, b) => a.minimum_age - b.minimum_age))
+    )
   )
 
-  const taskGroupRequirements = getTaskGroupRequirements(ageGroups)
-  dispatch(setTaskGroupRequirements(taskGroupRequirements))
+  // const taskGroupRequirements = getTaskGroupRequirements(ageGroups)
+  // dispatch(setTaskGroupRequirements(taskGroupRequirements))
 }

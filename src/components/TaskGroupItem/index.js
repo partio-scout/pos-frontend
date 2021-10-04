@@ -1,14 +1,14 @@
 import React from 'react'
 import ListItem from 'components/ListItem'
 import taskGroupGraphics from 'graphics/taskGroups'
-import { getTranslatedTaskGroups, getTranslatedTasks } from '../../helpers'
+// import { getTranslatedTasks } from '../../helpers'
 import { useSelector } from 'react-redux'
 
 export const getSubTaskGroupsOrTasksText = (
   tasksTerm,
   taskGroup,
-  language,
-  itemsByGuid,
+  // language,
+  // itemsByGuid,
   translated
 ) => {
   const term = tasksTerm || 'aktiviteettia'
@@ -30,24 +30,25 @@ const TaskGroupItem = ({
   itemType,
   actionsComponent,
   showActions,
-  groupGuid
+  groupGuid,
 }) => {
-  const itemsByGuid = useSelector(state => state.itemsByGuid)
-  const languageInfo = taskGroup.languages.find(x => x.lang === language)
-  const translatedSubTaskGroups = getTranslatedTaskGroups(
-    taskGroup.taskgroups,
-    itemsByGuid,
-    language
-  )
-  const translatedTasks = getTranslatedTasks(taskGroup.tasks, language)
-  const translated = {
-    tasks: translatedTasks,
-    subGroups: translatedSubTaskGroups,
-  }
-  const hasTasksOrSubGroups =
-    translated.tasks.length > 0 || translated.subGroups.length > 0
+  const itemsByGuid = useSelector((state) => state.itemsByGuid)
+  const languageInfo = taskGroup.loca.find((x) => x.lang === language)
+  // const translatedSubTaskGroups = getTranslatedTaskGroups(
+  //   taskGroup.taskgroups,
+  //   itemsByGuid,
+  //   language
+  // )
+  // const translatedTasks = getTranslatedTasks(taskGroup.tasks, language)
+  // const translated = {
+  //   tasks: translatedTasks,
+  //   subGroups: translatedSubTaskGroups,
+  // }
+  // const hasTasksOrSubGroups =
+  //   translated.tasks.length > 0 || translated.subGroups.length > 0
 
-  return languageInfo && languageInfo.title && hasTasksOrSubGroups ? (
+  // return languageInfo && languageInfo.title && hasTasksOrSubGroups ? (
+  return (
     <ListItem
       guid={taskGroup.guid}
       showActions={showActions}
@@ -62,14 +63,14 @@ const TaskGroupItem = ({
           tasksTerm,
           taskGroup,
           language,
-          itemsByGuid,
-          translated
+          itemsByGuid
+          // translated
         )
       }
       language={language}
       icon={taskGroupGraphics[`Group${taskGroup.guid}`] || null}
     />
-  ) : null
+  )
 }
 
 export default TaskGroupItem

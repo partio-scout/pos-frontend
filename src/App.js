@@ -44,22 +44,22 @@ const App = () => {
   const dispatch = useDispatch()
 
   useEffect(() => {
-    fetchAllContent().then(ageGroups => {
+    fetchAllContent().then((ageGroups) => {
       dispatch(setInitialData(ageGroups))
     })
-    fetchTranslations().then(translations =>
+    fetchTranslations().then((translations) =>
       dispatch(setTranslations(translations))
     )
 
-    fetchUser().then(user => {
+    fetchUser().then((user) => {
       if (Object.keys(user).length > 0) {
         dispatch(setUser({ ...user, loggedIn: true }))
-        fetchFavourites().then(favourites =>
+        fetchFavourites().then((favourites) =>
           dispatch(setFavourites(favourites))
         )
-        fetchUserTasks().then(tasks => dispatch(setTasks(tasks)))
-        fetchUserGroups().then(groups => dispatch(setUserGroups(groups)))
-        fetchNotifications().then(notifications =>
+        fetchUserTasks().then((tasks) => dispatch(setTasks(tasks)))
+        fetchUserGroups().then((groups) => dispatch(setUserGroups(groups)))
+        fetchNotifications().then((notifications) =>
           dispatch(setNotifications(notifications))
         )
       }
@@ -92,9 +92,9 @@ const App = () => {
 }
 
 const ComponentToRender = () => {
-  const { guid } = useParams()
-  const item = useSelector(state => state.itemsByGuid[guid])
-
+  console.log('täääää')
+  const { id } = useParams()
+  const item = useSelector((state) => state.itemsByGuid[id])
   switch (item && item.type) {
     case ITEM_TYPES.AGE_GROUP:
       return <AgeGroup />
@@ -121,7 +121,7 @@ const TransitioningRoutes = ({ children }) => {
   const direction = useRef(1)
   const location = useLocation()
   const guid = location.pathname.split('/').pop()
-  const item = useSelector(state => state.itemsByGuid[guid])
+  const item = useSelector((state) => state.itemsByGuid[guid])
 
   useEffect(() => {
     let nextDepth = -1
@@ -138,7 +138,7 @@ const TransitioningRoutes = ({ children }) => {
     }
   }, [location.pathname, item])
 
-  const transitions = useTransition(location, location => location.pathname, {
+  const transitions = useTransition(location, (location) => location.pathname, {
     from: { p: 1 },
     enter: { p: 0 },
     leave: { p: -1 },
@@ -146,7 +146,7 @@ const TransitioningRoutes = ({ children }) => {
 
   return transitions.map(({ item, props, key }) => {
     const style = {
-      transform: props.p.interpolate(p => {
+      transform: props.p.interpolate((p) => {
         if (
           (depth.current === -1 && direction.current !== 1) ||
           (depth.current === 0 && direction.current === 1)

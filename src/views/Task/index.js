@@ -69,13 +69,14 @@ const Task = () => {
   const generalTranslations = useSelector((state) => state.translations.yleiset)
   const [details, setDetails] = useState()
   const [suggestions, setSuggestions] = useState()
-  const favourites = useSelector((state) =>
-    state.favourites.map((favourite) => state.itemsByGuid[favourite])
-  )
-  const finder = (favourite) => task.item.guid === favourite.guid
-  const isFavourite = !!favourites.find(finder)
+  console.log(guid)
+  // const favourites = useSelector((state) =>
+  //   state.favourites.map((favourite) => state.itemsByGuid[favourite])
+  // )
+  // const finder = (favourite) => task.item.guid === favourite.guid
+  // const isFavourite = !!favourites.find(finder)
   const isLoggedIn = user.loggedIn
-
+  console.log('task', task)
   const getSuggestionDetails = useCallback(
     async (d) => {
       const suggestionsInLanguage = d.suggestions_details.find(
@@ -100,7 +101,7 @@ const Task = () => {
     getTaskDetails()
   }, [getTaskDetails])
 
-  const translations = task.item.languages.find((x) => x.lang === language)
+  // const translations = task.item.languages.find((x) => x.lang === language)
 
   const renderDetails = () => {
     if (!details || !generalTranslations) return null
@@ -137,13 +138,14 @@ const Task = () => {
   return (
     <StyledDetailPage
       onBackClick={() => history.goBack()}
-      title={translations ? translations.title : task.item.title}
+      title={task.item.title}
+      // translations ? translations.title :
     >
       {isLoggedIn && (
         <StyledActions
           guid={task.guid}
           itemType={task.type}
-          isFavourite={isFavourite}
+          // isFavourite={isFavourite}
         />
       )}
       {renderDetails()}

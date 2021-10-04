@@ -28,8 +28,10 @@ const Container = styled.div`
     background: ${({ activeIndex = 0, theme }) =>
       `linear-gradient(
       to bottom,
-      ${theme.color.ageGroupGradientsDark[activeIndex] ||
-        theme.color.ageGroupGradientsDark.default},
+      ${
+        theme.color.ageGroupGradientsDark[activeIndex] ||
+        theme.color.ageGroupGradientsDark.default
+      },
       rgba(0, 0, 0, 0)
     );`};
   }
@@ -63,25 +65,25 @@ const AgeGroups = ({ theme }) => {
   window.addEventListener('scroll', () =>
     console.log('WINDOW SCROLL --- WHOOP WHOOP')
   )
-  const ageGroups = useSelector(state => state.ageGroups)
-  const selectedAgeGroup = useSelector(state => state.selectedAgeGroup)
-  const user = useSelector(state => state.user)
-  const userTasks = useSelector(state => state.tasks)
+  const ageGroups = useSelector((state) => state.ageGroups)
+  const selectedAgeGroup = useSelector((state) => state.selectedAgeGroup)
+  const user = useSelector((state) => state.user)
+  const userTasks = useSelector((state) => state.tasks)
 
   const [activeIndex, setActiveIndex] = useState(0)
   const language = determineLanguageFromUrl(window.location)
-  const generalTranslations = useSelector(state => state.translations.yleiset)
+  const generalTranslations = useSelector((state) => state.translations.yleiset)
   const languages = ['fi', 'sv', 'en', 'smn']
 
-  const itemsByGuid = useSelector(state => state.itemsByGuid)
+  const itemsByGuid = useSelector((state) => state.itemsByGuid)
 
   const contentRef = useRef()
   const containerRef = useRef()
 
   const getAgeGroupCenterPositions = useCallback(
-    content =>
+    (content) =>
       [...content.children].map(
-        child => child.clientWidth / 2 + child.offsetLeft
+        (child) => child.clientWidth / 2 + child.offsetLeft
       ),
     []
   )
@@ -112,7 +114,7 @@ const AgeGroups = ({ theme }) => {
       const ageGroupCenterPositions = getAgeGroupCenterPositions(content)
       const xPosition = container.scrollLeft
       const nextActiveIndex = ageGroupCenterPositions.indexOf(
-        ageGroupCenterPositions.find(x => x >= xPosition)
+        ageGroupCenterPositions.find((x) => x >= xPosition)
       )
       setActiveIndex(nextActiveIndex < 0 ? 0 : nextActiveIndex)
     }
@@ -132,7 +134,7 @@ const AgeGroups = ({ theme }) => {
 
   //TODO: get agegroup from user if set
   const activeAgeGroup = ageGroups.find(
-    ageGroup => ageGroup.order === activeIndex
+    (ageGroup) => ageGroup.order === activeIndex
   )
   const activeAgeGroupGuid = activeAgeGroup ? activeAgeGroup.guid : ''
 
@@ -148,7 +150,7 @@ const AgeGroups = ({ theme }) => {
             return (
               <AgeGroupItem
                 key={i}
-                ageGroup={itemsByGuid[ageGroup.guid]}
+                ageGroup={itemsByGuid[ageGroup.id]}
                 itemsByGuid={itemsByGuid}
                 language={language}
                 user={user}

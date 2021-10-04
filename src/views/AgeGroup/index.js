@@ -6,11 +6,11 @@ import { X } from 'react-feather'
 import TaskGroupItem from 'components/TaskGroupItem'
 import { setSelectedAgeGroup } from 'redux/actionCreators'
 import {
-  getAgeGroupTitleWithoutAges,
+  // getAgeGroupTitleWithoutAges,
   determineLanguageFromUrl,
   getTermInLanguage,
 } from 'helpers'
-import { getAgeGroupIcon } from 'graphics/ageGroups'
+// import { getAgeGroupIcon } from 'graphics/ageGroups'
 
 const Background = styled.div`
   min-height: 100vh;
@@ -28,8 +28,10 @@ const Background = styled.div`
     background: ${({ theme, ageGroupGuid }) => `
     linear-gradient(
       to bottom,
-      ${theme.color.ageGroupGradients[ageGroupGuid] ||
-        theme.color.ageGroupGradients.default},
+      ${
+        theme.color.ageGroupGradients[ageGroupGuid] ||
+        theme.color.ageGroupGradients.default
+      },
       ${theme.color.gradientDark}
     );
     `};
@@ -95,16 +97,16 @@ const MainSymbol = styled.img`
 const AgeGroup = () => {
   const history = useHistory()
   const dispatch = useDispatch()
-  const itemsByGuid = useSelector(state => state.itemsByGuid)
-  const userTasks = useSelector(state => state.tasks)
-  const user = useSelector(state => state.user)
+  const itemsByGuid = useSelector((state) => state.itemsByGuid)
+  // const userTasks = useSelector(state => state.tasks)
+  // const user = useSelector(state => state.user)
   const groupHeadingTranslations = useSelector(
-    state => state.translations.aktiviteettipaketin_ylakasite
+    (state) => state.translations.aktiviteettipaketin_ylakasite
   )
   const activityTranslations = useSelector(
-    state => state.translations.aktiviteetin_ylakasite
+    (state) => state.translations.aktiviteetin_ylakasite
   )
-  const generalTranslations = useSelector(state => state.translations.yleiset)
+  const generalTranslations = useSelector((state) => state.translations.yleiset)
 
   const { guid } = useParams()
   const language = determineLanguageFromUrl(window.location)
@@ -121,7 +123,7 @@ const AgeGroup = () => {
     return null
   }
   const ageGroupGuid = ageGroup ? ageGroup.guid : 'default'
-  const languageInfo = ageGroup.languages.find(x => x.lang === language)
+  // const languageInfo = ageGroup.languages.find(x => x.lang === language)
 
   const getTerm = (title, subtask_term) => {
     let term = getTermInLanguage(
@@ -140,7 +142,7 @@ const AgeGroup = () => {
     return term
   }
 
-  const getTitle = subtask_term => {
+  const getTitle = (subtask_term) => {
     let title = getTermInLanguage(
       groupHeadingTranslations,
       `${subtask_term}_plural`,
@@ -160,18 +162,12 @@ const AgeGroup = () => {
           <X onClick={() => history.push(`/?lang=${language}`)} />
         </CloseIcon>
         <HeadingContent>
-          <MainSymbol
-            alt={ageGroup.title}
-            src={getAgeGroupIcon(
-              itemsByGuid[ageGroup.guid],
-              userTasks,
-              user.loggedIn
-            )}
-          />
+          <MainSymbol alt={ageGroup.title} src={ageGroup.logo.url} />
           <h3>
-            {getAgeGroupTitleWithoutAges(
-              languageInfo ? languageInfo.title : ageGroup.title
-            )}
+            {
+              // languageInfo ? languageInfo.title :
+              ageGroup.title
+            }
           </h3>
         </HeadingContent>
         <BodyContent>
@@ -179,7 +175,7 @@ const AgeGroup = () => {
           {ageGroup.taskgroups.length > 0 &&
             ageGroup.taskgroups
               .sort((a, b) => a.order - b.order)
-              .map(taskGroup => (
+              .map((taskGroup) => (
                 <TaskGroupItem
                   key={taskGroup.guid}
                   taskGroup={taskGroup}
