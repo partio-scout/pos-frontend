@@ -3,7 +3,12 @@ import styled from 'styled-components'
 import { useHistory } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import AgeGroupListItem from 'components/AgeGroupListItem'
-import { API_URL, fetchProfile } from 'api'
+import {
+  API_URL,
+  fetchActivityGroups,
+  fetchProfile,
+  fetchSingleActivityGroup,
+} from 'api'
 
 import { X } from 'react-feather'
 import {
@@ -126,7 +131,9 @@ const Profile = () => {
   const favourites = useSelector((state) =>
     state.favourites.map((favourite) => state.itemsByGuid[favourite])
   )
-  console.log(ageGroups, 'fff')
+
+  const ageGroupActivityGroups = fetchActivityGroups()
+  console.log('tämä', ageGroupActivityGroups)
 
   const activityTranslations = useSelector(
     (state) => state.translations.aktiviteetin_ylakasite
@@ -159,9 +166,10 @@ const Profile = () => {
       const items = itemsByGuid[ageGroup.id]
       const ageGroupItem = items && items.item
       const isAgeGroupCompleted = getAgeGroupCompletion(ageGroupItem, userTasks)
-
       if (isAgeGroupCompleted) {
-        const ageGroupTasks = getAgeGroupTasks(ageGroup)
+        const activityGroup = fetchSingleActivityGroup(ageGroup.id)
+        console.log(activityGroup)
+        const ageGroupTasks = getAgeGroupTasks(activityGroup)
         ageGroupTasks.mandatory.forEach((task) => {
           const taskIndex = completedTasks.indexOf(task)
           if (taskIndex > -1) {

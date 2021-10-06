@@ -11,6 +11,8 @@ import styled, { ThemeProvider } from 'styled-components'
 import { useTransition, animated } from 'react-spring'
 import {
   fetchAllContent,
+  fetchActivityGroups,
+  // fetchActivities,
   fetchTranslations,
   fetchFavourites,
   fetchUser,
@@ -26,18 +28,20 @@ import {
   setTasks,
   setUserGroups,
   setNotifications,
+  // setItemsByGuid,
 } from 'redux/actionCreators'
 import { GlobalStyle, theme } from 'styles'
 import AgeGroups from 'views/AgeGroups'
 import AgeGroup from 'views/AgeGroup'
-import TaskGroup from 'views/TaskGroup'
-import Task from 'views/Task'
+// import TaskGroup from 'views/TaskGroup'
+// import Task from 'views/Task'
 import Manage from 'views/Manage'
 import Profile from 'views/Profile'
 import Login from 'views/Login'
 import Group from 'views/Group'
 import Member from 'views/Member'
 import AcceptTasks from 'views/AcceptTasks'
+import { setActivityGroups } from 'redux/actionCreators/activityGroups'
 import { ITEM_TYPES } from 'consts'
 
 const App = () => {
@@ -50,6 +54,18 @@ const App = () => {
     fetchTranslations().then((translations) =>
       dispatch(setTranslations(translations))
     )
+    fetchActivityGroups().then((activityGroups) =>
+      dispatch(setActivityGroups(activityGroups))
+    )
+    // fetchActivities().then((activities) =>
+    //   dispatch(setItemsByGuid(
+    //     activities.map((activity) => {
+    //       const { ...rest } = activity
+    //       return rest
+    //     })
+    //     )
+    //   )
+    // )
 
     fetchUser().then((user) => {
       if (Object.keys(user).length > 0) {
@@ -74,7 +90,7 @@ const App = () => {
           <TransitioningRoutes>
             <Route path="/" exact component={ComponentToRender} />
             <Route path="/manage" component={Manage} />
-            <Route path="/guid/:guid" component={ComponentToRender} />
+            <Route path="/guid/:id" component={AgeGroup} />
             <Route path="/profile" component={Profile} />
             <Route path="/login" component={Login} />
             <Route exact path="/group/:groupId" component={Group} />
@@ -92,16 +108,15 @@ const App = () => {
 }
 
 const ComponentToRender = () => {
-  console.log('täääää')
   const { id } = useParams()
   const item = useSelector((state) => state.itemsByGuid[id])
   switch (item && item.type) {
     case ITEM_TYPES.AGE_GROUP:
       return <AgeGroup />
-    case ITEM_TYPES.TASK_GROUP:
-      return <TaskGroup />
-    case ITEM_TYPES.TASK:
-      return <Task />
+    //   case ITEM_TYPES.TASK_GROUP:
+    //     return <TaskGroup />
+    //   case ITEM_TYPES.TASK:
+    //     return <Task />
     default:
       return <AgeGroups />
   }

@@ -1,3 +1,4 @@
+import { fetchSingleActivityGroup } from 'api'
 import { ITEM_TYPES } from 'consts'
 
 export const determineLanguageFromUrl = (url) => {
@@ -26,7 +27,6 @@ export const getTermInLanguage = (translationGroup, termKey, language) => {
 }
 
 export const getItemType = (item) => {
-  console.log('i9tem', item)
   const { activity_groups, tasks } = item
   if ((activity_groups, tasks)) return ITEM_TYPES.TASK_GROUP
   if (activity_groups) return ITEM_TYPES.AGE_GROUP
@@ -34,7 +34,6 @@ export const getItemType = (item) => {
 }
 
 export const deepFlatten = (items) => {
-  console.log('items', items)
   const flattener = (items, depth = 0, parentGuid, id) => {
     // const CHILD_GROUPS = ['activity_groups', 'tasks']
 
@@ -50,8 +49,6 @@ export const deepFlatten = (items) => {
       type: getItemType(x),
       ageGroupGuid: depth === 0 ? x.id : id,
     }))
-
-    console.log('parsed', parsedItems)
 
     return [
       ...parsedItems,
@@ -89,7 +86,8 @@ export const getTaskGroupStatus = (taskGroup, userTasks, label) => {
   return `${label}: ${completedTasks} / ${taskGroup.tasks.length}`
 }
 
-export const getGroupTasks = (group) => {
+export const getGroupTasks = (groupId) => {
+  const group = fetchSingleActivityGroup(groupId)
   const taskTypes = {
     mandatory: [],
     optional: [],
@@ -121,9 +119,8 @@ export const getGroupTasks = (group) => {
 }
 
 export const getAgeGroupTasks = (ageGroup) => {
-  console.log('täää', ageGroup)
   return ageGroup.activity_groups
-    .map((group) => getGroupTasks(group))
+    .map((group) => getGroupTasks(group.id))
     .reduce(
       (acc, curr) => {
         acc.mandatory = acc.mandatory.concat(curr.mandatory)
@@ -221,19 +218,19 @@ export const getAgeGroupTasks = (ageGroup) => {
 // }
 
 export const getAgeGroupStatus = (ageGroup, userTasks) => {
-  console.log('status', ageGroup)
   const ageGroupTasks = getAgeGroupTasks(ageGroup)
-  const completedMandatory = ageGroupTasks.mandatory.filter(
-    (task) => userTasks[task] === 'COMPLETED'
-  )
-  const completedOptional = ageGroupTasks.optional.filter(
-    (task) => userTasks[task] === 'COMPLETED'
-  )
+  console.log('tasks', ageGroupTasks, userTasks)
+  // const completedMandatory = ageGroupTasks.mandatory.filter(
+  //   (task) => userTasks[task] === 'COMPLETED'
+  // )
+  // const completedOptional = ageGroupTasks.optional.filter(
+  //   (task) => userTasks[task] === 'COMPLETED'
+  // )
 
-  return {
-    mandatory: `${completedMandatory.length} / ${ageGroupTasks.mandatory.length}`,
-    optional: `${completedOptional.length} / ${ageGroupTasks.optional.length}`,
-  }
+  // return {
+  //   mandatory: `${completedMandatory.length} / ${ageGroupTasks.mandatory.length}`,
+  //   optional: `${completedOptional.length} / ${ageGroupTasks.optional.length}`,
+  // }
 }
 
 export const getCompletedTaskGroups = (ageGroup, userTasks) => {
@@ -247,7 +244,6 @@ export const getCompletedTaskGroups = (ageGroup, userTasks) => {
 }
 
 export const getAgeGroupCompletion = (ageGroup, userTasks) => {
-  console.log('completion', ageGroup)
   const ageGroupTasks = getAgeGroupTasks(ageGroup)
   const completedMandatory = ageGroupTasks.mandatory.filter(
     (task) => userTasks[task] === 'COMPLETED'

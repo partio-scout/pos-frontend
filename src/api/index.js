@@ -4,10 +4,26 @@ import { PARTIO_API_URL } from './variables'
 export const fetchAllContent = async () => {
   const res = await fetch(`${PARTIO_API_URL}/age-groups/`)
   const ageGroups = await res.json()
-  // const programData = data.program[0]
-  // const { agegroups: ageGroups } = programData
-  console.log('a', ageGroups)
   return ageGroups
+}
+
+export const fetchActivityGroups = async () => {
+  const res = await fetch(`${PARTIO_API_URL}/activity-groups`)
+  const activityGroups = await res.json()
+  console.log('a', activityGroups)
+  return activityGroups
+}
+
+export const fetchSingleActivityGroup = async (id) => {
+  const res = await fetch(`${PARTIO_API_URL}/activity-groups/${id}`)
+  const activityGroup = await res.json()
+  return activityGroup
+}
+
+export const fetchActivities = async () => {
+  const res = await fetch(`${PARTIO_API_URL}/activities`)
+  const activities = await res.json()
+  return activities
 }
 
 export const fetchTaskDetails = async (guid, lang) => {

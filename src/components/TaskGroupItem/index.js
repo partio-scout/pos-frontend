@@ -1,31 +1,32 @@
 import React from 'react'
 import ListItem from 'components/ListItem'
 import taskGroupGraphics from 'graphics/taskGroups'
-// import { getTranslatedTasks } from '../../helpers'
 import { useSelector } from 'react-redux'
+// import { getTranslatedTasks } from '../../helpers'
+// import { useSelector } from 'react-redux'
 
-export const getSubTaskGroupsOrTasksText = (
-  tasksTerm,
-  taskGroup,
-  // language,
-  // itemsByGuid,
-  translated
-) => {
-  const term = tasksTerm || 'aktiviteettia'
-  const tasksExist = taskGroup.tasks.length > 0
-  const tasksGroupsExist = taskGroup.taskgroups.length > 0
-  const tasksText = tasksExist ? translated.tasks.length : ''
-  const taskGroupsText = tasksGroupsExist ? translated.subGroups.length : ''
-  return `${tasksText} ${
-    tasksExist && tasksGroupsExist ? '+' : ''
-  } ${taskGroupsText} ${term}`
-}
+// export const getSubTaskGroupsOrTasksText = (
+//   tasksTerm,
+//   taskGroup,
+//   // language,
+//   // itemsByGuid,
+//   translated
+// ) => {
+//   // const term = tasksTerm || 'aktiviteettia'
+//   // const tasksExist = taskGroup.tasks.length > 0
+//   // const tasksGroupsExist = taskGroup.taskgroups.length > 0
+//   // const tasksText = tasksExist ? translated.tasks.length : ''
+//   // const taskGroupsText = tasksGroupsExist ? translated.subGroups.length : ''
+//   // return `${tasksText} ${
+//   //   tasksExist && tasksGroupsExist ? '+' : ''
+//   // } ${taskGroupsText} ${term}`
+// }
 
 const TaskGroupItem = ({
   taskGroup,
   ageGroupGuid,
   language,
-  tasksTerm,
+  // tasksTerm,
   subTitle,
   itemType,
   actionsComponent,
@@ -33,7 +34,10 @@ const TaskGroupItem = ({
   groupGuid,
 }) => {
   const itemsByGuid = useSelector((state) => state.itemsByGuid)
-  const languageInfo = taskGroup.loca.find((x) => x.lang === language)
+  const activitygroup = itemsByGuid[taskGroup.id]
+  console.log(activitygroup)
+  // const itemsByGuid = useSelector((state) => state.itemsByGuid)
+  // const languageInfo = taskGroup.local.find((x) => x.lang === language)
   // const translatedSubTaskGroups = getTranslatedTaskGroups(
   //   taskGroup.taskgroups,
   //   itemsByGuid,
@@ -50,22 +54,23 @@ const TaskGroupItem = ({
   // return languageInfo && languageInfo.title && hasTasksOrSubGroups ? (
   return (
     <ListItem
-      guid={taskGroup.guid}
+      guid={taskGroup.id}
       showActions={showActions}
       itemType={itemType}
       actionsComponent={actionsComponent}
       ageGroupGuid={ageGroupGuid}
       groupGuid={groupGuid}
-      title={languageInfo.title}
+      // title={languageInfo.title}
       subTitle={
-        subTitle ||
-        getSubTaskGroupsOrTasksText(
-          tasksTerm,
-          taskGroup,
-          language,
-          itemsByGuid
-          // translated
-        )
+        subTitle
+        // ||
+        // getSubTaskGroupsOrTasksText(
+        //   tasksTerm,
+        //   taskGroup,
+        //   language,
+        //   itemsByGuid
+        //   // translated
+        // )
       }
       language={language}
       icon={taskGroupGraphics[`Group${taskGroup.guid}`] || null}

@@ -150,7 +150,7 @@ const AgeGroups = ({ theme }) => {
             return (
               <AgeGroupItem
                 key={i}
-                ageGroup={itemsByGuid[ageGroup.id]}
+                ageGroup={ageGroup}
                 itemsByGuid={itemsByGuid}
                 language={language}
                 user={user}

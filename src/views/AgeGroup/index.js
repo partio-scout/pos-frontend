@@ -8,7 +8,7 @@ import { setSelectedAgeGroup } from 'redux/actionCreators'
 import {
   // getAgeGroupTitleWithoutAges,
   determineLanguageFromUrl,
-  getTermInLanguage,
+  //getTermInLanguage,
 } from 'helpers'
 // import { getAgeGroupIcon } from 'graphics/ageGroups'
 
@@ -91,7 +91,6 @@ const MainSymbol = styled.img`
   width: 8rem;
   height: 8rem;
   margin: 0 auto;
-  border-radius: 50%;
 `
 
 const AgeGroup = () => {
@@ -103,16 +102,16 @@ const AgeGroup = () => {
   const groupHeadingTranslations = useSelector(
     (state) => state.translations.aktiviteettipaketin_ylakasite
   )
-  const activityTranslations = useSelector(
-    (state) => state.translations.aktiviteetin_ylakasite
-  )
-  const generalTranslations = useSelector((state) => state.translations.yleiset)
+  // const activityTranslations = useSelector(
+  //   (state) => state.translations.aktiviteetin_ylakasite
+  // )
+  // const generalTranslations = useSelector((state) => state.translations.yleiset)
 
-  const { guid } = useParams()
+  const { id } = useParams()
   const language = determineLanguageFromUrl(window.location)
-
-  const ageGroup = itemsByGuid[guid] ? itemsByGuid[guid].item : undefined
-
+  console.log('guid', itemsByGuid)
+  const ageGroup = itemsByGuid[id] ? itemsByGuid[id] : undefined
+  console.log('-------', ageGroup)
   useEffect(() => {
     if (ageGroup) {
       dispatch(setSelectedAgeGroup(ageGroup))
@@ -125,35 +124,35 @@ const AgeGroup = () => {
   const ageGroupGuid = ageGroup ? ageGroup.guid : 'default'
   // const languageInfo = ageGroup.languages.find(x => x.lang === language)
 
-  const getTerm = (title, subtask_term) => {
-    let term = getTermInLanguage(
-      activityTranslations,
-      `${subtask_term ? subtask_term.name : 'aktiviteetti'}_plural`,
-      language
-    )
+  // const getTerm = (title, subtask_term) => {
+  //   let term = getTermInLanguage(
+  //     activityTranslations,
+  //     `${subtask_term ? subtask_term.name : 'aktiviteetti'}_plural`,
+  //     language
+  //   )
 
-    if (title === 'Haasteet') {
-      term = getTermInLanguage(generalTranslations, 'challenges', language)
-    }
+  //   if (title === 'Haasteet') {
+  //     term = getTermInLanguage(generalTranslations, 'challenges', language)
+  //   }
 
-    if (term === 'askeleet' && title !== 'Tervetuloa' && title !== 'Siirtymä') {
-      term = getTermInLanguage(activityTranslations, 'paw_plural', language)
-    }
-    return term
-  }
+  //   if (term === 'askeleet' && title !== 'Tervetuloa' && title !== 'Siirtymä') {
+  //     term = getTermInLanguage(activityTranslations, 'paw_plural', language)
+  //   }
+  //   return term
+  // }
 
-  const getTitle = (subtask_term) => {
-    let title = getTermInLanguage(
-      groupHeadingTranslations,
-      `${subtask_term}_plural`,
-      language
-    )
+  // const getTitle = (subtask_term) => {
+  //   let title = getTermInLanguage(
+  //     groupHeadingTranslations,
+  //     `${subtask_term}_plural`,
+  //     language
+  //   )
 
-    if (subtask_term === 'askel') {
-      title = getTermInLanguage(activityTranslations, 'paw_plural', language)
-    }
-    return title
-  }
+  //   if (subtask_term === 'askel') {
+  //     title = getTermInLanguage(activityTranslations, 'paw_plural', language)
+  //   }
+  //   return title
+  // }
 
   return (
     <Background ageGroupGuid={ageGroupGuid}>
@@ -171,17 +170,18 @@ const AgeGroup = () => {
           </h3>
         </HeadingContent>
         <BodyContent>
-          <h4>{getTitle(ageGroup.subtaskgroup_term.name)}</h4>
-          {ageGroup.taskgroups.length > 0 &&
-            ageGroup.taskgroups
+          <h4>joo</h4>
+          {/* <h4>{getTitle(ageGroup.subactivitygroup_term)}</h4> */}
+          {ageGroup.activity_groups.length > 0 &&
+            ageGroup.activity_groups
               .sort((a, b) => a.order - b.order)
-              .map((taskGroup) => (
+              .map((activityGroup) => (
                 <TaskGroupItem
-                  key={taskGroup.guid}
-                  taskGroup={taskGroup}
-                  ageGroupGuid={ageGroupGuid}
+                  key={activityGroup.id}
+                  taskGroup={activityGroup}
+                  ageGroupGuid={ageGroup.id}
                   language={language}
-                  tasksTerm={getTerm(taskGroup.title, taskGroup.subtask_term)}
+                  //tasksTerm={getTerm(activityGroup.title, activityGroup.activitygroup_term)}
                 />
               ))}
         </BodyContent>

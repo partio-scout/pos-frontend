@@ -1,12 +1,11 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
-import {
-  // getAgeGroupTitleWithoutAges,
-  getTermInLanguage,
-  getAgeGroupStatus,
-  // ageGroupHasTranslatedTaskGroups,
-} from 'helpers'
+import // getAgeGroupTitleWithoutAges,
+// getTermInLanguage,
+// getAgeGroupStatus,
+// ageGroupHasTranslatedTaskGroups,
+'helpers'
 // import { getAgeGroupIcon } from 'graphics/ageGroups'
 // import { ageGroups } from 'redux/reducers'
 
@@ -48,17 +47,17 @@ const AgeGroupLink = styled(Link)`
 const AgeGroupIllustration = styled.img`
   width: 100%;
 `
-const Status = styled.div`
-  font-size: 0.875rem;
-`
+// const Status = styled.div`
+//   font-size: 0.875rem;
+// `
 
 const AgeGroupItem = ({
   ageGroup,
   // itemsByGuid,
   language,
-  translations,
-  user,
-  userTasks,
+  // translations,
+  // user,
+  // userTasks,
 }) => {
   // }) => {
   //   const hasTranslatedTaskGroups = ageGroupHasTranslatedTaskGroups(
@@ -71,14 +70,12 @@ const AgeGroupItem = ({
   // if (!hasTranslatedTaskGroups) return null
 
   // const languageInfo = ageGroup.localizations.find(x => x.locale === language)
-  console.log(ageGroup)
-  const status = user.loggedIn ? getAgeGroupStatus(ageGroup, userTasks) : null
-
-  const icon = ageGroup.logo.url
+  // const status = user.loggedIn ? getAgeGroupStatus(ageGroup, userTasks) : null
+  const icon = ageGroup.logo.formats.large.url
   // const icon = getAgeGroupIcon(ageGroup, userTasks, user.loggedIn)
   return (
     <StyledAgeGroupItem>
-      <AgeGroupLink to={`/guid/${ageGroup.guid}?lang=${language}`}>
+      <AgeGroupLink to={`/guid/${ageGroup.id}?lang=${language}`}>
         <AgeGroupIllustration alt={ageGroup.title} src={icon} />
         <h3 data-testid="title">
           {
@@ -87,7 +84,7 @@ const AgeGroupItem = ({
             ageGroup.title
           }
         </h3>
-        {status && (
+        {/* {status && (
           <>
             <Status>
               {`${getTermInLanguage(
@@ -102,7 +99,7 @@ const AgeGroupItem = ({
               language
             )} ${status.optional}`}</Status>
           </>
-        )}
+        )} */}
       </AgeGroupLink>
     </StyledAgeGroupItem>
   )
