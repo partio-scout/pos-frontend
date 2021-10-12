@@ -109,9 +109,7 @@ const AgeGroup = () => {
 
   const { id } = useParams()
   const language = determineLanguageFromUrl(window.location)
-  console.log('guid', itemsByGuid)
-  const ageGroup = itemsByGuid[id] ? itemsByGuid[id] : undefined
-  console.log('-------', ageGroup)
+  const ageGroup = itemsByGuid[id]
   useEffect(() => {
     if (ageGroup) {
       dispatch(setSelectedAgeGroup(ageGroup))
@@ -121,7 +119,8 @@ const AgeGroup = () => {
   if (!ageGroup || !groupHeadingTranslations) {
     return null
   }
-  const ageGroupGuid = ageGroup ? ageGroup.guid : 'default'
+  const ageGroupGuid = ageGroup ? ageGroup.wp_guid : 'default'
+  console.log('agegroup', ageGroup)
   // const languageInfo = ageGroup.languages.find(x => x.lang === language)
 
   // const getTerm = (title, subtask_term) => {
@@ -181,6 +180,7 @@ const AgeGroup = () => {
                   taskGroup={activityGroup}
                   ageGroupGuid={ageGroup.id}
                   language={language}
+                  icon={ageGroup.main_image.url}
                   //tasksTerm={getTerm(activityGroup.title, activityGroup.activitygroup_term)}
                 />
               ))}

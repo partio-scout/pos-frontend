@@ -134,9 +134,10 @@ const AgeGroups = ({ theme }) => {
 
   //TODO: get agegroup from user if set
   const activeAgeGroup = ageGroups.find(
-    (ageGroup) => ageGroup.order === activeIndex
+    (ageGroup) => ageGroups.indexOf(ageGroup) === activeIndex
   )
-  const activeAgeGroupGuid = activeAgeGroup ? activeAgeGroup.guid : ''
+
+  const activeAgeGroupGuid = activeAgeGroup ? activeAgeGroup.wp_guid : 'default'
 
   if (itemsByGuid.length === 0 || !generalTranslations) return null
 

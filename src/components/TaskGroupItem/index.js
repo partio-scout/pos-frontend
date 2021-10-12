@@ -1,7 +1,7 @@
 import React from 'react'
 import ListItem from 'components/ListItem'
-import taskGroupGraphics from 'graphics/taskGroups'
-import { useSelector } from 'react-redux'
+// import taskGroupGraphics from 'graphics/taskGroups'
+// import { useSelector } from 'react-redux'
 // import { getTranslatedTasks } from '../../helpers'
 // import { useSelector } from 'react-redux'
 
@@ -32,11 +32,11 @@ const TaskGroupItem = ({
   actionsComponent,
   showActions,
   groupGuid,
+  icon,
 }) => {
-  const itemsByGuid = useSelector((state) => state.itemsByGuid)
-  const activitygroup = itemsByGuid[taskGroup.id]
-  console.log(activitygroup)
   // const itemsByGuid = useSelector((state) => state.itemsByGuid)
+  // const activityGroupById = useSelector((state) => state.activityGroups)
+
   // const languageInfo = taskGroup.local.find((x) => x.lang === language)
   // const translatedSubTaskGroups = getTranslatedTaskGroups(
   //   taskGroup.taskgroups,
@@ -54,13 +54,13 @@ const TaskGroupItem = ({
   // return languageInfo && languageInfo.title && hasTasksOrSubGroups ? (
   return (
     <ListItem
-      guid={taskGroup.id}
+      guid={taskGroup.wp_guid}
       showActions={showActions}
       itemType={itemType}
       actionsComponent={actionsComponent}
       ageGroupGuid={ageGroupGuid}
       groupGuid={groupGuid}
-      // title={languageInfo.title}
+      title={taskGroup.title}
       subTitle={
         subTitle
         // ||
@@ -73,7 +73,7 @@ const TaskGroupItem = ({
         // )
       }
       language={language}
-      icon={taskGroupGraphics[`Group${taskGroup.guid}`] || null}
+      icon={icon}
     />
   )
 }

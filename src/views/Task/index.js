@@ -61,10 +61,11 @@ const StyledActions = styled(Actions)`
 `
 
 const Task = () => {
-  const { guid } = useParams()
+  const { id } = useParams()
   const history = useHistory()
   const language = determineLanguageFromUrl(window.location)
-  const task = useSelector((state) => state.itemsByGuid[guid])
+  const task = useSelector((state) => state.itemsByGuid[id])
+  console.log('task', task)
   const user = useSelector((state) => state.user)
   const generalTranslations = useSelector((state) => state.translations.yleiset)
   const [details, setDetails] = useState()

@@ -10,7 +10,6 @@ export const fetchAllContent = async () => {
 export const fetchActivityGroups = async () => {
   const res = await fetch(`${PARTIO_API_URL}/activity-groups`)
   const activityGroups = await res.json()
-  console.log('a', activityGroups)
   return activityGroups
 }
 

@@ -4,8 +4,12 @@ import {
 } from 'redux/actionTypes'
 
 export const activityGroups = (state = [], action) => {
+  // const activityGroupObj = {}
   switch (action.type) {
     case SET_ACTIVITY_GROUPS:
+      // action.payload.forEach(item => {
+      //   activityGroupObj[item.wp_guid] = item
+      // })
       return action.payload
     default:
       return state

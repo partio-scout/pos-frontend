@@ -5,11 +5,11 @@ import {
 } from 'redux/actionTypes'
 
 const setTask = (user, taskData) => {
-  const groupIndex = user.userGroups.findIndex(group => {
+  const groupIndex = user.userGroups.findIndex((group) => {
     return group.id === taskData.groupGuid
   })
   const memberIndex = user.userGroups[groupIndex].members.findIndex(
-    member => member.memberId === taskData.user_guid
+    (member) => member.memberId === taskData.user_guid
   )
 
   const tasks = Object.assign(

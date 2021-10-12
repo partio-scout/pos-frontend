@@ -1,20 +1,19 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
-import // getAgeGroupTitleWithoutAges,
-// getTermInLanguage,
-// getAgeGroupStatus,
-// ageGroupHasTranslatedTaskGroups,
-'helpers'
+// import {
+//   getAgeGroupTitleWithoutAges,
+//   getTermInLanguage,
+//   getAgeGroupStatus,
+//   ageGroupHasTranslatedTaskGroups,
+// } from 'helpers'
 // import { getAgeGroupIcon } from 'graphics/ageGroups'
-// import { ageGroups } from 'redux/reducers'
 
 const StyledAgeGroupItem = styled.div`
   width: 50vw;
   padding: 3rem 8vw 0;
   flex: 0 0 auto;
   scroll-snap-align: center;
-
   > a {
     height: 100%;
     display: flex;
@@ -25,11 +24,9 @@ const StyledAgeGroupItem = styled.div`
     text-decoration: none;
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   }
-
   :first-child {
     padding-left: 25vw;
   }
-
   :last-child {
     padding-right: 25vw;
   }
@@ -53,36 +50,37 @@ const AgeGroupIllustration = styled.img`
 
 const AgeGroupItem = ({
   ageGroup,
-  // itemsByGuid,
+  itemsByGuid,
   language,
-  // translations,
-  // user,
-  // userTasks,
+  translations,
+  user,
+  userTasks,
 }) => {
-  // }) => {
-  //   const hasTranslatedTaskGroups = ageGroupHasTranslatedTaskGroups(
-  //     ageGroup.item,
-  //     itemsByGuid,
-  //     language
-  //   )
+  // const hasTranslatedTaskGroups = ageGroupHasTranslatedTaskGroups(
+  //   ageGroup.item,
+  //   itemsByGuid,
+  //   language
+  // )
 
   // Hide the age group if it does not have any translated task groups
   // if (!hasTranslatedTaskGroups) return null
 
-  // const languageInfo = ageGroup.localizations.find(x => x.locale === language)
-  // const status = user.loggedIn ? getAgeGroupStatus(ageGroup, userTasks) : null
-  const icon = ageGroup.logo.formats.large.url
-  // const icon = getAgeGroupIcon(ageGroup, userTasks, user.loggedIn)
+  // const languageInfo = ageGroup.item.languages.find(x => x.lang === language)
+
+  // const status = user.loggedIn
+  //   ? getAgeGroupStatus(ageGroup.item, userTasks)
+  //   : null
+
+  const icon = ageGroup.logo.url
   return (
     <StyledAgeGroupItem>
-      <AgeGroupLink to={`/guid/${ageGroup.id}?lang=${language}`}>
+      <AgeGroupLink to={`/guid/${ageGroup.wp_guid}?lang=${language}`}>
         <AgeGroupIllustration alt={ageGroup.title} src={icon} />
         <h3 data-testid="title">
-          {
-            /* {getAgeGroupTitleWithoutAges( */
-            // languageInfo ? languageInfo.title : ageGroup.title
-            ageGroup.title
-          }
+          {ageGroup.title}
+          {/* {getAgeGroupTitleWithoutAges(
+            languageInfo ? languageInfo.title : ageGroup.title
+          )} */}
         </h3>
         {/* {status && (
           <>

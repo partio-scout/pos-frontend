@@ -1,7 +1,6 @@
 import { setAgeGroups } from './ageGroups'
 import { setItemsByGuid } from './itemsByGuid'
-// import { deepFlatten } from 'helpers'
-// getTaskGroupRequirements
+// import { getTaskGroupRequirements } from 'helpers'
 // import { setTaskGroupRequirements } from './taskGroupRequirements'
 
 export const setInitialData = (ageGroups) => (dispatch) => {

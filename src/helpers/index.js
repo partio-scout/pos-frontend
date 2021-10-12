@@ -27,14 +27,14 @@ export const getTermInLanguage = (translationGroup, termKey, language) => {
 }
 
 export const getItemType = (item) => {
-  const { activity_groups, tasks } = item
-  if ((activity_groups, tasks)) return ITEM_TYPES.TASK_GROUP
+  const { activity_groups, activities } = item
+  if (activities) return ITEM_TYPES.TASK_GROUP
   if (activity_groups) return ITEM_TYPES.AGE_GROUP
   return ITEM_TYPES.TASK
 }
 
 export const deepFlatten = (items) => {
-  const flattener = (items, depth = 0, parentGuid, id) => {
+  const flattener = (items) => {
     // const CHILD_GROUPS = ['activity_groups', 'tasks']
 
     if (!items) {
@@ -42,29 +42,26 @@ export const deepFlatten = (items) => {
     }
 
     const parsedItems = items.map((x) => ({
-      depth,
-      // age_group,
+      id: x.wp_guid,
       item: x,
-      id: x.id,
       type: getItemType(x),
-      ageGroupGuid: depth === 0 ? x.id : id,
     }))
 
     return [
       ...parsedItems,
-      ...items
-        // .map(x =>
-        //   CHILD_GROUPS.map(childrenKey =>
-        //     flattener(
-        //       x[childrenKey],
-        //       depth + 1,
-        //       x.guid,
-        //       depth === 0 ? x.guid : ageGroupGuid
-        //     )
-        //   )
-        // )
-        .flat()
-        .filter(Boolean),
+      // ...items
+      //   // .map(x =>
+      //   //   CHILD_GROUPS.map(childrenKey =>
+      //   //     flattener(
+      //   //       x[childrenKey],
+      //   //       depth + 1,
+      //   //       x.guid,
+      //   //       depth === 0 ? x.guid : ageGroupGuid
+      //   //     )
+      //   //   )
+      //   // )
+      // .flat()
+      // .filter(Boolean),
     ]
   }
 
@@ -280,28 +277,36 @@ export const getAgeGroupCompletion = (ageGroup, userTasks) => {
 // return accumulator
 // }
 
-export const getTaskGroupRequirements = (ageGroups) => {
-  console.log('agegroups', ageGroups)
-  // return ageGroups.reduce(
-  //   (value, ageGroup) => {
-  //     const taskGroupRequirements = ageGroup.activity_groups.reduce(
-  //       reduceTaskGroup,
-  //       { taskGroupRequirements: {}, mandatoryTasks: [] }
-  //     )
-  //     value = {
-  //       taskGroupRequirements: {
-  //         ...value.taskGroupRequirements,
-  //         ...taskGroupRequirements.taskGroupRequirements,
-  //       },
-  //       mandatoryTasks: [
-  //         ...value.mandatoryTasks,
-  //         ...taskGroupRequirements.mandatoryTasks,
-  //       ],
-  //     }
-  //     return value
-  //   },
-  //   { taskGroupRequirements: {}, mandatoryTasks: [] }
-  // )
-}
+// export const getTaskGroupRequirements = (ageGroups) => {
+//   console.log('agegroups', ageGroups)
+//   return ageGroups.reduce(
+//     (value, ageGroup) => {
+//       console.log('AGEGROUP', ageGroup)
+//       const taskGroupRequirements = ageGroup.activity_groups.map(activityGroup => {
+//         console.log(activityGroup)
+
+//         const activityGroupWithActivities = itemsByGuid[activityGroup.wp_guid]
+//         console.log('täää', activityGroupWithActivities)
+//       })
+//       return taskGroupRequirements
+//     })
+//       reduceTaskGroup,
+//       { taskGroupRequirements: {}, mandatoryTasks: [] }
+//     )
+//     value = {
+//       taskGroupRequirements: {
+//         ...value.taskGroupRequirements,
+//         ...taskGroupRequirements.taskGroupRequirements,
+//       },
+//       mandatoryTasks: [
+//         ...value.mandatoryTasks,
+//         ...taskGroupRequirements.mandatoryTasks,
+//       ],
+//     }
+//     return value
+//   },
+//   { taskGroupRequirements: {}, mandatoryTasks: [] }
+// )
+// }
 
 //TODO: favourites, activeTasks, completedTasks, isFavourite, isActive and isCompleted helpers

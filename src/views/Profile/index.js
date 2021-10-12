@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux'
 import AgeGroupListItem from 'components/AgeGroupListItem'
 import {
   API_URL,
-  fetchActivityGroups,
+  //fetchActivityGroups,
   fetchProfile,
   fetchSingleActivityGroup,
 } from 'api'
@@ -132,8 +132,7 @@ const Profile = () => {
     state.favourites.map((favourite) => state.itemsByGuid[favourite])
   )
 
-  const ageGroupActivityGroups = fetchActivityGroups()
-  console.log('tämä', ageGroupActivityGroups)
+  //const ageGroupActivityGroups = fetchActivityGroups()
 
   const activityTranslations = useSelector(
     (state) => state.translations.aktiviteetin_ylakasite
