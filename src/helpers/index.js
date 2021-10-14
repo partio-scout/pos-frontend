@@ -35,12 +35,11 @@ export const getItemType = (item) => {
 
 export const deepFlatten = (items) => {
   const flattener = (items) => {
-    // const CHILD_GROUPS = ['activity_groups', 'tasks']
+    const CHILD_GROUPS = ['activities']
 
     if (!items) {
       return
     }
-
     const parsedItems = items.map((x) => ({
       id: x.wp_guid,
       item: x,
@@ -49,26 +48,21 @@ export const deepFlatten = (items) => {
 
     return [
       ...parsedItems,
-      // ...items
-      //   // .map(x =>
-      //   //   CHILD_GROUPS.map(childrenKey =>
-      //   //     flattener(
-      //   //       x[childrenKey],
-      //   //       depth + 1,
-      //   //       x.guid,
-      //   //       depth === 0 ? x.guid : ageGroupGuid
-      //   //     )
-      //   //   )
-      //   // )
-      // .flat()
-      // .filter(Boolean),
+      ...items
+        .map((x) =>
+          CHILD_GROUPS.map((childrenKey) =>
+            flattener(x[childrenKey], x.wp_guid)
+          )
+        )
+        .flat()
+        .filter(Boolean),
     ]
   }
 
   return flattener(items)
     .flat(Infinity)
     .reduce((acc, item) => {
-      acc[item.guid] = item
+      acc[item.id] = item
       return acc
     }, {})
 }

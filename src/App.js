@@ -6,13 +6,13 @@ import {
   useLocation,
   useParams,
 } from 'react-router-dom'
+import { deepFlatten } from 'helpers'
 import { useDispatch, useSelector } from 'react-redux'
 import styled, { ThemeProvider } from 'styled-components'
 import { useTransition, animated } from 'react-spring'
 import {
   fetchAllContent,
   fetchActivityGroups,
-  fetchActivities,
   fetchTranslations,
   fetchFavourites,
   fetchUser,
@@ -43,7 +43,7 @@ import Group from 'views/Group'
 import Member from 'views/Member'
 import AcceptTasks from 'views/AcceptTasks'
 //import { setActivityGroups } from 'redux/actionCreators/activityGroups'
-// import { ITEM_TYPES } from 'consts'
+import { ITEM_TYPES } from 'consts'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -56,9 +56,8 @@ const App = () => {
       dispatch(setTranslations(translations))
     )
     fetchActivityGroups().then((activityGroups) =>
-      dispatch(setItemsByGuid(activityGroups))
+      dispatch(setItemsByGuid(deepFlatten(activityGroups)))
     )
-    fetchActivities().then((activities) => dispatch(setItemsByGuid(activities)))
     fetchUser().then((user) => {
       if (Object.keys(user).length > 0) {
         dispatch(setUser({ ...user, loggedIn: true }))
@@ -80,7 +79,7 @@ const App = () => {
         <>
           <GlobalStyle />
           <TransitioningRoutes>
-            <Route path="/" exact component={AgeGroups} />
+            <Route path="/" exact component={ComponentToRender} />
             <Route path="/manage" component={Manage} />
             <Route path="/guid/:id" component={ComponentToRender} />
             <Route path="/profile" component={Profile} />
@@ -102,15 +101,16 @@ const App = () => {
 const ComponentToRender = () => {
   const { id } = useParams()
   const item = useSelector((state) => state.itemsByGuid[id])
-  console.log('item', item)
-  if (item && item.activity_groups && !item.activities) {
-    return <AgeGroup />
-  } else if (item && item.activities) {
-    return <TaskGroup />
-  } else if (item && item.leader_tasks) {
-    return <Task />
-  } else {
-    return <AgeGroups />
+
+  switch (item && item.type) {
+    case ITEM_TYPES.AGE_GROUP:
+      return <AgeGroup />
+    case ITEM_TYPES.TASK_GROUP:
+      return <TaskGroup />
+    case ITEM_TYPES.TASK:
+      return <Task />
+    default:
+      return <AgeGroups />
   }
 }
 
