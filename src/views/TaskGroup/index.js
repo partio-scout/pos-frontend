@@ -2,7 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import striptags from 'striptags'
 import { useParams, useHistory } from 'react-router-dom'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import DetailPage from 'components/DetailPage'
 import ListItem from 'components/ListItem'
 // import TaskGroupItem from 'components/TaskGroupItem'
@@ -10,11 +10,14 @@ import ListItem from 'components/ListItem'
 // import { actionTypes } from 'components/Actions'
 
 import {
+  deepFlatten,
   determineLanguageFromUrl,
   getTermInLanguage,
   // getTaskGroupStatus,
 } from 'helpers'
 import { ITEM_TYPES } from 'consts'
+import { fetchActivity } from 'api'
+import { setItemsByGuid } from 'redux/actionCreators'
 
 const StyledDetailPage = styled(DetailPage)`
   display: grid;
@@ -34,7 +37,6 @@ const TaskGroup = () => {
   const userTasks = useSelector((state) => state.tasks)
   // const user = useSelector((state) => state.user)
   const taskGroup = useSelector((state) => state.itemsByGuid[id])
-  console.log('taskgroup', taskGroup)
   // const activityTranslations = useSelector(
   //   (state) => state.translations.aktiviteetin_ylakasite
   // )
@@ -82,6 +84,11 @@ const TaskGroup = () => {
   // })
 
   const getTask = (task) => {
+    const dispatch = useDispatch()
+
+    fetchActivity(task.wp_guid).then((activity) =>
+      dispatch(setItemsByGuid(deepFlatten(activity)))
+    )
     // const taskTranslation = getTranslation(task)
     const status = userTasks[task.wp_guid]
       ? userTasks[task.wp_guid].toLowerCase()
@@ -112,18 +119,20 @@ const TaskGroup = () => {
   return (
     <StyledDetailPage
       onBackClick={() =>
-        history.push(`/guid/${taskGroup.age_group.wp_guid}?lang=${language}`)
+        history.push(
+          `/guid/${taskGroup.item.age_group.wp_guid}?lang=${language}`
+        )
       }
       // taskGroupTranslation ? taskGroupTranslation.title :
       title={taskGroup.title}
     >
       <TaskList>
-        {taskGroup.ingress && <p>{striptags(taskGroup.ingress)}</p>}
-        {taskGroup.content && taskGroup.content.length < 700 && (
-          <p>{striptags(taskGroup.content)}</p>
+        {taskGroup.item.ingress && <p>{striptags(taskGroup.item.ingress)}</p>}
+        {taskGroup.item.content && taskGroup.item.content.length < 700 && (
+          <p>{striptags(taskGroup.item.content)}</p>
         )}
-        {taskGroup.activities.length > 0 &&
-          taskGroup.activities.map((task) => {
+        {taskGroup.item.activities.length > 0 &&
+          taskGroup.item.activities.map((task) => {
             return getTask(task)
           })}
       </TaskList>
