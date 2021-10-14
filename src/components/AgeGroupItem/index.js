@@ -50,11 +50,11 @@ const AgeGroupIllustration = styled.img`
 
 const AgeGroupItem = ({
   ageGroup,
-  itemsByGuid,
+  // itemsByGuid,
   language,
-  translations,
-  user,
-  userTasks,
+  // translations,
+  // user,
+  // userTasks,
 }) => {
   // const hasTranslatedTaskGroups = ageGroupHasTranslatedTaskGroups(
   //   ageGroup.item,

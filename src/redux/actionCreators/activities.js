@@ -1,8 +1,8 @@
 import { SET_ACTIVITIES } from 'redux/actionTypes'
 
-export const setFavourites = (favourites) => {
+export const setActivities = (activities) => {
   return {
-    type: SET_FAVOURITES,
-    payload: favourites,
+    type: SET_ACTIVITIES,
+    payload: activities,
   }
 }

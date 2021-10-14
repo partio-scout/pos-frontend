@@ -119,26 +119,26 @@ const AgeGroup = () => {
   if (!ageGroup || !groupHeadingTranslations) {
     return null
   }
-  const ageGroupGuid = ageGroup ? ageGroup.wp_guid : 'default'
-  console.log('agegroup', ageGroup)
+  const ageGroupGuid = ageGroup ? ageGroup.item.wp_guid : 'default'
   // const languageInfo = ageGroup.languages.find(x => x.lang === language)
+  const getTerm = (id) => {
+    const activityGroup = itemsByGuid[id]
+    let term = activityGroup ? activityGroup.item.activities.length : null
+    // let term = getTermInLanguage(
+    //   activityTranslations,
+    //   `${subtask_term ? subtask_term.name : 'aktiviteetti'}_plural`,
+    //   language
+    // )
 
-  // const getTerm = (title, subtask_term) => {
-  //   let term = getTermInLanguage(
-  //     activityTranslations,
-  //     `${subtask_term ? subtask_term.name : 'aktiviteetti'}_plural`,
-  //     language
-  //   )
+    // if (title === 'Haasteet') {
+    //   term = getTermInLanguage(generalTranslations, 'challenges', language)
+    // }
 
-  //   if (title === 'Haasteet') {
-  //     term = getTermInLanguage(generalTranslations, 'challenges', language)
-  //   }
-
-  //   if (term === 'askeleet' && title !== 'Tervetuloa' && title !== 'Siirtymä') {
-  //     term = getTermInLanguage(activityTranslations, 'paw_plural', language)
-  //   }
-  //   return term
-  // }
+    // if (term === 'askeleet' && title !== 'Tervetuloa' && title !== 'Siirtymä') {
+    //   term = getTermInLanguage(activityTranslations, 'paw_plural', language)
+    // }
+    return term
+  }
 
   // const getTitle = (subtask_term) => {
   //   let title = getTermInLanguage(
@@ -160,28 +160,29 @@ const AgeGroup = () => {
           <X onClick={() => history.push(`/?lang=${language}`)} />
         </CloseIcon>
         <HeadingContent>
-          <MainSymbol alt={ageGroup.title} src={ageGroup.logo.url} />
+          <MainSymbol alt={ageGroup.item.title} src={ageGroup.item.logo.url} />
           <h3>
             {
               // languageInfo ? languageInfo.title :
-              ageGroup.title
+              ageGroup.item.title
             }
           </h3>
         </HeadingContent>
         <BodyContent>
-          <h4>joo</h4>
+          <h4>Tähän tulee activitygroup term</h4>
           {/* <h4>{getTitle(ageGroup.subactivitygroup_term)}</h4> */}
-          {ageGroup.activity_groups.length > 0 &&
-            ageGroup.activity_groups
+          {ageGroup.item.activity_groups.length > 0 &&
+            ageGroup.item.activity_groups
               .sort((a, b) => a.order - b.order)
               .map((activityGroup) => (
                 <TaskGroupItem
                   key={activityGroup.id}
                   taskGroup={activityGroup}
-                  ageGroupGuid={ageGroup.id}
+                  ageGroupGuid={ageGroup.item.id}
                   language={language}
-                  icon={ageGroup.main_image.url}
-                  //tasksTerm={getTerm(activityGroup.title, activityGroup.activitygroup_term)}
+                  icon={ageGroup.item.main_image.url}
+                  subTitle={getTerm(activityGroup.wp_guid)}
+                  tasksTerm={getTerm(activityGroup.wp_guid)}
                 />
               ))}
         </BodyContent>
