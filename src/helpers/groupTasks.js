@@ -4,8 +4,10 @@
  * @param memberId
  */
 export const getMemberTasks = (groupId, memberId, groups) => {
-  const group = groups.find(group => group.id === Number(groupId) );
-  const member = group && group.members.find((member) => member.memberId === Number(memberId))
+  const group = groups.find((group) => group.id === Number(groupId))
+  const member =
+    group &&
+    group.members.find((member) => member.memberId === Number(memberId))
   return member && member.memberTasks
 }
 
@@ -23,14 +25,13 @@ export const getMemberCompletedTasks = (member, taskGroupTasks) => {
       return acc
     }, 0)
     return completedTasks
- 
-    }
-}    
+  }
+}
 /* TODO: Check if member task is completed and then check whether the task is required or optional
-  *  and add +1 to the corresponding value in the accumulator
-  *
-  *  { mandatory: 0, optional: 0 }
-  */
+ *  and add +1 to the corresponding value in the accumulator
+ *
+ *  { mandatory: 0, optional: 0 }
+ */
 
 /**
  * Get a list of task group items from completed tasks
@@ -39,15 +40,15 @@ export const getMemberCompletedTasks = (member, taskGroupTasks) => {
  */
 export const getTaskGroupsWithItems = (itemsByGuid, completedTaskItems) =>
   Object.values(itemsByGuid)
-    .filter((item) => item.type === 'TASK_GROUP' && item.item.tasks.length)
+    .filter((item) => item.type === 'TASK_GROUP' && item.item.activities.length)
     .reduce((acc, item) => {
       const itemTasks = completedTaskItems.filter((task) => {
-        return item.item.tasks.find((groupTask) => {
-          return groupTask.guid === task.guid
+        return item.item.activities.find((groupTask) => {
+          return groupTask.wp_guid === task.item.wp_guid
         })
       })
       if (itemTasks.length) {
-        acc[item.item.guid] = itemTasks
+        acc[item.item.wp_guid] = itemTasks
       }
       return acc
     }, {})

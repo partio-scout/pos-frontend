@@ -109,9 +109,9 @@ const Member = () => {
     (state) => state.translations.aktiviteetin_ylakasite
   )
 
-  const getTranslation = (taskOrTaskGroup) => {
-    return taskOrTaskGroup.languages.find((x) => x.lang === language)
-  }
+  // const getTranslation = (taskOrTaskGroup) => {
+  //   return taskOrTaskGroup.languages.find((x) => x.lang === language)
+  // }
   const { groupId } = useParams()
   const { memberId } = useParams()
 
@@ -181,20 +181,21 @@ const Member = () => {
             )}
           </h4>
           <TaskList>
-            {completionRequestedTasks.map((taskGuid, index) => {
+            {completionRequestedTasks.map((taskGuid) => {
               const task = itemsByGuid[taskGuid]
-              const taskTranslation = getTranslation(task.item)
-              const parent = itemsByGuid[task.parentGuid]
+              // const taskTranslation = getTranslation(task.item)
+              // const parent = itemsByGuid[task.parentGuid]
               return (
                 <ListItem
-                  key={task.guid + index}
+                  key={task.item.wp_guid}
                   guid={task.guid}
                   groupGuid={Number(groupId)}
                   userGuid={Number(memberId)}
                   title={
-                    taskTranslation ? taskTranslation.title : task.item.title
+                    // taskTranslation ? taskTranslation.title :
+                    task.item.title
                   }
-                  subTitle={parent.item.title}
+                  // subTitle={parent.item.title}
                   itemType={ITEM_TYPES.TASK}
                   actionsComponent={actionTypes.groupLeaderActions}
                   showActions
@@ -206,18 +207,20 @@ const Member = () => {
             {getTermInLanguage(generalTranslations, 'working_on_it', language)}
           </h4>
           <TaskList>
-            {activeTasks.map((taskGuid, index) => {
+            {activeTasks.map((taskGuid) => {
               const task = itemsByGuid[taskGuid]
-              const taskTranslation = getTranslation(task.item)
-              const parent = itemsByGuid[task.parentGuid]
+              console.log('task', task)
+              // const taskTranslation = getTranslation(task.item)
+              // const parent = itemsByGuid[task.parentGuid]
               return (
                 <ListItem
-                  key={task.guid + index}
+                  key={task.item.wp_guid}
                   guid={task.guid}
                   title={
-                    taskTranslation ? taskTranslation.title : task.item.title
+                    // taskTranslation ? taskTranslation.title :
+                    task.item.title
                   }
-                  subTitle={parent.item.title}
+                  // subTitle={parent.item.title}
                   itemType={ITEM_TYPES.TASK}
                   actionsComponent={actionTypes.groupLeaderActions}
                 />
