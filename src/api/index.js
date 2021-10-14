@@ -8,7 +8,9 @@ export const fetchAllContent = async () => {
 }
 
 export const fetchActivityGroups = async () => {
-  const res = await fetch(`${PARTIO_API_URL}/activity-groups`)
+  const countRes = await fetch(`${PARTIO_API_URL}/activity-groups/count`)
+  const count = await countRes.json()
+  const res = await fetch(`${PARTIO_API_URL}/activity-groups?_limit=${count}`)
   const activityGroups = await res.json()
   return activityGroups
 }
@@ -23,6 +25,12 @@ export const fetchActivities = async () => {
   const res = await fetch(`${PARTIO_API_URL}/activities`)
   const activities = await res.json()
   return activities
+}
+
+export const fetchActivity = async (wp_guid) => {
+  const res = await fetch(`${PARTIO_API_URL}/activities?wp_guid=${wp_guid}`)
+  const activity = await res.json()
+  return activity
 }
 
 export const fetchTaskDetails = async (guid, lang) => {
