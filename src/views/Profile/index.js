@@ -7,7 +7,6 @@ import {
   API_URL,
   //fetchActivityGroups,
   fetchProfile,
-  fetchSingleActivityGroup,
 } from 'api'
 
 import { X } from 'react-feather'
@@ -162,13 +161,12 @@ const Profile = () => {
   const completedAgeGroups = ageGroups
 
     .filter((ageGroup) => {
-      const items = itemsByGuid[ageGroup.id]
+      const items = itemsByGuid[ageGroup.wp_guid]
       const ageGroupItem = items && items.item
       const isAgeGroupCompleted = getAgeGroupCompletion(ageGroupItem, userTasks)
       if (isAgeGroupCompleted) {
-        const activityGroup = fetchSingleActivityGroup(ageGroup.id)
-        console.log(activityGroup)
-        const ageGroupTasks = getAgeGroupTasks(activityGroup)
+        const activityGroup = itemsByGuid[ageGroup.id]
+        const ageGroupTasks = getAgeGroupTasks(activityGroup, itemsByGuid)
         ageGroupTasks.mandatory.forEach((task) => {
           const taskIndex = completedTasks.indexOf(task)
           if (taskIndex > -1) {
