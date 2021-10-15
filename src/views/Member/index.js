@@ -188,7 +188,7 @@ const Member = () => {
               return (
                 <ListItem
                   key={task.item.wp_guid}
-                  guid={task.guid}
+                  guid={task.id}
                   groupGuid={Number(groupId)}
                   userGuid={Number(memberId)}
                   title={
@@ -209,13 +209,12 @@ const Member = () => {
           <TaskList>
             {activeTasks.map((taskGuid) => {
               const task = itemsByGuid[taskGuid]
-              console.log('task', task)
               // const taskTranslation = getTranslation(task.item)
               // const parent = itemsByGuid[task.parentGuid]
               return (
                 <ListItem
                   key={task.item.wp_guid}
-                  guid={task.guid}
+                  guid={task.id}
                   title={
                     // taskTranslation ? taskTranslation.title :
                     task.item.title
