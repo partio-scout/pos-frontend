@@ -1,5 +1,5 @@
-import { fetchSingleActivityGroup } from 'api'
 import { ITEM_TYPES } from 'consts'
+import { useSelector } from 'react-redux'
 
 export const determineLanguageFromUrl = (url) => {
   const urlObj = new URL(url)
@@ -68,50 +68,53 @@ export const deepFlatten = (items) => {
 }
 
 export const getTaskGroupStatus = (taskGroup, userTasks, label) => {
-  const completedTasks = taskGroup.tasks.reduce((taskCount, task) => {
-    if (userTasks[task.guid] === 'COMPLETED') {
+  const completedTasks = taskGroup.activities.reduce((taskCount, task) => {
+    if (userTasks[task.id] === 'COMPLETED') {
       taskCount++
     }
     return taskCount
   }, 0)
-  return `${label}: ${completedTasks} / ${taskGroup.tasks.length}`
+  return `${label}: ${completedTasks} / ${taskGroup.activities.length}`
 }
 
-export const getGroupTasks = (groupId) => {
-  const group = fetchSingleActivityGroup(groupId)
+export const getGroupTasks = (group) => {
   const taskTypes = {
     mandatory: [],
     optional: [],
   }
-  const mandatory = group.mandatory_tasks
+  const mandatory = group.activities
     .split(',')
-    .filter((task) => task !== '')
+    .filter((activity) => activity.mandatory === true)
   taskTypes.mandatory = taskTypes.mandatory.concat(mandatory)
 
-  if (mandatory.length !== group.tasks.length) {
+  if (mandatory.length !== group.activities.length) {
     taskTypes.optional = taskTypes.optional.concat(
-      group.tasks
-        .filter((task) => !mandatory.includes(task.guid))
-        .map((task) => task.guid)
+      group.activities
+        .filter((activity) => !mandatory.includes(activity.wp_guid))
+        .map((activity) => activity.wp_guid)
     )
   }
 
-  if (group.taskgroups.length > 0) {
-    group.taskgroups
-      .map((taskGroup) => getGroupTasks(taskGroup))
-      .reduce((acc, curr) => {
-        acc.mandatory = acc.mandatory.concat(curr.mandatory)
-        acc.optional = acc.optional.concat(curr.optional)
-        return acc
-      }, taskTypes)
-  }
+  // if (group.activities.length > 0) {
+  //   group.activities
+  //     .map((taskGroup) => getGroupTasks(taskGroup))
+  //     .reduce((acc, curr) => {
+  //       acc.mandatory = acc.mandatory.concat(curr.mandatory)
+  //       acc.optional = acc.optional.concat(curr.optional)
+  //       return acc
+  //     }, taskTypes)
+  // }
 
   return taskTypes
 }
 
 export const getAgeGroupTasks = (ageGroup) => {
+  const itemsByGuid = useSelector((state) => state.itemsByGuid)
   return ageGroup.activity_groups
-    .map((group) => getGroupTasks(group.id))
+    .map((group) => {
+      const activityGroup = itemsByGuid[group.wp_guid]
+      getGroupTasks(activityGroup)
+    })
     .reduce(
       (acc, curr) => {
         acc.mandatory = acc.mandatory.concat(curr.mandatory)

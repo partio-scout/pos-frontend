@@ -25,7 +25,7 @@ const CompletedTasks = ({
   groupMember,
   actionsComponent,
   userGuid,
-  groupGuid
+  groupGuid,
 }) => {
   const parentTaskGroupGuids = Object.keys(taskGroupsWithChildTaskGroups)
   return parentTaskGroupGuids.map((taskGroupGuid) => {
@@ -59,47 +59,40 @@ const AccordionList = ({
     ? getMemberTasks(
         groupMember.groupId,
         groupMember.memberId,
-        useSelector((state) => state.user.userGroups))
+        useSelector((state) => state.user.userGroups)
+      )
     : useSelector((state) => state.tasks)
 
   const generalTranslations = useSelector((state) => state.translations.yleiset)
   const taskGroup = itemsByGuid[taskGroupGuid]
-  const getTranslation = taskOrTaskGroup => {
-    return taskOrTaskGroup.languages.find(x => x.lang === language)
-  }
-  
+  // const getTranslation = taskOrTaskGroup => {
+  //   return taskOrTaskGroup.languages.find(x => x.lang === language)
+  // }
+
   const status = getTaskGroupStatus(
     taskGroup.item,
     userTasks,
     getTermInLanguage(generalTranslations, 'done', language)
   )
-  const taskTranslation = getTranslation(taskGroup.item)
+  // const taskTranslation = getTranslation(taskGroup.item)
 
   return (
     <Accordion key={taskGroupGuid} allowZeroExpanded>
       <AccordionItem>
         <AccordionItemHeading>
           <AccordionItemButton>
-            {!taskGroup.item.taskgroups.length > 0 ? (
-              <ListItem
-                title={taskTranslation ? taskTranslation.title : taskGroup.item.title}
-                itemType={ITEM_TYPES.TASK_GROUP}
-                ageGroupGuid={taskGroup.ageGroupGuid}
-                language={language}
-                subTitle={status}
-                showActions
-                showDropDownIcon
-              />
-            ) : (
-              <ListItem
-                title={taskTranslation ? taskTranslation.title : taskGroup.item.title}
-                itemType={ITEM_TYPES.TASK_GROUP}
-                ageGroupGuid={taskGroup.ageGroupGuid}
-                language={language}
-                showActions
-                showDropDownIcon
-              />
-            )}
+            <ListItem
+              title={
+                // taskTranslation ? taskTranslation.title :
+                taskGroup.item.title
+              }
+              itemType={ITEM_TYPES.TASK_GROUP}
+              ageGroupGuid={taskGroup.ageGroupGuid}
+              language={language}
+              subTitle={status}
+              showActions
+              showDropDownIcon
+            />
           </AccordionItemButton>
         </AccordionItemHeading>
         <StyledAccordionItem>
@@ -138,19 +131,28 @@ const AccordionList = ({
   )
 }
 
-const TaskList = ({ tasks, taskGroup, language, actionsComponent, userGuid, groupGuid }) => {
+const TaskList = ({
+  tasks,
+  taskGroup,
+  language,
+  actionsComponent,
+  userGuid,
+  groupGuid,
+}) => {
   return tasks.map((task) => {
-
-    const getTranslation = taskOrTaskGroup => {
-      return taskOrTaskGroup.languages.find(x => x.lang === language)
-    }
-    const taskTranslation = getTranslation(task.item)
+    // const getTranslation = taskOrTaskGroup => {
+    //   return taskOrTaskGroup.languages.find(x => x.lang === language)
+    // }
+    // const taskTranslation = getTranslation(task.item)
 
     return (
       <ListItem
-        key={task.guid}
-        guid={task.guid}
-        title={taskTranslation ? taskTranslation.title : task.item.title}
+        key={task.id}
+        guid={task.id}
+        title={
+          // taskTranslation ? taskTranslation.title :
+          task.item.title
+        }
         itemType={ITEM_TYPES.TASK}
         ageGroupGuid={taskGroup.ageGroupGuid}
         language={language}
