@@ -6,11 +6,8 @@ export const determineLanguageFromUrl = (url) => {
   return urlObj.searchParams.get('lang') || 'fi'
 }
 
-// export const getAgeGroupTitleWithoutAges = title =>
-//   title
-//     .split('(')[0]
-//     .split(':')[0]
-//     .trim()
+export const getAgeGroupTitleWithoutAges = (title) =>
+  title.split('(')[0].split(':')[0].trim()
 
 export const getTermInLanguage = (translationGroup, termKey, language) => {
   const translationsInLanguage = translationGroup.find(
@@ -69,7 +66,7 @@ export const deepFlatten = (items) => {
 
 export const getTaskGroupStatus = (taskGroup, userTasks, label) => {
   const completedTasks = taskGroup.activities.reduce((taskCount, task) => {
-    if (userTasks[task.id] === 'COMPLETED') {
+    if (userTasks[task.wp_guid] === 'COMPLETED') {
       taskCount++
     }
     return taskCount
@@ -82,50 +79,48 @@ export const getGroupTasks = (group) => {
     mandatory: [],
     optional: [],
   }
-  const mandatory = group.activities
-    .split(',')
-    .filter((activity) => activity.mandatory === true)
+  const mandatory = group.item.activities.filter(
+    (activity) => activity.mandatory === true
+  )
   taskTypes.mandatory = taskTypes.mandatory.concat(mandatory)
 
-  if (mandatory.length !== group.activities.length) {
+  if (mandatory.length !== group.item.activities.length) {
     taskTypes.optional = taskTypes.optional.concat(
-      group.activities
+      group.item.activities
         .filter((activity) => !mandatory.includes(activity.wp_guid))
         .map((activity) => activity.wp_guid)
     )
   }
 
-  // if (group.activities.length > 0) {
-  //   group.activities
-  //     .map((taskGroup) => getGroupTasks(taskGroup))
+  // if (group.item.activity_groups.length > 0) {
+  //   group.item.activity_groups
+  //     .map((activityGroup) => {
+  //       const itemsByGuid = useSelector((state) => state.itemsByGuid)
+  //       getGroupTasks(itemsByGuid[activityGroup.wp_guid])})
   //     .reduce((acc, curr) => {
   //       acc.mandatory = acc.mandatory.concat(curr.mandatory)
   //       acc.optional = acc.optional.concat(curr.optional)
   //       return acc
   //     }, taskTypes)
   // }
-
   return taskTypes
 }
 
 export const getAgeGroupTasks = (ageGroup) => {
   const itemsByGuid = useSelector((state) => state.itemsByGuid)
-  return ageGroup.activity_groups
-    .map((group) => {
-      const activityGroup = itemsByGuid[group.wp_guid]
-      getGroupTasks(activityGroup)
-    })
-    .reduce(
-      (acc, curr) => {
-        acc.mandatory = acc.mandatory.concat(curr.mandatory)
-        acc.optional = acc.optional.concat(curr.optional)
-        return acc
-      },
-      {
-        mandatory: [],
-        optional: [],
-      }
-    )
+  return ageGroup.activity_groups.reduce(
+    (acc, curr) => {
+      const activityGroup = itemsByGuid[curr.wp_guid]
+      const groupTask = getGroupTasks(activityGroup)
+      acc.mandatory = acc.mandatory.concat(groupTask.mandatory)
+      acc.optional = acc.optional.concat(groupTask.optional)
+      return acc
+    },
+    {
+      mandatory: [],
+      optional: [],
+    }
+  )
 }
 
 /**
@@ -213,18 +208,17 @@ export const getAgeGroupTasks = (ageGroup) => {
 
 export const getAgeGroupStatus = (ageGroup, userTasks) => {
   const ageGroupTasks = getAgeGroupTasks(ageGroup)
-  console.log('tasks', ageGroupTasks, userTasks)
-  // const completedMandatory = ageGroupTasks.mandatory.filter(
-  //   (task) => userTasks[task] === 'COMPLETED'
-  // )
-  // const completedOptional = ageGroupTasks.optional.filter(
-  //   (task) => userTasks[task] === 'COMPLETED'
-  // )
+  const completedMandatory = ageGroupTasks.mandatory.filter(
+    (task) => userTasks[task] === 'COMPLETED'
+  )
+  const completedOptional = ageGroupTasks.optional.filter(
+    (task) => userTasks[task] === 'COMPLETED'
+  )
 
-  // return {
-  //   mandatory: `${completedMandatory.length} / ${ageGroupTasks.mandatory.length}`,
-  //   optional: `${completedOptional.length} / ${ageGroupTasks.optional.length}`,
-  // }
+  return {
+    mandatory: `${completedMandatory.length} / ${ageGroupTasks.mandatory.length}`,
+    optional: `${completedOptional.length} / ${ageGroupTasks.optional.length}`,
+  }
 }
 
 export const getCompletedTaskGroups = (ageGroup, userTasks) => {
@@ -252,17 +246,14 @@ export const getAgeGroupCompletion = (ageGroup, userTasks) => {
 /* taskgroupeilla ei ole enään sisäisiä taskgroupeja */
 // const reduceTaskGroup = (accumulator, taskGroup) => {
 //   console.log('taskgroup', taskGroup)
-// if (taskGroup.taskgroups.length > 0) {
-//   const subtaskgroupRequirements = taskGroup.taskgroups.reduce(
-//     reduceTaskGroup,
-//     { taskGroupRequirements: {}, mandatoryTasks: [] }
-//   )
-//   accumulator.mandatoryTasks.push(...subtaskgroupRequirements.mandatoryTasks)
-//   accumulator.taskGroupRequirements = {
-//     ...accumulator.taskGroupRequirements,
-//     ...subtaskgroupRequirements.taskGroupRequirements,
-//   }
-// } else {
+//   const itemsByGuid = useSelector((state) => state.itemsByGuid)
+//   const activityGroup = itemsByGuid[taskGroup.wp_guid]
+//   console.log(activityGroup)
+//     //const mandatoryTasks = []
+//   activityGroup.item.activities.map(activity => {
+//     console.log(activity)
+
+//   })
 //   if (taskGroup.mandatory_tasks.length) {
 //     accumulator.mandatoryTasks.push(...taskGroup.mandatory_tasks.split(','))
 //   }
@@ -270,40 +261,30 @@ export const getAgeGroupCompletion = (ageGroup, userTasks) => {
 //     additionalTasksCount: taskGroup.additional_tasks_count,
 //     mandatoryTasks: taskGroup.mandatory_tasks.split(','),
 //   }
-
-// return accumulator
+//   return accumulator
 // }
 
-// export const getTaskGroupRequirements = (ageGroups) => {
-//   console.log('agegroups', ageGroups)
+// export const getTaskGroupRequirements = ageGroups => {
 //   return ageGroups.reduce(
 //     (value, ageGroup) => {
-//       console.log('AGEGROUP', ageGroup)
-//       const taskGroupRequirements = ageGroup.activity_groups.map(activityGroup => {
-//         console.log(activityGroup)
-
-//         const activityGroupWithActivities = itemsByGuid[activityGroup.wp_guid]
-//         console.log('täää', activityGroupWithActivities)
-//       })
-//       return taskGroupRequirements
-//     })
-//       reduceTaskGroup,
-//       { taskGroupRequirements: {}, mandatoryTasks: [] }
-//     )
-//     value = {
-//       taskGroupRequirements: {
-//         ...value.taskGroupRequirements,
-//         ...taskGroupRequirements.taskGroupRequirements,
-//       },
-//       mandatoryTasks: [
-//         ...value.mandatoryTasks,
-//         ...taskGroupRequirements.mandatoryTasks,
-//       ],
-//     }
-//     return value
-//   },
-//   { taskGroupRequirements: {}, mandatoryTasks: [] }
-// )
+//       const taskGroupRequirements = ageGroup.activity_groups.reduce(
+//         reduceTaskGroup,
+//         { taskGroupRequirements: {}, mandatoryTasks: [] }
+//       )
+//       value = {
+//         taskGroupRequirements: {
+//           ...value.taskGroupRequirements,
+//           ...taskGroupRequirements.taskGroupRequirements,
+//         },
+//         mandatoryTasks: [
+//           ...value.mandatoryTasks,
+//           ...taskGroupRequirements.mandatoryTasks,
+//         ],
+//       }
+//       return value
+//     },
+//     { taskGroupRequirements: {}, mandatoryTasks: [] }
+//   )
 // }
 
 //TODO: favourites, activeTasks, completedTasks, isFavourite, isActive and isCompleted helpers
