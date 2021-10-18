@@ -98,7 +98,9 @@ const AgeGroups = ({ theme }) => {
 
     const ageGroupCenterPositions = getAgeGroupCenterPositions(content)
     container.scrollLeft =
-      ageGroupCenterPositions[selectedAgeGroup.order] -
+      ageGroupCenterPositions[
+        ageGroupCenterPositions.indexOf(selectedAgeGroup)
+      ] -
       document.body.clientWidth / 2
   }, [contentRef, containerRef, selectedAgeGroup, getAgeGroupCenterPositions])
 
@@ -137,7 +139,7 @@ const AgeGroups = ({ theme }) => {
     (ageGroup) => ageGroups.indexOf(ageGroup) === activeIndex
   )
 
-  const activeAgeGroupGuid = activeAgeGroup ? activeAgeGroup.wp_guid : 'default'
+  const activeAgeGroupGuid = activeAgeGroup ? activeAgeGroup.wp_guid : ''
 
   if (itemsByGuid.length === 0 || !generalTranslations) return null
 
