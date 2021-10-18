@@ -75,7 +75,9 @@ const AccordionList = ({
     getTermInLanguage(generalTranslations, 'done', language)
   )
   // const taskTranslation = getTranslation(taskGroup.item)
-
+  const ageGroupGuid = taskGroup.item.age_group
+    ? taskGroup.item.age_group.wp_guid
+    : null
   return (
     <Accordion key={taskGroupGuid} allowZeroExpanded>
       <AccordionItem>
@@ -87,7 +89,7 @@ const AccordionList = ({
                 taskGroup.item.title
               }
               itemType={ITEM_TYPES.TASK_GROUP}
-              ageGroupGuid={taskGroup.ageGroupGuid}
+              ageGroupGuid={ageGroupGuid}
               language={language}
               subTitle={status}
               showActions
