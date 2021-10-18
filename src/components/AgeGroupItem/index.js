@@ -1,12 +1,12 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
-// import {
-//   getAgeGroupTitleWithoutAges,
-//   getTermInLanguage,
-//   getAgeGroupStatus,
-//   ageGroupHasTranslatedTaskGroups,
-// } from 'helpers'
+import {
+  getAgeGroupTitleWithoutAges,
+  getTermInLanguage,
+  getAgeGroupStatus,
+  // ageGroupHasTranslatedTaskGroups,
+} from 'helpers'
 // import { getAgeGroupIcon } from 'graphics/ageGroups'
 
 const StyledAgeGroupItem = styled.div`
@@ -44,17 +44,17 @@ const AgeGroupLink = styled(Link)`
 const AgeGroupIllustration = styled.img`
   width: 100%;
 `
-// const Status = styled.div`
-//   font-size: 0.875rem;
-// `
+const Status = styled.div`
+  font-size: 0.875rem;
+`
 
 const AgeGroupItem = ({
   ageGroup,
   // itemsByGuid,
   language,
-  // translations,
-  // user,
-  // userTasks,
+  translations,
+  user,
+  userTasks,
 }) => {
   // const hasTranslatedTaskGroups = ageGroupHasTranslatedTaskGroups(
   //   ageGroup.item,
@@ -64,12 +64,8 @@ const AgeGroupItem = ({
 
   // Hide the age group if it does not have any translated task groups
   // if (!hasTranslatedTaskGroups) return null
-
-  // const languageInfo = ageGroup.item.languages.find(x => x.lang === language)
-
-  // const status = user.loggedIn
-  //   ? getAgeGroupStatus(ageGroup.item, userTasks)
-  //   : null
+  //const languageInfo = ageGroup.localizations.find(x => x.locale === language)
+  const status = user.loggedIn ? getAgeGroupStatus(ageGroup, userTasks) : null
 
   const icon = ageGroup.logo.url
   return (
@@ -77,12 +73,10 @@ const AgeGroupItem = ({
       <AgeGroupLink to={`/guid/${ageGroup.wp_guid}?lang=${language}`}>
         <AgeGroupIllustration alt={ageGroup.title} src={icon} />
         <h3 data-testid="title">
-          {ageGroup.title}
-          {/* {getAgeGroupTitleWithoutAges(
-            languageInfo ? languageInfo.title : ageGroup.title
-          )} */}
+          {/* {ageGroup.title} */}
+          {getAgeGroupTitleWithoutAges(ageGroup.title)}
         </h3>
-        {/* {status && (
+        {status && (
           <>
             <Status>
               {`${getTermInLanguage(
@@ -91,13 +85,15 @@ const AgeGroupItem = ({
                 language
               )} ${status.mandatory}`}
             </Status>
-            <Status>{`${getTermInLanguage(
-              translations,
-              'optional_plural',
-              language
-            )} ${status.optional}`}</Status>
+            <Status>
+              {`${getTermInLanguage(
+                translations,
+                'optional_plural',
+                language
+              )} ${status.optional}`}
+            </Status>
           </>
-        )} */}
+        )}
       </AgeGroupLink>
     </StyledAgeGroupItem>
   )

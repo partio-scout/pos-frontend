@@ -8,7 +8,7 @@ import { setSelectedAgeGroup } from 'redux/actionCreators'
 import {
   // getAgeGroupTitleWithoutAges,
   determineLanguageFromUrl,
-  //getTermInLanguage,
+  getTermInLanguage,
 } from 'helpers'
 // import { getAgeGroupIcon } from 'graphics/ageGroups'
 
@@ -102,10 +102,10 @@ const AgeGroup = () => {
   const groupHeadingTranslations = useSelector(
     (state) => state.translations.aktiviteettipaketin_ylakasite
   )
-  // const activityTranslations = useSelector(
-  //   (state) => state.translations.aktiviteetin_ylakasite
-  // )
-  // const generalTranslations = useSelector((state) => state.translations.yleiset)
+  const activityTranslations = useSelector(
+    (state) => state.translations.aktiviteetin_ylakasite
+  )
+  const generalTranslations = useSelector((state) => state.translations.yleiset)
 
   const { id } = useParams()
   const language = determineLanguageFromUrl(window.location)
@@ -121,37 +121,35 @@ const AgeGroup = () => {
   }
   const ageGroupGuid = ageGroup ? ageGroup.item.wp_guid : 'default'
   // const languageInfo = ageGroup.languages.find(x => x.lang === language)
-  const getTerm = (id) => {
-    const activityGroup = itemsByGuid[id]
-    let term = activityGroup ? activityGroup.item.activities.length : null
-    // let term = getTermInLanguage(
-    //   activityTranslations,
-    //   `${subtask_term ? subtask_term.name : 'aktiviteetti'}_plural`,
-    //   language
-    // )
+  const getTerm = (title, subtask_term) => {
+    let term = getTermInLanguage(
+      activityTranslations,
+      `${subtask_term ? subtask_term.name : 'aktiviteetti'}_plural`,
+      language
+    )
 
-    // if (title === 'Haasteet') {
-    //   term = getTermInLanguage(generalTranslations, 'challenges', language)
-    // }
+    if (title === 'Haasteet') {
+      term = getTermInLanguage(generalTranslations, 'challenges', language)
+    }
 
-    // if (term === 'askeleet' && title !== 'Tervetuloa' && title !== 'Siirtymä') {
-    //   term = getTermInLanguage(activityTranslations, 'paw_plural', language)
-    // }
+    if (term === 'askeleet' && title !== 'Tervetuloa' && title !== 'Siirtymä') {
+      term = getTermInLanguage(activityTranslations, 'paw_plural', language)
+    }
     return term
   }
 
-  // const getTitle = (subtask_term) => {
-  //   let title = getTermInLanguage(
-  //     groupHeadingTranslations,
-  //     `${subtask_term}_plural`,
-  //     language
-  //   )
+  const getTitle = (subtask_term) => {
+    let title = getTermInLanguage(
+      groupHeadingTranslations,
+      `${subtask_term}_plural`,
+      language
+    )
 
-  //   if (subtask_term === 'askel') {
-  //     title = getTermInLanguage(activityTranslations, 'paw_plural', language)
-  //   }
-  //   return title
-  // }
+    if (subtask_term === 'askel') {
+      title = getTermInLanguage(activityTranslations, 'paw_plural', language)
+    }
+    return title
+  }
 
   return (
     <Background ageGroupGuid={ageGroupGuid}>
@@ -169,8 +167,8 @@ const AgeGroup = () => {
           </h3>
         </HeadingContent>
         <BodyContent>
-          <h4>Tähän tulee activitygroup term</h4>
-          {/* <h4>{getTitle(ageGroup.subactivitygroup_term)}</h4> */}
+          {/* <h4>Tähän tulee activitygroup term</h4> */}
+          <h4>{getTitle(ageGroup.item.subactivitygroup_term)}</h4>
           {ageGroup.item.activity_groups.length > 0 &&
             ageGroup.item.activity_groups
               .sort((a, b) => a.order - b.order)
@@ -178,11 +176,12 @@ const AgeGroup = () => {
                 <TaskGroupItem
                   key={activityGroup.id}
                   taskGroup={activityGroup}
-                  ageGroupGuid={ageGroup.item.id}
+                  ageGroupGuid={ageGroupGuid}
                   language={language}
-                  icon={ageGroup.item.main_image.url}
-                  subTitle={getTerm(activityGroup.wp_guid)}
-                  tasksTerm={getTerm(activityGroup.wp_guid)}
+                  tasksTerm={getTerm(
+                    activityGroup.title,
+                    activityGroup.subtask_term
+                  )}
                 />
               ))}
         </BodyContent>
