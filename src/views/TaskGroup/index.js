@@ -41,7 +41,7 @@ const TaskGroup = () => {
   //   (state) => state.translations.aktiviteetin_ylakasite
   // )
   const generalTranslations = useSelector((state) => state.translations.yleiset)
-  // const favourites = useSelector((state) => state.favourites)
+  const favourites = useSelector((state) => state.favourites)
 
   // const mandatoryTasksGuids =
   //   taskGroup.activities.length > 0 && !taskGroup.activity_groups
@@ -59,29 +59,20 @@ const TaskGroup = () => {
   //   return taskOrTaskGroup.languages.find((x) => x.lang === language)
   // }
 
-  // const getTaskGroupDetails = async () => {
-  //   const res = await fetchTaskDetails(taskGroup.item.guid, language)
-  //   setDetails(res)
-  // }
-
-  // if (!details) {
-  //   getTaskGroupDetails()
-  // }
-
-  // const { item } = taskGroup
+  const { item } = taskGroup
   // console.log('item', item)
   // const taskGroupTranslation = getTranslation(item)
 
-  // const mandatoryTasks = []
-  // const optionalTasks = []
+  const mandatoryTasks = []
+  const optionalTasks = []
 
-  // item.tasks.forEach((task) => {
-  //   if (mandatoryTasksGuids.includes(task.guid)) {
-  //     mandatoryTasks.push(task)
-  //   } else {
-  //     optionalTasks.push(task)
-  //   }
-  // })
+  item.activities.forEach((activity) => {
+    if (activity.mandatory === true) {
+      mandatoryTasks.push(activity)
+    } else {
+      optionalTasks.push(activity)
+    }
+  })
 
   const getTask = (task) => {
     const dispatch = useDispatch()
@@ -99,7 +90,7 @@ const TaskGroup = () => {
       <ListItem
         key={task.id}
         guid={task.wp_guid}
-        ageGroupGuid={taskGroup.ageGroupGuid}
+        ageGroupGuid={taskGroup.item.age_group.wp_guid}
         title={task.title}
         subTitle={getTermInLanguage(
           generalTranslations,
@@ -110,7 +101,7 @@ const TaskGroup = () => {
         itemType={ITEM_TYPES.TASK}
         showActions
         showFavourite
-        // isFavourite={favourites.includes(task.guid)}
+        isFavourite={favourites.includes(task.wp_guid)}
         isLoggedIn={status}
       />
     )
@@ -124,17 +115,67 @@ const TaskGroup = () => {
         )
       }
       // taskGroupTranslation ? taskGroupTranslation.title :
-      title={taskGroup.title}
+      title={taskGroup.item.title}
     >
       <TaskList>
         {taskGroup.item.ingress && <p>{striptags(taskGroup.item.ingress)}</p>}
         {taskGroup.item.content && taskGroup.item.content.length < 700 && (
           <p>{striptags(taskGroup.item.content)}</p>
         )}
-        {taskGroup.item.activities.length > 0 &&
-          taskGroup.item.activities.map((task) => {
-            return getTask(task)
-          })}
+        {item.activities.length > 0 ? (
+          <>
+            <h4>
+              <span>
+                {getTermInLanguage(
+                  generalTranslations,
+                  'mandatory_plural',
+                  language
+                )}
+              </span>
+            </h4>
+            {mandatoryTasks.length > 0 ? (
+              mandatoryTasks.map((task) => {
+                return getTask(task)
+              })
+            ) : (
+              <p>
+                <span>
+                  {getTermInLanguage(
+                    generalTranslations,
+                    'no_mandatory_tasks',
+                    language
+                  )}
+                </span>
+              </p>
+            )}
+            <h4>
+              <span>
+                {getTermInLanguage(
+                  generalTranslations,
+                  'optional_plural',
+                  language
+                )}
+              </span>
+            </h4>
+            {optionalTasks.length > 0 ? (
+              optionalTasks.map((task) => {
+                return getTask(task)
+              })
+            ) : (
+              <p>
+                <span>
+                  {getTermInLanguage(
+                    generalTranslations,
+                    'no_optional_tasks',
+                    language
+                  )}
+                </span>
+              </p>
+            )}
+          </>
+        ) : (
+          <></>
+        )}
       </TaskList>
     </StyledDetailPage>
   )
