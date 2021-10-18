@@ -137,9 +137,9 @@ const Profile = () => {
     (state) => state.translations.aktiviteetin_ylakasite
   )
   const generalTranslations = useSelector((state) => state.translations.yleiset)
-  const getTranslation = (taskOrTaskGroup) => {
-    return taskOrTaskGroup.languages.find((x) => x.lang === language)
-  }
+  // const getTranslation = (taskOrTaskGroup) => {
+  //   return taskOrTaskGroup.languages.find((x) => x.lang === language)
+  // }
 
   if (!itemsByGuid || !activityTranslations) return null
 
@@ -165,8 +165,9 @@ const Profile = () => {
       const ageGroupItem = items && items.item
       const isAgeGroupCompleted = getAgeGroupCompletion(ageGroupItem, userTasks)
       if (isAgeGroupCompleted) {
-        const activityGroup = itemsByGuid[ageGroup.id]
-        const ageGroupTasks = getAgeGroupTasks(activityGroup, itemsByGuid)
+        const ageGroupTasks = getAgeGroupTasks(
+          itemsByGuid[ageGroup.wp_guid].item
+        )
         ageGroupTasks.mandatory.forEach((task) => {
           const taskIndex = completedTasks.indexOf(task)
           if (taskIndex > -1) {
@@ -242,24 +243,24 @@ const Profile = () => {
           <TaskList>
             {favourites &&
               favourites.map((favourite) => {
-                const taskTranslation = getTranslation(favourite.item)
-                const parent = itemsByGuid[favourite.parentGuid]
-                const parentTranslation = getTranslation(parent.item)
+                // const taskTranslation = getTranslation(favourite.item)
+                // const parent = itemsByGuid[favourite.parentGuid]
+                // const parentTranslation = getTranslation(parent.item)
                 return (
                   <ListItem
-                    key={favourite.guid}
+                    key={favourite.id}
                     guid={favourite.guid}
                     ageGroupGuid={favourite.ageGroupGuid}
                     title={
-                      taskTranslation
-                        ? taskTranslation.title
-                        : favourite.item.title
+                      // taskTranslation
+                      //   ? taskTranslation.title
+                      favourite.item.title
                     }
-                    subTitle={
-                      parentTranslation
-                        ? parentTranslation.title
-                        : parent.item.title
-                    }
+                    // subTitle={
+                    //   parentTranslation
+                    //     ? parentTranslation.title:
+                    //    parent.item.title
+                    // }
                     language={language}
                     itemType={ITEM_TYPES.TASK}
                     showActions
@@ -283,25 +284,25 @@ const Profile = () => {
               const task = itemsByGuid[taskGuid]
               if (!task) return null
 
-              const taskTranslation = getTranslation(task.item)
-              const parent = itemsByGuid[task.parentGuid]
-              const parentTranslation = getTranslation(parent.item)
+              // const taskTranslation = getTranslation(task.item)
+              // const parent = itemsByGuid[task.parentGuid]
+              // const parentTranslation = getTranslation(parent.item)
               const finder = (favourite) => taskGuid === favourite.guid
               const isFavourite = !!favourites.find(finder)
-
               return (
                 <ListItem
-                  key={task.guid}
+                  key={task.id}
                   guid={task.guid}
                   ageGroupGuid={task.ageGroupGuid}
                   title={
-                    taskTranslation ? taskTranslation.title : task.item.title
+                    // taskTranslation ? taskTranslation.title :
+                    task.item.title
                   }
-                  subTitle={
-                    parentTranslation
-                      ? parentTranslation.title
-                      : parent.item.title
-                  }
+                  // subTitle={
+                  //   parentTranslation
+                  //     ? parentTranslation.title
+                  //    parent.item.title
+                  // }
                   language={language}
                   itemType={ITEM_TYPES.TASK}
                   showActions
@@ -326,7 +327,7 @@ const Profile = () => {
             {completedAgeGroups.map((ageGroup) => {
               return (
                 <AgeGroupListItem
-                  key={ageGroup.guid}
+                  key={ageGroup.id}
                   ageGroup={ageGroup}
                   language={language}
                   subTitle={getTermInLanguage(
