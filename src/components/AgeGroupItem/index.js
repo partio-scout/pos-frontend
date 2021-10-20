@@ -56,18 +56,9 @@ const AgeGroupItem = ({
   user,
   userTasks,
 }) => {
-  // const hasTranslatedTaskGroups = ageGroupHasTranslatedTaskGroups(
-  //   ageGroup.item,
-  //   itemsByGuid,
-  //   language
-  // )
-
-  // Hide the age group if it does not have any translated task groups
-  // if (!hasTranslatedTaskGroups) return null
-  //const languageInfo = ageGroup.localizations.find(x => x.locale === language)
   const status = user.loggedIn ? getAgeGroupStatus(ageGroup, userTasks) : null
-
   const icon = ageGroup.logo.url
+
   return (
     <StyledAgeGroupItem>
       <AgeGroupLink to={`/guid/${ageGroup.wp_guid}?lang=${language}`}>

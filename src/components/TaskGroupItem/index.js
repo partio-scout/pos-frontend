@@ -1,6 +1,6 @@
 import React from 'react'
 import ListItem from 'components/ListItem'
-// import taskGroupGraphics from 'graphics/taskGroups'
+import taskGroupGraphics from 'graphics/taskGroups'
 // import { useSelector } from 'react-redux'
 // import { getTranslatedTasks } from '../../helpers'
 // import { useSelector } from 'react-redux'
@@ -32,7 +32,6 @@ const TaskGroupItem = ({
   actionsComponent,
   showActions,
   groupGuid,
-  icon,
 }) => {
   // const itemsByGuid = useSelector((state) => state.itemsByGuid)
   // const activityGroupById = useSelector((state) => state.activityGroups)
@@ -73,7 +72,7 @@ const TaskGroupItem = ({
         // )
       }
       language={language}
-      icon={icon}
+      icon={taskGroupGraphics[`Group${taskGroup.wp_guid}`] || null}
     />
   )
 }

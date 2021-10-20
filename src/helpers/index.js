@@ -79,30 +79,20 @@ export const getGroupTasks = (group) => {
     mandatory: [],
     optional: [],
   }
-  const mandatory = group.item.activities.filter(
+  const mandatoryTasks = group.item.activities.filter(
     (activity) => activity.mandatory === true
   )
-  taskTypes.mandatory = taskTypes.mandatory.concat(mandatory)
+  taskTypes.mandatory = taskTypes.mandatory.concat(
+    mandatoryTasks.map((mandatory) => mandatory.wp_guid)
+  )
 
-  if (mandatory.length !== group.item.activities.length) {
+  if (mandatoryTasks.length !== group.item.activities.length) {
     taskTypes.optional = taskTypes.optional.concat(
       group.item.activities
-        .filter((activity) => !mandatory.includes(activity.wp_guid))
+        .filter((activity) => !taskTypes.mandatory.includes(activity.wp_guid))
         .map((activity) => activity.wp_guid)
     )
   }
-
-  // if (group.item.activity_groups.length > 0) {
-  //   group.item.activity_groups
-  //     .map((activityGroup) => {
-  //       const itemsByGuid = useSelector((state) => state.itemsByGuid)
-  //       getGroupTasks(itemsByGuid[activityGroup.wp_guid])})
-  //     .reduce((acc, curr) => {
-  //       acc.mandatory = acc.mandatory.concat(curr.mandatory)
-  //       acc.optional = acc.optional.concat(curr.optional)
-  //       return acc
-  //     }, taskTypes)
-  // }
   return taskTypes
 }
 
@@ -146,22 +136,6 @@ export const getAgeGroupTasks = (ageGroup) => {
 //       hasTranslatedTasks
 //     ) {
 //       acc.push(taskGroupGuid.guid)
-//     }
-//     return acc
-//   }, [])
-// }
-
-/**
- * Get all the translated tasks from a list of tasks for a specific language
- * @param tasks The list of the tasks
- * @param language The language to filter by
- * @returns {Array[Task]} Return an array of task objects
- */
-// export const getTranslatedTasks = (tasks, language) => {
-//   return tasks.reduce((acc, task) => {
-//     const translations = task.languages.find(lang => lang.lang === language)
-//     if (translations && translations.title) {
-//       acc.push(task)
 //     }
 //     return acc
 //   }, [])
