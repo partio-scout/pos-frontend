@@ -69,7 +69,6 @@ const AgeGroups = ({ theme }) => {
   const selectedAgeGroup = useSelector((state) => state.selectedAgeGroup)
   const user = useSelector((state) => state.user)
   const userTasks = useSelector((state) => state.tasks)
-
   const [activeIndex, setActiveIndex] = useState(0)
   const language = determineLanguageFromUrl(window.location)
   const generalTranslations = useSelector((state) => state.translations.yleiset)
@@ -79,6 +78,9 @@ const AgeGroups = ({ theme }) => {
 
   const contentRef = useRef()
   const containerRef = useRef()
+  const ageGroupsLocalized = ageGroups.filter(
+    (ageGroup) => ageGroup.locale === language
+  )
 
   const getAgeGroupCenterPositions = useCallback(
     (content) =>
@@ -135,8 +137,8 @@ const AgeGroups = ({ theme }) => {
   ])
 
   //TODO: get agegroup from user if set
-  const activeAgeGroup = ageGroups.find(
-    (ageGroup) => ageGroups.indexOf(ageGroup) === activeIndex
+  const activeAgeGroup = ageGroupsLocalized.find(
+    (ageGroup) => ageGroupsLocalized.indexOf(ageGroup) === activeIndex
   )
 
   const activeAgeGroupGuid = activeAgeGroup ? activeAgeGroup.wp_guid : ''
@@ -147,8 +149,9 @@ const AgeGroups = ({ theme }) => {
     <Container ref={containerRef} activeIndex={activeAgeGroupGuid}>
       <Menu language={language} user={user} />
       <Content ref={contentRef}>
-        {ageGroups
-          .sort((a, b) => a.order - b.order)
+        {ageGroupsLocalized
+          .filter((ageGroup) => ageGroup.locale === language)
+          .sort((a, b) => a.minimum_age - b.minimum_age)
           .map((ageGroup, i) => {
             return (
               <AgeGroupItem

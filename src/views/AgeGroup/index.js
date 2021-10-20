@@ -10,7 +10,6 @@ import {
   determineLanguageFromUrl,
   getTermInLanguage,
 } from 'helpers'
-// import { getAgeGroupIcon } from 'graphics/ageGroups'
 
 const Background = styled.div`
   min-height: 100vh;
@@ -96,7 +95,6 @@ const MainSymbol = styled.img`
 const AgeGroup = () => {
   const history = useHistory()
   const dispatch = useDispatch()
-  const itemsByGuid = useSelector((state) => state.itemsByGuid)
   // const userTasks = useSelector(state => state.tasks)
   // const user = useSelector(state => state.user)
   const groupHeadingTranslations = useSelector(
@@ -109,17 +107,21 @@ const AgeGroup = () => {
 
   const { id } = useParams()
   const language = determineLanguageFromUrl(window.location)
-  const ageGroup = itemsByGuid[id]
+  const ageGroups = useSelector((state) => state.ageGroups)
+  const localizedAgeGroup = ageGroups.find(
+    (ageGroup) => ageGroup.wp_guid === id && ageGroup.locale === language
+  )
   useEffect(() => {
-    if (ageGroup) {
-      dispatch(setSelectedAgeGroup(ageGroup))
+    if (localizedAgeGroup) {
+      dispatch(setSelectedAgeGroup(localizedAgeGroup))
     }
-  }, [ageGroup, dispatch])
+  }, [localizedAgeGroup, dispatch])
 
-  if (!ageGroup || !groupHeadingTranslations) {
+  if (!localizedAgeGroup || !groupHeadingTranslations) {
     return null
   }
-  const ageGroupGuid = ageGroup ? ageGroup.item.wp_guid : 'default'
+
+  const ageGroupGuid = localizedAgeGroup ? localizedAgeGroup.wp_guid : 'default'
   // const languageInfo = ageGroup.languages.find(x => x.lang === language)
   const getTerm = (title, subtask_term) => {
     let term = getTermInLanguage(
@@ -158,19 +160,22 @@ const AgeGroup = () => {
           <X onClick={() => history.push(`/?lang=${language}`)} />
         </CloseIcon>
         <HeadingContent>
-          <MainSymbol alt={ageGroup.item.title} src={ageGroup.item.logo.url} />
+          <MainSymbol
+            alt={localizedAgeGroup.title}
+            src={localizedAgeGroup.logo.url}
+          />
           <h3>
             {
               // languageInfo ? languageInfo.title :
-              ageGroup.item.title
+              localizedAgeGroup.title
             }
           </h3>
         </HeadingContent>
         <BodyContent>
           {/* <h4>Tähän tulee activitygroup term</h4> */}
-          <h4>{getTitle(ageGroup.item.subactivitygroup_term)}</h4>
-          {ageGroup.item.activity_groups.length > 0 &&
-            ageGroup.item.activity_groups
+          <h4>{getTitle(localizedAgeGroup.subactivitygroup_term)}</h4>
+          {localizedAgeGroup.activity_groups.length > 0 &&
+            localizedAgeGroup.activity_groups
               .sort((a, b) => a.order - b.order)
               .map((activityGroup) => (
                 <TaskGroupItem

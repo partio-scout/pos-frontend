@@ -131,7 +131,9 @@ const Profile = () => {
     state.favourites.map((favourite) => state.itemsByGuid[favourite])
   )
 
-  //const ageGroupActivityGroups = fetchActivityGroups()
+  const localizedAgeGroups = ageGroups.filter(
+    (item) => item.locale === language
+  )
 
   const activityTranslations = useSelector(
     (state) => state.translations.aktiviteetin_ylakasite
@@ -158,8 +160,7 @@ const Profile = () => {
       userTasks[guid] === COMPLETION_STATUS.COMPLETION_REQUESTED
   )
 
-  const completedAgeGroups = ageGroups
-
+  const completedAgeGroups = localizedAgeGroups
     .filter((ageGroup) => {
       const items = itemsByGuid[ageGroup.wp_guid]
       const ageGroupItem = items && items.item
