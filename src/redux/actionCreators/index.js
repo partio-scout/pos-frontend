@@ -1,6 +1,7 @@
 export * from './ageGroups'
 export * from './itemsByGuid'
 export * from './initialData'
+export * from './activityGroupsData'
 export * from './translations'
 export * from './favourites'
 export * from './user'

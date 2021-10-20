@@ -10,7 +10,7 @@ export const setActivityGroups = (activityGroups) => {
   }
 }
 
-export const setSelectedAgeGroup = (activityGroup) => {
+export const setSelectedActivityGroup = (activityGroup) => {
   return {
     type: SET_SELECTED_ACTIVITY_GROUP,
     payload: activityGroup,

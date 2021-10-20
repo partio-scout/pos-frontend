@@ -6,7 +6,6 @@ import {
   useLocation,
   useParams,
 } from 'react-router-dom'
-import { deepFlatten } from 'helpers'
 import { useDispatch, useSelector } from 'react-redux'
 import styled, { ThemeProvider } from 'styled-components'
 import { useTransition, animated } from 'react-spring'
@@ -28,8 +27,8 @@ import {
   setTasks,
   setUserGroups,
   setNotifications,
-  // setActivityGroups,
-  setItemsByGuid,
+  //setItemsByGuid,
+  setActivityGroupsData,
 } from 'redux/actionCreators'
 import { GlobalStyle, theme } from 'styles'
 import AgeGroups from 'views/AgeGroups'
@@ -42,7 +41,6 @@ import Login from 'views/Login'
 import Group from 'views/Group'
 import Member from 'views/Member'
 import AcceptTasks from 'views/AcceptTasks'
-//import { setActivityGroups } from 'redux/actionCreators/activityGroups'
 import { ITEM_TYPES } from 'consts'
 
 const App = () => {
@@ -56,8 +54,9 @@ const App = () => {
       dispatch(setTranslations(translations))
     )
     fetchActivityGroups().then((activityGroups) =>
-      dispatch(setItemsByGuid(deepFlatten(activityGroups)))
+      dispatch(setActivityGroupsData(activityGroups))
     )
+
     fetchUser().then((user) => {
       if (Object.keys(user).length > 0) {
         dispatch(setUser({ ...user, loggedIn: true }))
