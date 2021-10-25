@@ -5,7 +5,7 @@ import {
   getAgeGroupTitleWithoutAges,
   getTermInLanguage,
   getAgeGroupStatus,
-  // ageGroupHasTranslatedTaskGroups,
+  //ageGroupHasTranslatedTaskGroups,
 } from 'helpers'
 // import { getAgeGroupIcon } from 'graphics/ageGroups'
 
@@ -56,6 +56,10 @@ const AgeGroupItem = ({
   user,
   userTasks,
 }) => {
+  // console.log(ageGroup)
+  // const hasTranslatedTaskGroups = ageGroup.activity_groups > 0
+
+  // if (!hasTranslatedTaskGroups) return null
   const status = user.loggedIn ? getAgeGroupStatus(ageGroup, userTasks) : null
   const icon = ageGroup.logo.url
 
