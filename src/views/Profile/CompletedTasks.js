@@ -65,16 +65,13 @@ const AccordionList = ({
 
   const generalTranslations = useSelector((state) => state.translations.yleiset)
   const taskGroup = itemsByGuid[taskGroupGuid]
-  // const getTranslation = taskOrTaskGroup => {
-  //   return taskOrTaskGroup.languages.find(x => x.lang === language)
-  // }
+  if (taskGroup.item.locale !== language) return null
 
   const status = getTaskGroupStatus(
     taskGroup.item,
     userTasks,
     getTermInLanguage(generalTranslations, 'done', language)
   )
-  // const taskTranslation = getTranslation(taskGroup.item)
   const ageGroupGuid = taskGroup.item.age_group
     ? taskGroup.item.age_group.wp_guid
     : null
@@ -84,10 +81,7 @@ const AccordionList = ({
         <AccordionItemHeading>
           <AccordionItemButton>
             <ListItem
-              title={
-                // taskTranslation ? taskTranslation.title :
-                taskGroup.item.title
-              }
+              title={taskGroup.item.title}
               itemType={ITEM_TYPES.TASK_GROUP}
               ageGroupGuid={ageGroupGuid}
               language={language}
@@ -141,22 +135,16 @@ const TaskList = ({
   userGuid,
   groupGuid,
 }) => {
-  return tasks.map((task) => {
-    // const getTranslation = taskOrTaskGroup => {
-    //   return taskOrTaskGroup.languages.find(x => x.lang === language)
-    // }
-    // const taskTranslation = getTranslation(task.item)
+  if (!taskGroup.item.age_group) return null
 
+  return tasks.map((task) => {
     return (
       <ListItem
         key={task.id}
         guid={task.id}
-        title={
-          // taskTranslation ? taskTranslation.title :
-          task.item.title
-        }
+        title={task.item.title}
         itemType={ITEM_TYPES.TASK}
-        ageGroupGuid={taskGroup.ageGroupGuid}
+        ageGroupGuid={taskGroup.item.age_group.wp_guid}
         language={language}
         actionsComponent={actionsComponent}
         userGuid={userGuid}
