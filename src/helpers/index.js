@@ -79,16 +79,16 @@ export const getGroupTasks = (group) => {
     mandatory: [],
     optional: [],
   }
-  const mandatoryTasks = group.item.activities.filter(
+  const mandatoryTasks = group.activities.filter(
     (activity) => activity.mandatory === true
   )
   taskTypes.mandatory = taskTypes.mandatory.concat(
     mandatoryTasks.map((mandatory) => mandatory.wp_guid)
   )
 
-  if (mandatoryTasks.length !== group.item.activities.length) {
+  if (mandatoryTasks.length !== group.activities.length) {
     taskTypes.optional = taskTypes.optional.concat(
-      group.item.activities
+      group.activities
         .filter((activity) => !taskTypes.mandatory.includes(activity.wp_guid))
         .map((activity) => activity.wp_guid)
     )
@@ -101,7 +101,7 @@ export const getAgeGroupTasks = (ageGroup) => {
   return ageGroup.activity_groups.reduce(
     (acc, curr) => {
       const activityGroup = itemsByGuid[curr.wp_guid]
-      const groupTask = getGroupTasks(activityGroup)
+      const groupTask = getGroupTasks(activityGroup.item)
       acc.mandatory = acc.mandatory.concat(groupTask.mandatory)
       acc.optional = acc.optional.concat(groupTask.optional)
       return acc
