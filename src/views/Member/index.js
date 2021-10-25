@@ -109,9 +109,6 @@ const Member = () => {
     (state) => state.translations.aktiviteetin_ylakasite
   )
 
-  // const getTranslation = (taskOrTaskGroup) => {
-  //   return taskOrTaskGroup.languages.find((x) => x.lang === language)
-  // }
   const { groupId } = useParams()
   const { memberId } = useParams()
 
@@ -183,18 +180,14 @@ const Member = () => {
           <TaskList>
             {completionRequestedTasks.map((taskGuid) => {
               const task = itemsByGuid[taskGuid]
-              // const taskTranslation = getTranslation(task.item)
-              // const parent = itemsByGuid[task.parentGuid]
+              if (task.item.locale !== language) return null
               return (
                 <ListItem
                   key={task.item.wp_guid}
                   guid={task.id}
                   groupGuid={Number(groupId)}
                   userGuid={Number(memberId)}
-                  title={
-                    // taskTranslation ? taskTranslation.title :
-                    task.item.title
-                  }
+                  title={task.item.title}
                   // subTitle={parent.item.title}
                   itemType={ITEM_TYPES.TASK}
                   actionsComponent={actionTypes.groupLeaderActions}
@@ -209,16 +202,12 @@ const Member = () => {
           <TaskList>
             {activeTasks.map((taskGuid) => {
               const task = itemsByGuid[taskGuid]
-              // const taskTranslation = getTranslation(task.item)
-              // const parent = itemsByGuid[task.parentGuid]
+              if (task.item.locale !== language) return null
               return (
                 <ListItem
                   key={task.item.wp_guid}
                   guid={task.id}
-                  title={
-                    // taskTranslation ? taskTranslation.title :
-                    task.item.title
-                  }
+                  title={task.item.title}
                   // subTitle={parent.item.title}
                   itemType={ITEM_TYPES.TASK}
                   actionsComponent={actionTypes.groupLeaderActions}
