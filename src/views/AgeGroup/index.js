@@ -4,6 +4,8 @@ import { useParams, useHistory } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { X } from 'react-feather'
 import TaskGroupItem from 'components/TaskGroupItem'
+import { actionTypes } from 'components/Actions'
+import { ITEM_TYPES } from '../../consts'
 import { setSelectedAgeGroup } from 'redux/actionCreators'
 import {
   // getAgeGroupTitleWithoutAges,
@@ -187,6 +189,9 @@ const AgeGroup = () => {
                     activityGroup.title,
                     activityGroup.subtask_term
                   )}
+                  itemType={ITEM_TYPES.TASK_GROUP}
+                  actionsComponent={actionTypes.taskGroupActions}
+                  showActions
                 />
               ))}
         </BodyContent>
