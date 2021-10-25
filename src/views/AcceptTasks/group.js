@@ -124,7 +124,7 @@ const Group = ({ group, isLast }) => {
   const title = '' + groupName + ' / ' + ageGroup
 
   const taskGroup = itemsByGuid[taskGuid]
-  const taskGroupTasks = taskGroup.item.tasks
+  const taskGroupTasks = taskGroup.item.activities
 
   function isGroupLeader(member) {
     const groupLeaders = group.members.filter(
@@ -206,14 +206,14 @@ const Group = ({ group, isLast }) => {
             const cbData = checkboxData.find(
               (cbData) => cbData.id === Number(memberId)
             )
-            return cbData.tasks[task.guid] !== 'COMPLETED'
+            return cbData.tasks[task.wp_guid] !== 'COMPLETED'
           }),
         }
-        acceptGroupMemberTasks(data, task.guid)
+        acceptGroupMemberTasks(data, task.wp_guid)
         for (let id of memberIdList) {
           dispatch(
             updateGroupMemberTask({
-              task_guid: task.guid,
+              task_guid: task.wp_guid,
               user_guid: Number(id),
               completion_status: COMPLETION_STATUS.COMPLETED,
               groupGuid: Number(selectedGroup),
