@@ -67,11 +67,11 @@ const Task = () => {
   const user = useSelector((state) => state.user)
   const generalTranslations = useSelector((state) => state.translations.yleiset)
 
-  // const favourites = useSelector((state) =>
-  //   state.favourites.map((favourite) => state.itemsByGuid[favourite])
-  // )
-  // const finder = (favourite) => task.item.guid === favourite.guid
-  // const isFavourite = !!favourites.find(finder)
+  const favourites = useSelector((state) =>
+    state.favourites.map((favourite) => state.itemsByGuid[favourite])
+  )
+  const finder = (favourite) => task.item.guid === favourite.guid
+  const isFavourite = !!favourites.find(finder)
   const isLoggedIn = user.loggedIn
   // const getSuggestionDetails = useCallback(
   //   async (d) => {
@@ -139,7 +139,7 @@ const Task = () => {
         <StyledActions
           guid={task.wp_guid}
           itemType={task.type}
-          // isFavourite={isFavourite}
+          isFavourite={isFavourite}
         />
       )}
       {renderDetails()}
