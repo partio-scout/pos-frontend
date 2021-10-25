@@ -130,14 +130,12 @@ const Profile = () => {
   const favourites = useSelector((state) =>
     state.favourites.map((favourite) => state.itemsByGuid[favourite])
   )
+  const activityGroups = useSelector((state) => state.activityGroups)
 
   const activityTranslations = useSelector(
     (state) => state.translations.aktiviteetin_ylakasite
   )
   const generalTranslations = useSelector((state) => state.translations.yleiset)
-  // const getTranslation = (taskOrTaskGroup) => {
-  //   return taskOrTaskGroup.languages.find((x) => x.lang === language)
-  // }
 
   if (!itemsByGuid || !activityTranslations) return null
 
@@ -243,29 +241,14 @@ const Profile = () => {
               favourites
                 .filter((x) => x.item.locale == language)
                 .map((favourite) => {
-                  console.log(favourite.item.activity_group)
-                  // const taskTranslation = getTranslation(favourite.item)
-                  const activityGroups = useSelector(
-                    (state) => state.activityGroups
-                  )
                   const parent = activityGroups[favourite.item.activity_group]
-                  console.log(parent)
-                  // const parentTranslation = getTranslation(parent.item)
                   return (
                     <ListItem
                       key={favourite.id}
                       guid={favourite.guid}
                       ageGroupGuid={favourite.ageGroupGuid}
-                      title={
-                        // taskTranslation
-                        //   ? taskTranslation.title
-                        favourite.item.title
-                      }
-                      // subTitle={
-                      //   parentTranslation
-                      //     ? parentTranslation.title:
-                      //    parent.item.title
-                      // }
+                      title={favourite.item.title}
+                      subTitle={parent.title}
                       language={language}
                       itemType={ITEM_TYPES.TASK}
                       showActions
@@ -289,9 +272,7 @@ const Profile = () => {
               const task = itemsByGuid[taskGuid]
               if (!task) return null
               if (task.item.locale !== language) return null
-              // const taskTranslation = getTranslation(task.item)
-              // const parent = itemsByGuid[task.parentGuid]
-              // const parentTranslation = getTranslation(parent.item)
+              const parent = activityGroups[task.item.activity_group]
               const finder = (favourite) => taskGuid === favourite.guid
               const isFavourite = !!favourites.find(finder)
               return (
@@ -299,15 +280,8 @@ const Profile = () => {
                   key={task.id}
                   guid={task.guid}
                   ageGroupGuid={task.ageGroupGuid}
-                  title={
-                    // taskTranslation ? taskTranslation.title :
-                    task.item.title
-                  }
-                  // subTitle={
-                  //   parentTranslation
-                  //     ? parentTranslation.title
-                  //    parent.item.title
-                  // }
+                  title={task.item.title}
+                  subTitle={parent.title}
                   language={language}
                   itemType={ITEM_TYPES.TASK}
                   showActions
