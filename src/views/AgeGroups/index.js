@@ -1,6 +1,7 @@
 import React, { useLayoutEffect, useRef, useState, useCallback } from 'react'
 import styled, { withTheme } from 'styled-components'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { setSelectedLanguage } from 'redux/actionCreators'
 import { Link } from 'react-router-dom'
 import { determineLanguageFromUrl } from 'helpers'
 import AgeGroupItem from 'components/AgeGroupItem'
@@ -73,14 +74,12 @@ const AgeGroups = ({ theme }) => {
   const language = determineLanguageFromUrl(window.location)
   const generalTranslations = useSelector((state) => state.translations.yleiset)
   const languages = ['fi', 'sv', 'en', 'smn']
+  const dispatch = useDispatch()
 
   const itemsByGuid = useSelector((state) => state.itemsByGuid)
 
   const contentRef = useRef()
   const containerRef = useRef()
-  const ageGroupsLocalized = ageGroups.filter(
-    (ageGroup) => ageGroup.locale === language
-  )
 
   const getAgeGroupCenterPositions = useCallback(
     (content) =>
@@ -89,6 +88,10 @@ const AgeGroups = ({ theme }) => {
       ),
     []
   )
+
+  const setSelectedLanguagetoState = (language) => {
+    dispatch(setSelectedLanguage(language))
+  }
 
   useLayoutEffect(() => {
     const container = containerRef.current
@@ -137,9 +140,9 @@ const AgeGroups = ({ theme }) => {
   ])
 
   //TODO: get agegroup from user if set
-  const activeAgeGroup = ageGroupsLocalized.find(
-    (ageGroup) => ageGroupsLocalized.indexOf(ageGroup) === activeIndex
-  )
+  const activeAgeGroup = ageGroups
+    .sort((a, b) => a.minimum_age - b.minimum_age)
+    .find((ageGroup) => ageGroups.indexOf(ageGroup) === activeIndex)
 
   const activeAgeGroupGuid = activeAgeGroup ? activeAgeGroup.wp_guid : ''
 
@@ -149,8 +152,8 @@ const AgeGroups = ({ theme }) => {
     <Container ref={containerRef} activeIndex={activeAgeGroupGuid}>
       <Menu language={language} user={user} />
       <Content ref={contentRef}>
-        {ageGroupsLocalized
-          .filter((ageGroup) => ageGroup.locale === language)
+        {ageGroups
+          .filter((ageGroup) => ageGroup.activity_groups.length)
           .sort((a, b) => a.minimum_age - b.minimum_age)
           .map((ageGroup, i) => {
             return (
@@ -162,11 +165,12 @@ const AgeGroups = ({ theme }) => {
                 user={user}
                 userTasks={userTasks}
                 translations={generalTranslations}
+                localizedAgeGroups={ageGroups}
               />
             )
           })}
       </Content>
-      <Languages>
+      <Languages onClick={setSelectedLanguagetoState(language)}>
         {languages.map((language, i) => (
           <Link key={i} to={`/?lang=${language}`}>
             {language}

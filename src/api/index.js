@@ -1,8 +1,8 @@
 // CONTENT (Partio API)
 import { PARTIO_API_URL } from './variables'
 
-export const fetchAllContent = async () => {
-  const res = await fetch(`${PARTIO_API_URL}/age-groups?_locale=all`)
+export const fetchAgeGroups = async (language) => {
+  const res = await fetch(`${PARTIO_API_URL}/age-groups?_locale=${language}`)
   const ageGroups = await res.json()
   return ageGroups
 }
@@ -13,13 +13,14 @@ export const fetchSingleAgeGroup = async (id) => {
   return ageGroup
 }
 
-export const fetchActivityGroups = async () => {
+export const fetchActivityGroups = async (language) => {
+  const locale = language === undefined ? 'fi' : language
   const countRes = await fetch(
-    `${PARTIO_API_URL}/activity-groups/count?_locale=all`
+    `${PARTIO_API_URL}/activity-groups/count?_locale=${locale}`
   )
   const count = await countRes.json()
   const res = await fetch(
-    `${PARTIO_API_URL}/activity-groups?_limit=${count}&_locale=all`
+    `${PARTIO_API_URL}/activity-groups?_limit=${count}&_locale=${locale}`
   )
   const activityGroups = await res.json()
   return activityGroups
@@ -37,9 +38,9 @@ export const fetchActivities = async () => {
   return activities
 }
 
-export const fetchActivity = async (wp_guid, locale) => {
+export const fetchActivity = async (wp_guid, language) => {
   const res = await fetch(
-    `${PARTIO_API_URL}/activities?wp_guid=${wp_guid}&_locale=${locale}`
+    `${PARTIO_API_URL}/activities?wp_guid=${wp_guid}&_locale=${language}`
   )
   const activity = await res.json()
   return activity

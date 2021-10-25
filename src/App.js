@@ -10,7 +10,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import styled, { ThemeProvider } from 'styled-components'
 import { useTransition, animated } from 'react-spring'
 import {
-  fetchAllContent,
+  fetchAgeGroups,
   fetchActivityGroups,
   fetchTranslations,
   fetchFavourites,
@@ -45,18 +45,19 @@ import { ITEM_TYPES } from 'consts'
 
 const App = () => {
   const dispatch = useDispatch()
+  const language = useSelector((state) => state.selectedLanguage)
+  const activityGroups = useSelector((state) => state.activityGroups)
 
-  useEffect(() => {
-    fetchAllContent().then((ageGroups) => {
+  const fetchContent = (language) => {
+    fetchAgeGroups(language).then((ageGroups) => {
       dispatch(setInitialData(ageGroups))
     })
     fetchTranslations().then((translations) =>
       dispatch(setTranslations(translations))
     )
-    fetchActivityGroups().then((activityGroups) =>
+    fetchActivityGroups(language).then((activityGroups) =>
       dispatch(setActivityGroupsData(activityGroups))
     )
-
     fetchUser().then((user) => {
       if (Object.keys(user).length > 0) {
         dispatch(setUser({ ...user, loggedIn: true }))
@@ -70,8 +71,15 @@ const App = () => {
         )
       }
     })
-  }, [dispatch])
+  }
 
+  useEffect(() => {
+    fetchContent(language)
+  }, [dispatch, language])
+
+  if (!activityGroups) {
+    return null
+  }
   return (
     <Router>
       <ThemeProvider theme={theme}>
