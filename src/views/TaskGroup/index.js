@@ -5,8 +5,6 @@ import { useParams, useHistory } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import DetailPage from 'components/DetailPage'
 import ListItem from 'components/ListItem'
-// import TaskGroupItem from 'components/TaskGroupItem'
-// import { fetchTaskDetails } from 'api'
 // import { actionTypes } from 'components/Actions'
 
 import {
@@ -37,40 +35,17 @@ const TaskGroup = () => {
   // const user = useSelector((state) => state.user)
   const taskGroup = useSelector((state) => state.itemsByGuid[id])
 
-  const activityGroups = useSelector((state) => state.activityGroups)
-  const localizedActivityGroup = activityGroups.find(
-    (activityGroup) =>
-      activityGroup.wp_guid === id && activityGroup.locale === language
+  const activityGroup = useSelector(
+    (state) => state.activityGroups[taskGroup.item.id]
   )
-  console.log('loc', localizedActivityGroup)
 
   const generalTranslations = useSelector((state) => state.translations.yleiset)
   const favourites = useSelector((state) => state.favourites)
 
-  // const mandatoryTasksGuids =
-  //   taskGroup.activities.length > 0 && !taskGroup.activity_groups
-  //     ? useSelector(
-  //         (state) =>
-  //           state.taskGroupRequirements.taskGroupRequirements[id]
-  //             .mandatoryTasks
-  //       )
-  //     : []
-  // if (!taskGroup || !activityTranslations) {
-  //   return null
-  // }
-
-  // const getTranslation = (taskOrTaskGroup) => {
-  //   return taskOrTaskGroup.languages.find((x) => x.lang === language)
-  // }
-
-  // const { item } = taskGroup
-  // console.log('item', item)
-  // const taskGroupTranslation = getTranslation(item)
-
   const mandatoryTasks = []
   const optionalTasks = []
 
-  localizedActivityGroup.activities.forEach((activity) => {
+  activityGroup.activities.forEach((activity) => {
     if (activity.mandatory === true) {
       mandatoryTasks.push(activity)
     } else {
@@ -84,7 +59,6 @@ const TaskGroup = () => {
     fetchActivity(task.wp_guid, language).then((activity) =>
       dispatch(setItemsByGuid(deepFlatten(activity)))
     )
-    // const taskTranslation = getTranslation(task)
     const status = userTasks[task.wp_guid]
       ? userTasks[task.wp_guid].toLowerCase()
       : ''
@@ -115,21 +89,18 @@ const TaskGroup = () => {
     <StyledDetailPage
       onBackClick={() =>
         history.push(
-          `/guid/${localizedActivityGroup.age_group.wp_guid}?lang=${language}`
+          `/guid/${taskGroup.item.age_group.wp_guid}?lang=${language}`
         )
       }
       // taskGroupTranslation ? taskGroupTranslation.title :
-      title={localizedActivityGroup.title}
+      title={activityGroup.title}
     >
       <TaskList>
-        {localizedActivityGroup.ingress && (
-          <p>{striptags(localizedActivityGroup.ingress)}</p>
+        {activityGroup.ingress && <p>{striptags(activityGroup.ingress)}</p>}
+        {activityGroup.content && activityGroup.content.length < 700 && (
+          <p>{striptags(activityGroup.content)}</p>
         )}
-        {localizedActivityGroup.content &&
-          localizedActivityGroup.content.length < 700 && (
-            <p>{striptags(localizedActivityGroup.content)}</p>
-          )}
-        {localizedActivityGroup.activities.length > 0 ? (
+        {activityGroup.activities.length > 0 ? (
           <>
             <h4>
               <span>

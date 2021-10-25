@@ -131,10 +131,6 @@ const Profile = () => {
     state.favourites.map((favourite) => state.itemsByGuid[favourite])
   )
 
-  const localizedAgeGroups = ageGroups.filter(
-    (item) => item.locale === language
-  )
-
   const activityTranslations = useSelector(
     (state) => state.translations.aktiviteetin_ylakasite
   )
@@ -151,7 +147,8 @@ const Profile = () => {
 
   const taskGroupsWithChildTaskGroups = getTaskGroupsWithChildTaskGroups(
     itemsByGuid,
-    completedTasks
+    completedTasks,
+    language
   )
 
   const ongoingTasks = Object.keys(userTasks).filter(
@@ -160,7 +157,7 @@ const Profile = () => {
       userTasks[guid] === COMPLETION_STATUS.COMPLETION_REQUESTED
   )
 
-  const completedAgeGroups = localizedAgeGroups
+  const completedAgeGroups = ageGroups
     .filter((ageGroup) => {
       const items = itemsByGuid[ageGroup.wp_guid]
       const ageGroupItem = items && items.item
@@ -243,33 +240,40 @@ const Profile = () => {
           </h4>
           <TaskList>
             {favourites &&
-              favourites.map((favourite) => {
-                // const taskTranslation = getTranslation(favourite.item)
-                // const parent = itemsByGuid[favourite.parentGuid]
-                // const parentTranslation = getTranslation(parent.item)
-                return (
-                  <ListItem
-                    key={favourite.id}
-                    guid={favourite.guid}
-                    ageGroupGuid={favourite.ageGroupGuid}
-                    title={
-                      // taskTranslation
-                      //   ? taskTranslation.title
-                      favourite.item.title
-                    }
-                    // subTitle={
-                    //   parentTranslation
-                    //     ? parentTranslation.title:
-                    //    parent.item.title
-                    // }
-                    language={language}
-                    itemType={ITEM_TYPES.TASK}
-                    showActions
-                    showFavourite
-                    isFavourite
-                  />
-                )
-              })}
+              favourites
+                .filter((x) => x.item.locale == language)
+                .map((favourite) => {
+                  console.log(favourite.item.activity_group)
+                  // const taskTranslation = getTranslation(favourite.item)
+                  const activityGroups = useSelector(
+                    (state) => state.activityGroups
+                  )
+                  const parent = activityGroups[favourite.item.activity_group]
+                  console.log(parent)
+                  // const parentTranslation = getTranslation(parent.item)
+                  return (
+                    <ListItem
+                      key={favourite.id}
+                      guid={favourite.guid}
+                      ageGroupGuid={favourite.ageGroupGuid}
+                      title={
+                        // taskTranslation
+                        //   ? taskTranslation.title
+                        favourite.item.title
+                      }
+                      // subTitle={
+                      //   parentTranslation
+                      //     ? parentTranslation.title:
+                      //    parent.item.title
+                      // }
+                      language={language}
+                      itemType={ITEM_TYPES.TASK}
+                      showActions
+                      showFavourite
+                      isFavourite
+                    />
+                  )
+                })}
           </TaskList>
           <h4>
             {getTermInLanguage(
@@ -284,7 +288,7 @@ const Profile = () => {
             {ongoingTasks.map((taskGuid) => {
               const task = itemsByGuid[taskGuid]
               if (!task) return null
-
+              if (task.item.locale !== language) return null
               // const taskTranslation = getTranslation(task.item)
               // const parent = itemsByGuid[task.parentGuid]
               // const parentTranslation = getTranslation(parent.item)
