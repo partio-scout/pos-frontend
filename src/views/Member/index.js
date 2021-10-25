@@ -128,9 +128,9 @@ const Member = () => {
 
   const memberTasks = member.memberTasks
 
-  const completedTasks = Object.keys(memberTasks).filter(
-    (guid) => memberTasks[guid] === COMPLETION_STATUS.COMPLETED
-  )
+  const completedTasks = Object.keys(memberTasks)
+    .filter((guid) => memberTasks[guid] === COMPLETION_STATUS.COMPLETED)
+    .filter((task) => task !== 'undefined')
 
   const taskGroupsWithChildTaskGroups = getTaskGroupsWithChildTaskGroups(
     itemsByGuid,
@@ -152,7 +152,9 @@ const Member = () => {
   return (
     <Background ageGroupGuid={ageGroupGuid}>
       <Content>
-        <CloseIcon onClick={() => history.push(`/group/${groupId}`)} />
+        <CloseIcon
+          onClick={() => history.push(`/group/${groupId}/?lang=${language}`)}
+        />
         <HeadingContent>
           <Picture />
           {member.memberName && group && (
