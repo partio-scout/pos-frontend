@@ -7,11 +7,7 @@ import TaskGroupItem from 'components/TaskGroupItem'
 import { actionTypes } from 'components/Actions'
 import { ITEM_TYPES } from '../../consts'
 import { setSelectedAgeGroup } from 'redux/actionCreators'
-import {
-  // getAgeGroupTitleWithoutAges,
-  determineLanguageFromUrl,
-  getTermInLanguage,
-} from 'helpers'
+import { determineLanguageFromUrl, getTermInLanguage } from 'helpers'
 
 const Background = styled.div`
   min-height: 100vh;
@@ -97,49 +93,42 @@ const MainSymbol = styled.img`
 const AgeGroup = () => {
   const history = useHistory()
   const dispatch = useDispatch()
-  // const userTasks = useSelector(state => state.tasks)
-  // const user = useSelector(state => state.user)
   const groupHeadingTranslations = useSelector(
     (state) => state.translations.aktiviteettipaketin_ylakasite
   )
   const activityTranslations = useSelector(
     (state) => state.translations.aktiviteetin_ylakasite
   )
-  const generalTranslations = useSelector((state) => state.translations.yleiset)
 
   const { id } = useParams()
   const language = determineLanguageFromUrl(window.location)
-  const ageGroups = useSelector((state) => state.ageGroups)
-  const localizedAgeGroup = ageGroups.find(
-    (ageGroup) => ageGroup.wp_guid === id && ageGroup.locale === language
-  )
-  useEffect(() => {
-    if (localizedAgeGroup) {
-      dispatch(setSelectedAgeGroup(localizedAgeGroup))
-    }
-  }, [localizedAgeGroup, dispatch])
+  const itemsByGuid = useSelector((state) => state.itemsByGuid)
+  const activityGroupById = useSelector((state) => state.activityGroups)
+  const ageGroup = itemsByGuid[id] ? itemsByGuid[id].item : undefined
 
-  if (!localizedAgeGroup || !groupHeadingTranslations) {
+  useEffect(() => {
+    if (ageGroup) {
+      dispatch(setSelectedAgeGroup(ageGroup))
+    }
+  }, [ageGroup, dispatch])
+
+  if (!ageGroup || !groupHeadingTranslations) {
     return null
   }
 
-  const ageGroupGuid = localizedAgeGroup ? localizedAgeGroup.wp_guid : 'default'
-  // const languageInfo = ageGroup.languages.find(x => x.lang === language)
-  const getTerm = (title, subtask_term) => {
-    let term = getTermInLanguage(
-      activityTranslations,
-      `${subtask_term ? subtask_term.name : 'aktiviteetti'}_plural`,
-      language
-    )
+  const ageGroupGuid = ageGroup ? ageGroup.wp_guid : 'default'
 
-    if (title === 'Haasteet') {
-      term = getTermInLanguage(generalTranslations, 'challenges', language)
-    }
-
-    if (term === 'askeleet' && title !== 'Tervetuloa' && title !== 'Siirtymä') {
-      term = getTermInLanguage(activityTranslations, 'paw_plural', language)
-    }
-    return term
+  const getTerm = (activityGroup) => {
+    const group = activityGroupById[activityGroup.id]
+    const term = `${
+      group.activities.length > 1
+        ? group.subactivity_term.plural
+        : group.subactivity_term.singular
+    }`
+    const subtitle = term
+      ? `${group.activities.length} ${term}`
+      : group.activities.length
+    return subtitle
   }
 
   const getTitle = (subtask_term) => {
@@ -162,22 +151,13 @@ const AgeGroup = () => {
           <X onClick={() => history.push(`/?lang=${language}`)} />
         </CloseIcon>
         <HeadingContent>
-          <MainSymbol
-            alt={localizedAgeGroup.title}
-            src={localizedAgeGroup.logo.url}
-          />
-          <h3>
-            {
-              // languageInfo ? languageInfo.title :
-              localizedAgeGroup.title
-            }
-          </h3>
+          <MainSymbol alt={ageGroup.title} src={ageGroup.logo.url} />
+          <h3>{ageGroup.title}</h3>
         </HeadingContent>
         <BodyContent>
-          {/* <h4>Tähän tulee activitygroup term</h4> */}
-          <h4>{getTitle(localizedAgeGroup.subactivitygroup_term)}</h4>
-          {localizedAgeGroup.activity_groups.length > 0 &&
-            localizedAgeGroup.activity_groups
+          <h4>{getTitle(ageGroup.subactivitygroup_term)}</h4>
+          {ageGroup.activity_groups.length > 0 &&
+            ageGroup.activity_groups
               .sort((a, b) => a.order - b.order)
               .map((activityGroup) => (
                 <TaskGroupItem
@@ -185,10 +165,7 @@ const AgeGroup = () => {
                   taskGroup={activityGroup}
                   ageGroupGuid={ageGroupGuid}
                   language={language}
-                  tasksTerm={getTerm(
-                    activityGroup.title,
-                    activityGroup.subtask_term
-                  )}
+                  tasksTerm={language === 'fi' ? getTerm(activityGroup) : null}
                   itemType={ITEM_TYPES.TASK_GROUP}
                   actionsComponent={actionTypes.taskGroupActions}
                   showActions
