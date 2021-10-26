@@ -5,9 +5,7 @@ import {
   getAgeGroupTitleWithoutAges,
   getTermInLanguage,
   getAgeGroupStatus,
-  //ageGroupHasTranslatedTaskGroups,
 } from 'helpers'
-// import { getAgeGroupIcon } from 'graphics/ageGroups'
 
 const StyledAgeGroupItem = styled.div`
   width: 50vw;
@@ -50,16 +48,11 @@ const Status = styled.div`
 
 const AgeGroupItem = ({
   ageGroup,
-  // itemsByGuid,
   language,
   translations,
   user,
   userTasks,
 }) => {
-  // console.log(ageGroup)
-  // const hasTranslatedTaskGroups = ageGroup.activity_groups > 0
-
-  // if (!hasTranslatedTaskGroups) return null
   const status = user.loggedIn ? getAgeGroupStatus(ageGroup, userTasks) : null
   const icon = ageGroup.logo.url
 
@@ -68,7 +61,6 @@ const AgeGroupItem = ({
       <AgeGroupLink to={`/guid/${ageGroup.wp_guid}?lang=${language}`}>
         <AgeGroupIllustration alt={ageGroup.title} src={icon} />
         <h3 data-testid="title">
-          {/* {ageGroup.title} */}
           {getAgeGroupTitleWithoutAges(ageGroup.title)}
         </h3>
         {status && (

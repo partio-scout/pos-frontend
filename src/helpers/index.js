@@ -219,13 +219,10 @@ export const getAgeGroupCompletion = (ageGroup, userTasks) => {
 
 /* taskgroupeilla ei ole enään sisäisiä taskgroupeja */
 // const reduceTaskGroup = (accumulator, taskGroup) => {
-//   console.log('taskgroup', taskGroup)
 //   const itemsByGuid = useSelector((state) => state.itemsByGuid)
 //   const activityGroup = itemsByGuid[taskGroup.wp_guid]
-//   console.log(activityGroup)
 //     //const mandatoryTasks = []
 //   activityGroup.item.activities.map(activity => {
-//     console.log(activity)
 
 //   })
 //   if (taskGroup.mandatory_tasks.length) {
