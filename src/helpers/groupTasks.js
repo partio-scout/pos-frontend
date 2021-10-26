@@ -27,11 +27,6 @@ export const getMemberCompletedTasks = (member, taskGroupTasks) => {
     return completedTasks
   }
 }
-/* TODO: Check if member task is completed and then check whether the task is required or optional
- *  and add +1 to the corresponding value in the accumulator
- *
- *  { mandatory: 0, optional: 0 }
- */
 
 /**
  * Get a list of task group items from completed tasks
@@ -68,12 +63,6 @@ export const getGroupParent = (itemsByGuid, groupGuid, groupTasks) => {
     }
   }
   return group.id
-  // }
-  // return {
-  //   [getGroupParent(itemsByGuid, group.parentGuid)]: {
-  //     [groupGuid]: groupTasks,
-  //   },
-  // }
 }
 
 /**
