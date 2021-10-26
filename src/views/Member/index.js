@@ -105,6 +105,7 @@ const Member = () => {
   const groupsData = useSelector((state) => state.user.userGroups)
   const generalTranslations = useSelector((state) => state.translations.yleiset)
   const itemsByGuid = useSelector((state) => state.itemsByGuid)
+  const activityGroups = useSelector((state) => state.activityGroups)
   const activityTranslations = useSelector(
     (state) => state.translations.aktiviteetin_ylakasite
   )
@@ -182,6 +183,7 @@ const Member = () => {
           <TaskList>
             {completionRequestedTasks.map((taskGuid) => {
               const task = itemsByGuid[taskGuid]
+              const parent = activityGroups[task.item.activity_group]
               if (task.item.locale !== language) return null
               return (
                 <ListItem
@@ -190,7 +192,7 @@ const Member = () => {
                   groupGuid={Number(groupId)}
                   userGuid={Number(memberId)}
                   title={task.item.title}
-                  // subTitle={parent.item.title}
+                  subTitle={parent.title}
                   itemType={ITEM_TYPES.TASK}
                   actionsComponent={actionTypes.groupLeaderActions}
                   showActions
@@ -204,13 +206,14 @@ const Member = () => {
           <TaskList>
             {activeTasks.map((taskGuid) => {
               const task = itemsByGuid[taskGuid]
+              const parent = activityGroups[task.item.activity_group]
               if (task.item.locale !== language) return null
               return (
                 <ListItem
                   key={task.item.wp_guid}
                   guid={task.id}
                   title={task.item.title}
-                  // subTitle={parent.item.title}
+                  subTitle={parent.title}
                   itemType={ITEM_TYPES.TASK}
                   actionsComponent={actionTypes.groupLeaderActions}
                 />
