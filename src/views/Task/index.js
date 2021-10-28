@@ -73,31 +73,6 @@ const Task = () => {
   const finder = (favourite) => task.item.guid === favourite.guid
   const isFavourite = !!favourites.find(finder)
   const isLoggedIn = user.loggedIn
-  // const getSuggestionDetails = useCallback(
-  //   async (d) => {
-  //     const suggestionsInLanguage = d.suggestions_details.find(
-  //       (s) => s.lang === language
-  //     )
-  //     if (suggestionsInLanguage) {
-  //       const res = await fetch(suggestionsInLanguage.details)
-  //       const data = await res.json()
-  //       setSuggestions(data.items)
-  //     }
-  //   },
-  //   [language]
-  // )
-
-  // const getTaskDetails = useCallback(async () => {
-  //   const res = await fetchTaskDetails(task.item.guid, language)
-  //   setDetails(res)
-  //   getSuggestionDetails(res)
-  // }, [task, language, getSuggestionDetails])
-
-  // useEffect(() => {
-  //   getTaskDetails()
-  // }, [getTaskDetails])
-
-  // const translations = task.item.languages.find((x) => x.lang === language)
 
   const renderDetails = () => {
     return (
@@ -133,7 +108,6 @@ const Task = () => {
     <StyledDetailPage
       onBackClick={() => history.goBack()}
       title={task.item.title}
-      // translations ? translations.title :
     >
       {isLoggedIn && (
         <StyledActions

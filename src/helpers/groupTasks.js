@@ -56,7 +56,6 @@ export const getTaskGroupsWithItems = (itemsByGuid, completedTaskItems) =>
  */
 export const getGroupParent = (itemsByGuid, groupGuid, groupTasks) => {
   const group = itemsByGuid[groupGuid]
-  // if (group.parentGuid === group.ageGroupGuid) {
   if (groupTasks) {
     return {
       [group.id]: groupTasks,

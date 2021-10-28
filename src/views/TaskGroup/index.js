@@ -5,13 +5,11 @@ import { useParams, useHistory } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import DetailPage from 'components/DetailPage'
 import ListItem from 'components/ListItem'
-// import { actionTypes } from 'components/Actions'
 
 import {
   deepFlatten,
   determineLanguageFromUrl,
   getTermInLanguage,
-  // getTaskGroupStatus,
 } from 'helpers'
 import { ITEM_TYPES } from 'consts'
 import { fetchActivity } from 'api'
@@ -32,7 +30,6 @@ const TaskGroup = () => {
   const history = useHistory()
   const language = determineLanguageFromUrl(window.location)
   const userTasks = useSelector((state) => state.tasks)
-  // const user = useSelector((state) => state.user)
   const taskGroup = useSelector((state) => state.itemsByGuid[id])
 
   const activityGroup = useSelector(
@@ -92,7 +89,6 @@ const TaskGroup = () => {
           `/guid/${taskGroup.item.age_group.wp_guid}?lang=${language}`
         )
       }
-      // taskGroupTranslation ? taskGroupTranslation.title :
       title={activityGroup.title}
     >
       <TaskList>
