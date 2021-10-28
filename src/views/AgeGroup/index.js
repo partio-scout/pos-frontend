@@ -7,7 +7,11 @@ import TaskGroupItem from 'components/TaskGroupItem'
 import { actionTypes } from 'components/Actions'
 import { ITEM_TYPES } from '../../consts'
 import { setSelectedAgeGroup } from 'redux/actionCreators'
-import { determineLanguageFromUrl, getTermInLanguage } from 'helpers'
+import {
+  determineLanguageFromUrl,
+  getTermInLanguage,
+  getActivityGroupIcon,
+} from 'helpers'
 
 const Background = styled.div`
   min-height: 100vh;
@@ -165,6 +169,7 @@ const AgeGroup = () => {
                   taskGroup={activityGroup}
                   ageGroupGuid={ageGroupGuid}
                   language={language}
+                  icon={getActivityGroupIcon(activityGroup)}
                   tasksTerm={language === 'fi' ? getTerm(activityGroup) : null}
                   itemType={ITEM_TYPES.TASK_GROUP}
                   actionsComponent={actionTypes.taskGroupActions}

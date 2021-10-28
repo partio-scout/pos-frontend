@@ -4,7 +4,11 @@ import styled from 'styled-components'
 import { X } from 'react-feather'
 import { useHistory, useParams } from 'react-router-dom'
 
-import { determineLanguageFromUrl, getTermInLanguage } from '../../helpers'
+import {
+  determineLanguageFromUrl,
+  getActivityGroupIcon,
+  getTermInLanguage,
+} from '../../helpers'
 import ListItem from 'components/ListItem'
 import { ITEM_TYPES, COMPLETION_STATUS, AGE_GROUPS } from '../../consts'
 import { actionTypes } from 'components/Actions'
@@ -192,6 +196,7 @@ const Member = () => {
                   groupGuid={Number(groupId)}
                   userGuid={Number(memberId)}
                   title={task.item.title}
+                  icon={getActivityGroupIcon(parent)}
                   subTitle={parent.title}
                   itemType={ITEM_TYPES.TASK}
                   actionsComponent={actionTypes.groupLeaderActions}
@@ -214,6 +219,7 @@ const Member = () => {
                   guid={task.id}
                   title={task.item.title}
                   subTitle={parent.title}
+                  icon={getActivityGroupIcon(parent)}
                   itemType={ITEM_TYPES.TASK}
                   actionsComponent={actionTypes.groupLeaderActions}
                 />

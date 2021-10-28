@@ -1,7 +1,6 @@
 import React from 'react'
 import styled, { css } from 'styled-components'
 import { useHistory } from 'react-router-dom'
-import TaskIcon from 'assets/tasks/task.svg'
 import Actions from 'components/Actions'
 import FavouriteIcon from 'components/TaskActionsIcons'
 import { MoreHorizontal, ChevronDown } from 'react-feather'
@@ -33,15 +32,20 @@ const StyledListItem = styled.div`
     left: 0;
     width: 2.5rem;
     height: 2.5rem;
-    border-radius: 50%;
-    background-color: ${({ theme, ageGroupGuid }) =>
-      theme.color.ageGroups[ageGroupGuid] || theme.color.ageGroups.default};
     background-size: contain;
+    background-repeat: no-repeat;
 
     ${({ icon }) =>
       icon &&
       css`
         background-image: url(${icon});
+      `};
+    ${({ circleIcon }) =>
+      circleIcon &&
+      css`
+        background-color: ${({ theme, ageGroupGuid }) =>
+          theme.color.ageGroups[ageGroupGuid] || theme.color.ageGroups.default};
+        border-radius: 50%;
       `};
   }
 `
@@ -75,7 +79,8 @@ const ListItem = ({
   showActions,
   actionsComponent,
   itemType,
-  icon = TaskIcon,
+  icon,
+  circleIcon,
   showFavourite,
   isFavourite,
   onClick,
@@ -86,7 +91,7 @@ const ListItem = ({
 }) => {
   const history = useHistory()
   const dispatch = useDispatch()
-  const user = useSelector(state => state.user)
+  const user = useSelector((state) => state.user)
 
   const isLoggedIn = user.loggedIn
 
@@ -124,7 +129,12 @@ const ListItem = ({
   }
 
   return (
-    <StyledListItem ageGroupGuid={ageGroupGuid} icon={icon} onClick={onClick}>
+    <StyledListItem
+      ageGroupGuid={ageGroupGuid}
+      icon={icon}
+      circleIcon={circleIcon}
+      onClick={onClick}
+    >
       <StyledListItemContent
         data-testid="link"
         onClick={() =>

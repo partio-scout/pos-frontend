@@ -9,6 +9,7 @@ import ListItem from 'components/ListItem'
 import {
   deepFlatten,
   determineLanguageFromUrl,
+  getActivityGroupIcon,
   getTermInLanguage,
 } from 'helpers'
 import { ITEM_TYPES } from 'consts'
@@ -52,7 +53,6 @@ const TaskGroup = () => {
 
   const getTask = (task) => {
     const dispatch = useDispatch()
-
     fetchActivity(task.wp_guid, language).then((activity) =>
       dispatch(setItemsByGuid(deepFlatten(activity)))
     )
@@ -60,6 +60,7 @@ const TaskGroup = () => {
       ? userTasks[task.wp_guid].toLowerCase()
       : ''
     const task_status = status === 'active' ? 'started' : `task_${status}`
+    const icon = getActivityGroupIcon(activityGroup)
 
     return (
       <ListItem
@@ -73,6 +74,7 @@ const TaskGroup = () => {
           language
         )}
         language={language}
+        icon={icon}
         itemType={ITEM_TYPES.TASK}
         showActions
         showFavourite

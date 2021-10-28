@@ -1,6 +1,5 @@
 import React from 'react'
 import ListItem from 'components/ListItem'
-import taskGroupGraphics from 'graphics/taskGroups'
 
 const TaskGroupItem = ({
   taskGroup,
@@ -11,6 +10,7 @@ const TaskGroupItem = ({
   actionsComponent,
   showActions,
   groupGuid,
+  icon,
 }) => {
   return (
     <ListItem
@@ -23,7 +23,7 @@ const TaskGroupItem = ({
       title={taskGroup.title}
       subTitle={tasksTerm}
       language={language}
-      icon={taskGroupGraphics[`Group${taskGroup.wp_guid}`] || null}
+      icon={icon}
     />
   )
 }

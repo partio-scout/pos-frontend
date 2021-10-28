@@ -1,5 +1,6 @@
 import { ITEM_TYPES } from 'consts'
 import { useSelector } from 'react-redux'
+import taskGroupGraphics from 'graphics/taskGroups'
 
 export const determineLanguageFromUrl = (url) => {
   const urlObj = new URL(url)
@@ -126,6 +127,15 @@ export const getAgeGroupStatus = (ageGroup, userTasks) => {
     mandatory: `${completedMandatory.length} / ${ageGroupTasks.mandatory.length}`,
     optional: `${completedOptional.length} / ${ageGroupTasks.optional.length}`,
   }
+}
+
+export const getActivityGroupIcon = (activityGroup) => {
+  const icon = activityGroup.logo.formats
+    ? activityGroup.logo.formats.thumbnail.url
+    : activityGroup.logo.url
+    ? activityGroup.logo.url
+    : taskGroupGraphics[`Group${activityGroup.wp_guid}`]
+  return icon
 }
 
 export const getCompletedTaskGroups = (ageGroup, userTasks) => {

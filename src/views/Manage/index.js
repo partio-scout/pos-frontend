@@ -86,6 +86,7 @@ const Manage = () => {
               subTitle={groupMembers}
               language="fi"
               icon={null}
+              circleIcon={true}
               itemType={ITEM_TYPES.TASK}
               showActions
             />

@@ -21,6 +21,7 @@ import { ITEM_TYPES, COMPLETION_STATUS, AGE_GROUPS } from 'consts'
 import CompletedTasks from './CompletedTasks'
 import { getTaskGroupsWithChildTaskGroups } from '../../helpers/groupTasks'
 import { actionTypes } from 'components/Actions'
+import { getActivityGroupIcon } from 'helpers'
 
 const Background = styled.div`
   min-height: 100vh;
@@ -249,6 +250,7 @@ const Profile = () => {
                       ageGroupGuid={favourite.ageGroupGuid}
                       title={favourite.item.title}
                       subTitle={parent.title}
+                      icon={getActivityGroupIcon(parent)}
                       language={language}
                       itemType={ITEM_TYPES.TASK}
                       showActions
@@ -283,6 +285,7 @@ const Profile = () => {
                   title={task.item.title}
                   subTitle={parent.title}
                   language={language}
+                  icon={getActivityGroupIcon(parent)}
                   itemType={ITEM_TYPES.TASK}
                   showActions
                   showFavourite

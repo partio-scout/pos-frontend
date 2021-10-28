@@ -11,7 +11,11 @@ import { useSelector } from 'react-redux'
 
 import { ITEM_TYPES } from 'consts'
 import ListItem from 'components/ListItem'
-import { getTermInLanguage, getTaskGroupStatus } from 'helpers'
+import {
+  getTermInLanguage,
+  getTaskGroupStatus,
+  getActivityGroupIcon,
+} from 'helpers'
 import { getMemberTasks } from '../../helpers/groupTasks'
 
 const StyledAccordionItem = styled(AccordionItemPanel)`
@@ -72,6 +76,8 @@ const AccordionList = ({
     userTasks,
     getTermInLanguage(generalTranslations, 'done', language)
   )
+
+  const icon = getActivityGroupIcon(taskGroup.item)
   const ageGroupGuid = taskGroup.item.age_group
     ? taskGroup.item.age_group.wp_guid
     : null
@@ -86,6 +92,7 @@ const AccordionList = ({
               ageGroupGuid={ageGroupGuid}
               language={language}
               subTitle={status}
+              icon={icon}
               showActions
               showDropDownIcon
             />
@@ -100,6 +107,7 @@ const AccordionList = ({
               actionsComponent={actionsComponent}
               userGuid={userGuid}
               groupGuid={groupGuid}
+              icon={icon}
             />
           ) : (
             Object.keys(completedTasks[taskGroupGuid]).map(
@@ -134,6 +142,7 @@ const TaskList = ({
   actionsComponent,
   userGuid,
   groupGuid,
+  icon,
 }) => {
   if (!taskGroup.item.age_group) return null
 
@@ -145,6 +154,7 @@ const TaskList = ({
         title={task.item.title}
         itemType={ITEM_TYPES.TASK}
         ageGroupGuid={taskGroup.item.age_group.wp_guid}
+        icon={icon}
         language={language}
         actionsComponent={actionsComponent}
         userGuid={userGuid}
