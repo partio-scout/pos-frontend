@@ -119,7 +119,7 @@ const AgeGroup = () => {
   if (!ageGroup || !groupHeadingTranslations) {
     return null
   }
-
+  
   const ageGroupGuid = ageGroup ? ageGroup.wp_guid : 'default'
 
   const getTerm = (activityGroup) => {
