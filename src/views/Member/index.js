@@ -4,7 +4,11 @@ import styled from 'styled-components'
 import { X } from 'react-feather'
 import { useHistory, useParams } from 'react-router-dom'
 
-import { determineLanguageFromUrl, getTermInLanguage } from '../../helpers'
+import {
+  determineLanguageFromUrl,
+  getActivityGroupIcon,
+  getTermInLanguage,
+} from '../../helpers'
 import ListItem from 'components/ListItem'
 import { ITEM_TYPES, COMPLETION_STATUS, AGE_GROUPS } from '../../consts'
 import { actionTypes } from 'components/Actions'
@@ -105,13 +109,11 @@ const Member = () => {
   const groupsData = useSelector((state) => state.user.userGroups)
   const generalTranslations = useSelector((state) => state.translations.yleiset)
   const itemsByGuid = useSelector((state) => state.itemsByGuid)
+  const activityGroups = useSelector((state) => state.activityGroups)
   const activityTranslations = useSelector(
     (state) => state.translations.aktiviteetin_ylakasite
   )
 
-  const getTranslation = (taskOrTaskGroup) => {
-    return taskOrTaskGroup.languages.find((x) => x.lang === language)
-  }
   const { groupId } = useParams()
   const { memberId } = useParams()
 
@@ -131,9 +133,9 @@ const Member = () => {
 
   const memberTasks = member.memberTasks
 
-  const completedTasks = Object.keys(memberTasks).filter(
-    (guid) => memberTasks[guid] === COMPLETION_STATUS.COMPLETED
-  )
+  const completedTasks = Object.keys(memberTasks)
+    .filter((guid) => memberTasks[guid] === COMPLETION_STATUS.COMPLETED)
+    .filter((task) => task !== 'undefined')
 
   const taskGroupsWithChildTaskGroups = getTaskGroupsWithChildTaskGroups(
     itemsByGuid,
@@ -155,7 +157,9 @@ const Member = () => {
   return (
     <Background ageGroupGuid={ageGroupGuid}>
       <Content>
-        <CloseIcon onClick={() => history.push(`/group/${groupId}`)} />
+        <CloseIcon
+          onClick={() => history.push(`/group/${groupId}/?lang=${language}`)}
+        />
         <HeadingContent>
           <Picture />
           {member.memberName && group && (
@@ -181,20 +185,19 @@ const Member = () => {
             )}
           </h4>
           <TaskList>
-            {completionRequestedTasks.map((taskGuid, index) => {
+            {completionRequestedTasks.map((taskGuid) => {
               const task = itemsByGuid[taskGuid]
-              const taskTranslation = getTranslation(task.item)
-              const parent = itemsByGuid[task.parentGuid]
+              const parent = activityGroups[task.item.activity_group]
+              if (task.item.locale !== language) return null
               return (
                 <ListItem
-                  key={task.guid + index}
-                  guid={task.guid}
+                  key={task.item.wp_guid}
+                  guid={task.id}
                   groupGuid={Number(groupId)}
                   userGuid={Number(memberId)}
-                  title={
-                    taskTranslation ? taskTranslation.title : task.item.title
-                  }
-                  subTitle={parent.item.title}
+                  title={task.item.title}
+                  icon={getActivityGroupIcon(parent)}
+                  subTitle={parent.title}
                   itemType={ITEM_TYPES.TASK}
                   actionsComponent={actionTypes.groupLeaderActions}
                   showActions
@@ -206,18 +209,17 @@ const Member = () => {
             {getTermInLanguage(generalTranslations, 'working_on_it', language)}
           </h4>
           <TaskList>
-            {activeTasks.map((taskGuid, index) => {
+            {activeTasks.map((taskGuid) => {
               const task = itemsByGuid[taskGuid]
-              const taskTranslation = getTranslation(task.item)
-              const parent = itemsByGuid[task.parentGuid]
+              const parent = activityGroups[task.item.activity_group]
+              if (task.item.locale !== language) return null
               return (
                 <ListItem
-                  key={task.guid + index}
-                  guid={task.guid}
-                  title={
-                    taskTranslation ? taskTranslation.title : task.item.title
-                  }
-                  subTitle={parent.item.title}
+                  key={task.item.wp_guid}
+                  guid={task.id}
+                  title={task.item.title}
+                  subTitle={parent.title}
+                  icon={getActivityGroupIcon(parent)}
                   itemType={ITEM_TYPES.TASK}
                   actionsComponent={actionTypes.groupLeaderActions}
                 />

@@ -5,16 +5,13 @@ import {
   getAgeGroupTitleWithoutAges,
   getTermInLanguage,
   getAgeGroupStatus,
-  ageGroupHasTranslatedTaskGroups,
 } from 'helpers'
-import { getAgeGroupIcon } from 'graphics/ageGroups'
 
 const StyledAgeGroupItem = styled.div`
   width: 50vw;
   padding: 3rem 8vw 0;
   flex: 0 0 auto;
   scroll-snap-align: center;
-
   > a {
     height: 100%;
     display: flex;
@@ -25,11 +22,9 @@ const StyledAgeGroupItem = styled.div`
     text-decoration: none;
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   }
-
   :first-child {
     padding-left: 25vw;
   }
-
   :last-child {
     padding-right: 25vw;
   }
@@ -53,36 +48,20 @@ const Status = styled.div`
 
 const AgeGroupItem = ({
   ageGroup,
-  itemsByGuid,
   language,
   translations,
   user,
   userTasks,
 }) => {
-  const hasTranslatedTaskGroups = ageGroupHasTranslatedTaskGroups(
-    ageGroup.item,
-    itemsByGuid,
-    language
-  )
+  const status = user.loggedIn ? getAgeGroupStatus(ageGroup, userTasks) : null
+  const icon = ageGroup.logo.url
 
-  // Hide the age group if it does not have any translated task groups
-  if (!hasTranslatedTaskGroups) return null
-
-  const languageInfo = ageGroup.item.languages.find(x => x.lang === language)
-
-  const status = user.loggedIn
-    ? getAgeGroupStatus(ageGroup.item, userTasks)
-    : null
-
-  const icon = getAgeGroupIcon(ageGroup, userTasks, user.loggedIn)
   return (
     <StyledAgeGroupItem>
-      <AgeGroupLink to={`/guid/${ageGroup.guid}?lang=${language}`}>
+      <AgeGroupLink to={`/guid/${ageGroup.wp_guid}?lang=${language}`}>
         <AgeGroupIllustration alt={ageGroup.title} src={icon} />
         <h3 data-testid="title">
-          {getAgeGroupTitleWithoutAges(
-            languageInfo ? languageInfo.title : ageGroup.title
-          )}
+          {getAgeGroupTitleWithoutAges(ageGroup.title)}
         </h3>
         {status && (
           <>
@@ -93,11 +72,13 @@ const AgeGroupItem = ({
                 language
               )} ${status.mandatory}`}
             </Status>
-            <Status>{`${getTermInLanguage(
-              translations,
-              'optional_plural',
-              language
-            )} ${status.optional}`}</Status>
+            <Status>
+              {`${getTermInLanguage(
+                translations,
+                'optional_plural',
+                language
+              )} ${status.optional}`}
+            </Status>
           </>
         )}
       </AgeGroupLink>

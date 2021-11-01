@@ -1,9 +1,9 @@
 import moment from 'moment'
 
-export const getTimestamp = datetime => {
+export const getTimestamp = (datetime) => {
   return moment(datetime).format('DD.MM.YYYY, hh:mm')
 }
 
-export const getTaskUrl = task => {
-  return `/guid/${task.guid}`
+export const getTaskUrl = (task) => {
+  return `/guid/${task.item.wp_guid}`
 }

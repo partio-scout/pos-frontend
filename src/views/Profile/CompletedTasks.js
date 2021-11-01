@@ -11,7 +11,11 @@ import { useSelector } from 'react-redux'
 
 import { ITEM_TYPES } from 'consts'
 import ListItem from 'components/ListItem'
-import { getTermInLanguage, getTaskGroupStatus } from 'helpers'
+import {
+  getTermInLanguage,
+  getTaskGroupStatus,
+  getActivityGroupIcon,
+} from 'helpers'
 import { getMemberTasks } from '../../helpers/groupTasks'
 
 const StyledAccordionItem = styled(AccordionItemPanel)`
@@ -25,7 +29,7 @@ const CompletedTasks = ({
   groupMember,
   actionsComponent,
   userGuid,
-  groupGuid
+  groupGuid,
 }) => {
   const parentTaskGroupGuids = Object.keys(taskGroupsWithChildTaskGroups)
   return parentTaskGroupGuids.map((taskGroupGuid) => {
@@ -59,47 +63,39 @@ const AccordionList = ({
     ? getMemberTasks(
         groupMember.groupId,
         groupMember.memberId,
-        useSelector((state) => state.user.userGroups))
+        useSelector((state) => state.user.userGroups)
+      )
     : useSelector((state) => state.tasks)
 
   const generalTranslations = useSelector((state) => state.translations.yleiset)
   const taskGroup = itemsByGuid[taskGroupGuid]
-  const getTranslation = taskOrTaskGroup => {
-    return taskOrTaskGroup.languages.find(x => x.lang === language)
-  }
-  
+  if (taskGroup.item.locale !== language) return null
+
   const status = getTaskGroupStatus(
     taskGroup.item,
     userTasks,
     getTermInLanguage(generalTranslations, 'done', language)
   )
-  const taskTranslation = getTranslation(taskGroup.item)
 
+  const icon = getActivityGroupIcon(taskGroup.item)
+  const ageGroupGuid = taskGroup.item.age_group
+    ? taskGroup.item.age_group.wp_guid
+    : null
   return (
     <Accordion key={taskGroupGuid} allowZeroExpanded>
       <AccordionItem>
         <AccordionItemHeading>
           <AccordionItemButton>
-            {!taskGroup.item.taskgroups.length > 0 ? (
-              <ListItem
-                title={taskTranslation ? taskTranslation.title : taskGroup.item.title}
-                itemType={ITEM_TYPES.TASK_GROUP}
-                ageGroupGuid={taskGroup.ageGroupGuid}
-                language={language}
-                subTitle={status}
-                showActions
-                showDropDownIcon
-              />
-            ) : (
-              <ListItem
-                title={taskTranslation ? taskTranslation.title : taskGroup.item.title}
-                itemType={ITEM_TYPES.TASK_GROUP}
-                ageGroupGuid={taskGroup.ageGroupGuid}
-                language={language}
-                showActions
-                showDropDownIcon
-              />
-            )}
+            <ListItem
+              title={taskGroup.item.title}
+              itemType={ITEM_TYPES.TASK_GROUP}
+              ageGroupGuid={ageGroupGuid}
+              language={language}
+              subTitle={status}
+              icon={icon}
+              showActions
+              showDropDownIcon
+            />
           </AccordionItemButton>
         </AccordionItemHeading>
         <StyledAccordionItem>
@@ -111,6 +107,7 @@ const AccordionList = ({
               actionsComponent={actionsComponent}
               userGuid={userGuid}
               groupGuid={groupGuid}
+              icon={icon}
             />
           ) : (
             Object.keys(completedTasks[taskGroupGuid]).map(
@@ -138,21 +135,26 @@ const AccordionList = ({
   )
 }
 
-const TaskList = ({ tasks, taskGroup, language, actionsComponent, userGuid, groupGuid }) => {
+const TaskList = ({
+  tasks,
+  taskGroup,
+  language,
+  actionsComponent,
+  userGuid,
+  groupGuid,
+  icon,
+}) => {
+  if (!taskGroup.item.age_group) return null
+
   return tasks.map((task) => {
-
-    const getTranslation = taskOrTaskGroup => {
-      return taskOrTaskGroup.languages.find(x => x.lang === language)
-    }
-    const taskTranslation = getTranslation(task.item)
-
     return (
       <ListItem
-        key={task.guid}
-        guid={task.guid}
-        title={taskTranslation ? taskTranslation.title : task.item.title}
+        key={task.id}
+        guid={task.id}
+        title={task.item.title}
         itemType={ITEM_TYPES.TASK}
-        ageGroupGuid={taskGroup.ageGroupGuid}
+        ageGroupGuid={taskGroup.item.age_group.wp_guid}
+        icon={icon}
         language={language}
         actionsComponent={actionsComponent}
         userGuid={userGuid}

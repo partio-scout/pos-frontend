@@ -1,11 +1,10 @@
-import React, { useEffect, useState, useCallback } from 'react'
+import React from 'react'
 import styled, { keyframes } from 'styled-components'
 import { useParams, useHistory } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import striptags from 'striptags'
 import DetailPage from 'components/DetailPage'
 import Actions from 'components/Actions'
-import { fetchTaskDetails } from 'api'
 import { determineLanguageFromUrl, getTermInLanguage } from 'helpers'
 
 const DetailsContainer = styled.div`
@@ -61,14 +60,13 @@ const StyledActions = styled(Actions)`
 `
 
 const Task = () => {
-  const { guid } = useParams()
+  const { id } = useParams()
   const history = useHistory()
   const language = determineLanguageFromUrl(window.location)
-  const task = useSelector((state) => state.itemsByGuid[guid])
+  const task = useSelector((state) => state.itemsByGuid[id])
   const user = useSelector((state) => state.user)
   const generalTranslations = useSelector((state) => state.translations.yleiset)
-  const [details, setDetails] = useState()
-  const [suggestions, setSuggestions] = useState()
+
   const favourites = useSelector((state) =>
     state.favourites.map((favourite) => state.itemsByGuid[favourite])
   )
@@ -76,56 +74,28 @@ const Task = () => {
   const isFavourite = !!favourites.find(finder)
   const isLoggedIn = user.loggedIn
 
-  const getSuggestionDetails = useCallback(
-    async (d) => {
-      const suggestionsInLanguage = d.suggestions_details.find(
-        (s) => s.lang === language
-      )
-      if (suggestionsInLanguage) {
-        const res = await fetch(suggestionsInLanguage.details)
-        const data = await res.json()
-        setSuggestions(data.items)
-      }
-    },
-    [language]
-  )
-
-  const getTaskDetails = useCallback(async () => {
-    const res = await fetchTaskDetails(task.item.guid, language)
-    setDetails(res)
-    getSuggestionDetails(res)
-  }, [task, language, getSuggestionDetails])
-
-  useEffect(() => {
-    getTaskDetails()
-  }, [getTaskDetails])
-
-  const translations = task.item.languages.find((x) => x.lang === language)
-
   const renderDetails = () => {
-    if (!details || !generalTranslations) return null
-    const { ingress, content } = details
     return (
       <DetailsContainer>
-        {content && <p>{striptags(details.content)}</p>}
-        {ingress && (
+        {task.item.content && <p>{striptags(task.item.content)}</p>}
+        {task.item.ingress && (
           <>
             <SubHeading>
               {getTermInLanguage(generalTranslations, 'task_target', language)}
             </SubHeading>
-            <p>{striptags(details.ingress)}</p>
+            <p>{striptags(task.item.ingress)}</p>
           </>
         )}
-        {suggestions && (
+        {task.item.suggestions && (
           <>
             <SubHeading>
               {getTermInLanguage(generalTranslations, 'tips', language)}
             </SubHeading>
-            {suggestions.map((suggestion) => (
-              <div
-                key={suggestion.guid}
-                dangerouslySetInnerHTML={{ __html: suggestion.content }}
-              />
+            {task.item.suggestions.map((suggestion) => (
+              <div key={suggestion.id}>
+                <p>{striptags(suggestion.title)}</p>
+                <p>{striptags(suggestion.content)}</p>
+              </div>
             ))}
           </>
         )}
@@ -137,11 +107,11 @@ const Task = () => {
   return (
     <StyledDetailPage
       onBackClick={() => history.goBack()}
-      title={translations ? translations.title : task.item.title}
+      title={task.item.title}
     >
       {isLoggedIn && (
         <StyledActions
-          guid={task.guid}
+          guid={task.wp_guid}
           itemType={task.type}
           isFavourite={isFavourite}
         />

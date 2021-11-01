@@ -8,11 +8,10 @@ import { actionTypes } from 'components/Actions'
 import { ITEM_TYPES } from '../../consts'
 import { setSelectedAgeGroup } from 'redux/actionCreators'
 import {
-  getAgeGroupTitleWithoutAges,
   determineLanguageFromUrl,
   getTermInLanguage,
+  getActivityGroupIcon,
 } from 'helpers'
-import { getAgeGroupIcon } from 'graphics/ageGroups'
 
 const Background = styled.div`
   min-height: 100vh;
@@ -93,27 +92,23 @@ const MainSymbol = styled.img`
   width: 8rem;
   height: 8rem;
   margin: 0 auto;
-  border-radius: 50%;
 `
 
 const AgeGroup = () => {
   const history = useHistory()
   const dispatch = useDispatch()
-  const itemsByGuid = useSelector((state) => state.itemsByGuid)
-  const userTasks = useSelector((state) => state.tasks)
-  const user = useSelector((state) => state.user)
   const groupHeadingTranslations = useSelector(
     (state) => state.translations.aktiviteettipaketin_ylakasite
   )
   const activityTranslations = useSelector(
     (state) => state.translations.aktiviteetin_ylakasite
   )
-  const generalTranslations = useSelector((state) => state.translations.yleiset)
 
-  const { guid } = useParams()
+  const { id } = useParams()
   const language = determineLanguageFromUrl(window.location)
-
-  const ageGroup = itemsByGuid[guid] ? itemsByGuid[guid].item : undefined
+  const itemsByGuid = useSelector((state) => state.itemsByGuid)
+  const activityGroupById = useSelector((state) => state.activityGroups)
+  const ageGroup = itemsByGuid[id] ? itemsByGuid[id].item : undefined
 
   useEffect(() => {
     if (ageGroup) {
@@ -124,24 +119,20 @@ const AgeGroup = () => {
   if (!ageGroup || !groupHeadingTranslations) {
     return null
   }
-  const ageGroupGuid = ageGroup ? ageGroup.guid : 'default'
-  const languageInfo = ageGroup.languages.find((x) => x.lang === language)
+  
+  const ageGroupGuid = ageGroup ? ageGroup.wp_guid : 'default'
 
-  const getTerm = (title, subtask_term) => {
-    let term = getTermInLanguage(
-      activityTranslations,
-      `${subtask_term ? subtask_term.name : 'aktiviteetti'}_plural`,
-      language
-    )
-
-    if (title === 'Haasteet') {
-      term = getTermInLanguage(generalTranslations, 'challenges', language)
-    }
-
-    if (term === 'askeleet' && title !== 'Tervetuloa' && title !== 'Siirtymä') {
-      term = getTermInLanguage(activityTranslations, 'paw_plural', language)
-    }
-    return term
+  const getTerm = (activityGroup) => {
+    const group = activityGroupById[activityGroup.id]
+    const term = `${
+      group.activities.length > 1
+        ? group.subactivity_term.plural
+        : group.subactivity_term.singular
+    }`
+    const subtitle = term
+      ? `${group.activities.length} ${term}`
+      : group.activities.length
+    return subtitle
   }
 
   const getTitle = (subtask_term) => {
@@ -164,47 +155,27 @@ const AgeGroup = () => {
           <X onClick={() => history.push(`/?lang=${language}`)} />
         </CloseIcon>
         <HeadingContent>
-          <MainSymbol
-            alt={ageGroup.title}
-            src={getAgeGroupIcon(
-              itemsByGuid[ageGroup.guid],
-              userTasks,
-              user.loggedIn
-            )}
-          />
-          <h3>
-            {getAgeGroupTitleWithoutAges(
-              languageInfo ? languageInfo.title : ageGroup.title
-            )}
-          </h3>
+          <MainSymbol alt={ageGroup.title} src={ageGroup.logo.url} />
+          <h3>{ageGroup.title}</h3>
         </HeadingContent>
         <BodyContent>
-          <h4>{getTitle(ageGroup.subtaskgroup_term.name)}</h4>
-          {ageGroup.taskgroups.length > 0 &&
-            ageGroup.taskgroups
+          <h4>{getTitle(ageGroup.subactivitygroup_term)}</h4>
+          {ageGroup.activity_groups.length > 0 &&
+            ageGroup.activity_groups
               .sort((a, b) => a.order - b.order)
-              .map((taskGroup) =>
-                taskGroup.taskgroups.length > 0 ? (
-                  <TaskGroupItem
-                    key={taskGroup.guid}
-                    taskGroup={taskGroup}
-                    ageGroupGuid={ageGroupGuid}
-                    language={language}
-                    tasksTerm={getTerm(taskGroup.title, taskGroup.subtask_term)}
-                  />
-                ) : (
-                  <TaskGroupItem
-                    key={taskGroup.guid}
-                    taskGroup={taskGroup}
-                    ageGroupGuid={ageGroupGuid}
-                    language={language}
-                    tasksTerm={getTerm(taskGroup.title, taskGroup.subtask_term)}
-                    itemType={ITEM_TYPES.TASK_GROUP}
-                    actionsComponent={actionTypes.taskGroupActions}
-                    showActions
-                  />
-                )
-              )}
+              .map((activityGroup) => (
+                <TaskGroupItem
+                  key={activityGroup.id}
+                  taskGroup={activityGroup}
+                  ageGroupGuid={ageGroupGuid}
+                  language={language}
+                  icon={getActivityGroupIcon(activityGroup)}
+                  tasksTerm={language === 'fi' ? getTerm(activityGroup) : null}
+                  itemType={ITEM_TYPES.TASK_GROUP}
+                  actionsComponent={actionTypes.taskGroupActions}
+                  showActions
+                />
+              ))}
         </BodyContent>
       </Content>
     </Background>

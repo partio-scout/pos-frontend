@@ -44,8 +44,8 @@ const Content = styled.div`
 const AcceptTasks = () => {
   const history = useHistory()
   const language = determineLanguageFromUrl(window.location)
-  const groupsData = useSelector(state => state.user.userGroups)
-  const generalTranslations = useSelector(state => state.translations.yleiset)
+  const groupsData = useSelector((state) => state.user.userGroups)
+  const generalTranslations = useSelector((state) => state.translations.yleiset)
   if (!generalTranslations || !groupsData) return null
 
   return (
@@ -58,7 +58,7 @@ const AcceptTasks = () => {
             language
           )}
         </Subheading>
-        <CloseIcon onClick={() => history.push('/')} />
+        <CloseIcon onClick={() => history.push(`/?lang=${language}`)} />
       </Header>
       <Content>
         <Subheading>

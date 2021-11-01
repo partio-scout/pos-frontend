@@ -10,7 +10,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import styled, { ThemeProvider } from 'styled-components'
 import { useTransition, animated } from 'react-spring'
 import {
-  fetchAllContent,
+  fetchAgeGroups,
+  fetchActivityGroups,
   fetchTranslations,
   fetchFavourites,
   fetchUser,
@@ -26,6 +27,8 @@ import {
   setTasks,
   setUserGroups,
   setNotifications,
+  //setItemsByGuid,
+  setActivityGroupsData,
 } from 'redux/actionCreators'
 import { GlobalStyle, theme } from 'styles'
 import AgeGroups from 'views/AgeGroups'
@@ -42,30 +45,41 @@ import { ITEM_TYPES } from 'consts'
 
 const App = () => {
   const dispatch = useDispatch()
+  const language = useSelector((state) => state.selectedLanguage)
+  const activityGroups = useSelector((state) => state.activityGroups)
 
-  useEffect(() => {
-    fetchAllContent().then(ageGroups => {
+  const fetchContent = (language) => {
+    fetchAgeGroups(language).then((ageGroups) => {
       dispatch(setInitialData(ageGroups))
     })
-    fetchTranslations().then(translations =>
+    fetchTranslations().then((translations) =>
       dispatch(setTranslations(translations))
     )
-
-    fetchUser().then(user => {
+    fetchActivityGroups(language).then((activityGroups) =>
+      dispatch(setActivityGroupsData(activityGroups))
+    )
+    fetchUser().then((user) => {
       if (Object.keys(user).length > 0) {
         dispatch(setUser({ ...user, loggedIn: true }))
-        fetchFavourites().then(favourites =>
+        fetchFavourites().then((favourites) =>
           dispatch(setFavourites(favourites))
         )
-        fetchUserTasks().then(tasks => dispatch(setTasks(tasks)))
-        fetchUserGroups().then(groups => dispatch(setUserGroups(groups)))
-        fetchNotifications().then(notifications =>
+        fetchUserTasks().then((tasks) => dispatch(setTasks(tasks)))
+        fetchUserGroups().then((groups) => dispatch(setUserGroups(groups)))
+        fetchNotifications().then((notifications) =>
           dispatch(setNotifications(notifications))
         )
       }
     })
-  }, [dispatch])
+  }
 
+  useEffect(() => {
+    fetchContent(language)
+  }, [dispatch, language])
+
+  if (!activityGroups) {
+    return null
+  }
   return (
     <Router>
       <ThemeProvider theme={theme}>
@@ -74,7 +88,7 @@ const App = () => {
           <TransitioningRoutes>
             <Route path="/" exact component={ComponentToRender} />
             <Route path="/manage" component={Manage} />
-            <Route path="/guid/:guid" component={ComponentToRender} />
+            <Route path="/guid/:id" component={ComponentToRender} />
             <Route path="/profile" component={Profile} />
             <Route path="/login" component={Login} />
             <Route exact path="/group/:groupId" component={Group} />
@@ -92,8 +106,8 @@ const App = () => {
 }
 
 const ComponentToRender = () => {
-  const { guid } = useParams()
-  const item = useSelector(state => state.itemsByGuid[guid])
+  const { id } = useParams()
+  const item = useSelector((state) => state.itemsByGuid[id])
 
   switch (item && item.type) {
     case ITEM_TYPES.AGE_GROUP:
@@ -121,7 +135,7 @@ const TransitioningRoutes = ({ children }) => {
   const direction = useRef(1)
   const location = useLocation()
   const guid = location.pathname.split('/').pop()
-  const item = useSelector(state => state.itemsByGuid[guid])
+  const item = useSelector((state) => state.itemsByGuid[guid])
 
   useEffect(() => {
     let nextDepth = -1
@@ -138,7 +152,7 @@ const TransitioningRoutes = ({ children }) => {
     }
   }, [location.pathname, item])
 
-  const transitions = useTransition(location, location => location.pathname, {
+  const transitions = useTransition(location, (location) => location.pathname, {
     from: { p: 1 },
     enter: { p: 0 },
     leave: { p: -1 },
@@ -146,7 +160,7 @@ const TransitioningRoutes = ({ children }) => {
 
   return transitions.map(({ item, props, key }) => {
     const style = {
-      transform: props.p.interpolate(p => {
+      transform: props.p.interpolate((p) => {
         if (
           (depth.current === -1 && direction.current !== 1) ||
           (depth.current === 0 && direction.current === 1)

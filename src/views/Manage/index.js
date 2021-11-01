@@ -46,8 +46,8 @@ const Content = styled.div`
 const Manage = () => {
   const history = useHistory()
   const language = determineLanguageFromUrl(window.location)
-  const groupsData = useSelector(state => state.user.userGroups)
-  const generalTranslations = useSelector(state => state.translations.yleiset)
+  const groupsData = useSelector((state) => state.user.userGroups)
+  const generalTranslations = useSelector((state) => state.translations.yleiset)
   if (!generalTranslations || !groupsData) return null
 
   return (
@@ -56,13 +56,13 @@ const Manage = () => {
         <Subheading>
           {getTermInLanguage(generalTranslations, 'manage', language)}
         </Subheading>
-        <CloseIcon onClick={() => history.push('/')} />
+        <CloseIcon onClick={() => history.push(`/?lang=${language}`)} />
       </Header>
       <Content>
         <Subheading>
           {getTermInLanguage(generalTranslations, 'own_groups', language)}
         </Subheading>
-        {groupsData.map(group => {
+        {groupsData.map((group) => {
           const groupName = group.name
           const ageGroup = group.ageGroup
           const ageGroupId = group.id
@@ -86,6 +86,7 @@ const Manage = () => {
               subTitle={groupMembers}
               language="fi"
               icon={null}
+              circleIcon={true}
               itemType={ITEM_TYPES.TASK}
               showActions
             />

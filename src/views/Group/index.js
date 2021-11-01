@@ -45,32 +45,44 @@ const Content = styled.div`
 const Group = () => {
   const history = useHistory()
   const language = determineLanguageFromUrl(window.location)
-  const groupsData = useSelector(state => state.user.userGroups)
-  const generalTranslations = useSelector(state => state.translations.yleiset)
+  const groupsData = useSelector((state) => state.user.userGroups)
+  const generalTranslations = useSelector((state) => state.translations.yleiset)
   const { groupId } = useParams()
 
   if (!generalTranslations || !groupsData) return null
 
   const group = groupsData.find(
-    groups => groups.id.toString() === groupId.toString()
+    (groups) => groups.id.toString() === groupId.toString()
   )
 
-  const groupLeaders = group.members.filter(member => member.isGroupLeader === true)
-  const groupMembers = group.members.filter(member => member.isGroupLeader === false)
+  const groupLeaders = group.members.filter(
+    (member) => member.isGroupLeader === true
+  )
+  const groupMembers = group.members.filter(
+    (member) => member.isGroupLeader === false
+  )
 
   return (
     <StyledGroup>
       <Header>
         <Subheading>{group.name}</Subheading>
-        <CloseIcon onClick={() => history.push('/manage')} />
+        <CloseIcon onClick={() => history.push(`/manage/?lang=${language}`)} />
       </Header>
       <Content>
-        <h4><span>{getTermInLanguage(generalTranslations, 'group_leaders', language)}</span></h4>
-        {groupLeaders.map(member => {
+        <h4>
+          <span>
+            {getTermInLanguage(generalTranslations, 'group_leaders', language)}
+          </span>
+        </h4>
+        {groupLeaders.map((member) => {
           return <Member key={member.memberId} member={member} />
         })}
-        <h4><span>{getTermInLanguage(generalTranslations, 'group_members', language)}</span></h4>
-        {groupMembers.map(member => {
+        <h4>
+          <span>
+            {getTermInLanguage(generalTranslations, 'group_members', language)}
+          </span>
+        </h4>
+        {groupMembers.map((member) => {
           return <Member key={member.memberId} member={member} />
         })}
       </Content>

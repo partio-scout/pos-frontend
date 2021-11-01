@@ -1,6 +1,7 @@
 import React, { useLayoutEffect, useRef, useState, useCallback } from 'react'
 import styled, { withTheme } from 'styled-components'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { setSelectedLanguage } from 'redux/actionCreators'
 import { Link } from 'react-router-dom'
 import { determineLanguageFromUrl } from 'helpers'
 import AgeGroupItem from 'components/AgeGroupItem'
@@ -28,8 +29,10 @@ const Container = styled.div`
     background: ${({ activeIndex = 0, theme }) =>
       `linear-gradient(
       to bottom,
-      ${theme.color.ageGroupGradientsDark[activeIndex] ||
-        theme.color.ageGroupGradientsDark.default},
+      ${
+        theme.color.ageGroupGradientsDark[activeIndex] ||
+        theme.color.ageGroupGradientsDark.default
+      },
       rgba(0, 0, 0, 0)
     );`};
   }
@@ -63,28 +66,32 @@ const AgeGroups = ({ theme }) => {
   window.addEventListener('scroll', () =>
     console.log('WINDOW SCROLL --- WHOOP WHOOP')
   )
-  const ageGroups = useSelector(state => state.ageGroups)
-  const selectedAgeGroup = useSelector(state => state.selectedAgeGroup)
-  const user = useSelector(state => state.user)
-  const userTasks = useSelector(state => state.tasks)
-
+  const ageGroups = useSelector((state) => state.ageGroups)
+  const selectedAgeGroup = useSelector((state) => state.selectedAgeGroup)
+  const user = useSelector((state) => state.user)
+  const userTasks = useSelector((state) => state.tasks)
   const [activeIndex, setActiveIndex] = useState(0)
   const language = determineLanguageFromUrl(window.location)
-  const generalTranslations = useSelector(state => state.translations.yleiset)
+  const generalTranslations = useSelector((state) => state.translations.yleiset)
   const languages = ['fi', 'sv', 'en', 'smn']
+  const dispatch = useDispatch()
 
-  const itemsByGuid = useSelector(state => state.itemsByGuid)
+  const itemsByGuid = useSelector((state) => state.itemsByGuid)
 
   const contentRef = useRef()
   const containerRef = useRef()
 
   const getAgeGroupCenterPositions = useCallback(
-    content =>
+    (content) =>
       [...content.children].map(
-        child => child.clientWidth / 2 + child.offsetLeft
+        (child) => child.clientWidth / 2 + child.offsetLeft
       ),
     []
   )
+
+  const setSelectedLanguagetoState = (language) => {
+    dispatch(setSelectedLanguage(language))
+  }
 
   useLayoutEffect(() => {
     const container = containerRef.current
@@ -96,7 +103,9 @@ const AgeGroups = ({ theme }) => {
 
     const ageGroupCenterPositions = getAgeGroupCenterPositions(content)
     container.scrollLeft =
-      ageGroupCenterPositions[selectedAgeGroup.order] -
+      ageGroupCenterPositions[
+        ageGroupCenterPositions.indexOf(selectedAgeGroup)
+      ] -
       document.body.clientWidth / 2
   }, [contentRef, containerRef, selectedAgeGroup, getAgeGroupCenterPositions])
 
@@ -112,7 +121,7 @@ const AgeGroups = ({ theme }) => {
       const ageGroupCenterPositions = getAgeGroupCenterPositions(content)
       const xPosition = container.scrollLeft
       const nextActiveIndex = ageGroupCenterPositions.indexOf(
-        ageGroupCenterPositions.find(x => x >= xPosition)
+        ageGroupCenterPositions.find((x) => x >= xPosition)
       )
       setActiveIndex(nextActiveIndex < 0 ? 0 : nextActiveIndex)
     }
@@ -131,10 +140,11 @@ const AgeGroups = ({ theme }) => {
   ])
 
   //TODO: get agegroup from user if set
-  const activeAgeGroup = ageGroups.find(
-    ageGroup => ageGroup.order === activeIndex
-  )
-  const activeAgeGroupGuid = activeAgeGroup ? activeAgeGroup.guid : ''
+  const activeAgeGroup = ageGroups
+    .sort((a, b) => a.minimum_age - b.minimum_age)
+    .find((ageGroup) => ageGroups.indexOf(ageGroup) === activeIndex)
+
+  const activeAgeGroupGuid = activeAgeGroup ? activeAgeGroup.wp_guid : ''
 
   if (itemsByGuid.length === 0 || !generalTranslations) return null
 
@@ -143,22 +153,24 @@ const AgeGroups = ({ theme }) => {
       <Menu language={language} user={user} />
       <Content ref={contentRef}>
         {ageGroups
-          .sort((a, b) => a.order - b.order)
+          .filter((ageGroup) => ageGroup.activity_groups.length)
+          .sort((a, b) => a.minimum_age - b.minimum_age)
           .map((ageGroup, i) => {
             return (
               <AgeGroupItem
                 key={i}
-                ageGroup={itemsByGuid[ageGroup.guid]}
+                ageGroup={ageGroup}
                 itemsByGuid={itemsByGuid}
                 language={language}
                 user={user}
                 userTasks={userTasks}
                 translations={generalTranslations}
+                localizedAgeGroups={ageGroups}
               />
             )
           })}
       </Content>
-      <Languages>
+      <Languages onClick={setSelectedLanguagetoState(language)}>
         {languages.map((language, i) => (
           <Link key={i} to={`/?lang=${language}`}>
             {language}

@@ -1,20 +1,20 @@
-import React, { useState } from 'react'
+import React from 'react'
 import styled from 'styled-components'
 import striptags from 'striptags'
 import { useParams, useHistory } from 'react-router-dom'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import DetailPage from 'components/DetailPage'
 import ListItem from 'components/ListItem'
-import TaskGroupItem from 'components/TaskGroupItem'
-import { fetchTaskDetails } from 'api'
-import { actionTypes } from 'components/Actions'
 
 import {
+  deepFlatten,
   determineLanguageFromUrl,
+  getActivityGroupIcon,
   getTermInLanguage,
-  getTaskGroupStatus,
 } from 'helpers'
 import { ITEM_TYPES } from 'consts'
+import { fetchActivity } from 'api'
+import { setItemsByGuid } from 'redux/actionCreators'
 
 const StyledDetailPage = styled(DetailPage)`
   display: grid;
@@ -27,146 +27,78 @@ const TaskList = styled.div`
 `
 
 const TaskGroup = () => {
-  const [details, setDetails] = useState()
-  const { guid } = useParams()
+  const { id } = useParams()
   const history = useHistory()
   const language = determineLanguageFromUrl(window.location)
   const userTasks = useSelector((state) => state.tasks)
-  const user = useSelector((state) => state.user)
-  const taskGroup = useSelector((state) => state.itemsByGuid[guid])
-  const activityTranslations = useSelector(
-    (state) => state.translations.aktiviteetin_ylakasite
+  const taskGroup = useSelector((state) => state.itemsByGuid[id])
+
+  const activityGroup = useSelector(
+    (state) => state.activityGroups[taskGroup.item.id]
   )
+
   const generalTranslations = useSelector((state) => state.translations.yleiset)
   const favourites = useSelector((state) => state.favourites)
-
-  const mandatoryTasksGuids =
-    taskGroup.item.tasks.length > 0 && !taskGroup.item.taskgroups
-      ? useSelector(
-          (state) =>
-            state.taskGroupRequirements.taskGroupRequirements[guid]
-              .mandatoryTasks
-        )
-      : []
-  if (!taskGroup || !activityTranslations) {
-    return null
-  }
-
-  const getTranslation = (taskOrTaskGroup) => {
-    return taskOrTaskGroup.languages.find((x) => x.lang === language)
-  }
-
-  const getTaskGroupDetails = async () => {
-    const res = await fetchTaskDetails(taskGroup.item.guid, language)
-    setDetails(res)
-  }
-
-  if (!details) {
-    getTaskGroupDetails()
-  }
-
-  const { item } = taskGroup
-  const taskGroupTranslation = getTranslation(item)
 
   const mandatoryTasks = []
   const optionalTasks = []
 
-  item.tasks.forEach((task) => {
-    if (mandatoryTasksGuids.includes(task.guid)) {
-      mandatoryTasks.push(task)
+  activityGroup.activities.forEach((activity) => {
+    if (activity.mandatory === true) {
+      mandatoryTasks.push(activity)
     } else {
-      optionalTasks.push(task)
+      optionalTasks.push(activity)
     }
   })
 
   const getTask = (task) => {
-    const taskTranslation = getTranslation(task)
-    const status = userTasks[task.guid]
-      ? userTasks[task.guid].toLowerCase()
+    const dispatch = useDispatch()
+    fetchActivity(task.wp_guid, language).then((activity) =>
+      dispatch(setItemsByGuid(deepFlatten(activity)))
+    )
+    const status = userTasks[task.wp_guid]
+      ? userTasks[task.wp_guid].toLowerCase()
       : ''
     const task_status = status === 'active' ? 'started' : `task_${status}`
+    const icon = getActivityGroupIcon(activityGroup)
 
-    return taskTranslation && taskTranslation.title ? (
+    return (
       <ListItem
-        key={task.guid}
-        guid={task.guid}
-        ageGroupGuid={taskGroup.ageGroupGuid}
-        title={taskTranslation.title}
+        key={task.id}
+        guid={task.wp_guid}
+        ageGroupGuid={taskGroup.item.age_group.wp_guid}
+        title={task.title}
         subTitle={getTermInLanguage(
           generalTranslations,
           `${task_status}`,
           language
         )}
         language={language}
+        icon={icon}
         itemType={ITEM_TYPES.TASK}
         showActions
         showFavourite
-        isFavourite={favourites.includes(task.guid)}
+        isFavourite={favourites.includes(task.wp_guid)}
         isLoggedIn={status}
       />
-    ) : null
+    )
   }
 
   return (
     <StyledDetailPage
       onBackClick={() =>
-        history.push(`/guid/${taskGroup.parentGuid}?lang=${language}`)
+        history.push(
+          `/guid/${taskGroup.item.age_group.wp_guid}?lang=${language}`
+        )
       }
-      title={taskGroupTranslation ? taskGroupTranslation.title : item.title}
+      title={activityGroup.title}
     >
       <TaskList>
-        {details && details.ingress && <p>{striptags(details.ingress)}</p>}
-        {details && details.content && details.content.length < 700 && (
-          <p>{striptags(details.content)}</p>
+        {activityGroup.ingress && <p>{striptags(activityGroup.ingress)}</p>}
+        {activityGroup.content && activityGroup.content.length < 700 && (
+          <p>{striptags(activityGroup.content)}</p>
         )}
-        {item.taskgroups.map((subTaskGroup) => {
-          const tasksTerm =
-            item.subtask_term && item.subtask_term.name
-              ? getTermInLanguage(
-                  activityTranslations,
-                  `${item.subtask_term.name}_plural`,
-                  language
-                )
-              : getTermInLanguage(
-                  activityTranslations,
-                  'aktiviteetti_plural',
-                  language
-                )
-          const status = user.loggedIn
-            ? getTaskGroupStatus(
-                subTaskGroup,
-                userTasks,
-                getTermInLanguage(generalTranslations, 'done', language)
-              )
-            : null
-          return user.userGroups.length > 0 ? (
-            <TaskGroupItem
-              key={subTaskGroup.guid}
-              taskGroup={subTaskGroup}
-              ageGroupGuid={taskGroup.ageGroupGuid}
-              subTitle={status}
-              language={language}
-              tasksTerm={tasksTerm}
-              itemType={ITEM_TYPES.TASK_GROUP}
-              actionsComponent={actionTypes.taskGroupActions}
-              groupGuid={subTaskGroup.guid}
-              showActions
-            />
-          ) : (
-            <TaskGroupItem
-              key={subTaskGroup.guid}
-              taskGroup={subTaskGroup}
-              ageGroupGuid={taskGroup.ageGroupGuid}
-              subTitle={status}
-              language={language}
-              tasksTerm={tasksTerm}
-              itemType={ITEM_TYPES.TASK_GROUP}
-              actionsComponent={actionTypes.taskGroupActions}
-              groupGuid={subTaskGroup.guid}
-            />
-          )
-        })}
-        {item.tasks.length > 0 ? (
+        {activityGroup.activities.length > 0 ? (
           <>
             <h4>
               <span>

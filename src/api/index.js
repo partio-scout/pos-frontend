@@ -1,12 +1,49 @@
 // CONTENT (Partio API)
-export const fetchAllContent = async () => {
-  const res = await fetch(process.env.REACT_APP_PARTIO_API_URL)
-  const data = await res.json()
-  const programData = data.program[0]
+import { PARTIO_API_URL } from './variables'
 
-  const { agegroups: ageGroups } = programData
-
+export const fetchAgeGroups = async (language) => {
+  const res = await fetch(`${PARTIO_API_URL}/age-groups?_locale=${language}`)
+  const ageGroups = await res.json()
   return ageGroups
+}
+
+export const fetchSingleAgeGroup = async (id) => {
+  const res = await fetch(`${PARTIO_API_URL}/age-groups/${id}`)
+  const ageGroup = await res.json()
+  return ageGroup
+}
+
+export const fetchActivityGroups = async (language) => {
+  const locale = language === undefined ? 'fi' : language
+  const countRes = await fetch(
+    `${PARTIO_API_URL}/activity-groups/count?_locale=${locale}`
+  )
+  const count = await countRes.json()
+  const res = await fetch(
+    `${PARTIO_API_URL}/activity-groups?_limit=${count}&_locale=${locale}`
+  )
+  const activityGroups = await res.json()
+  return activityGroups
+}
+
+export const fetchSingleActivityGroup = async (id) => {
+  const res = await fetch(`${PARTIO_API_URL}/activity-groups/${id}`)
+  const activityGroup = await res.json()
+  return activityGroup
+}
+
+export const fetchActivities = async () => {
+  const res = await fetch(`${PARTIO_API_URL}/activities`)
+  const activities = await res.json()
+  return activities
+}
+
+export const fetchActivity = async (wp_guid, language) => {
+  const res = await fetch(
+    `${PARTIO_API_URL}/activities?wp_guid=${wp_guid}&_locale=${language}`
+  )
+  const activity = await res.json()
+  return activity
 }
 
 export const fetchTaskDetails = async (guid, lang) => {
