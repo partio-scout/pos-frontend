@@ -1,4 +1,10 @@
-import React, { useLayoutEffect, useRef, useState, useCallback } from 'react'
+import React, {
+  useLayoutEffect,
+  useRef,
+  useState,
+  useCallback,
+  useEffect,
+} from 'react'
 import styled, { withTheme } from 'styled-components'
 import { useDispatch, useSelector } from 'react-redux'
 import { setSelectedLanguage } from 'redux/actionCreators'
@@ -67,15 +73,15 @@ const AgeGroups = ({ theme }) => {
     console.log('WINDOW SCROLL --- WHOOP WHOOP')
   )
   const ageGroups = useSelector((state) => state.ageGroups)
+  const activityGroupById = useSelector((state) => state.activityGroups)
   const selectedAgeGroup = useSelector((state) => state.selectedAgeGroup)
   const user = useSelector((state) => state.user)
   const userTasks = useSelector((state) => state.tasks)
   const [activeIndex, setActiveIndex] = useState(0)
-  const language = determineLanguageFromUrl(window.location)
   const generalTranslations = useSelector((state) => state.translations.yleiset)
   const languages = ['fi', 'sv', 'en', 'smn']
   const dispatch = useDispatch()
-
+  const language = determineLanguageFromUrl(window.location)
   const itemsByGuid = useSelector((state) => state.itemsByGuid)
 
   const contentRef = useRef()
@@ -89,9 +95,9 @@ const AgeGroups = ({ theme }) => {
     []
   )
 
-  const setSelectedLanguagetoState = (language) => {
+  useEffect(() => {
     dispatch(setSelectedLanguage(language))
-  }
+  }, [language, dispatch])
 
   useLayoutEffect(() => {
     const container = containerRef.current
@@ -161,6 +167,7 @@ const AgeGroups = ({ theme }) => {
                 key={i}
                 ageGroup={ageGroup}
                 itemsByGuid={itemsByGuid}
+                activityGroups={activityGroupById}
                 language={language}
                 user={user}
                 userTasks={userTasks}
@@ -170,7 +177,7 @@ const AgeGroups = ({ theme }) => {
             )
           })}
       </Content>
-      <Languages onClick={setSelectedLanguagetoState(language)}>
+      <Languages>
         {languages.map((language, i) => (
           <Link key={i} to={`/?lang=${language}`}>
             {language}

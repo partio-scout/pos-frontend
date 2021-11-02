@@ -206,7 +206,6 @@ const Group = ({ group, isLast }) => {
       await mandatoryTasks
         .filter((task) => task.mandatory === true)
         .map((task) => {
-          console.log(task)
           const data = {
             userIds: memberIdList.filter((memberId) => {
               const cbData = checkboxData.find(

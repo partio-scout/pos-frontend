@@ -27,7 +27,6 @@ import {
   setTasks,
   setUserGroups,
   setNotifications,
-  //setItemsByGuid,
   setActivityGroupsData,
 } from 'redux/actionCreators'
 import { GlobalStyle, theme } from 'styles'
@@ -47,6 +46,7 @@ const App = () => {
   const dispatch = useDispatch()
   const language = useSelector((state) => state.selectedLanguage)
   const activityGroups = useSelector((state) => state.activityGroups)
+  const itemsByGuid = useSelector((state) => state.itemsByGuid)
 
   const fetchContent = (language) => {
     fetchAgeGroups(language).then((ageGroups) => {
@@ -77,9 +77,10 @@ const App = () => {
     fetchContent(language)
   }, [dispatch, language])
 
-  if (!activityGroups) {
+  if (!activityGroups && !itemsByGuid) {
     return null
   }
+
   return (
     <Router>
       <ThemeProvider theme={theme}>
