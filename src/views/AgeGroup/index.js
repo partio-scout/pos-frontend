@@ -140,7 +140,7 @@ const AgeGroup = () => {
   }
 
   const completedGroups = []
-  const unFinishedGroups = []
+  const unfinishedGroups = []
 
   const getFinishedActivityGroups = (ageGroup) => {
     user.loggedIn
@@ -155,7 +155,7 @@ const AgeGroup = () => {
           if (completedTasks === activities.length) {
             completedGroups.push(activityGroup)
           } else {
-            unFinishedGroups.push(activityGroup)
+            unfinishedGroups.push(activityGroup)
           }
         })
       : null
@@ -211,8 +211,8 @@ const AgeGroup = () => {
           <h4>
             <strong>Suorittamattomat</strong>
           </h4>
-          {unFinishedGroups.length > 0 ? (
-            unFinishedGroups
+          {unfinishedGroups.length > 0 ? (
+            unfinishedGroups
               .sort((a, b) => a.order - b.order)
               .map((activityGroup) => {
                 const status = user.loggedIn
