@@ -125,6 +125,9 @@ const Group = ({ group, isLast }) => {
 
   const taskGroup = itemsByGuid[taskGuid]
   const taskGroupTasks = taskGroup.item.activities
+  const mandatoryTasks = taskGroupTasks.filter(
+    (task) => task.mandatory === true
+  )
 
   function isGroupLeader(member) {
     const groupLeaders = group.members.filter(
@@ -200,27 +203,29 @@ const Group = ({ group, isLast }) => {
 
   async function handleTaskGroupSubmit() {
     try {
-      await taskGroupTasks.map((task) => {
-        const data = {
-          userIds: memberIdList.filter((memberId) => {
-            const cbData = checkboxData.find(
-              (cbData) => cbData.id === Number(memberId)
+      await mandatoryTasks
+        .filter((task) => task.mandatory === true)
+        .map((task) => {
+          const data = {
+            userIds: memberIdList.filter((memberId) => {
+              const cbData = checkboxData.find(
+                (cbData) => cbData.id === Number(memberId)
+              )
+              return cbData.tasks[task.wp_guid] !== 'COMPLETED'
+            }),
+          }
+          acceptGroupMemberTasks(data, task.wp_guid)
+          for (let id of memberIdList) {
+            dispatch(
+              updateGroupMemberTask({
+                task_guid: task.wp_guid,
+                user_guid: Number(id),
+                completion_status: COMPLETION_STATUS.COMPLETED,
+                groupGuid: Number(selectedGroup),
+              })
             )
-            return cbData.tasks[task.wp_guid] !== 'COMPLETED'
-          }),
-        }
-        acceptGroupMemberTasks(data, task.wp_guid)
-        for (let id of memberIdList) {
-          dispatch(
-            updateGroupMemberTask({
-              task_guid: task.wp_guid,
-              user_guid: Number(id),
-              completion_status: COMPLETION_STATUS.COMPLETED,
-              groupGuid: Number(selectedGroup),
-            })
-          )
-        }
-      })
+          }
+        })
     } catch (e) {
       console.log(e)
     }
@@ -234,6 +239,7 @@ const Group = ({ group, isLast }) => {
           <GroupMember
             member={member}
             taskGroupTasks={taskGroupTasks}
+            mandatoryTasks={mandatoryTasks}
             language={language}
             taskGuid={taskGuid}
             handleChange={handleChange}
@@ -266,6 +272,7 @@ const Group = ({ group, isLast }) => {
                 title={title}
                 language="fi"
                 icon={null}
+                circleIcon={true}
                 itemType={ITEM_TYPES.TASK}
                 showActions
                 showDropDownIcon

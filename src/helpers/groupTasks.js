@@ -16,15 +16,14 @@ export const getMemberTasks = (groupId, memberId, groups) => {
  * @param member
  * @returns {null|*}
  */
-export const getMemberCompletedTasks = (member, taskGroupTasks) => {
+export const getMemberCompletedTasks = (member, mandatoryTasks) => {
   if (member && member.tasks) {
-    const completedTasks = taskGroupTasks.reduce((acc, task) => {
+    return mandatoryTasks.reduce((acc, task) => {
       if (member.tasks[task.wp_guid] === 'COMPLETED') {
         acc++
       }
       return acc
     }, 0)
-    return completedTasks
   }
 }
 

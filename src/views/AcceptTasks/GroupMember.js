@@ -24,6 +24,7 @@ const StyledSubtitle = styled.span`
 const GroupMember = ({
   member,
   taskGroupTasks,
+  mandatoryTasks,
   language,
   taskGuid,
   handleChange,
@@ -51,9 +52,9 @@ const GroupMember = ({
         <label style={{ float: 'left', margin: 0 }} htmlFor={member.id}>
           {member.name}
         </label>
-        {(taskGroupTasks !== undefined &&
-          getMemberCompletedTasks(member, taskGroupTasks) ===
-            taskGroupTasks.length) ||
+        {(mandatoryTasks !== undefined &&
+          getMemberCompletedTasks(member, mandatoryTasks) ===
+            mandatoryTasks.length) ||
         isCompleted(member.tasks) ? (
           <Check style={{ ...CHECK_STYLE, color: 'green' }} />
         ) : (
