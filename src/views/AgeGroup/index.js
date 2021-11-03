@@ -123,7 +123,7 @@ const AgeGroup = () => {
   if (!ageGroup || !groupHeadingTranslations) {
     return null
   }
-  
+
   const ageGroupGuid = ageGroup ? ageGroup.wp_guid : 'default'
 
   const getTitle = (subtask_term) => {
@@ -142,7 +142,7 @@ const AgeGroup = () => {
   const completedGroups = []
   const unfinishedGroups = []
 
-  const getFinishedActivityGroups = (ageGroup) => {
+  const getCompletedActivityGroups = (ageGroup) => {
     user.loggedIn
       ? ageGroup.activity_groups.map((activityGroup) => {
           const activities = activityGroupById[activityGroup.id].activities
@@ -160,7 +160,7 @@ const AgeGroup = () => {
         })
       : null
   }
-  getFinishedActivityGroups(ageGroup)
+  getCompletedActivityGroups(ageGroup)
 
   return (
     <Background ageGroupGuid={ageGroupGuid}>
@@ -178,30 +178,28 @@ const AgeGroup = () => {
             <strong>Suoritetut</strong>
           </h4>
           {completedGroups.length > 0 ? (
-            completedGroups
-              .sort((a, b) => a.order - b.order)
-              .map((activityGroup) => {
-                const status = user.loggedIn
-                  ? getTaskGroupStatus(
-                      activityGroupById[activityGroup.id],
-                      userTasks,
-                      getTermInLanguage(generalTranslations, 'done', language)
-                    )
-                  : null
-                return (
-                  <TaskGroupItem
-                    key={activityGroup.id}
-                    taskGroup={activityGroup}
-                    ageGroupGuid={ageGroupGuid}
-                    language={language}
-                    icon={getActivityGroupIcon(activityGroup)}
-                    tasksTerm={status}
-                    itemType={ITEM_TYPES.TASK_GROUP}
-                    actionsComponent={actionTypes.taskGroupActions}
-                    showActions
-                  />
-                )
-              })
+            completedGroups.map((activityGroup) => {
+              const status = user.loggedIn
+                ? getTaskGroupStatus(
+                    activityGroupById[activityGroup.id],
+                    userTasks,
+                    getTermInLanguage(generalTranslations, 'done', language)
+                  )
+                : null
+              return (
+                <TaskGroupItem
+                  key={activityGroup.id}
+                  taskGroup={activityGroup}
+                  ageGroupGuid={ageGroupGuid}
+                  language={language}
+                  icon={getActivityGroupIcon(activityGroup)}
+                  tasksTerm={status}
+                  itemType={ITEM_TYPES.TASK_GROUP}
+                  actionsComponent={actionTypes.taskGroupActions}
+                  showActions
+                />
+              )
+            })
           ) : (
             <p>
               <span>Ei suoritettuja aktiviteettiryhmiä</span>
@@ -212,30 +210,28 @@ const AgeGroup = () => {
             <strong>Suorittamattomat</strong>
           </h4>
           {unfinishedGroups.length > 0 ? (
-            unfinishedGroups
-              .sort((a, b) => a.order - b.order)
-              .map((activityGroup) => {
-                const status = user.loggedIn
-                  ? getTaskGroupStatus(
-                      activityGroupById[activityGroup.id],
-                      userTasks,
-                      getTermInLanguage(generalTranslations, 'done', language)
-                    )
-                  : null
-                return (
-                  <TaskGroupItem
-                    key={activityGroup.id}
-                    taskGroup={activityGroup}
-                    ageGroupGuid={ageGroupGuid}
-                    language={language}
-                    icon={getActivityGroupIcon(activityGroup)}
-                    tasksTerm={status}
-                    itemType={ITEM_TYPES.TASK_GROUP}
-                    actionsComponent={actionTypes.taskGroupActions}
-                    showActions
-                  />
-                )
-              })
+            unfinishedGroups.map((activityGroup) => {
+              const status = user.loggedIn
+                ? getTaskGroupStatus(
+                    activityGroupById[activityGroup.id],
+                    userTasks,
+                    getTermInLanguage(generalTranslations, 'done', language)
+                  )
+                : null
+              return (
+                <TaskGroupItem
+                  key={activityGroup.id}
+                  taskGroup={activityGroup}
+                  ageGroupGuid={ageGroupGuid}
+                  language={language}
+                  icon={getActivityGroupIcon(activityGroup)}
+                  tasksTerm={status}
+                  itemType={ITEM_TYPES.TASK_GROUP}
+                  actionsComponent={actionTypes.taskGroupActions}
+                  showActions
+                />
+              )
+            })
           ) : (
             <p>
               <span>Ei suorittamattomia aktiviteettiryhmiä</span>

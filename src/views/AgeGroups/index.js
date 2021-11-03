@@ -146,9 +146,9 @@ const AgeGroups = ({ theme }) => {
   ])
 
   //TODO: get agegroup from user if set
-  const activeAgeGroup = ageGroups
-    .sort((a, b) => a.minimum_age - b.minimum_age)
-    .find((ageGroup) => ageGroups.indexOf(ageGroup) === activeIndex)
+  const activeAgeGroup = ageGroups.find(
+    (ageGroup) => ageGroups.indexOf(ageGroup) === activeIndex
+  )
 
   const activeAgeGroupGuid = activeAgeGroup ? activeAgeGroup.wp_guid : ''
 
@@ -160,7 +160,6 @@ const AgeGroups = ({ theme }) => {
       <Content ref={contentRef}>
         {ageGroups
           .filter((ageGroup) => ageGroup.activity_groups.length)
-          .sort((a, b) => a.minimum_age - b.minimum_age)
           .map((ageGroup, i) => {
             return (
               <AgeGroupItem

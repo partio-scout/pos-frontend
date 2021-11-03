@@ -1,4 +1,4 @@
-// CONTENT (Partio API)
+// CONTENT (POF API)
 import { PARTIO_API_URL } from './variables'
 
 export const fetchAgeGroups = async (language) => {
