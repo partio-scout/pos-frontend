@@ -123,7 +123,7 @@ const AgeGroup = () => {
   if (!ageGroup || !groupHeadingTranslations) {
     return null
   }
-  
+
   const ageGroupGuid = ageGroup ? ageGroup.wp_guid : 'default'
 
   const getTitle = (subtask_term) => {
@@ -143,7 +143,7 @@ const AgeGroup = () => {
   const unfinishedGroups = []
 
   const getFinishedActivityGroups = (ageGroup) => {
-    user.loggedIn
+    user.loggedIn && ageGroup.activity_groups
       ? ageGroup.activity_groups.map((activityGroup) => {
           const activities = activityGroupById[activityGroup.id].activities
           const completedTasks = activities.reduce((taskCount, task) => {

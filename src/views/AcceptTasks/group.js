@@ -106,6 +106,7 @@ const Group = ({ group, isLast }) => {
   const groupsData = useSelector((state) => state.user.userGroups)
   const generalTranslations = useSelector((state) => state.translations.yleiset)
   const itemsByGuid = useSelector((state) => state.itemsByGuid)
+  const activityGroupById = useSelector((state) => state.activityGroups)
   const [memberIdList, setMemberIdList] = React.useState(initialList)
   const [selectedGroup, setSelectedGroup] = React.useState()
   const [checkboxData, setCheckboxData] = React.useState(
@@ -124,7 +125,10 @@ const Group = ({ group, isLast }) => {
   const title = '' + groupName + ' / ' + ageGroup
 
   const taskGroup = itemsByGuid[taskGuid]
-  const taskGroupTasks = taskGroup.item.activities
+  const taskGroupTasks =
+    taskGroup.type === 'TASK'
+      ? activityGroupById[taskGroup.item.activity_group].activities
+      : taskGroup.item.activities
   const mandatoryTasks = taskGroupTasks.filter(
     (task) => task.mandatory === true
   )
@@ -327,7 +331,7 @@ const Group = ({ group, isLast }) => {
           </AccordionItemPanel>
         </AccordionItem>
       </Accordion>
-      {memberIdList.length > 0 && !taskGroupTasks ? (
+      {memberIdList.length > 0 && taskGroup.type === 'TASK' ? (
         <AcceptTasksAction onClick={handleSubmit}>
           <ActivityItem>
             <StyledAcceptIcon />
@@ -338,7 +342,7 @@ const Group = ({ group, isLast }) => {
             )}
           </ActivityItem>
         </AcceptTasksAction>
-      ) : memberIdList.length > 0 && taskGroupTasks ? (
+      ) : memberIdList.length > 0 && taskGroup.type === 'TASK_GROUP' ? (
         <AcceptTasksAction onClick={handleTaskGroupSubmit}>
           <ActivityItem>
             <StyledAcceptIcon />
