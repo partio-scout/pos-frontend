@@ -142,7 +142,7 @@ const AgeGroup = () => {
   const completedGroups = []
   const unfinishedGroups = []
 
-  const getFinishedActivityGroups = (ageGroup) => {
+  const getCompletedActivityGroups = (ageGroup) => {
     user.loggedIn && ageGroup.activity_groups
       ? ageGroup.activity_groups.map((activityGroup) => {
           const activities = activityGroupById[activityGroup.id].activities
