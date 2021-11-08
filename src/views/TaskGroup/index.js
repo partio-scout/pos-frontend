@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import styled from 'styled-components'
 import striptags from 'striptags'
 import { useParams, useHistory } from 'react-router-dom'
@@ -13,7 +13,6 @@ import {
   getTermInLanguage,
 } from 'helpers'
 import { ITEM_TYPES } from 'consts'
-import { fetchActivity } from 'api'
 import { setItemsByGuid } from 'redux/actionCreators'
 
 const StyledDetailPage = styled(DetailPage)`
@@ -32,6 +31,11 @@ const TaskGroup = () => {
   const language = determineLanguageFromUrl(window.location)
   const userTasks = useSelector((state) => state.tasks)
   const taskGroup = useSelector((state) => state.itemsByGuid[id])
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    dispatch(setItemsByGuid(deepFlatten(taskGroup.item.activities)))
+  }, [id])
 
   const activityGroup = useSelector(
     (state) => state.activityGroups[taskGroup.item.id]
@@ -52,10 +56,6 @@ const TaskGroup = () => {
   })
 
   const getTask = (task) => {
-    const dispatch = useDispatch()
-    fetchActivity(task.wp_guid, language).then((activity) =>
-      dispatch(setItemsByGuid(deepFlatten(activity)))
-    )
     const status = userTasks[task.wp_guid]
       ? userTasks[task.wp_guid].toLowerCase()
       : ''

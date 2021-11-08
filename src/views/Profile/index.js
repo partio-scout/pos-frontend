@@ -246,7 +246,7 @@ const Profile = () => {
                   return (
                     <ListItem
                       key={favourite.id}
-                      guid={favourite.guid}
+                      guid={favourite.item.wp_guid}
                       ageGroupGuid={favourite.ageGroupGuid}
                       title={favourite.item.title}
                       subTitle={parent.title}
