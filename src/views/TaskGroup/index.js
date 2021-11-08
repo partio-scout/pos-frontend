@@ -31,7 +31,6 @@ const TaskGroup = () => {
   const language = determineLanguageFromUrl(window.location)
   const userTasks = useSelector((state) => state.tasks)
   const taskGroup = useSelector((state) => state.itemsByGuid[id])
-  console.log(taskGroup.item.activities)
   const dispatch = useDispatch()
 
   useEffect(() => {
