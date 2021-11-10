@@ -280,7 +280,7 @@ const Profile = () => {
               return (
                 <ListItem
                   key={task.id}
-                  guid={task.guid}
+                  guid={task.item.wp_guid}
                   ageGroupGuid={task.ageGroupGuid}
                   title={task.item.title}
                   subTitle={parent.title}
