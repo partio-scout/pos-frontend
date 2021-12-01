@@ -36,7 +36,6 @@ const CloseIcon = styled(X)`
 
 const Content = styled.div`
   padding: 1rem;
-
   > ${Subheading} {
     margin-bottom: 1rem;
   }
