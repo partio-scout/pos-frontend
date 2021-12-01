@@ -129,9 +129,6 @@ const Group = ({ group, isLast }) => {
     taskGroup.type === 'TASK'
       ? activityGroupById[taskGroup.item.activity_group].activities
       : taskGroup.item.activities
-  const mandatoryTasks = taskGroupTasks.filter(
-    (task) => task.mandatory === true
-  )
 
   function isGroupLeader(member) {
     const groupLeaders = group.members.filter(
@@ -205,37 +202,6 @@ const Group = ({ group, isLast }) => {
     setMemberIdList(initialList)
   }
 
-  async function handleTaskGroupSubmit() {
-    try {
-      await mandatoryTasks
-        .filter((task) => task.mandatory === true)
-        .map((task) => {
-          const data = {
-            userIds: memberIdList.filter((memberId) => {
-              const cbData = checkboxData.find(
-                (cbData) => cbData.id === Number(memberId)
-              )
-              return cbData.tasks[task.wp_guid] !== 'COMPLETED'
-            }),
-          }
-          acceptGroupMemberTasks(data, task.wp_guid)
-          for (let id of memberIdList) {
-            dispatch(
-              updateGroupMemberTask({
-                task_guid: task.wp_guid,
-                user_guid: Number(id),
-                completion_status: COMPLETION_STATUS.COMPLETED,
-                groupGuid: Number(selectedGroup),
-              })
-            )
-          }
-        })
-    } catch (e) {
-      console.log(e)
-    }
-    setMemberIdList(initialList)
-  }
-
   const renderMember = (member, checkFunction) => {
     return (
       checkFunction(member) && (
@@ -243,7 +209,6 @@ const Group = ({ group, isLast }) => {
           <GroupMember
             member={member}
             taskGroupTasks={taskGroupTasks}
-            mandatoryTasks={mandatoryTasks}
             language={language}
             taskGuid={taskGuid}
             handleChange={handleChange}
@@ -331,19 +296,8 @@ const Group = ({ group, isLast }) => {
           </AccordionItemPanel>
         </AccordionItem>
       </Accordion>
-      {memberIdList.length > 0 && taskGroup.type === 'TASK' ? (
+      {memberIdList.length > 0 ? (
         <AcceptTasksAction onClick={handleSubmit}>
-          <ActivityItem>
-            <StyledAcceptIcon />
-            {getTermInLanguage(
-              generalTranslations,
-              'add_to_selected',
-              language
-            )}
-          </ActivityItem>
-        </AcceptTasksAction>
-      ) : memberIdList.length > 0 && taskGroup.type === 'TASK_GROUP' ? (
-        <AcceptTasksAction onClick={handleTaskGroupSubmit}>
           <ActivityItem>
             <StyledAcceptIcon />
             {getTermInLanguage(
