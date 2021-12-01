@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { useParams, useHistory } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { X } from 'react-feather'
-import UserAgeGroup from './userAgeGroup'
+import UserAgeGroup from './UserAgeGroup'
 import TaskGroupItem from 'components/TaskGroupItem'
 import { ITEM_TYPES } from '../../consts'
 import { setSelectedAgeGroup } from 'redux/actionCreators'
@@ -174,7 +174,6 @@ const AgeGroup = () => {
           <h4>{getTitle(ageGroup.subactivitygroup_term)}</h4>
           {user.loggedIn ? (
             <UserAgeGroup
-              user={user}
               language={language}
               ageGroupGuid={ageGroupGuid}
               completedGroups={completedGroups}

@@ -8,8 +8,7 @@ import {
   getTaskGroupStatus,
 } from 'helpers'
 
-const userAgeGroup = ({
-  user,
+const UserAgeGroup = ({
   language,
   ageGroupGuid,
   completedGroups,
@@ -19,6 +18,25 @@ const userAgeGroup = ({
   const userTasks = useSelector((state) => state.tasks)
   const activityGroupById = useSelector((state) => state.activityGroups)
 
+  const renderTaskGroupItem = (activityGroup) => {
+    const status = getTaskGroupStatus(
+      activityGroupById[activityGroup.id],
+      userTasks,
+      getTermInLanguage(generalTranslations, 'done', language)
+    )
+    return (
+      <TaskGroupItem
+        key={activityGroup.id}
+        taskGroup={activityGroup}
+        ageGroupGuid={ageGroupGuid}
+        language={language}
+        icon={getActivityGroupIcon(activityGroup)}
+        tasksTerm={status}
+        itemType={ITEM_TYPES.TASK_GROUP}
+      />
+    )
+  }
+
   return (
     <>
       <h4>
@@ -26,54 +44,19 @@ const userAgeGroup = ({
       </h4>
       {completedGroups.length > 0 ? (
         completedGroups.map((activityGroup) => {
-          const status = user.loggedIn
-            ? getTaskGroupStatus(
-                activityGroupById[activityGroup.id],
-                userTasks,
-                getTermInLanguage(generalTranslations, 'done', language)
-              )
-            : null
-          return (
-            <TaskGroupItem
-              key={activityGroup.id}
-              taskGroup={activityGroup}
-              ageGroupGuid={ageGroupGuid}
-              language={language}
-              icon={getActivityGroupIcon(activityGroup)}
-              tasksTerm={status}
-              itemType={ITEM_TYPES.TASK_GROUP}
-            />
-          )
+          return renderTaskGroupItem(activityGroup)
         })
       ) : (
         <p>
           <span>Ei suoritettuja aktiviteettiryhmiä</span>
         </p>
       )}
-
       <h4>
         <strong>Ei vielä tehty</strong>
       </h4>
       {unfinishedGroups.length > 0 ? (
         unfinishedGroups.map((activityGroup) => {
-          const status = user.loggedIn
-            ? getTaskGroupStatus(
-                activityGroupById[activityGroup.id],
-                userTasks,
-                getTermInLanguage(generalTranslations, 'done', language)
-              )
-            : null
-          return (
-            <TaskGroupItem
-              key={activityGroup.id}
-              taskGroup={activityGroup}
-              ageGroupGuid={ageGroupGuid}
-              language={language}
-              icon={getActivityGroupIcon(activityGroup)}
-              tasksTerm={status}
-              itemType={ITEM_TYPES.TASK_GROUP}
-            />
-          )
+          return renderTaskGroupItem(activityGroup)
         })
       ) : (
         <p>
@@ -84,4 +67,4 @@ const userAgeGroup = ({
   )
 }
 
-export default userAgeGroup
+export default UserAgeGroup
