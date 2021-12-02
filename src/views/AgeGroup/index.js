@@ -137,28 +137,65 @@ const AgeGroup = () => {
     return title
   }
 
+  let categories = ageGroup.activity_groups.reduce((prev, curr) => {
+    const activityGroup = activityGroupById[curr.id]
+    const category = activityGroup.activity_group_category
+    let i = prev.findIndex((x) => x.category === (category?.name || ''))
+    if (i > -1) {
+      prev[i].groups.push(activityGroup)
+    } else {
+      prev.push({
+        category: category?.name || '',
+        sort_order:
+          activityGroup.activity_group_category?.sort_order || Infinity,
+        groups: [
+          { ...activityGroup, sort_order: activityGroup.sort_order || 1000 },
+        ],
+      })
+    }
+    return prev
+  }, [])
+
+  categories = categories.sort((categoryA, categoryB) =>
+    categoryA.sort_order < categoryB.sort_order ? -1 : 1
+  )
+
+  const categoryWithNoNameIndex = categories.findIndex((c) => c.category === '')
+
+  let categoryWithNoName
+
+  if (categoryWithNoNameIndex) {
+    categoryWithNoName = categories.splice(categoryWithNoNameIndex, 1)[0]
+  }
+
+  if (categoryWithNoName) {
+    categories = [categoryWithNoName, ...categories]
+  }
+
   const completedGroups = []
   const unfinishedGroups = []
 
-  const getCompletedActivityGroups = (ageGroup) => {
-    user.loggedIn && ageGroup.activity_groups
-      ? ageGroup.activity_groups.map((activityGroup) => {
-          const activities = activityGroupById[activityGroup.id].activities
-          const completedTasks = activities.reduce((taskCount, task) => {
-            if (userTasks[task.wp_guid] === 'COMPLETED') {
-              taskCount++
+  const getCompletedActivityGroups = (categories) => {
+    user.loggedIn && categories
+      ? categories.map(({ groups }) => {
+          groups.map((group) => {
+            const activities = group.activities
+            const completedTasks = activities.reduce((taskCount, task) => {
+              if (userTasks[task.wp_guid] === 'COMPLETED') {
+                taskCount++
+              }
+              return taskCount
+            }, 0)
+            if (completedTasks === activities.length) {
+              completedGroups.push(group)
+            } else {
+              unfinishedGroups.push(group)
             }
-            return taskCount
-          }, 0)
-          if (completedTasks === activities.length) {
-            completedGroups.push(activityGroup)
-          } else {
-            unfinishedGroups.push(activityGroup)
-          }
+          })
         })
       : null
   }
-  getCompletedActivityGroups(ageGroup)
+  getCompletedActivityGroups(categories)
 
   return (
     <Background ageGroupGuid={ageGroupGuid}>
