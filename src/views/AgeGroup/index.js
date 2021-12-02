@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import { useParams, useHistory } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { X } from 'react-feather'
+import UserAgeGroup from './userAgeGroup'
 import TaskGroupItem from 'components/TaskGroupItem'
 import { ITEM_TYPES } from '../../consts'
 import { setSelectedAgeGroup } from 'redux/actionCreators'
@@ -10,7 +11,6 @@ import {
   determineLanguageFromUrl,
   getTermInLanguage,
   getActivityGroupIcon,
-  getTaskGroupStatus,
 } from 'helpers'
 
 const Background = styled.div`
@@ -109,7 +109,6 @@ const AgeGroup = () => {
   const user = useSelector((state) => state.user)
   const userTasks = useSelector((state) => state.tasks)
   const itemsByGuid = useSelector((state) => state.itemsByGuid)
-  const generalTranslations = useSelector((state) => state.translations.yleiset)
   const activityGroupById = useSelector((state) => state.activityGroups)
   const ageGroup = itemsByGuid[id] ? itemsByGuid[id].item : undefined
 
@@ -173,18 +172,15 @@ const AgeGroup = () => {
         </HeadingContent>
         <BodyContent>
           <h4>{getTitle(ageGroup.subactivitygroup_term)}</h4>
-          <h4>
-            <strong>Suoritetut</strong>
-          </h4>
-          {completedGroups.length > 0 ? (
-            completedGroups.map((activityGroup) => {
-              const status = user.loggedIn
-                ? getTaskGroupStatus(
-                    activityGroupById[activityGroup.id],
-                    userTasks,
-                    getTermInLanguage(generalTranslations, 'done', language)
-                  )
-                : null
+          {user.loggedIn ? (
+            <UserAgeGroup
+              language={language}
+              ageGroupGuid={ageGroupGuid}
+              completedGroups={completedGroups}
+              unfinishedGroups={unfinishedGroups}
+            />
+          ) : (
+            ageGroup.activity_groups.map((activityGroup) => {
               return (
                 <TaskGroupItem
                   key={activityGroup.id}
@@ -192,45 +188,10 @@ const AgeGroup = () => {
                   ageGroupGuid={ageGroupGuid}
                   language={language}
                   icon={getActivityGroupIcon(activityGroup)}
-                  tasksTerm={status}
                   itemType={ITEM_TYPES.TASK_GROUP}
                 />
               )
             })
-          ) : (
-            <p>
-              <span>Ei suoritettuja aktiviteettiryhmiä</span>
-            </p>
-          )}
-
-          <h4>
-            <strong>Suorittamattomat</strong>
-          </h4>
-          {unfinishedGroups.length > 0 ? (
-            unfinishedGroups.map((activityGroup) => {
-              const status = user.loggedIn
-                ? getTaskGroupStatus(
-                    activityGroupById[activityGroup.id],
-                    userTasks,
-                    getTermInLanguage(generalTranslations, 'done', language)
-                  )
-                : null
-              return (
-                <TaskGroupItem
-                  key={activityGroup.id}
-                  taskGroup={activityGroup}
-                  ageGroupGuid={ageGroupGuid}
-                  language={language}
-                  icon={getActivityGroupIcon(activityGroup)}
-                  tasksTerm={status}
-                  itemType={ITEM_TYPES.TASK_GROUP}
-                />
-              )
-            })
-          ) : (
-            <p>
-              <span>Ei suorittamattomia aktiviteettiryhmiä</span>
-            </p>
           )}
         </BodyContent>
       </Content>
