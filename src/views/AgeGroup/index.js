@@ -217,17 +217,19 @@ const AgeGroup = () => {
               unfinishedGroups={unfinishedGroups}
             />
           ) : (
-            ageGroup.activity_groups.map((activityGroup) => {
-              return (
-                <TaskGroupItem
-                  key={activityGroup.id}
-                  taskGroup={activityGroup}
-                  ageGroupGuid={ageGroupGuid}
-                  language={language}
-                  icon={getActivityGroupIcon(activityGroup)}
-                  itemType={ITEM_TYPES.TASK_GROUP}
-                />
-              )
+            categories.map(({ groups }) => {
+              return groups.map((activityGroup) => {
+                return (
+                  <TaskGroupItem
+                    key={activityGroup.id}
+                    taskGroup={activityGroup}
+                    ageGroupGuid={ageGroupGuid}
+                    language={language}
+                    icon={getActivityGroupIcon(activityGroup)}
+                    itemType={ITEM_TYPES.TASK_GROUP}
+                  />
+                )
+              })
             })
           )}
         </BodyContent>
