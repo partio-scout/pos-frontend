@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux'
 import striptags from 'striptags'
 import DetailPage from 'components/DetailPage'
 import Actions from 'components/Actions'
-import { determineLanguageFromUrl, getTermInLanguage } from 'helpers'
+import { getTermInLanguage } from 'helpers'
 
 const DetailsContainer = styled.div`
   display: flex;
@@ -62,10 +62,9 @@ const StyledActions = styled(Actions)`
 const Task = () => {
   const { id } = useParams()
   const history = useHistory()
-  const language = determineLanguageFromUrl(window.location)
   const task = useSelector((state) => state.itemsByGuid[id])
   const user = useSelector((state) => state.user)
-  const generalTranslations = useSelector((state) => state.translations.yleiset)
+  const translations = useSelector((state) => state.translations)
 
   const favourites = useSelector((state) =>
     state.favourites.map((favourite) => state.itemsByGuid[favourite])
@@ -81,7 +80,7 @@ const Task = () => {
         {task.item.ingress && (
           <>
             <SubHeading>
-              {getTermInLanguage(generalTranslations, 'task_target', language)}
+              {getTermInLanguage(translations, 'tavoite')}
             </SubHeading>
             <p>{striptags(task.item.ingress)}</p>
           </>
@@ -89,7 +88,7 @@ const Task = () => {
         {task.item.suggestions && (
           <>
             <SubHeading>
-              {getTermInLanguage(generalTranslations, 'tips', language)}
+              {getTermInLanguage(translations, 'toteutusvinkit')}
             </SubHeading>
             {task.item.suggestions.map((suggestion) => (
               <div key={suggestion.id}>

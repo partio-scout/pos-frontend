@@ -67,14 +67,14 @@ const AccordionList = ({
       )
     : useSelector((state) => state.tasks)
 
-  const generalTranslations = useSelector((state) => state.translations.yleiset)
+  const translations = useSelector((state) => state.translations)
   const taskGroup = itemsByGuid[taskGroupGuid]
   if (taskGroup.item.locale !== language) return null
 
   const status = getTaskGroupStatus(
     taskGroup.item,
     userTasks,
-    getTermInLanguage(generalTranslations, 'done', language)
+    getTermInLanguage(translations, 'tehdyt')
   )
 
   const icon = getActivityGroupIcon(taskGroup.item)

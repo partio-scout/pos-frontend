@@ -78,7 +78,7 @@ const AgeGroups = ({ theme }) => {
   const user = useSelector((state) => state.user)
   const userTasks = useSelector((state) => state.tasks)
   const [activeIndex, setActiveIndex] = useState(0)
-  const generalTranslations = useSelector((state) => state.translations.yleiset)
+  const translations = useSelector((state) => state.translations)
   const languages = ['fi', 'sv', 'en', 'smn']
   const dispatch = useDispatch()
   const language = determineLanguageFromUrl(window.location)
@@ -152,7 +152,7 @@ const AgeGroups = ({ theme }) => {
 
   const activeAgeGroupGuid = activeAgeGroup ? activeAgeGroup.wp_guid : ''
 
-  if (itemsByGuid.length === 0 || !generalTranslations) return null
+  if (itemsByGuid.length === 0 || !translations) return null
 
   return (
     <Container ref={containerRef} activeIndex={activeAgeGroupGuid}>
@@ -169,8 +169,8 @@ const AgeGroups = ({ theme }) => {
                 activityGroups={activityGroupById}
                 language={language}
                 user={user}
+                translations={translations}
                 userTasks={userTasks}
-                translations={generalTranslations}
                 localizedAgeGroups={ageGroups}
               />
             )

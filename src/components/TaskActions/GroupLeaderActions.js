@@ -8,7 +8,7 @@ import {
 import { COMPLETION_STATUS } from '../../consts'
 import { useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
-import { determineLanguageFromUrl, getTermInLanguage } from '../../helpers'
+import { getTermInLanguage } from '../../helpers'
 
 const Overlay = styled.div`
   width: 100%;
@@ -78,13 +78,8 @@ const GroupLeaderActions = ({
   const { groupId } = useParams()
   const { memberId } = useParams()
 
-  const language = determineLanguageFromUrl(window.location)
-
   const groupsData = useSelector((state) => state.user.userGroups)
-  const generalTranslations = useSelector((state) => state.translations.yleiset)
-  const apiTypeTranslations = useSelector(
-    (state) => state.translations.api_type
-  )
+  const translations = useSelector((state) => state.translations)
 
   const group = groupsData.find(
     (groups) => groups.id.toString() === groupId.toString()
@@ -111,28 +106,26 @@ const GroupLeaderActions = ({
           <ActivityItem onClick={acceptCompletionRequest}>
             <StyledAcceptIcon />
             <span>
-              {getTermInLanguage(generalTranslations, 'accept', language)}{' '}
-              {getTermInLanguage(apiTypeTranslations, 'task', language)}
+              {getTermInLanguage(translations, 'hyvaksy')}{' '}
+              {getTermInLanguage(translations, 'aktiviteetti')}
             </span>
           </ActivityItem>
         )}
         {isCompleted === true && (
           <ActivityItem onClick={rejectMemberTask}>
             <StyleActiveIcon />
-            <span>Siirrä takaisin työn alle</span>
+            <span>{getTermInLanguage(translations, 'siirra-tyon-alle')}</span>
           </ActivityItem>
         )}
         <ActivityItem onClick={removeMemberTask}>
           <StyledDeleteIcon />
           <span>
-            {getTermInLanguage(generalTranslations, 'delete', language)}{' '}
-            {getTermInLanguage(apiTypeTranslations, 'task', language)}
+            {getTermInLanguage(translations, 'poista')}{' '}
+            {getTermInLanguage(translations, 'aktiviteetti')}
           </span>
         </ActivityItem>
         <ActivityItem onClick={onCancel}>
-          <span>
-            {getTermInLanguage(generalTranslations, 'cancel', language)}
-          </span>
+          <span>{getTermInLanguage(translations, 'peruuta')}</span>
         </ActivityItem>
       </Content>
     </>

@@ -8,7 +8,7 @@ import { determineLanguageFromUrl, getTermInLanguage } from '../../helpers'
 const Member = ({ member }) => {
   const history = useHistory()
   const language = determineLanguageFromUrl(window.location)
-  const generalTranslations = useSelector((state) => state.translations.yleiset)
+  const translations = useSelector((state) => state.translations)
   const { groupId } = useParams()
   const tasks = Object.keys(member.memberTasks).filter(
     (guid) =>
@@ -18,9 +18,9 @@ const Member = ({ member }) => {
   const subTitle =
     tasks.length +
     ' ' +
-    getTermInLanguage(generalTranslations, 'activity', language) +
+    getTermInLanguage(translations, 'aktiviteetti') +
     ' ' +
-    getTermInLanguage(generalTranslations, 'working_on_it', language)
+    getTermInLanguage(translations, 'tyon-alla')
   const memberId = member.memberId
   return (
     <ListItem

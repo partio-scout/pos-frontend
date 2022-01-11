@@ -97,12 +97,7 @@ const MainSymbol = styled.img`
 const AgeGroup = () => {
   const history = useHistory()
   const dispatch = useDispatch()
-  const groupHeadingTranslations = useSelector(
-    (state) => state.translations.aktiviteettipaketin_ylakasite
-  )
-  const activityTranslations = useSelector(
-    (state) => state.translations.aktiviteetin_ylakasite
-  )
+  const translations = useSelector((state) => state.translations)
 
   const { id } = useParams()
   const language = determineLanguageFromUrl(window.location)
@@ -118,21 +113,17 @@ const AgeGroup = () => {
     }
   }, [ageGroup, dispatch])
 
-  if (!ageGroup || !groupHeadingTranslations) {
+  if (!ageGroup) {
     return null
   }
 
   const ageGroupGuid = ageGroup ? ageGroup.wp_guid : 'default'
 
   const getTitle = (subtask_term) => {
-    let title = getTermInLanguage(
-      groupHeadingTranslations,
-      `${subtask_term}_plural`,
-      language
-    )
+    let title = getTermInLanguage(translations, `${subtask_term}_monikko`)
 
     if (subtask_term === 'askel') {
-      title = getTermInLanguage(activityTranslations, 'paw_plural', language)
+      title = getTermInLanguage(translations, 'jaljet')
     }
     return title
   }

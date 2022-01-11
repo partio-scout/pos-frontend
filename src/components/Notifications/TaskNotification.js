@@ -4,10 +4,7 @@ import { Link } from 'react-router-dom'
 
 import { useSelector } from 'react-redux'
 import { getTaskUrl, getTimestamp } from './utils'
-import {
-  determineLanguageFromUrl,
-  getTermInLanguage,
-} from 'helpers'
+import { getTermInLanguage } from 'helpers'
 
 const Container = styled.div`
   display: flex;
@@ -25,23 +22,18 @@ const StyledLink = styled(Link)`
     color: #c86418;
   }
 `
-
-// TODO: Refactor when we have translations
-
-
 const TaskNotification = ({ notification, markRead }) => {
-  const language = determineLanguageFromUrl(window.location)
-  const generalTranslations = useSelector(state => state.translations.yleiset)
-  const itemsByGuid = useSelector(state => state.itemsByGuid)
+  const translations = useSelector((state) => state.translations)
+  const itemsByGuid = useSelector((state) => state.itemsByGuid)
   const task = itemsByGuid[notification.item_guid]
   const timestamp = getTimestamp(notification.created_at)
 
-  const getStateMessage = state => {
+  const getStateMessage = (state) => {
     switch (state) {
       case 'ACCEPTED':
-        return getTermInLanguage(generalTranslations, 'accepted', language)
+        return getTermInLanguage(translations, 'hyvaksynyt')
       default:
-        return getTermInLanguage(generalTranslations, 'accepted', language)
+        return getTermInLanguage(translations, 'hyvaksynyt')
     }
   }
 
@@ -49,8 +41,11 @@ const TaskNotification = ({ notification, markRead }) => {
     <Container>
       <Message>
         <span>
-          {getTermInLanguage(generalTranslations, 'group_leader', language)} {notification.group_leader_name} {getTermInLanguage(generalTranslations, 'has', language)} {' '}
-          {getStateMessage(notification.notification_type)} {getTermInLanguage(generalTranslations, 'your_task', language)} {' '}
+          {getTermInLanguage(translations, 'ryhmanjohtaja')}{' '}
+          {notification.group_leader_name}{' '}
+          {getTermInLanguage(translations, 'on')}{' '}
+          {getStateMessage(notification.notification_type)}{' '}
+          {getTermInLanguage(translations, 'tehtavasi')}{' '}
         </span>
         <StyledLink to={getTaskUrl(task)} onClick={markRead}>
           {task.item.title}
