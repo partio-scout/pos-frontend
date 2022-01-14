@@ -15,7 +15,7 @@ import { StyledAcceptIcon } from '../../components/TaskActionsIcons'
 import { useDispatch } from 'react-redux'
 import { updateGroupMemberTask } from '../../redux/actionCreators'
 import { acceptGroupMemberTasks } from '../../api'
-import { determineLanguageFromUrl, getTermInLanguage } from '../../helpers'
+import { getTermInLanguage } from '../../helpers'
 import GroupMember from './GroupMember'
 
 const StyledAcceptTasks = styled.div`
@@ -101,10 +101,9 @@ const getInitialCheckboxData = (group) =>
 
 const Group = ({ group, isLast }) => {
   const dispatch = useDispatch()
-  const language = determineLanguageFromUrl(window.location)
   const { taskGuid } = useParams()
   const groupsData = useSelector((state) => state.user.userGroups)
-  const generalTranslations = useSelector((state) => state.translations.yleiset)
+  const translations = useSelector((state) => state.translations)
   const itemsByGuid = useSelector((state) => state.itemsByGuid)
   const activityGroupById = useSelector((state) => state.activityGroups)
   const [memberIdList, setMemberIdList] = React.useState(initialList)
@@ -117,7 +116,7 @@ const Group = ({ group, isLast }) => {
     [groupsData, group]
   )
 
-  if (!generalTranslations || !groupsData) return null
+  if (!translations || !groupsData) return null
 
   const groupName = group.name
   const ageGroup = group.ageGroup
@@ -209,7 +208,6 @@ const Group = ({ group, isLast }) => {
           <GroupMember
             member={member}
             taskGroupTasks={taskGroupTasks}
-            language={language}
             taskGuid={taskGuid}
             handleChange={handleChange}
           />
@@ -252,11 +250,7 @@ const Group = ({ group, isLast }) => {
             <Content>
               <StyledListItem>
                 <label style={{ float: 'left', margin: 0 }} htmlFor={group.id}>
-                  {getTermInLanguage(
-                    generalTranslations,
-                    'select_all',
-                    language
-                  )}
+                  {getTermInLanguage(translations, 'valitse-kaikki')}
                 </label>
                 <input
                   id={group.id}
@@ -269,25 +263,13 @@ const Group = ({ group, isLast }) => {
               </StyledListItem>
               <HorizontalLine />
               <StyledListHeading>
-                <span>
-                  {getTermInLanguage(
-                    generalTranslations,
-                    'group_leaders',
-                    language
-                  )}
-                </span>
+                <span>{getTermInLanguage(translations, 'ryhmanjohtajat')}</span>
               </StyledListHeading>
               {checkboxData.map((member) => {
                 return renderMember(member, (member) => isGroupLeader(member))
               })}
               <StyledListHeading>
-                <span>
-                  {getTermInLanguage(
-                    generalTranslations,
-                    'group_members',
-                    language
-                  )}
-                </span>
+                <span>{getTermInLanguage(translations, 'ryhmalaiset')}</span>
               </StyledListHeading>
               {checkboxData.map((member) => {
                 return renderMember(member, (member) => !isGroupLeader(member))
@@ -300,11 +282,7 @@ const Group = ({ group, isLast }) => {
         <AcceptTasksAction onClick={handleSubmit}>
           <ActivityItem>
             <StyledAcceptIcon />
-            {getTermInLanguage(
-              generalTranslations,
-              'add_to_selected',
-              language
-            )}
+            {getTermInLanguage(translations, 'lisaa-valituille')}
           </ActivityItem>
         </AcceptTasksAction>
       ) : null}

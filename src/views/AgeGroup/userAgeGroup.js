@@ -14,7 +14,7 @@ const UserAgeGroup = ({
   completedGroups,
   unfinishedGroups,
 }) => {
-  const generalTranslations = useSelector((state) => state.translations.yleiset)
+  const translations = useSelector((state) => state.translations)
   const userTasks = useSelector((state) => state.tasks)
   const activityGroupById = useSelector((state) => state.activityGroups)
 
@@ -22,7 +22,7 @@ const UserAgeGroup = ({
     const status = getTaskGroupStatus(
       activityGroupById[activityGroup.id],
       userTasks,
-      getTermInLanguage(generalTranslations, 'done', language)
+      getTermInLanguage(translations, 'tehdyt')
     )
     return (
       <TaskGroupItem
@@ -40,7 +40,7 @@ const UserAgeGroup = ({
   return (
     <>
       <h4>
-        <strong>Tehdyt</strong>
+        <strong>{getTermInLanguage(translations, 'tehdyt')}</strong>
       </h4>
       {completedGroups.length > 0 ? (
         completedGroups.map((activityGroup) => {
@@ -48,11 +48,16 @@ const UserAgeGroup = ({
         })
       ) : (
         <p>
-          <span>Ei suoritettuja aktiviteettiryhmiä</span>
+          <span>
+            {getTermInLanguage(
+              translations,
+              'ei-suoritettuja-aktiviteettiryhmia'
+            )}
+          </span>
         </p>
       )}
       <h4>
-        <strong>Ei vielä tehty</strong>
+        <strong>{getTermInLanguage(translations, 'ei-viela-tehty')}</strong>
       </h4>
       {unfinishedGroups.length > 0 ? (
         unfinishedGroups.map((activityGroup) => {
@@ -60,7 +65,12 @@ const UserAgeGroup = ({
         })
       ) : (
         <p>
-          <span>Ei suorittamattomia aktiviteettiryhmiä</span>
+          <span>
+            {getTermInLanguage(
+              translations,
+              'ei-suoritettamattomia-aktiviteettiryhmia'
+            )}
+          </span>
         </p>
       )}
     </>

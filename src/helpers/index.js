@@ -10,17 +10,9 @@ export const determineLanguageFromUrl = (url) => {
 export const getAgeGroupTitleWithoutAges = (title) =>
   title.split('(')[0].split(':')[0].trim()
 
-export const getTermInLanguage = (translationGroup, termKey, language) => {
-  const translationsInLanguage = translationGroup.find(
-    (translation) => translation.lang === language
-  )
-  if (translationsInLanguage) {
-    const item = translationsInLanguage.items.find(
-      (item) => item.key === termKey
-    )
-    if (item && item.value) {
-      return item.value
-    }
+export const getTermInLanguage = (translations, termKey) => {
+  if (translations) {
+    return translations[termKey]
   }
 }
 
@@ -134,6 +126,9 @@ export const getAgeGroupStatus = (ageGroup, userTasks) => {
 }
 
 export const getActivityGroupIcon = (activityGroup) => {
+  if (!activityGroup.logo) {
+    return null
+  }
   const icon = activityGroup.logo.formats
     ? activityGroup.logo.formats.thumbnail.url
     : activityGroup.logo.url
@@ -163,5 +158,3 @@ export const getAgeGroupCompletion = (ageGroup, userTasks) => {
     completedMandatory.length > 0
   )
 }
-
-//TODO: favourites, activeTasks, completedTasks, isFavourite, isActive and isCompleted helpers

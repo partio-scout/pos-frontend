@@ -25,11 +25,10 @@ const GroupMember = ({
   member,
   taskGroupTasks,
   mandatoryTasks,
-  language,
   taskGuid,
   handleChange,
 }) => {
-  const generalTranslations = useSelector((state) => state.translations.yleiset)
+  const translations = useSelector((state) => state.translations)
 
   function isCompleted(memberTasks) {
     const completedTasks = Object.keys(memberTasks).filter(
@@ -70,7 +69,7 @@ const GroupMember = ({
       </StyledListItem>
       {taskGroupTasks && (
         <StyledSubtitle>
-          {getTermInLanguage(generalTranslations, 'done', language)}:{' '}
+          {getTermInLanguage(translations, 'tehdyt')}:{' '}
           {getMemberCompletedTasks(member, taskGroupTasks)} /{' '}
           {taskGroupTasks.length}
         </StyledSubtitle>

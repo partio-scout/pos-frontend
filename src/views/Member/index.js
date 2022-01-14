@@ -107,19 +107,16 @@ const Member = () => {
   const history = useHistory()
   const language = determineLanguageFromUrl(window.location)
   const groupsData = useSelector((state) => state.user.userGroups)
-  const generalTranslations = useSelector((state) => state.translations.yleiset)
   const itemsByGuid = useSelector((state) => state.itemsByGuid)
   const activityGroups = useSelector((state) => state.activityGroups)
-  const activityTranslations = useSelector(
-    (state) => state.translations.aktiviteetin_ylakasite
-  )
+  const translations = useSelector((state) => state.translations)
 
   const { groupId } = useParams()
   const { memberId } = useParams()
 
-  if (!generalTranslations || !groupsData) return null
+  if (!groupsData) return null
 
-  if (!itemsByGuid || !activityTranslations) return null
+  if (!itemsByGuid || !translations) return null
 
   const group = groupsData.find(
     (groups) => groups.id.toString() === groupId.toString()
@@ -170,20 +167,8 @@ const Member = () => {
           )}
         </HeadingContent>
         <BodyContent>
-          <h4>
-            {getTermInLanguage(
-              activityTranslations,
-              'aktiviteetti_plural',
-              language
-            )}
-          </h4>
-          <h4>
-            {getTermInLanguage(
-              generalTranslations,
-              'task_completion_requested',
-              language
-            )}
-          </h4>
+          <h4>{getTermInLanguage(translations, 'aktiviteetit')}</h4>
+          <h4>{getTermInLanguage(translations, 'odottaa-hyvaksyntaa')}</h4>
           <TaskList>
             {completionRequestedTasks.map((taskGuid) => {
               const task = itemsByGuid[taskGuid]
@@ -205,9 +190,7 @@ const Member = () => {
               )
             })}
           </TaskList>
-          <h4>
-            {getTermInLanguage(generalTranslations, 'working_on_it', language)}
-          </h4>
+          <h4>{getTermInLanguage(translations, 'tyon-alla')}</h4>
           <TaskList>
             {activeTasks.map((taskGuid) => {
               const task = itemsByGuid[taskGuid]
@@ -226,9 +209,7 @@ const Member = () => {
               )
             })}
           </TaskList>
-          <h4>
-            {getTermInLanguage(generalTranslations, 'completed', language)}
-          </h4>
+          <h4>{getTermInLanguage(translations, 'suoritetut')}</h4>
           <TaskList>
             {taskGroupsWithChildTaskGroups && (
               <CompletedTasks

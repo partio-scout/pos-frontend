@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { useHistory, Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { X } from 'react-feather'
-import { determineLanguageFromUrl, getTermInLanguage } from 'helpers'
+import { getTermInLanguage } from 'helpers'
 import { API_URL } from '../../api'
 import loginBg from '../../assets/images/login-bg.jpg'
 import logo from '../../assets/images/logo.svg'
@@ -97,11 +97,10 @@ const Languages = styled.div`
 
 const Login = () => {
   const history = useHistory()
-  const language = determineLanguageFromUrl(window.location)
   const languages = ['fi', 'sv', 'en', 'smn']
-  const generalTranslations = useSelector(state => state.translations.yleiset)
+  const translations = useSelector((state) => state.translations)
 
-  if (!generalTranslations) return null
+  if (!translations) return null
 
   return (
     <Background>
@@ -113,16 +112,10 @@ const Login = () => {
           <Logo alt="kompassi-logo" src={logo} />
         </HeadingContent>
         <BodyContent>
-          <p>
-            {getTermInLanguage(
-              generalTranslations,
-              'welcome_message',
-              language
-            )}
-          </p>
+          <p>{getTermInLanguage(translations, 'tervetuloa-viesti')}</p>
 
           <a href={`${API_URL}/login`}>
-            {getTermInLanguage(generalTranslations, 'login', language)}
+            {getTermInLanguage(translations, 'kirjaudu-sisaan')}
           </a>
 
           <Languages>

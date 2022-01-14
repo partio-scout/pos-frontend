@@ -49,8 +49,8 @@ const Status = styled.div`
 const AgeGroupItem = ({
   ageGroup,
   language,
-  translations,
   user,
+  translations,
   activityGroups,
   userTasks,
 }) => {
@@ -59,7 +59,6 @@ const AgeGroupItem = ({
       ? getAgeGroupStatus(ageGroup, userTasks)
       : null
   const icon = ageGroup.logo.url
-
   return (
     <StyledAgeGroupItem>
       <AgeGroupLink to={`/guid/${ageGroup.wp_guid}?lang=${language}`}>
@@ -70,18 +69,14 @@ const AgeGroupItem = ({
         {status && (
           <>
             <Status>
-              {`${getTermInLanguage(
-                translations,
-                'mandatory_plural',
-                language
-              )} ${status.mandatory}`}
+              {`${getTermInLanguage(translations, 'pakolliset')} ${
+                status.mandatory
+              }`}
             </Status>
             <Status>
-              {`${getTermInLanguage(
-                translations,
-                'optional_plural',
-                language
-              )} ${status.optional}`}
+              {`${getTermInLanguage(translations, 'valinnaiset')} ${
+                status.optional
+              }`}
             </Status>
           </>
         )}

@@ -47,20 +47,18 @@ const Manage = () => {
   const history = useHistory()
   const language = determineLanguageFromUrl(window.location)
   const groupsData = useSelector((state) => state.user.userGroups)
-  const generalTranslations = useSelector((state) => state.translations.yleiset)
-  if (!generalTranslations || !groupsData) return null
+  const translations = useSelector((state) => state.translations)
+  if (!translations || !groupsData) return null
 
   return (
     <StyledManage>
       <Header>
-        <Subheading>
-          {getTermInLanguage(generalTranslations, 'manage', language)}
-        </Subheading>
+        <Subheading>{getTermInLanguage(translations, 'hallinta')}</Subheading>
         <CloseIcon onClick={() => history.push(`/?lang=${language}`)} />
       </Header>
       <Content>
         <Subheading>
-          {getTermInLanguage(generalTranslations, 'own_groups', language)}
+          {getTermInLanguage(translations, 'omat-ryhmat')}
         </Subheading>
         {groupsData.map((group) => {
           const groupName = group.name
@@ -69,11 +67,7 @@ const Manage = () => {
           const groupMembers =
             group.members.length +
             ' ' +
-            getTermInLanguage(
-              generalTranslations,
-              'from_the_scout_law',
-              language
-            )
+            getTermInLanguage(translations, 'partio-jasenta')
           const title = '' + groupName + ' / ' + ageGroup
           return (
             <ListItem

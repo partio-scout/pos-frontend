@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import styled, { keyframes } from 'styled-components'
 import { StyledCompletedIcon } from '../TaskActionsIcons'
 import { useSelector } from 'react-redux'
-import { determineLanguageFromUrl, getTermInLanguage } from '../../helpers'
+import { getTermInLanguage } from '../../helpers'
 import { Link } from 'react-router-dom'
 
 const Overlay = styled.div`
@@ -48,7 +48,7 @@ const Content = styled.div`
 const ActivityItem = styled.div`
   display: flex;
   align-items: center;
-  ${props => (props.disabled ? 'opacity: 0.5;' : '')}
+  ${(props) => (props.disabled ? 'opacity: 0.5;' : '')}
 
   > span {
     padding: 1rem;
@@ -72,10 +72,9 @@ const StyledLink = styled(Link)`
 
 const OpenTaskActions = ({ guid, onCancel }) => {
   const [disabled, setDisabled] = useState(false)
-  const generalTranslations = useSelector(state => state.translations.yleiset)
-  const language = determineLanguageFromUrl(window.location)
+  const translations = useSelector((state) => state.translations)
 
-  const getOnClick = onClick =>
+  const getOnClick = (onClick) =>
     disabled
       ? () => {}
       : () => {
@@ -83,7 +82,7 @@ const OpenTaskActions = ({ guid, onCancel }) => {
           onClick()
         }
 
-  const getTaskUrl = guid => {
+  const getTaskUrl = (guid) => {
     return `/guid/${guid}`
   }
 
@@ -95,16 +94,12 @@ const OpenTaskActions = ({ guid, onCancel }) => {
           <StyledCompletedIcon />
           <span>
             <StyledLink to={getTaskUrl(guid)}>
-              <span>
-              {getTermInLanguage(generalTranslations, 'open_task', language)}
-            </span>
-              </StyledLink>
+              <span>{getTermInLanguage(translations, 'aukaise-tehtava')}</span>
+            </StyledLink>
           </span>
         </ActivityItem>
         <ActivityItem onClick={getOnClick(onCancel)} disabled={disabled}>
-          <span>
-            {getTermInLanguage(generalTranslations, 'cancel', language)}
-          </span>
+          <span>{getTermInLanguage(translations, 'peruuta')}</span>
         </ActivityItem>
       </Content>
     </>

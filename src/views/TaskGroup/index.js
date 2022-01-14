@@ -41,7 +41,7 @@ const TaskGroup = () => {
     (state) => state.activityGroups[taskGroup.item.id]
   )
 
-  const generalTranslations = useSelector((state) => state.translations.yleiset)
+  const translations = useSelector((state) => state.translations)
   const favourites = useSelector((state) => state.favourites)
 
   const mandatoryTasks = []
@@ -68,11 +68,7 @@ const TaskGroup = () => {
         guid={task.wp_guid}
         ageGroupGuid={taskGroup.item.age_group.wp_guid}
         title={task.title}
-        subTitle={getTermInLanguage(
-          generalTranslations,
-          `${task_status}`,
-          language
-        )}
+        subTitle={getTermInLanguage(translations, `${task_status}`)}
         language={language}
         icon={icon}
         itemType={ITEM_TYPES.TASK}
@@ -101,13 +97,7 @@ const TaskGroup = () => {
         {activityGroup.activities.length > 0 ? (
           <>
             <h4>
-              <span>
-                {getTermInLanguage(
-                  generalTranslations,
-                  'mandatory_plural',
-                  language
-                )}
-              </span>
+              <span>{getTermInLanguage(translations, 'pakolliset')}</span>
             </h4>
             {mandatoryTasks.length > 0 ? (
               mandatoryTasks.map((task) => {
@@ -117,21 +107,15 @@ const TaskGroup = () => {
               <p>
                 <span>
                   {getTermInLanguage(
-                    generalTranslations,
-                    'no_mandatory_tasks',
+                    translations,
+                    'ei-pakollisia-aktiviteetteja',
                     language
                   )}
                 </span>
               </p>
             )}
             <h4>
-              <span>
-                {getTermInLanguage(
-                  generalTranslations,
-                  'optional_plural',
-                  language
-                )}
-              </span>
+              <span>{getTermInLanguage(translations, 'valinnaiset')}</span>
             </h4>
             {optionalTasks.length > 0 ? (
               optionalTasks.map((task) => {
@@ -141,9 +125,8 @@ const TaskGroup = () => {
               <p>
                 <span>
                   {getTermInLanguage(
-                    generalTranslations,
-                    'no_optional_tasks',
-                    language
+                    translations,
+                    'ei-valinnaisia-aktiviteetteja'
                   )}
                 </span>
               </p>

@@ -12,10 +12,7 @@ import {
   markNotificationRead,
   toggleShowNotifications,
 } from '../../redux/actionCreators'
-import {
-  determineLanguageFromUrl,
-  getTermInLanguage,
-} from 'helpers'
+import { getTermInLanguage } from 'helpers'
 
 const BUTTON_HEIGHT = '1rem'
 
@@ -78,21 +75,20 @@ const MarkAllRead = styled.div`
   padding: 0rem;
   padding-top: 0.3rem;
 `
-const containsUnread = notifications => {
+const containsUnread = (notifications) => {
   if (!notifications) return false
 
-  const unread = notifications.find(notification => !notification.viewed)
+  const unread = notifications.find((notification) => !notification.viewed)
 
   return !!unread
 }
 
 const Notifications = () => {
   const containerRef = useRef()
-  const language = determineLanguageFromUrl(window.location)
   const [hasUnread, setHasUnread] = useState(false)
-  const generalTranslations = useSelector(state => state.translations.yleiset)
-  const notifications = useSelector(state => state.notifications.list)
-  const showDropdown = useSelector(state => state.notifications.show)
+  const notifications = useSelector((state) => state.notifications.list)
+  const showDropdown = useSelector((state) => state.notifications.show)
+  const translations = useSelector((state) => state.translations)
   const dispatch = useDispatch()
   const [hasMore, setHasMore] = useState(true)
   const [displayNotifications, setDisplayNotifications] = useState([])
@@ -112,7 +108,7 @@ const Notifications = () => {
       notifications
         .slice(0, slice)
         .sort((a, b) => (a.viewed > b.viewed ? 1 : -1))
-        .map(notification => (
+        .map((notification) => (
           <Notification
             key={notification.id}
             notification={notification}
@@ -134,7 +130,7 @@ const Notifications = () => {
   const nextSlice = () => {
     return notifications
       .slice(slice, slice + 10)
-      .map(notification => (
+      .map((notification) => (
         <Notification
           key={notification.id}
           notification={notification}
@@ -153,7 +149,7 @@ const Notifications = () => {
     }
   }
 
-  const markSingleNotificationRead = async notification => {
+  const markSingleNotificationRead = async (notification) => {
     const result = await markNotificationViewed(notification.id)
     if (result.success) {
       dispatch(markNotificationRead(notification.id))
@@ -172,7 +168,11 @@ const Notifications = () => {
         <Dropdown>
           <ArrowUp />
           <NotificationsContainer id="scrollableDiv">
-            {displayNotifications.length === 0 && <h4><span>{getTermInLanguage(generalTranslations, 'no_notifications', language)}</span></h4>}
+            {displayNotifications.length === 0 && (
+              <h4>
+                <span>{getTermInLanguage(translations, 'ei-ilmoituksia')}</span>
+              </h4>
+            )}
             {displayNotifications && (
               <InfiniteScroll
                 dataLength={displayNotifications.length}
@@ -186,7 +186,9 @@ const Notifications = () => {
             )}
           </NotificationsContainer>
           <MarkAllRead onClick={markNotificationsRead}>
-            <span>{getTermInLanguage(generalTranslations, 'mark_all_read', language)}</span>
+            <span>
+              {getTermInLanguage(translations, 'merkitse-kaikki-luetuksi')}
+            </span>
           </MarkAllRead>
         </Dropdown>
       )}

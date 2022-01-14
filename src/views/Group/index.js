@@ -46,10 +46,10 @@ const Group = () => {
   const history = useHistory()
   const language = determineLanguageFromUrl(window.location)
   const groupsData = useSelector((state) => state.user.userGroups)
-  const generalTranslations = useSelector((state) => state.translations.yleiset)
+  const translations = useSelector((state) => state.translations)
   const { groupId } = useParams()
 
-  if (!generalTranslations || !groupsData) return null
+  if (!translations || !groupsData) return null
 
   const group = groupsData.find(
     (groups) => groups.id.toString() === groupId.toString()
@@ -70,17 +70,13 @@ const Group = () => {
       </Header>
       <Content>
         <h4>
-          <span>
-            {getTermInLanguage(generalTranslations, 'group_leaders', language)}
-          </span>
+          <span>{getTermInLanguage(translations, 'ryhmanjohtajat')}</span>
         </h4>
         {groupLeaders.map((member) => {
           return <Member key={member.memberId} member={member} />
         })}
         <h4>
-          <span>
-            {getTermInLanguage(generalTranslations, 'group_members', language)}
-          </span>
+          <span>{getTermInLanguage(translations, 'ryhmalaiset')}</span>
         </h4>
         {groupMembers.map((member) => {
           return <Member key={member.memberId} member={member} />

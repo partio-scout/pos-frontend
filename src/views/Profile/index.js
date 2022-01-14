@@ -133,12 +133,9 @@ const Profile = () => {
   )
   const activityGroups = useSelector((state) => state.activityGroups)
 
-  const activityTranslations = useSelector(
-    (state) => state.translations.aktiviteetin_ylakasite
-  )
-  const generalTranslations = useSelector((state) => state.translations.yleiset)
+  const translations = useSelector((state) => state.translations)
 
-  if (!itemsByGuid || !activityTranslations) return null
+  if (!itemsByGuid || !translations) return null
 
   const completedTasks = Object.keys(userTasks).filter(
     (guid) => userTasks[guid] === COMPLETION_STATUS.COMPLETED
@@ -234,9 +231,7 @@ const Profile = () => {
           )}
         </HeadingContent>
         <BodyContent>
-          <h4>
-            {getTermInLanguage(generalTranslations, 'favourites', language)}
-          </h4>
+          <h4>{getTermInLanguage(translations, 'suosikit')}</h4>
           <TaskList>
             {favourites &&
               favourites
@@ -261,13 +256,8 @@ const Profile = () => {
                 })}
           </TaskList>
           <h4>
-            {getTermInLanguage(
-              activityTranslations,
-              'aktiviteetti_plural',
-              language
-            )}{' '}
-            /{' '}
-            {getTermInLanguage(generalTranslations, 'working_on_it', language)}
+            {getTermInLanguage(translations, 'aktiviteetit')} /{' '}
+            {getTermInLanguage(translations, 'tyon-alla')}
           </h4>
           <TaskList>
             {ongoingTasks.map((taskGuid) => {
@@ -294,9 +284,7 @@ const Profile = () => {
               )
             })}
           </TaskList>
-          <h4>
-            {getTermInLanguage(generalTranslations, 'completed', language)}
-          </h4>
+          <h4>{getTermInLanguage(translations, 'suoritetut')}</h4>
           <TaskList>
             {taskGroupsWithChildTaskGroups && (
               <CompletedTasks
@@ -312,11 +300,7 @@ const Profile = () => {
                   key={ageGroup.id}
                   ageGroup={ageGroup}
                   language={language}
-                  subTitle={getTermInLanguage(
-                    generalTranslations,
-                    'agegroup_completed',
-                    language
-                  )}
+                  subTitle={getTermInLanguage(translations, 'ikakausi-valmis')}
                 />
               )
             })}

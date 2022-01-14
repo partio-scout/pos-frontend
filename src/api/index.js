@@ -53,10 +53,8 @@ export const fetchTaskDetails = async (guid, lang) => {
   return await res.json()
 }
 
-export const fetchTranslations = async () => {
-  const res = await fetch(
-    'https://pof-backend.partio.fi/tag-translations-json/'
-  )
+export const fetchTranslations = async (lang) => {
+  const res = await fetch(`${PARTIO_API_URL}/settings/translations/${lang}`)
   return await res.json()
 }
 

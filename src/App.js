@@ -47,12 +47,11 @@ const App = () => {
   const language = useSelector((state) => state.selectedLanguage)
   const activityGroups = useSelector((state) => state.activityGroups)
   const itemsByGuid = useSelector((state) => state.itemsByGuid)
-
   const fetchContent = (language) => {
     fetchAgeGroups(language).then((ageGroups) => {
       dispatch(setInitialData(ageGroups))
     })
-    fetchTranslations().then((translations) =>
+    fetchTranslations(language).then((translations) =>
       dispatch(setTranslations(translations))
     )
     fetchActivityGroups(language).then((activityGroups) =>

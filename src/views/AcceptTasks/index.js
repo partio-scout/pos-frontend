@@ -44,24 +44,20 @@ const AcceptTasks = () => {
   const history = useHistory()
   const language = determineLanguageFromUrl(window.location)
   const groupsData = useSelector((state) => state.user.userGroups)
-  const generalTranslations = useSelector((state) => state.translations.yleiset)
-  if (!generalTranslations || !groupsData) return null
+  const translations = useSelector((state) => state.translations)
+  if (!translations || !groupsData) return null
 
   return (
     <StyledAcceptTasks>
       <Header>
         <Subheading>
-          {getTermInLanguage(
-            generalTranslations,
-            'add_to_group_members',
-            language
-          )}
+          {getTermInLanguage(translations, 'lisaa-ryhmalaisille')}
         </Subheading>
         <CloseIcon onClick={() => history.push(`/?lang=${language}`)} />
       </Header>
       <Content>
         <Subheading>
-          {getTermInLanguage(generalTranslations, 'own_groups', language)}
+          {getTermInLanguage(translations, 'omat-ryhmat')}
         </Subheading>
         {groupsData.map((group, i) => {
           return (

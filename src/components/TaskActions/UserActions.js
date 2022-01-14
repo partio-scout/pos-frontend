@@ -54,7 +54,7 @@ const Content = styled.div`
 const ActivityItem = styled.div`
   display: flex;
   align-items: center;
-  ${props => (props.disabled ? 'opacity: 0.5;' : '')}
+  ${(props) => (props.disabled ? 'opacity: 0.5;' : '')}
 
   > span {
     padding: 1rem;
@@ -79,35 +79,35 @@ const TaskActions = ({
 }) => {
   const [disabled, setDisabled] = useState(false)
 
-  const userTasks = useSelector(state => state.tasks)
-  const generalTranslations = useSelector(state => state.translations.yleiset)
-  const userGroups = useSelector(state => state.user.userGroups)
+  const userTasks = useSelector((state) => state.tasks)
+  const translations = useSelector((state) => state.translations)
+  const userGroups = useSelector((state) => state.user.userGroups)
 
   const history = useHistory()
 
   const language = determineLanguageFromUrl(window.location)
 
   const activeTasks = Object.keys(userTasks).filter(
-    guid => userTasks[guid] === COMPLETION_STATUS.ACTIVE
+    (guid) => userTasks[guid] === COMPLETION_STATUS.ACTIVE
   )
 
   const completionRequestedTasks = Object.keys(userTasks).filter(
-    guid => userTasks[guid] === COMPLETION_STATUS.COMPLETION_REQUESTED
+    (guid) => userTasks[guid] === COMPLETION_STATUS.COMPLETION_REQUESTED
   )
 
   const completedTasks = Object.keys(userTasks).filter(
-    guid => userTasks[guid] === COMPLETION_STATUS.COMPLETED
+    (guid) => userTasks[guid] === COMPLETION_STATUS.COMPLETED
   )
 
-  const isActive = !!activeTasks.find(taskGuid => taskGuid === guid)
+  const isActive = !!activeTasks.find((taskGuid) => taskGuid === guid)
 
   const isCompletionRequested = !!completionRequestedTasks.find(
-    taskGuid => taskGuid === guid
+    (taskGuid) => taskGuid === guid
   )
 
-  const isCompleted = !!completedTasks.find(taskGuid => taskGuid === guid)
+  const isCompleted = !!completedTasks.find((taskGuid) => taskGuid === guid)
 
-  const getOnClick = onClick =>
+  const getOnClick = (onClick) =>
     disabled
       ? () => {}
       : () => {
@@ -124,16 +124,8 @@ const TaskActions = ({
             <StyleActiveIcon />
             <span>
               {isActive
-                ? getTermInLanguage(
-                    generalTranslations,
-                    'delete_from_started',
-                    language
-                  )
-                : getTermInLanguage(
-                    generalTranslations,
-                    'add_as_started',
-                    language
-                  )}
+                ? getTermInLanguage(translations, 'poista-aloitetuista')
+                : getTermInLanguage(translations, 'lisaa-aloitetuksi')}
             </span>
           </ActivityItem>
         )}
@@ -141,28 +133,16 @@ const TaskActions = ({
           <StyledCompletedIcon />
           <span>
             {isCompleted || isCompletionRequested
-              ? getTermInLanguage(
-                  generalTranslations,
-                  'delete_from_done',
-                  language
-                )
-              : getTermInLanguage(generalTranslations, 'add_as_done', language)}
+              ? getTermInLanguage(translations, 'poista-tehdyista')
+              : getTermInLanguage(translations, 'lisaa-tehdyksi')}
           </span>
         </ActivityItem>
         <ActivityItem onClick={getOnClick(toggleFavourite)} disabled={disabled}>
           <FavouriteIcon filled={!isFavourite} />
           <span>
             {isFavourite
-              ? getTermInLanguage(
-                  generalTranslations,
-                  'delete_from_favourites',
-                  language
-                )
-              : getTermInLanguage(
-                  generalTranslations,
-                  'add_as_favourite',
-                  language
-                )}
+              ? getTermInLanguage(translations, 'poista-suosikeista')
+              : getTermInLanguage(translations, 'lisaa-suosikiksi')}
           </span>
         </ActivityItem>
         {userGroups && userGroups.length > 0 ? (
@@ -172,18 +152,12 @@ const TaskActions = ({
           >
             <StyledAcceptIcon />
             <span>
-              {getTermInLanguage(
-                generalTranslations,
-                'add_to_group_members',
-                language
-              )}
+              {getTermInLanguage(translations, 'lisaa-ryhmalaisille')}
             </span>
           </ActivityItem>
         ) : null}
         <ActivityItem onClick={getOnClick(onCancel)} disabled={disabled}>
-          <span>
-            {getTermInLanguage(generalTranslations, 'cancel', language)}
-          </span>
+          <span>{getTermInLanguage(translations, 'peruuta')}</span>
         </ActivityItem>
       </Content>
     </>
