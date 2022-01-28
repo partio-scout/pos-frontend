@@ -1,6 +1,7 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 import TaskGroupItem from 'components/TaskGroupItem'
+import { actionTypes } from 'components/Actions'
 import { ITEM_TYPES } from '../../consts'
 import {
   getTermInLanguage,
@@ -33,6 +34,8 @@ const UserAgeGroup = ({
         icon={getActivityGroupIcon(activityGroup)}
         tasksTerm={status}
         itemType={ITEM_TYPES.TASK_GROUP}
+        actionsComponent={actionTypes.taskGroupActions}
+        showActions
       />
     )
   }
