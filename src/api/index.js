@@ -242,7 +242,9 @@ export const fetchUserGroups = async () => {
     if (!res.ok) {
       return []
     }
-    return await res.json()
+    const result = await res.json()
+    console.log('groupmembers', result)
+    return result
   } catch (err) {
     console.log('Error fetching groups: ', err)
     return {}
