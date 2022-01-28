@@ -78,6 +78,18 @@ export const postTaskEntry = async (entry) => {
   return await res.json()
 }
 
+export const postTaskGroupEntry = async (entry) => {
+  const res = await fetch(`${API_URL}/task-group-entry`, {
+    method: 'POST',
+    body: JSON.stringify(entry),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    credentials: 'include',
+  })
+  return await res.json()
+}
+
 export const postMemberTaskEntry = async (entry) => {
   const res = await fetch(`${API_URL}/member-entry`, {
     method: 'POST',
