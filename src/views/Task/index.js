@@ -101,7 +101,6 @@ const Task = () => {
       </DetailsContainer>
     )
   }
-  console.log(task)
   if (!task) return null
   return (
     <StyledDetailPage
