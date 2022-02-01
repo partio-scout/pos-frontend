@@ -9,12 +9,12 @@ import {
   AccordionItemPanel,
 } from 'react-accessible-accordion'
 import ListItem from 'components/ListItem'
-import { COMPLETION_STATUS, ITEM_TYPES } from 'consts'
+import { COMPLETION_STATUS, ITEM_TYPES, TASK_GROUP_STATUS } from 'consts'
 import { useSelector } from 'react-redux'
 import { StyledAcceptIcon } from '../../components/TaskActionsIcons'
 import { useDispatch } from 'react-redux'
 import { updateGroupMemberTask } from '../../redux/actionCreators'
-import { acceptGroupMemberTasks } from '../../api'
+import { acceptGroupMemberTasks, postTaskGroupEntry } from '../../api'
 import { getTermInLanguage } from '../../helpers'
 import GroupMember from './GroupMember'
 
@@ -123,11 +123,11 @@ const Group = ({ group, isLast }) => {
   const ageGroupId = group.id
   const title = '' + groupName + ' / ' + ageGroup
 
-  const taskGroup = itemsByGuid[taskGuid]
+  const item = itemsByGuid[taskGuid]
   const taskGroupTasks =
-    taskGroup.type === 'TASK'
-      ? activityGroupById[taskGroup.item.activity_group].activities
-      : taskGroup.item.activities
+    item.type === 'TASK'
+      ? activityGroupById[item.item.activity_group].activities
+      : item.item.activities
 
   function isGroupLeader(member) {
     const groupLeaders = group.members.filter(
@@ -195,6 +195,32 @@ const Group = ({ group, isLast }) => {
           })
         )
       }
+    } catch (e) {
+      console.log(e)
+    }
+    setMemberIdList(initialList)
+  }
+
+  async function handleTaskGroupSubmit() {
+    try {
+      const data = {
+        userIds: memberIdList,
+      }
+      await postTaskGroupEntry({
+        data,
+        taskgroup_guid: taskGuid,
+        completed: TASK_GROUP_STATUS.COMPLETED,
+      })
+      // for (let id of memberIdList) {
+      //   dispatch(
+      //     updateGroupMemberTask({
+      //       task_guid: taskGuid,
+      //       user_guid: Number(id),
+      //       completion_status: COMPLETION_STATUS.COMPLETED,
+      //       groupGuid: Number(selectedGroup),
+      //     })
+      //   )
+      // }
     } catch (e) {
       console.log(e)
     }
@@ -278,14 +304,21 @@ const Group = ({ group, isLast }) => {
           </AccordionItemPanel>
         </AccordionItem>
       </Accordion>
-      {memberIdList.length > 0 ? (
+      {memberIdList.length > 0 && item.type === 'TASK' ? (
         <AcceptTasksAction onClick={handleSubmit}>
           <ActivityItem>
             <StyledAcceptIcon />
             {getTermInLanguage(translations, 'lisaa-valituille')}
           </ActivityItem>
         </AcceptTasksAction>
-      ) : null}
+      ) : (
+        <AcceptTasksAction onClick={handleTaskGroupSubmit}>
+          <ActivityItem>
+            <StyledAcceptIcon />
+            {getTermInLanguage(translations, 'lisaa-valituille')}
+          </ActivityItem>
+        </AcceptTasksAction>
+      )}
     </StyledAcceptTasks>
   )
 }

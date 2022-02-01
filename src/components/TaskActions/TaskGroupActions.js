@@ -62,7 +62,7 @@ const ActivityItem = styled.div`
 
 const TaskGroupActions = ({ onCancel, guid }) => {
   const [disabled, setDisabled] = useState(false)
-  const generalTranslations = useSelector((state) => state.translations.yleiset)
+  const translations = useSelector((state) => state.translations)
   const userGroups = useSelector((state) => state.user.userGroups)
 
   const history = useHistory()
@@ -88,18 +88,12 @@ const TaskGroupActions = ({ onCancel, guid }) => {
           >
             <StyledAcceptIcon />
             <span>
-              {getTermInLanguage(
-                generalTranslations,
-                'add_to_group_members',
-                language
-              )}
+              {getTermInLanguage(translations, 'lisaa-ryhmalaisille')}{' '}
             </span>
           </ActivityItem>
         ) : null}
         <ActivityItem onClick={getOnClick(onCancel)} disabled={disabled}>
-          <span>
-            {getTermInLanguage(generalTranslations, 'cancel', language)}
-          </span>
+          <span>{getTermInLanguage(translations, 'peruuta')}</span>
         </ActivityItem>
       </Content>
     </>

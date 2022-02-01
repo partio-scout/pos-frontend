@@ -12,6 +12,10 @@ export const COMPLETION_STATUS = {
   UNSTARTED: 'UNSTARTED',
 }
 
+export const TASK_GROUP_STATUS = {
+  COMPLETED: 'COMPLETED',
+}
+
 export const AGE_GROUPS = {
   4: '053fa231362e95cb211c5eb85c3cbedb',
   5: 'b0bc122b1995418b828fa558c7d33414',
