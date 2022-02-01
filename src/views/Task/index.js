@@ -101,7 +101,7 @@ const Task = () => {
       </DetailsContainer>
     )
   }
-
+  console.log(task)
   if (!task) return null
   return (
     <StyledDetailPage
@@ -110,7 +110,7 @@ const Task = () => {
     >
       {isLoggedIn && (
         <StyledActions
-          guid={task.wp_guid}
+          guid={task.item.wp_guid}
           itemType={task.type}
           isFavourite={isFavourite}
         />
