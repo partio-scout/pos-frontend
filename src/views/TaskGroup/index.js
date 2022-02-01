@@ -59,7 +59,7 @@ const TaskGroup = () => {
     const status = userTasks[task.wp_guid]
       ? userTasks[task.wp_guid].toLowerCase()
       : ''
-    const task_status = status === 'active' ? 'started' : `task_${status}`
+    const task_status = status === 'active' ? 'aloitettu' : status
     const icon = getActivityGroupIcon(activityGroup)
 
     return (
