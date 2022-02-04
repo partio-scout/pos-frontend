@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { useParams, useHistory } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
@@ -106,6 +106,8 @@ const AgeGroup = () => {
   const itemsByGuid = useSelector((state) => state.itemsByGuid)
   const activityGroupById = useSelector((state) => state.activityGroups)
   const ageGroup = itemsByGuid[id] ? itemsByGuid[id].item : undefined
+  const [categories, setCategories] = useState([])
+  const ageGroupGuid = ageGroup ? ageGroup.wp_guid : 'default'
 
   useEffect(() => {
     if (ageGroup) {
@@ -117,8 +119,6 @@ const AgeGroup = () => {
     return null
   }
 
-  const ageGroupGuid = ageGroup ? ageGroup.wp_guid : 'default'
-
   const getTitle = (subtask_term) => {
     let title = getTermInLanguage(translations, `${subtask_term}_monikko`)
 
@@ -128,28 +128,39 @@ const AgeGroup = () => {
     return title
   }
 
-  let categories = ageGroup.activity_groups.reduce((prev, curr) => {
-    const activityGroup = activityGroupById[curr.id]
-    const category = activityGroup.activity_group_category
-    let i = prev.findIndex((x) => x.category === (category?.name || ''))
-    if (i > -1) {
-      prev[i].groups.push(activityGroup)
-    } else {
-      prev.push({
-        category: category?.name || '',
-        sort_order:
-          activityGroup.activity_group_category?.sort_order || Infinity,
-        groups: [
-          { ...activityGroup, sort_order: activityGroup.sort_order || 1000 },
-        ],
-      })
-    }
-    return prev
-  }, [])
+  useEffect(() => {
+    const categories = ageGroup.activity_groups.reduce((prev, curr) => {
+      const activityGroup = activityGroupById[curr.id]
+      if (activityGroup === undefined) {
+        return
+      }
+      const category = activityGroup.activity_group_category
+      let i = prev.findIndex((x) => x.category === (category?.name || ''))
+      if (i > -1) {
+        prev[i].groups.push(activityGroup)
+      } else {
+        prev.push({
+          category: category?.name || '',
+          sort_order:
+            activityGroup.activity_group_category?.sort_order || Infinity,
+          groups: [
+            { ...activityGroup, sort_order: activityGroup.sort_order || 1000 },
+          ],
+        })
+      }
+      return prev
+    }, [])
 
-  categories = categories.sort((categoryA, categoryB) =>
-    categoryA.sort_order < categoryB.sort_order ? -1 : 1
-  )
+    if (!categories) {
+      return
+    }
+
+    setCategories(
+      categories.sort((categoryA, categoryB) =>
+        categoryA.sort_order < categoryB.sort_order ? -1 : 1
+      )
+    )
+  }, [activityGroupById])
 
   const categoryWithNoNameIndex = categories.findIndex((c) => c.category === '')
 
@@ -160,7 +171,7 @@ const AgeGroup = () => {
   }
 
   if (categoryWithNoName) {
-    categories = [categoryWithNoName, ...categories]
+    setCategories([categoryWithNoName, ...categories])
   }
 
   const completedGroups = []

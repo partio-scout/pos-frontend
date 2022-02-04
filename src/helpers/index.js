@@ -1,5 +1,4 @@
 import { ITEM_TYPES } from 'consts'
-import { useSelector } from 'react-redux'
 import taskGroupGraphics from 'graphics/taskGroups'
 
 export const determineLanguageFromUrl = (url) => {
@@ -93,8 +92,7 @@ export const getGroupTasks = (group) => {
   }
 }
 
-export const getAgeGroupTasks = (ageGroup) => {
-  const activityGroupById = useSelector((state) => state.activityGroups)
+export const getAgeGroupTasks = (ageGroup, activityGroupById) => {
   return ageGroup.activity_groups.reduce(
     (acc, curr) => {
       const activityGroup = activityGroupById[curr.id]
@@ -110,8 +108,8 @@ export const getAgeGroupTasks = (ageGroup) => {
   )
 }
 
-export const getAgeGroupStatus = (ageGroup, userTasks) => {
-  const ageGroupTasks = getAgeGroupTasks(ageGroup)
+export const getAgeGroupStatus = (ageGroup, userTasks, activityGroups) => {
+  const ageGroupTasks = getAgeGroupTasks(ageGroup, activityGroups)
   const completedMandatory = ageGroupTasks.mandatory.filter(
     (task) => userTasks[task] === 'COMPLETED'
   )
@@ -147,8 +145,8 @@ export const getCompletedTaskGroups = (ageGroup, userTasks) => {
     .map((taskGroup) => taskGroup.guid)
 }
 
-export const getAgeGroupCompletion = (ageGroup, userTasks) => {
-  const ageGroupTasks = getAgeGroupTasks(ageGroup)
+export const getAgeGroupCompletion = (ageGroup, userTasks, activityGroups) => {
+  const ageGroupTasks = getAgeGroupTasks(ageGroup, activityGroups)
   const completedMandatory = ageGroupTasks.mandatory.filter(
     (task) => userTasks[task] === 'COMPLETED'
   )
