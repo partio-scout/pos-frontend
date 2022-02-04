@@ -88,7 +88,10 @@ const TaskGroupActions = ({ onCancel, guid }) => {
           >
             <StyledAcceptIcon />
             <span>
-              {getTermInLanguage(translations, 'lisaa-ryhmalaisille')}{' '}
+              {getTermInLanguage(
+                translations,
+                'lisaa-aktiviteettikokonaisuus-ryhmalaisille'
+              )}{' '}
             </span>
           </ActivityItem>
         ) : null}

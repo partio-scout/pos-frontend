@@ -18,6 +18,7 @@ const UserAgeGroup = ({
   const translations = useSelector((state) => state.translations)
   const userTasks = useSelector((state) => state.tasks)
   const activityGroupById = useSelector((state) => state.activityGroups)
+  const user = useSelector((state) => state.user)
 
   const renderTaskGroupItem = (activityGroup) => {
     const status = getTaskGroupStatus(
@@ -25,6 +26,9 @@ const UserAgeGroup = ({
       userTasks,
       getTermInLanguage(translations, 'tehdyt')
     )
+
+    const isGroupLeader = user.userGroups.length > 0
+
     return (
       <TaskGroupItem
         key={activityGroup.id}
@@ -35,7 +39,7 @@ const UserAgeGroup = ({
         tasksTerm={status}
         itemType={ITEM_TYPES.TASK_GROUP}
         actionsComponent={actionTypes.taskGroupActions}
-        showActions
+        showActions={isGroupLeader ? true : false}
       />
     )
   }

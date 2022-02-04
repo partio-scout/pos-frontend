@@ -105,6 +105,7 @@ const Group = ({ group, isLast }) => {
   const groupsData = useSelector((state) => state.user.userGroups)
   const translations = useSelector((state) => state.translations)
   const itemsByGuid = useSelector((state) => state.itemsByGuid)
+  const user = useSelector((state) => state.user)
   const activityGroupById = useSelector((state) => state.activityGroups)
   const [memberIdList, setMemberIdList] = React.useState(initialList)
   const [selectedGroup, setSelectedGroup] = React.useState()
@@ -205,6 +206,7 @@ const Group = ({ group, isLast }) => {
     try {
       const data = {
         userIds: memberIdList,
+        group_leader_name: user.name,
       }
       await postTaskGroupEntry({
         data,
