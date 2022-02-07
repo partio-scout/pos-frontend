@@ -108,7 +108,6 @@ const AgeGroup = () => {
   const activityGroupById = useSelector((state) => state.activityGroups)
   const ageGroup = itemsByGuid[id] ? itemsByGuid[id].item : undefined
   const [categories, setCategories] = useState([])
-  const ageGroupGuid = ageGroup ? ageGroup.wp_guid : 'default'
 
   useEffect(() => {
     if (ageGroup) {
