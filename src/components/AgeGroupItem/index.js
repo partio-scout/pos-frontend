@@ -5,6 +5,7 @@ import {
   getAgeGroupTitleWithoutAges,
   getTermInLanguage,
   getAgeGroupStatus,
+  getItemId,
 } from 'helpers'
 
 const StyledAgeGroupItem = styled.div`
@@ -61,7 +62,7 @@ const AgeGroupItem = ({
   const icon = ageGroup.logo.url
   return (
     <StyledAgeGroupItem>
-      <AgeGroupLink to={`/guid/${ageGroup.wp_guid}?lang=${language}`}>
+      <AgeGroupLink to={`/guid/${getItemId(ageGroup)}?lang=${language}`}>
         <AgeGroupIllustration alt={ageGroup.title} src={icon} />
         <h3 data-testid="title">
           {getAgeGroupTitleWithoutAges(ageGroup.title)}

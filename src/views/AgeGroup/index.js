@@ -11,6 +11,7 @@ import {
   determineLanguageFromUrl,
   getTermInLanguage,
   getActivityGroupIcon,
+  getItemId,
 } from 'helpers'
 
 const Background = styled.div`
@@ -117,7 +118,7 @@ const AgeGroup = () => {
     return null
   }
 
-  const ageGroupGuid = ageGroup ? ageGroup.wp_guid : 'default'
+  const ageGroupGuid = ageGroup ? getItemId(ageGroup) : 'default'
 
   const getTitle = (subtask_term) => {
     let title = getTermInLanguage(translations, `${subtask_term}_monikko`)

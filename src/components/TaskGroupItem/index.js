@@ -1,5 +1,6 @@
 import React from 'react'
 import ListItem from 'components/ListItem'
+import { getItemId } from 'helpers'
 
 const TaskGroupItem = ({
   taskGroup,
@@ -14,7 +15,7 @@ const TaskGroupItem = ({
 }) => {
   return (
     <ListItem
-      guid={taskGroup.wp_guid}
+      guid={getItemId(taskGroup)}
       showActions={showActions}
       itemType={itemType}
       actionsComponent={actionsComponent}

@@ -11,6 +11,7 @@ import {
   determineLanguageFromUrl,
   getActivityGroupIcon,
   getTermInLanguage,
+  getItemId,
 } from 'helpers'
 import { ITEM_TYPES } from 'consts'
 import { setItemsByGuid } from 'redux/actionCreators'
@@ -56,17 +57,15 @@ const TaskGroup = () => {
   })
 
   const getTask = (task) => {
-    const status = userTasks[task.wp_guid]
-      ? userTasks[task.wp_guid].toLowerCase()
-      : ''
+    const taskId = getItemId(task)
+    const status = userTasks[taskId] ? userTasks[taskId].toLowerCase() : ''
     const task_status = status === 'active' ? 'aloitettu' : status
     const icon = getActivityGroupIcon(activityGroup)
-
     return (
       <ListItem
         key={task.id}
-        guid={task.wp_guid}
-        ageGroupGuid={taskGroup.item.age_group.wp_guid}
+        guid={taskId}
+        ageGroupGuid={getItemId(taskGroup.item.age_group)}
         title={task.title}
         subTitle={getTermInLanguage(translations, `${task_status}`)}
         language={language}
@@ -74,7 +73,7 @@ const TaskGroup = () => {
         itemType={ITEM_TYPES.TASK}
         showActions
         showFavourite
-        isFavourite={favourites.includes(task.wp_guid)}
+        isFavourite={favourites.includes(taskId)}
         isLoggedIn={status}
       />
     )
@@ -84,7 +83,7 @@ const TaskGroup = () => {
     <StyledDetailPage
       onBackClick={() =>
         history.push(
-          `/guid/${taskGroup.item.age_group.wp_guid}?lang=${language}`
+          `/guid/${getItemId(taskGroup.item.age_group)}?lang=${language}`
         )
       }
       title={activityGroup.title}

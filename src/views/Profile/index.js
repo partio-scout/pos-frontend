@@ -15,13 +15,14 @@ import {
   getTermInLanguage,
   getAgeGroupTasks,
   getAgeGroupCompletion,
+  getActivityGroupIcon,
+  getItemId,
 } from 'helpers'
 import ListItem from 'components/ListItem'
 import { ITEM_TYPES, COMPLETION_STATUS, AGE_GROUPS } from 'consts'
 import CompletedTasks from './CompletedTasks'
 import { getTaskGroupsWithChildTaskGroups } from '../../helpers/groupTasks'
 import { actionTypes } from 'components/Actions'
-import { getActivityGroupIcon } from 'helpers'
 
 const Background = styled.div`
   min-height: 100vh;
@@ -144,7 +145,8 @@ const Profile = () => {
   const taskGroupsWithChildTaskGroups = getTaskGroupsWithChildTaskGroups(
     itemsByGuid,
     completedTasks,
-    language
+    language,
+    getItemId
   )
 
   const ongoingTasks = Object.keys(userTasks).filter(
@@ -155,12 +157,12 @@ const Profile = () => {
 
   const completedAgeGroups = ageGroups
     .filter((ageGroup) => {
-      const items = itemsByGuid[ageGroup.wp_guid]
+      const items = itemsByGuid[getItemId(ageGroup)]
       const ageGroupItem = items && items.item
       const isAgeGroupCompleted = getAgeGroupCompletion(ageGroupItem, userTasks)
       if (isAgeGroupCompleted) {
         const ageGroupTasks = getAgeGroupTasks(
-          itemsByGuid[ageGroup.wp_guid].item
+          itemsByGuid[getItemId(ageGroup)].item
         )
         ageGroupTasks.mandatory.forEach((task) => {
           const taskIndex = completedTasks.indexOf(task)
@@ -241,7 +243,7 @@ const Profile = () => {
                   return (
                     <ListItem
                       key={favourite.id}
-                      guid={favourite.item.wp_guid}
+                      guid={getItemId(favourite.item)}
                       ageGroupGuid={favourite.ageGroupGuid}
                       title={favourite.item.title}
                       subTitle={parent.title}
@@ -270,7 +272,7 @@ const Profile = () => {
               return (
                 <ListItem
                   key={task.id}
-                  guid={task.item.wp_guid}
+                  guid={getItemId(task.item)}
                   ageGroupGuid={task.ageGroupGuid}
                   title={task.item.title}
                   subTitle={parent.title}
