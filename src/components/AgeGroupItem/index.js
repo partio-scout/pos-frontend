@@ -57,7 +57,7 @@ const AgeGroupItem = ({
 }) => {
   const status =
     user.loggedIn && activityGroups
-      ? getAgeGroupStatus(ageGroup, userTasks)
+      ? getAgeGroupStatus(ageGroup, userTasks, activityGroups)
       : null
   const icon = ageGroup.logo.url
   return (

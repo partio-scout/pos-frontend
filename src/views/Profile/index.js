@@ -136,7 +136,8 @@ const Profile = () => {
 
   const translations = useSelector((state) => state.translations)
 
-  if (!itemsByGuid || !translations) return null
+  if (!itemsByGuid || !translations || !favourites || !activityGroups)
+    return null
 
   const completedTasks = Object.keys(userTasks).filter(
     (guid) => userTasks[guid] === COMPLETION_STATUS.COMPLETED
@@ -159,7 +160,14 @@ const Profile = () => {
     .filter((ageGroup) => {
       const items = itemsByGuid[getItemId(ageGroup)]
       const ageGroupItem = items && items.item
-      const isAgeGroupCompleted = getAgeGroupCompletion(ageGroupItem, userTasks)
+
+      if (ageGroupItem === undefined) return null
+
+      const isAgeGroupCompleted = getAgeGroupCompletion(
+        ageGroupItem,
+        userTasks,
+        activityGroups
+      )
       if (isAgeGroupCompleted) {
         const ageGroupTasks = getAgeGroupTasks(
           itemsByGuid[getItemId(ageGroup)].item
@@ -213,7 +221,6 @@ const Profile = () => {
   }
 
   const ageGroupGuid = userData.ageGroupGuid
-
   return (
     <Background ageGroupGuid={ageGroupGuid}>
       <Content>
@@ -235,7 +242,7 @@ const Profile = () => {
         <BodyContent>
           <h4>{getTermInLanguage(translations, 'suosikit')}</h4>
           <TaskList>
-            {favourites &&
+            {favourites.length > 0 &&
               favourites
                 .filter((x) => x.item.locale == language)
                 .map((favourite) => {
@@ -296,16 +303,20 @@ const Profile = () => {
                 actionsComponent={actionTypes.openTaskActions}
               />
             )}
-            {completedAgeGroups.map((ageGroup) => {
-              return (
-                <AgeGroupListItem
-                  key={ageGroup.id}
-                  ageGroup={ageGroup}
-                  language={language}
-                  subTitle={getTermInLanguage(translations, 'ikakausi-valmis')}
-                />
-              )
-            })}
+            {completedAgeGroups &&
+              completedAgeGroups.map((ageGroup) => {
+                return (
+                  <AgeGroupListItem
+                    key={ageGroup.id}
+                    ageGroup={ageGroup}
+                    language={language}
+                    subTitle={getTermInLanguage(
+                      translations,
+                      'ikakausi-valmis'
+                    )}
+                  />
+                )
+              })}
           </TaskList>
         </BodyContent>
       </Content>

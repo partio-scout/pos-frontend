@@ -32,29 +32,30 @@ const TaskGroup = () => {
   const language = determineLanguageFromUrl(window.location)
   const userTasks = useSelector((state) => state.tasks)
   const taskGroup = useSelector((state) => state.itemsByGuid[id])
+  const translations = useSelector((state) => state.translations)
+  const favourites = useSelector((state) => state.favourites)
+  const activityGroup = useSelector(
+    (state) => state.activityGroups[taskGroup.item.id]
+  )
   const dispatch = useDispatch()
+  const mandatoryTasks = []
+  const optionalTasks = []
 
   useEffect(() => {
     dispatch(setItemsByGuid(deepFlatten(taskGroup.item.activities)))
   }, [id])
 
-  const activityGroup = useSelector(
-    (state) => state.activityGroups[taskGroup.item.id]
-  )
-
-  const translations = useSelector((state) => state.translations)
-  const favourites = useSelector((state) => state.favourites)
-
-  const mandatoryTasks = []
-  const optionalTasks = []
-
-  activityGroup.activities.forEach((activity) => {
-    if (activity.mandatory === true) {
-      mandatoryTasks.push(activity)
-    } else {
-      optionalTasks.push(activity)
-    }
-  })
+  if (activityGroup === undefined) {
+    return null
+  } else {
+    activityGroup.activities.forEach((activity) => {
+      if (activity.mandatory === true) {
+        mandatoryTasks.push(activity)
+      } else {
+        optionalTasks.push(activity)
+      }
+    })
+  }
 
   const getTask = (task) => {
     const taskId = getItemId(task)
