@@ -22,6 +22,10 @@ export const getItemType = (item) => {
   return ITEM_TYPES.TASK
 }
 
+export const getItemId = (item) => {
+  return item.wp_guid || item.id.toString()
+}
+
 export const deepFlatten = (items) => {
   const flattener = (items) => {
     const CHILD_GROUPS = ['activities']
@@ -30,7 +34,7 @@ export const deepFlatten = (items) => {
       return
     }
     const parsedItems = items.map((x) => ({
-      id: x.wp_guid,
+      id: getItemId(x),
       item: x,
       type: getItemType(x),
     }))
@@ -40,7 +44,7 @@ export const deepFlatten = (items) => {
       ...items
         .map((x) =>
           CHILD_GROUPS.map((childrenKey) =>
-            flattener(x[childrenKey], x.wp_guid)
+            flattener(x[childrenKey], getItemId(x))
           )
         )
         .flat()
@@ -58,7 +62,7 @@ export const deepFlatten = (items) => {
 
 export const getTaskGroupStatus = (taskGroup, userTasks, label) => {
   const completedTasks = taskGroup.activities.reduce((taskCount, task) => {
-    if (userTasks[task.wp_guid] === 'COMPLETED') {
+    if (userTasks[getItemId(task)] === 'COMPLETED') {
       taskCount++
     }
     return taskCount

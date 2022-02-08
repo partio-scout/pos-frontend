@@ -1,3 +1,4 @@
+import { getItemId } from 'helpers'
 /**
  * Get the tasks of group leaders group member or undefined if the group or member is not found
  * @param groupsId
@@ -19,7 +20,7 @@ export const getMemberTasks = (groupId, memberId, groups) => {
 export const getMemberCompletedTasks = (member, mandatoryTasks) => {
   if (member && member.tasks) {
     return mandatoryTasks.reduce((acc, task) => {
-      if (member.tasks[task.wp_guid] === 'COMPLETED') {
+      if (member.tasks[getItemId(task)] === 'COMPLETED') {
         acc++
       }
       return acc
@@ -38,11 +39,11 @@ export const getTaskGroupsWithItems = (itemsByGuid, completedTaskItems) =>
     .reduce((acc, item) => {
       const itemTasks = completedTaskItems.filter((task) => {
         return item.item.activities.find((groupTask) => {
-          return groupTask.wp_guid === task.item.wp_guid
+          return getItemId(groupTask) === getItemId(task.item)
         })
       })
       if (itemTasks.length) {
-        acc[item.item.wp_guid] = itemTasks
+        acc[getItemId(item.item)] = itemTasks
       }
       return acc
     }, {})
@@ -70,14 +71,17 @@ export const getGroupParent = (itemsByGuid, groupGuid, groupTasks) => {
  */
 export const getTaskGroupsWithChildTaskGroups = (
   itemsByGuid,
-  completedTasks
+  completedTasks,
+  language,
+  getItemId
 ) => {
   const completedTaskItems = completedTasks.map(
     (taskGuid) => itemsByGuid[taskGuid]
   )
   const taskGroupsWithItems = getTaskGroupsWithItems(
     itemsByGuid,
-    completedTaskItems
+    completedTaskItems,
+    getItemId
   )
   return Object.keys(taskGroupsWithItems).reduce((acc, taskGroupGuid) => {
     const parent = getGroupParent(

@@ -11,6 +11,7 @@ import {
   determineLanguageFromUrl,
   getTermInLanguage,
   getActivityGroupIcon,
+  getItemId,
 } from 'helpers'
 
 const Background = styled.div`
@@ -107,7 +108,6 @@ const AgeGroup = () => {
   const activityGroupById = useSelector((state) => state.activityGroups)
   const ageGroup = itemsByGuid[id] ? itemsByGuid[id].item : undefined
   const [categories, setCategories] = useState([])
-  const ageGroupGuid = ageGroup ? ageGroup.wp_guid : 'default'
 
   useEffect(() => {
     if (ageGroup) {
@@ -118,6 +118,8 @@ const AgeGroup = () => {
   if (!ageGroup) {
     return null
   }
+
+  const ageGroupGuid = ageGroup ? getItemId(ageGroup) : 'default'
 
   const getTitle = (subtask_term) => {
     let title = getTermInLanguage(translations, `${subtask_term}_monikko`)
