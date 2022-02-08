@@ -23,7 +23,7 @@ export const getItemType = (item) => {
 }
 
 export const getItemId = (item) => {
-  return item.wp_guid ? item.wp_guid : item.id.toString()
+  return item.wp_guid || item.id.toString()
 }
 
 export const deepFlatten = (items) => {
