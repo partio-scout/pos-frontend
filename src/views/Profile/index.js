@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux'
 import AgeGroupListItem from 'components/AgeGroupListItem'
 import {
   API_URL,
-  //fetchActivityGroups,
+  // fetchActivityGroups,
   fetchProfile,
 } from 'api'
 
@@ -19,10 +19,11 @@ import {
   getItemId,
 } from 'helpers'
 import ListItem from 'components/ListItem'
-import { ITEM_TYPES, COMPLETION_STATUS, AGE_GROUPS } from 'consts'
+import { COMPLETION_STATUS, AGE_GROUPS, ITEM_TYPES } from 'consts'
 import CompletedTasks from './CompletedTasks'
 import { getTaskGroupsWithChildTaskGroups } from '../../helpers/groupTasks'
 import { actionTypes } from 'components/Actions'
+import OngoingTaskList from './OngoingTaskList'
 
 const Background = styled.div`
   min-height: 100vh;
@@ -133,7 +134,6 @@ const Profile = () => {
     state.favourites.map((favourite) => state.itemsByGuid[favourite])
   )
   const activityGroups = useSelector((state) => state.activityGroups)
-
   const translations = useSelector((state) => state.translations)
 
   if (!itemsByGuid || !translations || !favourites || !activityGroups)
@@ -268,31 +268,13 @@ const Profile = () => {
             {getTermInLanguage(translations, 'aktiviteetit')} /{' '}
             {getTermInLanguage(translations, 'tyon-alla')}
           </h4>
-          <TaskList>
-            {ongoingTasks.map((taskGuid) => {
-              const task = itemsByGuid[taskGuid]
-              if (!task) return null
-              if (task.item.locale !== language) return null
-              const parent = activityGroups[task.item.activity_group]
-              const finder = (favourite) => taskGuid === favourite.guid
-              const isFavourite = !!favourites.find(finder)
-              return (
-                <ListItem
-                  key={task.id}
-                  guid={getItemId(task.item)}
-                  ageGroupGuid={task.ageGroupGuid}
-                  title={task.item.title}
-                  subTitle={parent.title}
-                  language={language}
-                  icon={getActivityGroupIcon(parent)}
-                  itemType={ITEM_TYPES.TASK}
-                  showActions
-                  showFavourite
-                  isFavourite={isFavourite}
-                />
-              )
-            })}
-          </TaskList>
+          <OngoingTaskList
+            list={ongoingTasks}
+            itemsByGuid={itemsByGuid}
+            activityGroups={activityGroups}
+            language={language}
+            favourites={favourites}
+          />
           <h4>{getTermInLanguage(translations, 'suoritetut')}</h4>
           <TaskList>
             {taskGroupsWithChildTaskGroups && (
