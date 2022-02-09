@@ -149,6 +149,26 @@ export const fetchUserTasks = async () => {
   }
 }
 
+export const fetchUserTaskGroups = async () => {
+  try {
+    const res = await fetch(`${API_URL}/task-group-entries`, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+    })
+
+    if (!res.ok) {
+      console.log(`FetchUserTaskGroups: ${res.status} ${res.statusText}`)
+      return []
+    }
+    return await res.json()
+  } catch (error) {
+    console.log('Error fetching users taskgroups')
+    return []
+  }
+}
+
 export const postTaskFavourite = async (entry) => {
   const res = await fetch(`${API_URL}/favourite`, {
     method: 'POST',
