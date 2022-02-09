@@ -2,6 +2,7 @@ import {
   SET_USER,
   SET_USER_GROUPS,
   SET_GROUP_MEMBER_TASK,
+  SET_GROUP_MEMBER_TASKGROUP,
 } from 'redux/actionTypes'
 
 const setTask = (user, taskData) => {
@@ -21,6 +22,30 @@ const setTask = (user, taskData) => {
   const userGroups = user.userGroups.slice(0)
   const groupMembers = user.userGroups[groupIndex].members.slice(0)
   groupMembers[memberIndex].memberTasks = tasks
+  userGroups[groupIndex].members = groupMembers
+  return {
+    ...user,
+    userGroups,
+  }
+}
+
+const setTaskGroup = (user, taskGroupData) => {
+  const groupIndex = user.userGroups.findIndex((group) => {
+    return group.id === taskGroupData.groupGuid
+  })
+  const memberIndex = user.userGroups[groupIndex].members.findIndex(
+    (member) => member.memberId === taskGroupData.user_guid
+  )
+
+  const taskGroups = Object.assign(
+    {},
+    user.userGroups[groupIndex].members[memberIndex].memberTaskGroups
+  )
+  taskGroups[taskGroupData.taskgroup_guid] = taskGroupData.completed
+
+  const userGroups = user.userGroups.slice(0)
+  const groupMembers = user.userGroups[groupIndex].members.slice(0)
+  groupMembers[memberIndex].memberTaskGroups = taskGroups
   userGroups[groupIndex].members = groupMembers
 
   return {
@@ -44,6 +69,8 @@ export const user = (state = {}, action) => {
       }
     case SET_GROUP_MEMBER_TASK:
       return setTask(state, action.payload)
+    case SET_GROUP_MEMBER_TASKGROUP:
+      return setTaskGroup(state, action.payload)
     default:
       return state
   }
