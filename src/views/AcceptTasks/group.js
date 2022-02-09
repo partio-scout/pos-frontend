@@ -13,7 +13,10 @@ import { COMPLETION_STATUS, ITEM_TYPES, TASK_GROUP_STATUS } from 'consts'
 import { useSelector } from 'react-redux'
 import { StyledAcceptIcon } from '../../components/TaskActionsIcons'
 import { useDispatch } from 'react-redux'
-import { updateGroupMemberTask } from '../../redux/actionCreators'
+import {
+  updateGroupMemberTask,
+  updateGroupMemberTaskGroup,
+} from '../../redux/actionCreators'
 import { acceptGroupMemberTasks, postTaskGroupEntry } from '../../api'
 import { getTermInLanguage } from '../../helpers'
 import GroupMember from './GroupMember'
@@ -191,7 +194,7 @@ const Group = ({ group, isLast }) => {
           updateGroupMemberTask({
             task_guid: taskGuid,
             user_guid: Number(id),
-            completion_status: COMPLETION_STATUS.COMPLETED,
+            completion_status: TASK_GROUP_STATUS.COMPLETED,
             groupGuid: Number(selectedGroup),
           })
         )
@@ -208,21 +211,17 @@ const Group = ({ group, isLast }) => {
         userIds: memberIdList,
         group_leader_name: user.name,
       }
-      await postTaskGroupEntry({
-        data,
-        taskgroup_guid: taskGuid,
-        completed: TASK_GROUP_STATUS.COMPLETED,
-      })
-      // for (let id of memberIdList) {
-      //   dispatch(
-      //     updateGroupMemberTask({
-      //       task_guid: taskGuid,
-      //       user_guid: Number(id),
-      //       completion_status: COMPLETION_STATUS.COMPLETED,
-      //       groupGuid: Number(selectedGroup),
-      //     })
-      //   )
-      // }
+      await postTaskGroupEntry(data, taskGuid)
+      for (let id of memberIdList) {
+        dispatch(
+          updateGroupMemberTaskGroup({
+            taskgroup_guid: taskGuid,
+            user_guid: Number(id),
+            completed: COMPLETION_STATUS.COMPLETED,
+            groupGuid: Number(selectedGroup),
+          })
+        )
+      }
     } catch (e) {
       console.log(e)
     }
