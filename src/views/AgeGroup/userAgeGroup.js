@@ -20,6 +20,8 @@ const UserAgeGroup = ({
   const activityGroupById = useSelector((state) => state.activityGroups)
   const user = useSelector((state) => state.user)
 
+  if (user === undefined) return null
+
   const renderTaskGroupItem = (activityGroup) => {
     const status = getTaskGroupStatus(
       activityGroupById[activityGroup.id],
@@ -27,7 +29,7 @@ const UserAgeGroup = ({
       getTermInLanguage(translations, 'tehdyt')
     )
 
-    const isGroupLeader = user.userGroups.length > 0
+    const isGroupLeader = user.userGroups ? user.userGroups.length > 0 : false
 
     return (
       <TaskGroupItem
