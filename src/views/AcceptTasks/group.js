@@ -100,6 +100,7 @@ const getInitialCheckboxData = (group) =>
     name: member.memberName,
     id: member.memberId,
     tasks: member.memberTasks,
+    taskGroups: member.memberTaskGroups,
   }))
 
 const Group = ({ group, isLast }) => {
@@ -119,19 +120,22 @@ const Group = ({ group, isLast }) => {
     () => setCheckboxData(getInitialCheckboxData(group)),
     [groupsData, group]
   )
-
   if (!translations || !groupsData) return null
 
   const groupName = group.name
   const ageGroup = group.ageGroup
   const ageGroupId = group.id
   const title = '' + groupName + ' / ' + ageGroup
-
   const item = itemsByGuid[taskGuid]
-  const taskGroupTasks =
-    item.type === 'TASK'
-      ? activityGroupById[item.item.activity_group].activities
-      : item.item.activities
+
+  const getItem = (item) => {
+    switch (item.type) {
+      case 'TASK_GROUP':
+        return item
+      default:
+        return activityGroupById[item.item.activity_group].activities
+    }
+  }
 
   function isGroupLeader(member) {
     const groupLeaders = group.members.filter(
@@ -234,7 +238,7 @@ const Group = ({ group, isLast }) => {
         <div key={member.id}>
           <GroupMember
             member={member}
-            taskGroupTasks={taskGroupTasks}
+            item={getItem(item)}
             taskGuid={taskGuid}
             handleChange={handleChange}
           />

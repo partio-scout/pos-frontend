@@ -28,8 +28,6 @@ const TaskGroupNotification = ({ notification, markRead }) => {
   const taskGroup = itemsByGuid[notification.item_guid]
   const timestamp = getTimestamp(notification.created_at)
 
-  console.log(taskGroup)
-
   const getStateMessage = (state) => {
     switch (state) {
       case 'ACCEPTED':
