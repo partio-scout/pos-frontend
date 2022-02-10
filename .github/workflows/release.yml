@@ -21,7 +21,7 @@ jobs:
         uses: SpicyPizza/create-envfile@v1
         with:
           envkey_REACT_APP_API_URL: ${{ secrets.API_URL_PRODUCTION }}
-          envkey_REACT_APP_PARTIO_API_URL: ${{ secrets.PARTIO_API_URL }}
+          envkey_REACT_APP_PARTIO_API_URL: ${{ secrets.PARTIO_API_URL_PRODUCTION }}
       - name: yarn install, build, and test
         run: |
           # Build and test the project, then

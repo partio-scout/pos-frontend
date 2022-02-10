@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux'
 import AgeGroupListItem from 'components/AgeGroupListItem'
 import {
   API_URL,
-  //fetchActivityGroups,
+  // fetchActivityGroups,
   fetchProfile,
 } from 'api'
 
@@ -15,13 +15,15 @@ import {
   getTermInLanguage,
   getAgeGroupTasks,
   getAgeGroupCompletion,
+  getActivityGroupIcon,
+  getItemId,
 } from 'helpers'
 import ListItem from 'components/ListItem'
-import { ITEM_TYPES, COMPLETION_STATUS, AGE_GROUPS } from 'consts'
+import { COMPLETION_STATUS, AGE_GROUPS, ITEM_TYPES } from 'consts'
 import CompletedTasks from './CompletedTasks'
 import { getTaskGroupsWithChildTaskGroups } from '../../helpers/groupTasks'
 import { actionTypes } from 'components/Actions'
-import { getActivityGroupIcon } from 'helpers'
+import OngoingTaskList from './OngoingTaskList'
 
 const Background = styled.div`
   min-height: 100vh;
@@ -132,10 +134,10 @@ const Profile = () => {
     state.favourites.map((favourite) => state.itemsByGuid[favourite])
   )
   const activityGroups = useSelector((state) => state.activityGroups)
-
   const translations = useSelector((state) => state.translations)
 
-  if (!itemsByGuid || !translations) return null
+  if (!itemsByGuid || !translations || !favourites || !activityGroups)
+    return null
 
   const completedTasks = Object.keys(userTasks).filter(
     (guid) => userTasks[guid] === COMPLETION_STATUS.COMPLETED
@@ -144,7 +146,8 @@ const Profile = () => {
   const taskGroupsWithChildTaskGroups = getTaskGroupsWithChildTaskGroups(
     itemsByGuid,
     completedTasks,
-    language
+    language,
+    getItemId
   )
 
   const ongoingTasks = Object.keys(userTasks).filter(
@@ -155,12 +158,19 @@ const Profile = () => {
 
   const completedAgeGroups = ageGroups
     .filter((ageGroup) => {
-      const items = itemsByGuid[ageGroup.wp_guid]
+      const items = itemsByGuid[getItemId(ageGroup)]
       const ageGroupItem = items && items.item
-      const isAgeGroupCompleted = getAgeGroupCompletion(ageGroupItem, userTasks)
+
+      if (ageGroupItem === undefined) return null
+
+      const isAgeGroupCompleted = getAgeGroupCompletion(
+        ageGroupItem,
+        userTasks,
+        activityGroups
+      )
       if (isAgeGroupCompleted) {
         const ageGroupTasks = getAgeGroupTasks(
-          itemsByGuid[ageGroup.wp_guid].item
+          itemsByGuid[getItemId(ageGroup)].item
         )
         ageGroupTasks.mandatory.forEach((task) => {
           const taskIndex = completedTasks.indexOf(task)
@@ -211,7 +221,6 @@ const Profile = () => {
   }
 
   const ageGroupGuid = userData.ageGroupGuid
-
   return (
     <Background ageGroupGuid={ageGroupGuid}>
       <Content>
@@ -233,7 +242,7 @@ const Profile = () => {
         <BodyContent>
           <h4>{getTermInLanguage(translations, 'suosikit')}</h4>
           <TaskList>
-            {favourites &&
+            {favourites.length > 0 &&
               favourites
                 .filter((x) => x.item.locale == language)
                 .map((favourite) => {
@@ -241,7 +250,7 @@ const Profile = () => {
                   return (
                     <ListItem
                       key={favourite.id}
-                      guid={favourite.item.wp_guid}
+                      guid={getItemId(favourite.item)}
                       ageGroupGuid={favourite.ageGroupGuid}
                       title={favourite.item.title}
                       subTitle={parent.title}
@@ -259,31 +268,13 @@ const Profile = () => {
             {getTermInLanguage(translations, 'aktiviteetit')} /{' '}
             {getTermInLanguage(translations, 'tyon-alla')}
           </h4>
-          <TaskList>
-            {ongoingTasks.map((taskGuid) => {
-              const task = itemsByGuid[taskGuid]
-              if (!task) return null
-              if (task.item.locale !== language) return null
-              const parent = activityGroups[task.item.activity_group]
-              const finder = (favourite) => taskGuid === favourite.guid
-              const isFavourite = !!favourites.find(finder)
-              return (
-                <ListItem
-                  key={task.id}
-                  guid={task.item.wp_guid}
-                  ageGroupGuid={task.ageGroupGuid}
-                  title={task.item.title}
-                  subTitle={parent.title}
-                  language={language}
-                  icon={getActivityGroupIcon(parent)}
-                  itemType={ITEM_TYPES.TASK}
-                  showActions
-                  showFavourite
-                  isFavourite={isFavourite}
-                />
-              )
-            })}
-          </TaskList>
+          <OngoingTaskList
+            list={ongoingTasks}
+            itemsByGuid={itemsByGuid}
+            activityGroups={activityGroups}
+            language={language}
+            favourites={favourites}
+          />
           <h4>{getTermInLanguage(translations, 'suoritetut')}</h4>
           <TaskList>
             {taskGroupsWithChildTaskGroups && (
@@ -294,16 +285,20 @@ const Profile = () => {
                 actionsComponent={actionTypes.openTaskActions}
               />
             )}
-            {completedAgeGroups.map((ageGroup) => {
-              return (
-                <AgeGroupListItem
-                  key={ageGroup.id}
-                  ageGroup={ageGroup}
-                  language={language}
-                  subTitle={getTermInLanguage(translations, 'ikakausi-valmis')}
-                />
-              )
-            })}
+            {completedAgeGroups &&
+              completedAgeGroups.map((ageGroup) => {
+                return (
+                  <AgeGroupListItem
+                    key={ageGroup.id}
+                    ageGroup={ageGroup}
+                    language={language}
+                    subTitle={getTermInLanguage(
+                      translations,
+                      'ikakausi-valmis'
+                    )}
+                  />
+                )
+              })}
           </TaskList>
         </BodyContent>
       </Content>

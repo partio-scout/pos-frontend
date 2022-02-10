@@ -1,5 +1,4 @@
 import { ITEM_TYPES } from 'consts'
-import { useSelector } from 'react-redux'
 import taskGroupGraphics from 'graphics/taskGroups'
 
 export const determineLanguageFromUrl = (url) => {
@@ -23,6 +22,10 @@ export const getItemType = (item) => {
   return ITEM_TYPES.TASK
 }
 
+export const getItemId = (item) => {
+  return item.wp_guid || item.id.toString()
+}
+
 export const deepFlatten = (items) => {
   const flattener = (items) => {
     const CHILD_GROUPS = ['activities']
@@ -31,7 +34,7 @@ export const deepFlatten = (items) => {
       return
     }
     const parsedItems = items.map((x) => ({
-      id: x.wp_guid,
+      id: getItemId(x),
       item: x,
       type: getItemType(x),
     }))
@@ -41,7 +44,7 @@ export const deepFlatten = (items) => {
       ...items
         .map((x) =>
           CHILD_GROUPS.map((childrenKey) =>
-            flattener(x[childrenKey], x.wp_guid)
+            flattener(x[childrenKey], getItemId(x))
           )
         )
         .flat()
@@ -59,7 +62,7 @@ export const deepFlatten = (items) => {
 
 export const getTaskGroupStatus = (taskGroup, userTasks, label) => {
   const completedTasks = taskGroup.activities.reduce((taskCount, task) => {
-    if (userTasks[task.wp_guid] === 'COMPLETED') {
+    if (userTasks[getItemId(task)] === 'COMPLETED') {
       taskCount++
     }
     return taskCount
@@ -93,8 +96,7 @@ export const getGroupTasks = (group) => {
   }
 }
 
-export const getAgeGroupTasks = (ageGroup) => {
-  const activityGroupById = useSelector((state) => state.activityGroups)
+export const getAgeGroupTasks = (ageGroup, activityGroupById) => {
   return ageGroup.activity_groups.reduce(
     (acc, curr) => {
       const activityGroup = activityGroupById[curr.id]
@@ -110,8 +112,8 @@ export const getAgeGroupTasks = (ageGroup) => {
   )
 }
 
-export const getAgeGroupStatus = (ageGroup, userTasks) => {
-  const ageGroupTasks = getAgeGroupTasks(ageGroup)
+export const getAgeGroupStatus = (ageGroup, userTasks, activityGroups) => {
+  const ageGroupTasks = getAgeGroupTasks(ageGroup, activityGroups)
   const completedMandatory = ageGroupTasks.mandatory.filter(
     (task) => userTasks[task] === 'COMPLETED'
   )
@@ -147,8 +149,8 @@ export const getCompletedTaskGroups = (ageGroup, userTasks) => {
     .map((taskGroup) => taskGroup.guid)
 }
 
-export const getAgeGroupCompletion = (ageGroup, userTasks) => {
-  const ageGroupTasks = getAgeGroupTasks(ageGroup)
+export const getAgeGroupCompletion = (ageGroup, userTasks, activityGroups) => {
+  const ageGroupTasks = getAgeGroupTasks(ageGroup, activityGroups)
   const completedMandatory = ageGroupTasks.mandatory.filter(
     (task) => userTasks[task] === 'COMPLETED'
   )
