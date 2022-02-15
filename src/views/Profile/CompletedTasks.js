@@ -15,6 +15,7 @@ import {
   getTermInLanguage,
   getTaskGroupStatus,
   getActivityGroupIcon,
+  getItemId,
 } from 'helpers'
 import { getMemberTasks } from '../../helpers/groupTasks'
 
@@ -79,7 +80,7 @@ const AccordionList = ({
 
   const icon = getActivityGroupIcon(taskGroup.item)
   const ageGroupGuid = taskGroup.item.age_group
-    ? taskGroup.item.age_group.wp_guid
+    ? getItemId(taskGroup.item.age_group)
     : null
   return (
     <Accordion key={taskGroupGuid} allowZeroExpanded>
@@ -153,7 +154,7 @@ const TaskList = ({
         guid={task.id}
         title={task.item.title}
         itemType={ITEM_TYPES.TASK}
-        ageGroupGuid={taskGroup.item.age_group.wp_guid}
+        ageGroupGuid={getItemId(taskGroup.item.age_group)}
         icon={icon}
         language={language}
         actionsComponent={actionsComponent}

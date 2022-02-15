@@ -9,7 +9,7 @@ import styled, { withTheme } from 'styled-components'
 import { useDispatch, useSelector } from 'react-redux'
 import { setSelectedLanguage } from 'redux/actionCreators'
 import { Link } from 'react-router-dom'
-import { determineLanguageFromUrl } from 'helpers'
+import { determineLanguageFromUrl, getItemId } from 'helpers'
 import AgeGroupItem from 'components/AgeGroupItem'
 import Menu from 'components/Menu'
 
@@ -150,7 +150,7 @@ const AgeGroups = ({ theme }) => {
     (ageGroup) => ageGroups.indexOf(ageGroup) === activeIndex
   )
 
-  const activeAgeGroupGuid = activeAgeGroup ? activeAgeGroup.wp_guid : ''
+  const activeAgeGroupGuid = activeAgeGroup ? getItemId(activeAgeGroup) : ''
 
   if (itemsByGuid.length === 0 || !translations) return null
 
