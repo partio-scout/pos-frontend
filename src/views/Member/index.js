@@ -8,6 +8,7 @@ import {
   determineLanguageFromUrl,
   getActivityGroupIcon,
   getTermInLanguage,
+  getItemId,
 } from '../../helpers'
 import ListItem from 'components/ListItem'
 import { ITEM_TYPES, COMPLETION_STATUS, AGE_GROUPS } from '../../consts'
@@ -176,7 +177,7 @@ const Member = () => {
               if (task.item.locale !== language) return null
               return (
                 <ListItem
-                  key={task.item.wp_guid}
+                  key={getItemId(task.item)}
                   guid={task.id}
                   groupGuid={Number(groupId)}
                   userGuid={Number(memberId)}
@@ -198,7 +199,7 @@ const Member = () => {
               if (task.item.locale !== language) return null
               return (
                 <ListItem
-                  key={task.item.wp_guid}
+                  key={getItemId(task.item)}
                   guid={task.id}
                   title={task.item.title}
                   subTitle={parent.title}

@@ -185,7 +185,7 @@ const AgeGroup = () => {
           groups.map((group) => {
             const activities = group.activities
             const completedTasks = activities.reduce((taskCount, task) => {
-              if (userTasks[task.wp_guid] === 'COMPLETED') {
+              if (userTasks[getItemId(task)] === 'COMPLETED') {
                 taskCount++
               }
               return taskCount

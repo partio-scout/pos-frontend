@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux'
 import striptags from 'striptags'
 import DetailPage from 'components/DetailPage'
 import Actions from 'components/Actions'
-import { getTermInLanguage } from 'helpers'
+import { getTermInLanguage, getItemId } from 'helpers'
 
 const DetailsContainer = styled.div`
   display: flex;
@@ -109,7 +109,7 @@ const Task = () => {
     >
       {isLoggedIn && (
         <StyledActions
-          guid={task.item.wp_guid}
+          guid={getItemId(task.item)}
           itemType={task.type}
           isFavourite={isFavourite}
         />
