@@ -70,6 +70,16 @@ export const getTaskGroupStatus = (taskGroup, userTasks, label) => {
   return `${label}: ${completedTasks} / ${taskGroup.activities.length}`
 }
 
+export const getCompletedUserActivityGroups = (
+  translations,
+  activityGroup,
+  userActivityGroups
+) => {
+  if (userActivityGroups[getItemId(activityGroup)] === 'COMPLETED') {
+    return getTermInLanguage(translations, 'kokonaisuus-valmis')
+  }
+}
+
 export const getGroupTasks = (group) => {
   const taskTypes = {
     mandatory: [],
@@ -80,14 +90,16 @@ export const getGroupTasks = (group) => {
       (activity) => activity.mandatory === true
     )
     taskTypes.mandatory = taskTypes.mandatory.concat(
-      mandatoryTasks.map((mandatory) => mandatory.wp_guid)
+      mandatoryTasks.map((mandatory) => getItemId(mandatory))
     )
 
     if (mandatoryTasks.length !== group.activities.length) {
       taskTypes.optional = taskTypes.optional.concat(
         group.activities
-          .filter((activity) => !taskTypes.mandatory.includes(activity.wp_guid))
-          .map((activity) => activity.wp_guid)
+          .filter(
+            (activity) => !taskTypes.mandatory.includes(getItemId(activity))
+          )
+          .map((activity) => getItemId(activity))
       )
     }
     return taskTypes
@@ -135,7 +147,7 @@ export const getActivityGroupIcon = (activityGroup) => {
     ? activityGroup.logo.formats.thumbnail.url
     : activityGroup.logo.url
     ? activityGroup.logo.url
-    : taskGroupGraphics[`Group${activityGroup.wp_guid}`]
+    : taskGroupGraphics[`Group${getItemId(activityGroup)}`]
   return icon
 }
 
