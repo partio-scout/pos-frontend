@@ -198,6 +198,8 @@ const Profile = () => {
     setIsFetchingProfile(true)
     fetchProfile()
       .then((userProfileData) => {
+        if (userProfileData === undefined) return null
+
         const defaultTroop = userProfileData.troops.filter(
           (x) => x.id === userProfileData.defaultTroopId
         )[0]
