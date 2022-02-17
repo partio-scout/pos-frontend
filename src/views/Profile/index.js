@@ -138,8 +138,8 @@ const Profile = () => {
 
   if (!itemsByGuid || !translations || !favourites || !activityGroups)
     return null
+  if (favourites === undefined || activityGroups === undefined) return null
 
-  if (favourites === undefined) return null
   const completedTasks = Object.keys(userTasks).filter(
     (guid) => userTasks[guid] === COMPLETION_STATUS.COMPLETED
   )
@@ -250,6 +250,7 @@ const Profile = () => {
                 .filter((x) => x !== undefined && x.item.locale == language)
                 .map((favourite) => {
                   const parent = activityGroups[favourite.item.activity_group]
+                  if (parent === undefined) return null
                   return (
                     <ListItem
                       key={favourite.id}
