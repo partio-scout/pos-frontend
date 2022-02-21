@@ -138,6 +138,7 @@ const Profile = () => {
 
   if (!itemsByGuid || !translations || !favourites || !activityGroups)
     return null
+  if (favourites === undefined || activityGroups === undefined) return null
 
   const completedTasks = Object.keys(userTasks).filter(
     (guid) => userTasks[guid] === COMPLETION_STATUS.COMPLETED
@@ -246,23 +247,25 @@ const Profile = () => {
           <TaskList>
             {favourites.length > 0 &&
               favourites
-                .filter((x) => x.item.locale == language)
+                .filter((x) => x !== undefined && x.item.locale == language)
                 .map((favourite) => {
                   const parent = activityGroups[favourite.item.activity_group]
                   return (
-                    <ListItem
-                      key={favourite.id}
-                      guid={getItemId(favourite.item)}
-                      ageGroupGuid={favourite.ageGroupGuid}
-                      title={favourite.item.title}
-                      subTitle={parent.title}
-                      icon={getActivityGroupIcon(parent)}
-                      language={language}
-                      itemType={ITEM_TYPES.TASK}
-                      showActions
-                      showFavourite
-                      isFavourite
-                    />
+                    parent && (
+                      <ListItem
+                        key={favourite.id}
+                        guid={getItemId(favourite.item)}
+                        ageGroupGuid={favourite.ageGroupGuid}
+                        title={favourite.item.title}
+                        subTitle={parent.title}
+                        icon={getActivityGroupIcon(parent)}
+                        language={language}
+                        itemType={ITEM_TYPES.TASK}
+                        showActions
+                        showFavourite
+                        isFavourite
+                      />
+                    )
                   )
                 })}
           </TaskList>

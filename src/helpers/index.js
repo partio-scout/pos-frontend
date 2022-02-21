@@ -80,14 +80,16 @@ export const getGroupTasks = (group) => {
       (activity) => activity.mandatory === true
     )
     taskTypes.mandatory = taskTypes.mandatory.concat(
-      mandatoryTasks.map((mandatory) => mandatory.wp_guid)
+      mandatoryTasks.map((mandatory) => getItemId(mandatory))
     )
 
     if (mandatoryTasks.length !== group.activities.length) {
       taskTypes.optional = taskTypes.optional.concat(
         group.activities
-          .filter((activity) => !taskTypes.mandatory.includes(activity.wp_guid))
-          .map((activity) => activity.wp_guid)
+          .filter(
+            (activity) => !taskTypes.mandatory.includes(getItemId(activity))
+          )
+          .map((activity) => getItemId(activity))
       )
     }
     return taskTypes
@@ -131,11 +133,13 @@ export const getActivityGroupIcon = (activityGroup) => {
   if (!activityGroup.logo) {
     return null
   }
-  const icon = activityGroup.logo.formats
-    ? activityGroup.logo.formats.thumbnail.url
-    : activityGroup.logo.url
-    ? activityGroup.logo.url
-    : taskGroupGraphics[`Group${activityGroup.wp_guid}`]
+  const thumbnail =
+    activityGroup.logo.formats && activityGroup.logo.formats.thumbnail.url
+  const logo =
+    activityGroup.logo.url ||
+    taskGroupGraphics[`Group${getItemId(activityGroup)}`]
+  const icon = thumbnail || logo
+
   return icon
 }
 
