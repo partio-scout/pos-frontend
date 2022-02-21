@@ -36,7 +36,7 @@ const OngoingTaskList = ({
                 : task.item.age_group.toString()
             }
             title={task.item.title}
-            subTitle={parent.title}
+            subTitle={parent ? parent.title : ''}
             language={language}
             icon={getActivityGroupIcon(parent)}
             itemType={ITEM_TYPES.TASK}

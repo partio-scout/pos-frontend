@@ -251,21 +251,19 @@ const Profile = () => {
                 .map((favourite) => {
                   const parent = activityGroups[favourite.item.activity_group]
                   return (
-                    parent && (
-                      <ListItem
-                        key={favourite.id}
-                        guid={getItemId(favourite.item)}
-                        ageGroupGuid={favourite.ageGroupGuid}
-                        title={favourite.item.title}
-                        subTitle={parent.title}
-                        icon={getActivityGroupIcon(parent)}
-                        language={language}
-                        itemType={ITEM_TYPES.TASK}
-                        showActions
-                        showFavourite
-                        isFavourite
-                      />
-                    )
+                    <ListItem
+                      key={favourite.id}
+                      guid={getItemId(favourite.item)}
+                      ageGroupGuid={favourite.ageGroupGuid}
+                      title={favourite.item.title}
+                      subTitle={parent ? parent.title : ''}
+                      icon={getActivityGroupIcon(parent)}
+                      language={language}
+                      itemType={ITEM_TYPES.TASK}
+                      showActions
+                      showFavourite
+                      isFavourite
+                    />
                   )
                 })}
           </TaskList>
