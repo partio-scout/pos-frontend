@@ -250,21 +250,22 @@ const Profile = () => {
                 .filter((x) => x !== undefined && x.item.locale == language)
                 .map((favourite) => {
                   const parent = activityGroups[favourite.item.activity_group]
-                  if (parent === undefined) return null
                   return (
-                    <ListItem
-                      key={favourite.id}
-                      guid={getItemId(favourite.item)}
-                      ageGroupGuid={favourite.ageGroupGuid}
-                      title={favourite.item.title}
-                      subTitle={parent.title}
-                      icon={getActivityGroupIcon(parent)}
-                      language={language}
-                      itemType={ITEM_TYPES.TASK}
-                      showActions
-                      showFavourite
-                      isFavourite
-                    />
+                    parent && (
+                      <ListItem
+                        key={favourite.id}
+                        guid={getItemId(favourite.item)}
+                        ageGroupGuid={favourite.ageGroupGuid}
+                        title={favourite.item.title}
+                        subTitle={parent.title}
+                        icon={getActivityGroupIcon(parent)}
+                        language={language}
+                        itemType={ITEM_TYPES.TASK}
+                        showActions
+                        showFavourite
+                        isFavourite
+                      />
+                    )
                   )
                 })}
           </TaskList>
