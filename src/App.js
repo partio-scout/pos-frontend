@@ -18,6 +18,7 @@ import {
   fetchUserTasks,
   fetchUserGroups,
   fetchNotifications,
+  fetchUserTaskGroups,
 } from 'api'
 import {
   setInitialData,
@@ -28,6 +29,7 @@ import {
   setUserGroups,
   setNotifications,
   setActivityGroupsData,
+  setUserActivityGroups,
 } from 'redux/actionCreators'
 import { GlobalStyle, theme } from 'styles'
 import AgeGroups from 'views/AgeGroups'
@@ -64,6 +66,9 @@ const App = () => {
           dispatch(setFavourites(favourites))
         )
         fetchUserTasks().then((tasks) => dispatch(setTasks(tasks)))
+        fetchUserTaskGroups().then((taskgroups) =>
+          dispatch(setUserActivityGroups(taskgroups))
+        )
         fetchUserGroups().then((groups) => dispatch(setUserGroups(groups)))
         fetchNotifications().then((notifications) =>
           dispatch(setNotifications(notifications))

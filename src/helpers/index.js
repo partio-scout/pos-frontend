@@ -70,6 +70,16 @@ export const getTaskGroupStatus = (taskGroup, userTasks, label) => {
   return `${label}: ${completedTasks} / ${taskGroup.activities.length}`
 }
 
+export const getCompletedUserActivityGroups = (
+  translations,
+  activityGroup,
+  userActivityGroups
+) => {
+  if (userActivityGroups[getItemId(activityGroup)] === 'COMPLETED') {
+    return getTermInLanguage(translations, 'kokonaisuus-valmis')
+  }
+}
+
 export const getGroupTasks = (group) => {
   const taskTypes = {
     mandatory: [],

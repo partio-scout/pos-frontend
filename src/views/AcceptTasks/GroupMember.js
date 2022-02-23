@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux'
 
 import { getTermInLanguage } from '../../helpers'
 import { getMemberCompletedTasks } from '../../helpers/groupTasks'
-import { COMPLETION_STATUS } from 'consts'
+import { COMPLETION_STATUS, TASK_GROUP_STATUS } from 'consts'
 
 const StyledListItem = styled.div`
   padding: 0.25rem;
@@ -23,16 +23,71 @@ const StyledSubtitle = styled.span`
 
 const GroupMember = ({
   member,
-  taskGroupTasks,
+  item,
   mandatoryTasks,
   taskGuid,
   handleChange,
 }) => {
   const translations = useSelector((state) => state.translations)
 
+  const getGroupMemberTaskList = (member, item) => {
+    return (
+      <>
+        <StyledListItem>
+          <label style={{ float: 'left', margin: 0 }} htmlFor={member.id}>
+            {member.name}
+          </label>
+          {(mandatoryTasks !== undefined &&
+            getMemberCompletedTasks(member, mandatoryTasks) ===
+              mandatoryTasks.length) ||
+          isCompleted(member.tasks) ? (
+            <Check style={{ ...CHECK_STYLE, color: 'green' }} />
+          ) : (
+            <input
+              id={member.id}
+              style={CHECK_STYLE}
+              type="checkbox"
+              value={member.id}
+              onChange={handleChange}
+              checked={member.selected}
+            />
+          )}
+        </StyledListItem>
+        <StyledSubtitle>
+          {getTermInLanguage(translations, 'tehdyt')}:{' '}
+          {getMemberCompletedTasks(member, item)} / {item.length}
+        </StyledSubtitle>
+      </>
+    )
+  }
+
+  const getGroupMemberTaskGroupList = (member) => {
+    return (
+      <StyledListItem>
+        <label style={{ float: 'left', margin: 0 }} htmlFor={member.id}>
+          {member.name}
+        </label>
+        {isCompleted(member.taskGroups) ? (
+          <Check style={{ ...CHECK_STYLE, color: 'green' }} />
+        ) : (
+          <input
+            id={member.id}
+            style={CHECK_STYLE}
+            type="checkbox"
+            value={member.id}
+            onChange={handleChange}
+            checked={member.selected}
+          />
+        )}
+      </StyledListItem>
+    )
+  }
+
   function isCompleted(memberTasks) {
     const completedTasks = Object.keys(memberTasks).filter(
-      (guid) => memberTasks[guid] === COMPLETION_STATUS.COMPLETED
+      (guid) =>
+        memberTasks[guid] === COMPLETION_STATUS.COMPLETED ||
+        TASK_GROUP_STATUS.COMPLETED
     )
     const isCompleted = !!completedTasks.find((guid) => guid === taskGuid)
     return isCompleted
@@ -47,33 +102,9 @@ const GroupMember = ({
 
   return (
     <div key={member.id}>
-      <StyledListItem>
-        <label style={{ float: 'left', margin: 0 }} htmlFor={member.id}>
-          {member.name}
-        </label>
-        {(mandatoryTasks !== undefined &&
-          getMemberCompletedTasks(member, mandatoryTasks) ===
-            mandatoryTasks.length) ||
-        isCompleted(member.tasks) ? (
-          <Check style={{ ...CHECK_STYLE, color: 'green' }} />
-        ) : (
-          <input
-            id={member.id}
-            style={CHECK_STYLE}
-            type="checkbox"
-            value={member.id}
-            onChange={handleChange}
-            checked={member.selected}
-          />
-        )}
-      </StyledListItem>
-      {taskGroupTasks && (
-        <StyledSubtitle>
-          {getTermInLanguage(translations, 'tehdyt')}:{' '}
-          {getMemberCompletedTasks(member, taskGroupTasks)} /{' '}
-          {taskGroupTasks.length}
-        </StyledSubtitle>
-      )}
+      {item && item.type === 'TASK_GROUP'
+        ? getGroupMemberTaskGroupList(member, item)
+        : getGroupMemberTaskList(member, item)}
     </div>
   )
 }

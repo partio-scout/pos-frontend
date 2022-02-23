@@ -2,6 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 
 import TaskNotification from './TaskNotification'
+import Task_groupNotification from './TaskGroupNotification'
 
 export const UnreadNotificator = styled.div`
   width: 0.65rem;
@@ -33,6 +34,7 @@ const NotificationContainer = styled.div`
 
 const components = {
   TaskNotification,
+  Task_groupNotification,
 }
 
 const getNotificationsComponent = (notification, markRead) => {

@@ -1,11 +1,13 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 import TaskGroupItem from 'components/TaskGroupItem'
+import { actionTypes } from 'components/Actions'
 import { ITEM_TYPES } from '../../consts'
 import {
   getTermInLanguage,
   getActivityGroupIcon,
   getTaskGroupStatus,
+  getCompletedUserActivityGroups,
 } from 'helpers'
 
 const UserAgeGroup = ({
@@ -17,6 +19,10 @@ const UserAgeGroup = ({
   const translations = useSelector((state) => state.translations)
   const userTasks = useSelector((state) => state.tasks)
   const activityGroupById = useSelector((state) => state.activityGroups)
+  const user = useSelector((state) => state.user)
+  const userActivityGroups = useSelector((state) => state.userActivityGroups)
+
+  if (user === undefined) return null
 
   const renderTaskGroupItem = (activityGroup) => {
     const status = getTaskGroupStatus(
@@ -24,6 +30,13 @@ const UserAgeGroup = ({
       userTasks,
       getTermInLanguage(translations, 'tehdyt')
     )
+    const completedTaskGroup = getCompletedUserActivityGroups(
+      translations,
+      activityGroupById[activityGroup.id],
+      userActivityGroups
+    )
+    const isGroupLeader = user.userGroups ? user.userGroups.length > 0 : false
+
     return (
       <TaskGroupItem
         key={activityGroup.id}
@@ -31,8 +44,10 @@ const UserAgeGroup = ({
         ageGroupGuid={ageGroupGuid}
         language={language}
         icon={getActivityGroupIcon(activityGroup)}
-        tasksTerm={status}
+        tasksTerm={completedTaskGroup ? completedTaskGroup : status}
         itemType={ITEM_TYPES.TASK_GROUP}
+        actionsComponent={actionTypes.taskGroupActions}
+        showActions={isGroupLeader ? true : false}
       />
     )
   }

@@ -9,12 +9,15 @@ import {
   AccordionItemPanel,
 } from 'react-accessible-accordion'
 import ListItem from 'components/ListItem'
-import { COMPLETION_STATUS, ITEM_TYPES } from 'consts'
+import { COMPLETION_STATUS, ITEM_TYPES, TASK_GROUP_STATUS } from 'consts'
 import { useSelector } from 'react-redux'
 import { StyledAcceptIcon } from '../../components/TaskActionsIcons'
 import { useDispatch } from 'react-redux'
-import { updateGroupMemberTask } from '../../redux/actionCreators'
-import { acceptGroupMemberTasks } from '../../api'
+import {
+  updateGroupMemberTask,
+  updateGroupMemberTaskGroup,
+} from '../../redux/actionCreators'
+import { acceptGroupMemberTasks, postTaskGroupEntry } from '../../api'
 import { getTermInLanguage } from '../../helpers'
 import GroupMember from './GroupMember'
 
@@ -97,6 +100,7 @@ const getInitialCheckboxData = (group) =>
     name: member.memberName,
     id: member.memberId,
     tasks: member.memberTasks,
+    taskGroups: member.memberTaskGroups,
   }))
 
 const Group = ({ group, isLast }) => {
@@ -105,6 +109,7 @@ const Group = ({ group, isLast }) => {
   const groupsData = useSelector((state) => state.user.userGroups)
   const translations = useSelector((state) => state.translations)
   const itemsByGuid = useSelector((state) => state.itemsByGuid)
+  const user = useSelector((state) => state.user)
   const activityGroupById = useSelector((state) => state.activityGroups)
   const [memberIdList, setMemberIdList] = React.useState(initialList)
   const [selectedGroup, setSelectedGroup] = React.useState()
@@ -115,19 +120,22 @@ const Group = ({ group, isLast }) => {
     () => setCheckboxData(getInitialCheckboxData(group)),
     [groupsData, group]
   )
-
   if (!translations || !groupsData) return null
 
   const groupName = group.name
   const ageGroup = group.ageGroup
   const ageGroupId = group.id
   const title = '' + groupName + ' / ' + ageGroup
+  const item = itemsByGuid[taskGuid]
 
-  const taskGroup = itemsByGuid[taskGuid]
-  const taskGroupTasks =
-    taskGroup.type === 'TASK'
-      ? activityGroupById[taskGroup.item.activity_group].activities
-      : taskGroup.item.activities
+  const getItem = (item) => {
+    switch (item.type) {
+      case 'TASK_GROUP':
+        return item
+      default:
+        return activityGroupById[item.item.activity_group].activities
+    }
+  }
 
   function isGroupLeader(member) {
     const groupLeaders = group.members.filter(
@@ -190,7 +198,30 @@ const Group = ({ group, isLast }) => {
           updateGroupMemberTask({
             task_guid: taskGuid,
             user_guid: Number(id),
-            completion_status: COMPLETION_STATUS.COMPLETED,
+            completion_status: TASK_GROUP_STATUS.COMPLETED,
+            groupGuid: Number(selectedGroup),
+          })
+        )
+      }
+    } catch (e) {
+      console.log(e)
+    }
+    setMemberIdList(initialList)
+  }
+
+  async function handleTaskGroupSubmit() {
+    try {
+      const data = {
+        userIds: memberIdList,
+        group_leader_name: user.name,
+      }
+      await postTaskGroupEntry(data, taskGuid)
+      for (let id of memberIdList) {
+        dispatch(
+          updateGroupMemberTaskGroup({
+            taskgroup_guid: taskGuid,
+            user_guid: Number(id),
+            completed: COMPLETION_STATUS.COMPLETED,
             groupGuid: Number(selectedGroup),
           })
         )
@@ -207,7 +238,7 @@ const Group = ({ group, isLast }) => {
         <div key={member.id}>
           <GroupMember
             member={member}
-            taskGroupTasks={taskGroupTasks}
+            item={getItem(item)}
             taskGuid={taskGuid}
             handleChange={handleChange}
           />
@@ -278,14 +309,21 @@ const Group = ({ group, isLast }) => {
           </AccordionItemPanel>
         </AccordionItem>
       </Accordion>
-      {memberIdList.length > 0 ? (
+      {memberIdList.length > 0 && item.type === 'TASK' ? (
         <AcceptTasksAction onClick={handleSubmit}>
           <ActivityItem>
             <StyledAcceptIcon />
             {getTermInLanguage(translations, 'lisaa-valituille')}
           </ActivityItem>
         </AcceptTasksAction>
-      ) : null}
+      ) : (
+        <AcceptTasksAction onClick={handleTaskGroupSubmit}>
+          <ActivityItem>
+            <StyledAcceptIcon />
+            {getTermInLanguage(translations, 'lisaa-valituille')}
+          </ActivityItem>
+        </AcceptTasksAction>
+      )}
     </StyledAcceptTasks>
   )
 }

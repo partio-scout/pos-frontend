@@ -78,6 +78,21 @@ export const postTaskEntry = async (entry) => {
   return await res.json()
 }
 
+export const postTaskGroupEntry = async (data, taskgroup_guid) => {
+  const res = await fetch(
+    `${API_URL}/groups/mark-taskgroup-done/${taskgroup_guid}`,
+    {
+      method: 'POST',
+      body: JSON.stringify(data),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+    }
+  )
+  return await res.json()
+}
+
 export const postMemberTaskEntry = async (entry) => {
   const res = await fetch(`${API_URL}/member-entry`, {
     method: 'POST',
@@ -130,6 +145,26 @@ export const fetchUserTasks = async () => {
     return await res.json()
   } catch (error) {
     console.log('Error fetching users tasks')
+    return []
+  }
+}
+
+export const fetchUserTaskGroups = async () => {
+  try {
+    const res = await fetch(`${API_URL}/task-group-entries`, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+    })
+
+    if (!res.ok) {
+      console.log(`FetchUserTaskGroups: ${res.status} ${res.statusText}`)
+      return []
+    }
+    return await res.json()
+  } catch (error) {
+    console.log('Error fetching users taskgroups')
     return []
   }
 }
