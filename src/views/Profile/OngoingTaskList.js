@@ -27,23 +27,25 @@ const OngoingTaskList = ({
         const finder = (favourite) => taskGuid === favourite.guid
         const isFavourite = !!favourites.find(finder)
         return (
-          <ListItem
-            key={task.id}
-            guid={getItemId(task.item)}
-            ageGroupGuid={
-              task.ageGroupGuid
-                ? task.ageGroupGuid
-                : task.item.age_group.toString()
-            }
-            title={task.item.title}
-            subTitle={parent.title}
-            language={language}
-            icon={getActivityGroupIcon(parent)}
-            itemType={ITEM_TYPES.TASK}
-            showActions
-            showFavourite
-            isFavourite={isFavourite}
-          />
+          parent && (
+            <ListItem
+              key={task.id}
+              guid={getItemId(task.item)}
+              ageGroupGuid={
+                task.ageGroupGuid
+                  ? task.ageGroupGuid
+                  : task.item.age_group.toString()
+              }
+              title={task.item.title}
+              subTitle={parent.title}
+              language={language}
+              icon={parent && getActivityGroupIcon(parent)}
+              itemType={ITEM_TYPES.TASK}
+              showActions
+              showFavourite
+              isFavourite={isFavourite}
+            />
+          )
         )
       })}
     </TaskList>

@@ -143,11 +143,13 @@ export const getActivityGroupIcon = (activityGroup) => {
   if (!activityGroup.logo) {
     return null
   }
-  const icon = activityGroup.logo.formats
-    ? activityGroup.logo.formats.thumbnail.url
-    : activityGroup.logo.url
-    ? activityGroup.logo.url
-    : taskGroupGraphics[`Group${getItemId(activityGroup)}`]
+  const thumbnail =
+    activityGroup.logo.formats && activityGroup.logo.formats.thumbnail.url
+  const logo =
+    activityGroup.logo.url ||
+    taskGroupGraphics[`Group${getItemId(activityGroup)}`]
+  const icon = thumbnail || logo
+
   return icon
 }
 
