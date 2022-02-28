@@ -108,6 +108,7 @@ const AgeGroup = () => {
   const activityGroupById = useSelector((state) => state.activityGroups)
   const ageGroup = itemsByGuid[id] ? itemsByGuid[id].item : undefined
   const [categories, setCategories] = useState([])
+  const userActivityGroups = useSelector((state) => state.userActivityGroups)
 
   useEffect(() => {
     if (ageGroup) {
@@ -183,17 +184,21 @@ const AgeGroup = () => {
     user.loggedIn && categories
       ? categories.map(({ groups }) => {
           groups.map((group) => {
-            const activities = group.activities
-            const completedTasks = activities.reduce((taskCount, task) => {
-              if (userTasks[getItemId(task)] === 'COMPLETED') {
-                taskCount++
-              }
-              return taskCount
-            }, 0)
-            if (completedTasks === activities.length) {
+            if (userActivityGroups[getItemId(group)] === 'COMPLETED') {
               completedGroups.push(group)
             } else {
-              unfinishedGroups.push(group)
+              const activities = group.activities
+              const completedTasks = activities.reduce((taskCount, task) => {
+                if (userTasks[getItemId(task)] === 'COMPLETED') {
+                  taskCount++
+                }
+                return taskCount
+              }, 0)
+              if (completedTasks === activities.length) {
+                completedGroups.push(group)
+              } else {
+                unfinishedGroups.push(group)
+              }
             }
           })
         })
