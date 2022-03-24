@@ -41,7 +41,8 @@ const AgeGroupLink = styled(Link)`
 `
 
 const AgeGroupIllustration = styled.img`
-  width: 100%;
+  max-height: 50vh;
+  max-width: 100%;
 `
 const Status = styled.div`
   font-size: 0.875rem;
