@@ -69,9 +69,6 @@ const Languages = styled.div`
 `
 
 const AgeGroups = ({ theme }) => {
-  window.addEventListener('scroll', () =>
-    console.log('WINDOW SCROLL --- WHOOP WHOOP')
-  )
   const ageGroups = useSelector((state) => state.ageGroups)
   const activityGroupById = useSelector((state) => state.activityGroups)
   const selectedAgeGroup = useSelector((state) => state.selectedAgeGroup)
@@ -83,7 +80,13 @@ const AgeGroups = ({ theme }) => {
   const dispatch = useDispatch()
   const language = determineLanguageFromUrl(window.location)
   const itemsByGuid = useSelector((state) => state.itemsByGuid)
-
+  // Filter age groups here because indices will break if
+  // language is changed and full age group array is used
+  // and because of that wrong colors and active group auto select
+  // are used
+  const filteredGroups = ageGroups.filter(
+    (ageGroup) => ageGroup.activity_groups?.length > 0
+  )
   const contentRef = useRef()
   const containerRef = useRef()
 
@@ -106,19 +109,19 @@ const AgeGroups = ({ theme }) => {
     if (!container || !content || !selectedAgeGroup) {
       return
     }
-
     const ageGroupCenterPositions = getAgeGroupCenterPositions(content)
     container.scrollLeft =
       ageGroupCenterPositions[
-        ageGroupCenterPositions.indexOf(selectedAgeGroup)
+        filteredGroups.findIndex(
+          (a) => getItemId(a) == getItemId(selectedAgeGroup)
+        )
       ] -
       document.body.clientWidth / 2
-  }, [contentRef, containerRef, selectedAgeGroup, getAgeGroupCenterPositions])
+  }, [selectedAgeGroup, getAgeGroupCenterPositions])
 
   useLayoutEffect(() => {
     const container = containerRef.current
     const content = contentRef.current
-
     if (!container || !content) {
       return
     }
@@ -129,27 +132,27 @@ const AgeGroups = ({ theme }) => {
       const nextActiveIndex = ageGroupCenterPositions.indexOf(
         ageGroupCenterPositions.find((x) => x >= xPosition)
       )
-      setActiveIndex(nextActiveIndex < 0 ? 0 : nextActiveIndex)
+      if (activeIndex != nextActiveIndex) {
+        setActiveIndex(nextActiveIndex < 0 ? 0 : nextActiveIndex)
+      }
     }
-
     scrollHandler()
     container.addEventListener('scroll', scrollHandler)
     return () => {
       container.removeEventListener('scroll', scrollHandler)
     }
+    // These need to be ref.current instead of ref - color change on initial page load won't work otherwise
   }, [
-    contentRef,
-    containerRef,
+    contentRef.current,
+    containerRef.current,
     theme,
+    activeIndex,
     setActiveIndex,
     getAgeGroupCenterPositions,
   ])
 
   //TODO: get agegroup from user if set
-  const activeAgeGroup = ageGroups.find(
-    (ageGroup) => ageGroups.indexOf(ageGroup) === activeIndex
-  )
-
+  const activeAgeGroup = filteredGroups[activeIndex]
   const activeAgeGroupGuid = activeAgeGroup ? getItemId(activeAgeGroup) : ''
 
   if (itemsByGuid.length === 0 || !translations) return null
@@ -158,23 +161,21 @@ const AgeGroups = ({ theme }) => {
     <Container ref={containerRef} activeIndex={activeAgeGroupGuid}>
       <Menu language={language} user={user} />
       <Content ref={contentRef}>
-        {ageGroups
-          .filter((ageGroup) => ageGroup.activity_groups.length)
-          .map((ageGroup, i) => {
-            return (
-              <AgeGroupItem
-                key={i}
-                ageGroup={ageGroup}
-                itemsByGuid={itemsByGuid}
-                activityGroups={activityGroupById}
-                language={language}
-                user={user}
-                translations={translations}
-                userTasks={userTasks}
-                localizedAgeGroups={ageGroups}
-              />
-            )
-          })}
+        {filteredGroups.map((ageGroup, i) => {
+          return (
+            <AgeGroupItem
+              key={i}
+              ageGroup={ageGroup}
+              itemsByGuid={itemsByGuid}
+              activityGroups={activityGroupById}
+              language={language}
+              user={user}
+              translations={translations}
+              userTasks={userTasks}
+              localizedAgeGroups={ageGroups}
+            />
+          )
+        })}
       </Content>
       <Languages>
         {languages.map((language, i) => (
