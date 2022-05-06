@@ -3,11 +3,7 @@ import styled from 'styled-components'
 import { useHistory } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import AgeGroupListItem from 'components/AgeGroupListItem'
-import {
-  API_URL,
-  // fetchActivityGroups,
-  fetchProfile,
-} from 'api'
+import { API_URL, fetchProfile } from 'api'
 
 import { X } from 'react-feather'
 import {
@@ -19,7 +15,12 @@ import {
   getItemId,
 } from 'helpers'
 import ListItem from 'components/ListItem'
-import { COMPLETION_STATUS, AGE_GROUPS, ITEM_TYPES } from 'consts'
+import {
+  COMPLETION_STATUS,
+  AGE_GROUPS,
+  ITEM_TYPES,
+  TASK_GROUP_STATUS,
+} from 'consts'
 import CompletedTasks from './CompletedTasks'
 import { getTaskGroupsWithChildTaskGroups } from '../../helpers/groupTasks'
 import { actionTypes } from 'components/Actions'
@@ -128,6 +129,7 @@ const Profile = () => {
   const [isFetchingProfile, setIsFetchingProfile] = useState(false)
   const [errorFetchingProfile, setErrorFetchingProfile] = useState(false)
   const userTasks = useSelector((state) => state.tasks)
+  const userTaskGroups = useSelector((state) => state.userActivityGroups)
   const ageGroups = useSelector((state) => state.ageGroups)
   const itemsByGuid = useSelector((state) => state.itemsByGuid)
   const favourites = useSelector((state) =>
@@ -143,6 +145,13 @@ const Profile = () => {
   const completedTasks = Object.keys(userTasks).filter(
     (guid) => userTasks[guid] === COMPLETION_STATUS.COMPLETED
   )
+  const completedTaskGroups = Object.keys(userTaskGroups)
+    .filter((guid) => userTaskGroups[guid] === TASK_GROUP_STATUS.COMPLETED)
+    .map((id) => itemsByGuid[id])
+
+  const completedTaskGroupsGuids = completedTaskGroups.map(
+    (group) => group && group.id
+  )
 
   const taskGroupsWithChildTaskGroups = getTaskGroupsWithChildTaskGroups(
     itemsByGuid,
@@ -150,6 +159,12 @@ const Profile = () => {
     language,
     getItemId
   )
+
+  const parentTaskGroupGuids = Object.keys(taskGroupsWithChildTaskGroups)
+
+  const taskGroupsMarkedCompleted = completedTaskGroupsGuids
+    .filter((guid) => !parentTaskGroupGuids.includes(guid))
+    .map((id) => itemsByGuid[id])
 
   const ongoingTasks = Object.keys(userTasks).filter(
     (guid) =>
@@ -288,8 +303,30 @@ const Profile = () => {
                 itemsByGuid={itemsByGuid}
                 taskGroupsWithChildTaskGroups={taskGroupsWithChildTaskGroups}
                 actionsComponent={actionTypes.openTaskActions}
+                completedTaskGroupsGuids={completedTaskGroupsGuids}
+                parentTaskGroupGuids={parentTaskGroupGuids}
               />
             )}
+            {taskGroupsMarkedCompleted &&
+              taskGroupsMarkedCompleted.map((taskGroup) => {
+                if (!taskGroup) return null
+                return (
+                  <ListItem
+                    key={taskGroup.id}
+                    guid={getItemId(taskGroup.item)}
+                    ageGroupGuid={taskGroup.ageGroupGuid}
+                    title={taskGroup.item.title}
+                    subTitle={getTermInLanguage(
+                      translations,
+                      'kokonaisuus-valmis'
+                    )}
+                    icon={getActivityGroupIcon(taskGroup.item)}
+                    language={language}
+                    itemType={ITEM_TYPES.TASK_GROUP}
+                    showActions
+                  />
+                )
+              })}
             {completedAgeGroups &&
               completedAgeGroups.map((ageGroup) => {
                 return (

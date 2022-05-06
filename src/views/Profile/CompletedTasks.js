@@ -31,8 +31,9 @@ const CompletedTasks = ({
   actionsComponent,
   userGuid,
   groupGuid,
+  completedTaskGroupsGuids,
+  parentTaskGroupGuids,
 }) => {
-  const parentTaskGroupGuids = Object.keys(taskGroupsWithChildTaskGroups)
   return parentTaskGroupGuids.map((taskGroupGuid) => {
     return (
       <AccordionList
@@ -45,6 +46,7 @@ const CompletedTasks = ({
         actionsComponent={actionsComponent}
         userGuid={userGuid}
         groupGuid={groupGuid}
+        completedTaskGroupsGuids={completedTaskGroupsGuids}
       />
     )
   })
@@ -59,6 +61,7 @@ const AccordionList = ({
   actionsComponent,
   userGuid,
   groupGuid,
+  completedTaskGroupsGuids,
 }) => {
   const userTasks = groupMember
     ? getMemberTasks(
@@ -71,12 +74,17 @@ const AccordionList = ({
   const translations = useSelector((state) => state.translations)
   const taskGroup = itemsByGuid[taskGroupGuid]
   if (taskGroup.item.locale !== language) return null
-
-  const status = getTaskGroupStatus(
-    taskGroup.item,
-    userTasks,
-    getTermInLanguage(translations, 'tehdyt')
+  const taskGroupsMarkedCompleted = completedTaskGroupsGuids.find(
+    (guid) => guid === taskGroupGuid
   )
+
+  const status = taskGroupsMarkedCompleted
+    ? getTermInLanguage(translations, 'kokonaisuus-valmis')
+    : getTaskGroupStatus(
+        taskGroup.item,
+        userTasks,
+        getTermInLanguage(translations, 'tehdyt')
+      )
 
   const icon = getActivityGroupIcon(taskGroup.item)
   const ageGroupGuid = taskGroup.item.age_group
