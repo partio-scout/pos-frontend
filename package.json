@@ -5,6 +5,8 @@
   "private": true,
   "dependencies": {
     "@sentry/browser": "6.11.0",
+    "@sentry/react": "6.19.7",
+    "@sentry/tracing": "6.19.7",
     "dotenv": "^10.0.0",
     "moment": "2.29.1",
     "react": "17.0.2",
