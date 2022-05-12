@@ -21,6 +21,7 @@ jobs:
         with:
           envkey_REACT_APP_API_URL: ${{ secrets.API_URL_STAGING }}
           envkey_REACT_APP_PARTIO_API_URL: ${{ secrets.PARTIO_API_URL_STAGING }}
+          envkey_REACT_APP_SENTRY_DNS: ${{ secrets.SENTRY_DNS }}
       - name: yarn install, build, and test
         run: |
           yarn
