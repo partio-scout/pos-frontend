@@ -9,6 +9,12 @@ import { BrowserTracing } from '@sentry/tracing'
 
 Sentry.init({
   dsn: process.env.REACT_APP_SENTRY_DSN,
+  beforeSend(event) {
+    if (event.exception) {
+      Sentry.showReportDialog({ eventId: event.event_id })
+    }
+    return event
+  },
   integrations: [new BrowserTracing()],
   tracesSampleRate: 1.0,
 })

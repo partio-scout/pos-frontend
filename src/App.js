@@ -6,6 +6,7 @@ import {
   useLocation,
   useParams,
 } from 'react-router-dom'
+import * as Sentry from '@sentry/react'
 import { useDispatch, useSelector } from 'react-redux'
 import styled, { ThemeProvider } from 'styled-components'
 import { useTransition, animated } from 'react-spring'
@@ -43,6 +44,7 @@ import Group from 'views/Group'
 import Member from 'views/Member'
 import AcceptTasks from 'views/AcceptTasks'
 import { ITEM_TYPES } from 'consts'
+import FallbackComponent from 'views/Fallback'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -77,6 +79,8 @@ const App = () => {
     })
   }
 
+  const showFallback = () => <FallbackComponent />
+
   useEffect(() => {
     fetchContent(language)
   }, [dispatch, language])
@@ -86,27 +90,29 @@ const App = () => {
   }
 
   return (
-    <Router>
-      <ThemeProvider theme={theme}>
-        <>
-          <GlobalStyle />
-          <TransitioningRoutes>
-            <Route path="/" exact component={ComponentToRender} />
-            <Route path="/manage" component={Manage} />
-            <Route path="/guid/:id" component={ComponentToRender} />
-            <Route path="/profile" component={Profile} />
-            <Route path="/login" component={Login} />
-            <Route exact path="/group/:groupId" component={Group} />
-            <Route exact path="/accept/:taskGuid" component={AcceptTasks} />
-            <Route
-              exact
-              path="/group/:groupId/member/:memberId"
-              component={Member}
-            />
-          </TransitioningRoutes>
-        </>
-      </ThemeProvider>
-    </Router>
+    <Sentry.ErrorBoundary fallback={showFallback} showDialog>
+      <Router>
+        <ThemeProvider theme={theme}>
+          <>
+            <GlobalStyle />
+            <TransitioningRoutes>
+              <Route path="/" exact component={ComponentToRender} />
+              <Route path="/manage" component={Manage} />
+              <Route path="/guid/:id" component={ComponentToRender} />
+              <Route path="/profile" component={Profile} />
+              <Route path="/login" component={Login} />
+              <Route exact path="/group/:groupId" component={Group} />
+              <Route exact path="/accept/:taskGuid" component={AcceptTasks} />
+              <Route
+                exact
+                path="/group/:groupId/member/:memberId"
+                component={Member}
+              />
+            </TransitioningRoutes>
+          </>
+        </ThemeProvider>
+      </Router>
+    </Sentry.ErrorBoundary>
   )
 }
 
