@@ -34,13 +34,17 @@ const CompletedTasks = ({
   completedTaskGroupsGuids,
   parentTaskGroupGuids,
 }) => {
-  const taskGroupGuidsInOrder = parentTaskGroupGuids
-    .filter((parentGuid) => !completedTaskGroupsGuids.includes(parentGuid))
-    .concat(
-      completedTaskGroupsGuids.filter((guid) =>
-        parentTaskGroupGuids.includes(guid)
-      )
-    )
+  const taskGroupsnotMarkedCompleted = parentTaskGroupGuids.filter(
+    (parentGuid) => !completedTaskGroupsGuids.includes(parentGuid)
+  )
+
+  const taskGroupsMarkedCompleted = completedTaskGroupsGuids.filter((guid) =>
+    parentTaskGroupGuids.includes(guid)
+  )
+
+  const taskGroupGuidsInOrder = taskGroupsnotMarkedCompleted.concat(
+    taskGroupsMarkedCompleted
+  )
 
   return taskGroupGuidsInOrder.map((taskGroupGuid) => {
     return (
