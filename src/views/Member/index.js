@@ -11,7 +11,12 @@ import {
   getItemId,
 } from '../../helpers'
 import ListItem from 'components/ListItem'
-import { ITEM_TYPES, COMPLETION_STATUS, AGE_GROUPS } from '../../consts'
+import {
+  ITEM_TYPES,
+  COMPLETION_STATUS,
+  AGE_GROUPS,
+  TASK_GROUP_STATUS,
+} from '../../consts'
 import { actionTypes } from 'components/Actions'
 import CompletedTasks from '../Profile/CompletedTasks'
 import { getTaskGroupsWithChildTaskGroups } from '../../helpers/groupTasks'
@@ -111,6 +116,7 @@ const Member = () => {
   const itemsByGuid = useSelector((state) => state.itemsByGuid)
   const activityGroups = useSelector((state) => state.activityGroups)
   const translations = useSelector((state) => state.translations)
+  const userTaskGroups = useSelector((state) => state.userActivityGroups)
 
   const { groupId } = useParams()
   const { memberId } = useParams()
@@ -152,6 +158,20 @@ const Member = () => {
 
   const groupTitle = '' + group.name + ' / ' + group.ageGroup
 
+  const parentTaskGroupGuids = Object.keys(taskGroupsWithChildTaskGroups)
+
+  const completedTaskGroups = Object.keys(userTaskGroups)
+    .filter((guid) => userTaskGroups[guid] === TASK_GROUP_STATUS.COMPLETED)
+    .map((id) => itemsByGuid[id])
+
+  const completedTaskGroupsGuids = completedTaskGroups.map(
+    (group) => group && group.id
+  )
+
+  const taskGroupsMarkedCompleted = completedTaskGroupsGuids
+    .filter((guid) => !parentTaskGroupGuids.includes(guid))
+    .map((id) => itemsByGuid[id])
+
   return (
     <Background ageGroupGuid={ageGroupGuid}>
       <Content>
@@ -173,6 +193,7 @@ const Member = () => {
           <TaskList>
             {completionRequestedTasks.map((taskGuid) => {
               const task = itemsByGuid[taskGuid]
+              if (!task) return null
               const parent = activityGroups[task.item.activity_group]
               if (task.item.locale !== language) return null
               return (
@@ -221,8 +242,30 @@ const Member = () => {
                 actionsComponent={actionTypes.groupLeaderActions}
                 userGuid={Number(memberId)}
                 groupGuid={group.id}
+                parentTaskGroupGuids={parentTaskGroupGuids}
+                completedTaskGroupsGuids={completedTaskGroupsGuids}
               />
             )}
+            {taskGroupsMarkedCompleted &&
+              taskGroupsMarkedCompleted.map((taskGroup) => {
+                if (!taskGroup) return null
+                return (
+                  <ListItem
+                    key={taskGroup.id}
+                    guid={getItemId(taskGroup.item)}
+                    ageGroupGuid={taskGroup.ageGroupGuid}
+                    title={taskGroup.item.title}
+                    subTitle={getTermInLanguage(
+                      translations,
+                      'kokonaisuus-valmis'
+                    )}
+                    icon={getActivityGroupIcon(taskGroup.item)}
+                    language={language}
+                    itemType={ITEM_TYPES.TASK_GROUP}
+                    showActions
+                  />
+                )
+              })}
           </TaskList>
         </BodyContent>
       </Content>
