@@ -34,7 +34,19 @@ const CompletedTasks = ({
   completedTaskGroupsGuids,
   parentTaskGroupGuids,
 }) => {
-  return parentTaskGroupGuids.map((taskGroupGuid) => {
+  const taskGroupsnotMarkedCompleted = parentTaskGroupGuids.filter(
+    (parentGuid) => !completedTaskGroupsGuids.includes(parentGuid)
+  )
+
+  const taskGroupsMarkedCompleted = completedTaskGroupsGuids.filter((guid) =>
+    parentTaskGroupGuids.includes(guid)
+  )
+
+  const taskGroupGuidsInOrder = taskGroupsnotMarkedCompleted.concat(
+    taskGroupsMarkedCompleted
+  )
+
+  return taskGroupGuidsInOrder.map((taskGroupGuid) => {
     return (
       <AccordionList
         key={taskGroupGuid}
