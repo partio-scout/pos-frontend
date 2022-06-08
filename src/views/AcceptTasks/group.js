@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, { useEffect } from 'react'
 import styled, { keyframes, css } from 'styled-components'
 import { useParams } from 'react-router-dom'
@@ -9,15 +10,8 @@ import {
   AccordionItemPanel,
 } from 'react-accessible-accordion'
 import ListItem from 'components/ListItem'
-import { COMPLETION_STATUS, ITEM_TYPES, TASK_GROUP_STATUS } from 'consts'
+import { ITEM_TYPES } from 'consts'
 import { useSelector } from 'react-redux'
-import { StyledAcceptIcon } from '../../components/TaskActionsIcons'
-import { useDispatch } from 'react-redux'
-import {
-  updateGroupMemberTask,
-  updateGroupMemberTaskGroup,
-} from '../../redux/actionCreators'
-import { acceptGroupMemberTasks, postTaskGroupEntry } from '../../api'
 import { getTermInLanguage } from '../../helpers'
 import GroupMember from './GroupMember'
 
@@ -35,43 +29,6 @@ const StyledAcceptTasks = styled.div`
 
 const Content = styled.div`
   margin-bottom: 2rem;
-`
-
-const AcceptTasksAction = styled.div`
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  box-sizing: border-box;
-  width: 100%;
-  padding: 3rem;
-  color: ${({ theme }) => theme.color.text};
-  background-color: ${({ theme }) => theme.color.background};
-  z-index: 1;
-  animation: ${keyframes`
-    0% {
-      opacity: 0;
-    }
-    100% {
-      opacity: 1;
-    }
-  `} 200ms linear;
-`
-
-const ActivityItem = styled.div`
-  display: flex;
-  align-items: center;
-
-  > span {
-    padding: 1rem;
-  }
-
-  :last-child {
-    justify-content: center;
-
-    > span {
-      padding-top: 2rem;
-    }
-  }
 `
 
 const StyledListItem = styled.div`
@@ -92,7 +49,6 @@ const StyledListHeading = styled.h4`
   padding: 0 0 0 0.25rem;
   text-decoration: underline;
 `
-const initialList = []
 
 const getInitialCheckboxData = (group) =>
   group.members.map((member) => ({
@@ -103,16 +59,12 @@ const getInitialCheckboxData = (group) =>
     taskGroups: member.memberTaskGroups,
   }))
 
-const Group = ({ group, isLast }) => {
-  const dispatch = useDispatch()
+const Group = ({ group, isLast, setMemberIdList }) => {
   const { taskGuid } = useParams()
   const groupsData = useSelector((state) => state.user.userGroups)
   const translations = useSelector((state) => state.translations)
   const itemsByGuid = useSelector((state) => state.itemsByGuid)
-  const user = useSelector((state) => state.user)
   const activityGroupById = useSelector((state) => state.activityGroups)
-  const [memberIdList, setMemberIdList] = React.useState(initialList)
-  const [selectedGroup, setSelectedGroup] = React.useState()
   const [checkboxData, setCheckboxData] = React.useState(
     getInitialCheckboxData(group)
   )
@@ -147,14 +99,6 @@ const Group = ({ group, isLast }) => {
     return isGroupLeader
   }
 
-  function updateGroup(group) {
-    if (selectedGroup) {
-      setSelectedGroup(null)
-    } else {
-      setSelectedGroup(group)
-    }
-  }
-
   function handleChange(event) {
     if (event.target.name === 'checkAll') {
       checkboxData.map((member) => {
@@ -171,7 +115,7 @@ const Group = ({ group, isLast }) => {
       return idList
     }, [])
 
-    setMemberIdList(editableList)
+    setMemberIdList(editableList, group.id)
   }
 
   function handleCheckboxSelection(memberId, isChecked) {
@@ -185,51 +129,6 @@ const Group = ({ group, isLast }) => {
       }
       return setCheckboxData(editableCheckboxData)
     })
-  }
-
-  async function handleSubmit() {
-    try {
-      const data = {
-        userIds: memberIdList,
-      }
-      await acceptGroupMemberTasks(data, taskGuid)
-      for (let id of memberIdList) {
-        dispatch(
-          updateGroupMemberTask({
-            task_guid: taskGuid,
-            user_guid: Number(id),
-            completion_status: TASK_GROUP_STATUS.COMPLETED,
-            groupGuid: Number(selectedGroup),
-          })
-        )
-      }
-    } catch (e) {
-      console.log(e)
-    }
-    setMemberIdList(initialList)
-  }
-
-  async function handleTaskGroupSubmit() {
-    try {
-      const data = {
-        userIds: memberIdList,
-        group_leader_name: user.name,
-      }
-      await postTaskGroupEntry(data, taskGuid)
-      for (let id of memberIdList) {
-        dispatch(
-          updateGroupMemberTaskGroup({
-            taskgroup_guid: taskGuid,
-            user_guid: Number(id),
-            completed: COMPLETION_STATUS.COMPLETED,
-            groupGuid: Number(selectedGroup),
-          })
-        )
-      }
-    } catch (e) {
-      console.log(e)
-    }
-    setMemberIdList(initialList)
   }
 
   const renderMember = (member, checkFunction) => {
@@ -258,7 +157,7 @@ const Group = ({ group, isLast }) => {
     <StyledAcceptTasks isLast={isLast}>
       <Accordion
         allowZeroExpanded
-        onChange={() => updateGroup(ageGroupId)}
+        // onChange={() => updateGroup(ageGroupId)}
         key={ageGroupId}
       >
         <AccordionItem key={ageGroupId}>
@@ -309,21 +208,6 @@ const Group = ({ group, isLast }) => {
           </AccordionItemPanel>
         </AccordionItem>
       </Accordion>
-      {memberIdList.length > 0 && item.type === 'TASK' ? (
-        <AcceptTasksAction onClick={handleSubmit}>
-          <ActivityItem>
-            <StyledAcceptIcon />
-            {getTermInLanguage(translations, 'lisaa-valituille')}
-          </ActivityItem>
-        </AcceptTasksAction>
-      ) : (
-        <AcceptTasksAction onClick={handleTaskGroupSubmit}>
-          <ActivityItem>
-            <StyledAcceptIcon />
-            {getTermInLanguage(translations, 'lisaa-valituille')}
-          </ActivityItem>
-        </AcceptTasksAction>
-      )}
     </StyledAcceptTasks>
   )
 }
