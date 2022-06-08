@@ -79,18 +79,20 @@ export const postTaskEntry = async (entry) => {
 }
 
 export const postTaskGroupEntry = async (data, taskgroup_guid) => {
-  const res = await fetch(
-    `${API_URL}/groups/mark-taskgroup-done/${taskgroup_guid}`,
-    {
-      method: 'POST',
-      body: JSON.stringify(data),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-    }
-  )
-  return await res.json()
+  for (let group of Object.values(data.groups)) {
+    const res = await fetch(
+      `${API_URL}/groups/mark-taskgroup-done/${taskgroup_guid}`,
+      {
+        method: 'POST',
+        body: JSON.stringify(group),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+      }
+    )
+    return await res.json()
+  }
 }
 
 export const postMemberTaskEntry = async (entry) => {
@@ -118,15 +120,17 @@ export const removeMemberTaskEntry = async (entry) => {
 }
 
 export const acceptGroupMemberTasks = async (data, taskId) => {
-  const res = await fetch(`${API_URL}/groups/mark-task-done/${taskId}`, {
-    method: 'POST',
-    body: JSON.stringify(data),
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    credentials: 'include',
-  })
-  return res.json()
+  for (let group of Object.values(data)) {
+    const res = await fetch(`${API_URL}/groups/mark-task-done/${taskId}`, {
+      method: 'POST',
+      body: JSON.stringify(group),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+    })
+    return res.json()
+  }
 }
 
 export const fetchUserTasks = async () => {
