@@ -14,6 +14,7 @@ import { acceptGroupMemberTasks, postTaskGroupEntry } from '../../api'
 import { COMPLETION_STATUS, TASK_GROUP_STATUS } from 'consts'
 import { useDispatch } from 'react-redux'
 import { useParams } from 'react-router-dom'
+import LoadingSpinner from '../../components/LoadingSpinner'
 
 const AcceptTasksAction = styled.div`
   position: fixed;
@@ -35,9 +36,18 @@ const AcceptTasksAction = styled.div`
   `} 200ms linear;
 `
 
+const SpinnerContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`
+
 const ActivityItem = styled.div`
   display: flex;
   align-items: center;
+  padding: 3px 0 3px;
+  border: 2px solid #545454;
+  border-radius: 3%;
 
   > span {
     padding: 1rem;
@@ -49,6 +59,10 @@ const ActivityItem = styled.div`
     > span {
       padding-top: 2rem;
     }
+  }
+
+  &:active {
+    border: 2px solid #fff;
   }
 `
 
@@ -97,6 +111,7 @@ const AcceptTasks = () => {
   const dispatch = useDispatch()
   const { taskGuid } = useParams()
   const user = useSelector((state) => state.user)
+  const [isLoading, setLoading] = useState(false)
 
   const item = itemsByGuid[taskGuid]
   if (!translations || !groupsData) return null
@@ -116,6 +131,7 @@ const AcceptTasks = () => {
 
   async function handleSubmit() {
     try {
+      setLoading(true)
       const data = memberIdList
       await acceptGroupMemberTasks(data, taskGuid)
 
@@ -131,6 +147,7 @@ const AcceptTasks = () => {
           )
         }
       }
+      setLoading(false)
     } catch (e) {
       console.log(e)
     }
@@ -138,6 +155,7 @@ const AcceptTasks = () => {
 
   async function handleTaskGroupSubmit() {
     try {
+      setLoading(true)
       const data = {
         groups: memberIdList,
         group_leader_name: user.name,
@@ -155,6 +173,7 @@ const AcceptTasks = () => {
           )
         }
       }
+      setLoading(false)
     } catch (e) {
       console.log(e)
     }
@@ -189,7 +208,13 @@ const AcceptTasks = () => {
             />
           )
         })}
-        {item.type === 'TASK' ? (
+        {isLoading ? (
+          <AcceptTasksAction>
+            <SpinnerContainer>
+              <LoadingSpinner />
+            </SpinnerContainer>
+          </AcceptTasksAction>
+        ) : item.type === 'TASK' ? (
           <AcceptTasksAction onClick={handleSubmit}>
             <ActivityItem>
               <StyledAcceptIcon />
