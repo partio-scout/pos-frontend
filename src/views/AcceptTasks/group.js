@@ -155,11 +155,7 @@ const Group = ({ group, isLast, setMemberIdList }) => {
 
   return (
     <StyledAcceptTasks isLast={isLast}>
-      <Accordion
-        allowZeroExpanded
-        // onChange={() => updateGroup(ageGroupId)}
-        key={ageGroupId}
-      >
+      <Accordion allowZeroExpanded key={ageGroupId}>
         <AccordionItem key={ageGroupId}>
           <AccordionItemHeading>
             <AccordionItemButton>
