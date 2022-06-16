@@ -116,7 +116,6 @@ const Member = () => {
   const itemsByGuid = useSelector((state) => state.itemsByGuid)
   const activityGroups = useSelector((state) => state.activityGroups)
   const translations = useSelector((state) => state.translations)
-  const userTaskGroups = useSelector((state) => state.userActivityGroups)
 
   const { groupId } = useParams()
   const { memberId } = useParams()
@@ -136,6 +135,7 @@ const Member = () => {
   )
 
   const memberTasks = member.memberTasks
+  const memberTaskGroups = member.memberTaskGroups
 
   const completedTasks = Object.keys(memberTasks)
     .filter((guid) => memberTasks[guid] === COMPLETION_STATUS.COMPLETED)
@@ -160,8 +160,8 @@ const Member = () => {
 
   const parentTaskGroupGuids = Object.keys(taskGroupsWithChildTaskGroups)
 
-  const completedTaskGroups = Object.keys(userTaskGroups)
-    .filter((guid) => userTaskGroups[guid] === TASK_GROUP_STATUS.COMPLETED)
+  const completedTaskGroups = Object.keys(memberTaskGroups)
+    .filter((guid) => memberTaskGroups[guid] === TASK_GROUP_STATUS.COMPLETED)
     .map((id) => itemsByGuid[id])
 
   const completedTaskGroupsGuids = completedTaskGroups.map(

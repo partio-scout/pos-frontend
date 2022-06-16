@@ -91,7 +91,7 @@ export const postTaskGroupEntry = async (data, taskgroup_guid) => {
         credentials: 'include',
       }
     )
-    return await res.json()
+    return res.json()
   }
 }
 
