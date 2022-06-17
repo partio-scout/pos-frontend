@@ -79,20 +79,18 @@ export const postTaskEntry = async (entry) => {
 }
 
 export const postTaskGroupEntry = async (data, taskgroup_guid) => {
-  for (let group of Object.values(data.groups)) {
-    const res = await fetch(
-      `${API_URL}/groups/mark-taskgroup-done/${taskgroup_guid}`,
-      {
-        method: 'POST',
-        body: JSON.stringify(group),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-      }
-    )
-    return res.json()
-  }
+  const res = await fetch(
+    `${API_URL}/groups/mark-taskgroup-done/${taskgroup_guid}`,
+    {
+      method: 'POST',
+      body: JSON.stringify(data),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+    }
+  )
+  return res.json()
 }
 
 export const postMemberTaskEntry = async (entry) => {
