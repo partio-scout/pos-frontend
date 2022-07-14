@@ -20,6 +20,8 @@ import {
 import { actionTypes } from 'components/Actions'
 import CompletedTasks from '../Profile/CompletedTasks'
 import { getTaskGroupsWithChildTaskGroups } from '../../helpers/groupTasks'
+import MemberTaskListItem, { LIST_ITEM_TYPES } from './taskListItems'
+import CenteredSpinner from '../../components/LoadingSpinner'
 
 const Background = styled.div`
   min-height: 100vh;
@@ -172,6 +174,83 @@ const Member = () => {
     .filter((guid) => !parentTaskGroupGuids.includes(guid))
     .map((id) => itemsByGuid[id])
 
+  const Lists = () => {
+    /* If the user navigates to this page too fast or reloads the page all the data is not available.
+     * The initial download only fetches age groups which means the tasks and task groups are not available
+     * so we should show a spinner while we wait for them to load.
+     */
+    return Object.keys(itemsByGuid).length < 25 ? (
+      <CenteredSpinner />
+    ) : (
+      <>
+        <h4>{getTermInLanguage(translations, 'odottaa-hyvaksyntaa')}</h4>
+        <TaskList>
+          {completionRequestedTasks.map((taskGuid, index) => (
+            <MemberTaskListItem
+              key={index}
+              itemsByGuid={itemsByGuid}
+              taskGuid={taskGuid}
+              activityGroups={activityGroups}
+              language={language}
+              type={LIST_ITEM_TYPES.COMPLETION_REQUEST_LIST_ITEM}
+              groupId={groupId}
+              memberId={memberId}
+            />
+          ))}
+        </TaskList>
+        <h4>{getTermInLanguage(translations, 'tyon-alla')}</h4>
+        <TaskList>
+          {activeTasks.map((taskGuid, index) => (
+            <MemberTaskListItem
+              key={index}
+              itemsByGuid={itemsByGuid}
+              taskGuid={taskGuid}
+              activityGroups={activityGroups}
+              language={language}
+              type={LIST_ITEM_TYPES.ACTIVE_LIST_ITEM}
+            />
+          ))}
+        </TaskList>
+        <h4>{getTermInLanguage(translations, 'suoritetut')}</h4>
+        <TaskList>
+          {taskGroupsWithChildTaskGroups && (
+            <CompletedTasks
+              language={language}
+              itemsByGuid={itemsByGuid}
+              taskGroupsWithChildTaskGroups={taskGroupsWithChildTaskGroups}
+              groupMember={{ groupId, memberId }}
+              actionsComponent={actionTypes.groupLeaderActions}
+              userGuid={Number(memberId)}
+              groupGuid={group.id}
+              parentTaskGroupGuids={parentTaskGroupGuids}
+              completedTaskGroupsGuids={completedTaskGroupsGuids}
+            />
+          )}
+          {taskGroupsMarkedCompleted &&
+            taskGroupsMarkedCompleted.map((taskGroup) => {
+              if (!taskGroup) return null
+              return (
+                <ListItem
+                  key={taskGroup.id}
+                  guid={getItemId(taskGroup.item)}
+                  ageGroupGuid={taskGroup.ageGroupGuid}
+                  title={taskGroup.item.title}
+                  subTitle={getTermInLanguage(
+                    translations,
+                    'kokonaisuus-valmis'
+                  )}
+                  icon={getActivityGroupIcon(taskGroup.item)}
+                  language={language}
+                  itemType={ITEM_TYPES.TASK_GROUP}
+                  showActions
+                />
+              )
+            })}
+        </TaskList>
+      </>
+    )
+  }
+
   return (
     <Background ageGroupGuid={ageGroupGuid}>
       <Content>
@@ -189,84 +268,7 @@ const Member = () => {
         </HeadingContent>
         <BodyContent>
           <h4>{getTermInLanguage(translations, 'aktiviteetit')}</h4>
-          <h4>{getTermInLanguage(translations, 'odottaa-hyvaksyntaa')}</h4>
-          <TaskList>
-            {completionRequestedTasks.map((taskGuid) => {
-              const task = itemsByGuid[taskGuid]
-              if (!task) return null
-              const parent = activityGroups[task.item.activity_group]
-              if (task.item.locale !== language) return null
-              return (
-                <ListItem
-                  key={getItemId(task.item)}
-                  guid={task.id}
-                  groupGuid={Number(groupId)}
-                  userGuid={Number(memberId)}
-                  title={task.item.title}
-                  icon={getActivityGroupIcon(parent)}
-                  subTitle={parent.title}
-                  itemType={ITEM_TYPES.TASK}
-                  actionsComponent={actionTypes.groupLeaderActions}
-                  showActions
-                />
-              )
-            })}
-          </TaskList>
-          <h4>{getTermInLanguage(translations, 'tyon-alla')}</h4>
-          <TaskList>
-            {activeTasks.map((taskGuid) => {
-              const task = itemsByGuid[taskGuid]
-              const parent = activityGroups[task.item.activity_group]
-              if (task.item.locale !== language) return null
-              return (
-                <ListItem
-                  key={getItemId(task.item)}
-                  guid={task.id}
-                  title={task.item.title}
-                  subTitle={parent.title}
-                  icon={getActivityGroupIcon(parent)}
-                  itemType={ITEM_TYPES.TASK}
-                  actionsComponent={actionTypes.groupLeaderActions}
-                />
-              )
-            })}
-          </TaskList>
-          <h4>{getTermInLanguage(translations, 'suoritetut')}</h4>
-          <TaskList>
-            {taskGroupsWithChildTaskGroups && (
-              <CompletedTasks
-                language={language}
-                itemsByGuid={itemsByGuid}
-                taskGroupsWithChildTaskGroups={taskGroupsWithChildTaskGroups}
-                groupMember={{ groupId, memberId }}
-                actionsComponent={actionTypes.groupLeaderActions}
-                userGuid={Number(memberId)}
-                groupGuid={group.id}
-                parentTaskGroupGuids={parentTaskGroupGuids}
-                completedTaskGroupsGuids={completedTaskGroupsGuids}
-              />
-            )}
-            {taskGroupsMarkedCompleted &&
-              taskGroupsMarkedCompleted.map((taskGroup) => {
-                if (!taskGroup) return null
-                return (
-                  <ListItem
-                    key={taskGroup.id}
-                    guid={getItemId(taskGroup.item)}
-                    ageGroupGuid={taskGroup.ageGroupGuid}
-                    title={taskGroup.item.title}
-                    subTitle={getTermInLanguage(
-                      translations,
-                      'kokonaisuus-valmis'
-                    )}
-                    icon={getActivityGroupIcon(taskGroup.item)}
-                    language={language}
-                    itemType={ITEM_TYPES.TASK_GROUP}
-                    showActions
-                  />
-                )
-              })}
-          </TaskList>
+          <Lists />
         </BodyContent>
       </Content>
     </Background>

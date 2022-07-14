@@ -14,7 +14,7 @@ import { acceptGroupMemberTasks, postTaskGroupEntry } from '../../api'
 import { COMPLETION_STATUS, TASK_GROUP_STATUS } from 'consts'
 import { useDispatch } from 'react-redux'
 import { useParams } from 'react-router-dom'
-import LoadingSpinner from '../../components/LoadingSpinner'
+import CenteredSpinner from '../../components/LoadingSpinner'
 
 const AcceptTasksAction = styled.div`
   position: fixed;
@@ -34,12 +34,6 @@ const AcceptTasksAction = styled.div`
       opacity: 1;
     }
   `} 200ms linear;
-`
-
-const SpinnerContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
 `
 
 const ActivityItem = styled.div`
@@ -210,9 +204,7 @@ const AcceptTasks = () => {
         })}
         {isLoading ? (
           <AcceptTasksAction>
-            <SpinnerContainer>
-              <LoadingSpinner />
-            </SpinnerContainer>
+            <CenteredSpinner />
           </AcceptTasksAction>
         ) : item.type === 'TASK' ? (
           <AcceptTasksAction onClick={handleSubmit}>

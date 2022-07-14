@@ -18,6 +18,18 @@ const Loader = styled.div`
   `} 1s linear infinite;
 `
 
-const Spinner = () => <Loader />
+const CenteredContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`
 
-export default Spinner
+export const Spinner = () => <Loader />
+
+export const CenteredSpinner = () => (
+  <CenteredContainer>
+    <Spinner />
+  </CenteredContainer>
+)
+
+export default CenteredSpinner
