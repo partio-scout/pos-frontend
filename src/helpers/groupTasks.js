@@ -41,8 +41,13 @@ export const getTaskGroupsWithItems = (itemsByGuid, completedTaskItems) => {
     .filter((item) => item.type === 'TASK_GROUP' && getActivities(item).length)
     .reduce((acc, taskGroup) => {
       const itemTasks = completedTaskItems.filter((task) => {
-        return getActivities(taskGroup).find(
-          (groupTask) => getItemId(groupTask) === getItemId(task.item)
+        const activities = getActivities(taskGroup)
+        return activities.find(
+          (groupTask) =>
+            groupTask &&
+            task &&
+            task.item &&
+            getItemId(groupTask) === getItemId(task.item)
         )
       })
       if (itemTasks.length && taskGroup.item) {
