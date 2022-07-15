@@ -36,6 +36,7 @@
     "workbox-cli": "6.2.4"
   },
   "scripts": {
+    "dev": "HTTPS=true SSL_CRT_FILE=certs/server.crt SSL_KEY_FILE=certs/server.key npm start",
     "start": "env-cmd -f .env react-scripts start",
     "build": "env-cmd -f .env react-scripts build && yarn service-worker",
     "service-worker": "workbox copyLibraries build/workbox 6& yarn update-sw",
