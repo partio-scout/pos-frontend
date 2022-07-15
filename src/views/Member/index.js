@@ -122,9 +122,20 @@ const Member = () => {
   const { groupId } = useParams()
   const { memberId } = useParams()
 
-  if (!groupsData) return null
-
-  if (!itemsByGuid || !translations) return null
+  if (
+    !groupsData ||
+    !itemsByGuid ||
+    !translations ||
+    Object.keys(itemsByGuid).length < 25
+  ) {
+    return (
+      <Background>
+        <Content>
+          <CenteredSpinner fullHeight />
+        </Content>
+      </Background>
+    )
+  }
 
   const group = groupsData.find(
     (groups) => groups.id.toString() === groupId.toString()

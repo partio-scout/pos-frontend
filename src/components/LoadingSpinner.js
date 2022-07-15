@@ -22,12 +22,14 @@ const CenteredContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+
+  ${({ fullHeight }) => (fullHeight ? 'height: 100vh;' : '')}
 `
 
 export const Spinner = () => <Loader />
 
-export const CenteredSpinner = () => (
-  <CenteredContainer>
+export const CenteredSpinner = (props) => (
+  <CenteredContainer {...props}>
     <Spinner />
   </CenteredContainer>
 )

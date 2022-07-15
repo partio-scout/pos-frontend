@@ -33,20 +33,24 @@ export const getMemberCompletedTasks = (member, mandatoryTasks) => {
  * @param itemsByGuid
  * @param completedTaskItems
  */
-export const getTaskGroupsWithItems = (itemsByGuid, completedTaskItems) =>
-  Object.values(itemsByGuid)
-    .filter((item) => item.type === 'TASK_GROUP' && item.item.activities.length)
-    .reduce((acc, item) => {
+export const getTaskGroupsWithItems = (itemsByGuid, completedTaskItems) => {
+  const getActivities = (item) =>
+    (item && item.item && item.item.activities) || []
+
+  return Object.values(itemsByGuid)
+    .filter((item) => item.type === 'TASK_GROUP' && getActivities(item).length)
+    .reduce((acc, taskGroup) => {
       const itemTasks = completedTaskItems.filter((task) => {
-        return item.item.activities.find((groupTask) => {
-          return getItemId(groupTask) === getItemId(task.item)
-        })
+        return getActivities(taskGroup).find(
+          (groupTask) => getItemId(groupTask) === getItemId(task.item)
+        )
       })
-      if (itemTasks.length) {
-        acc[getItemId(item.item)] = itemTasks
+      if (itemTasks.length && taskGroup.item) {
+        acc[getItemId(taskGroup.item)] = itemTasks
       }
       return acc
     }, {})
+}
 
 /**
  * Get the parent groups for a task group with the tasks array as the value for the last child group
