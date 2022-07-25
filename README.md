@@ -56,6 +56,7 @@ NOTE 1: If you've already created and added the root key and root certificate du
    - If you created the folder in finder open a terminal and `cd` to the folder
    - Next run the following commands to create the required files for generating the certificates
      - Create a root key: `openssl genrsa -des3 -out rootCA.key 2048`
+     - Create RootCA.key pass phrase when terminal asks for it and save it somewhere (You're going to need it later)
      - Create a root certificate: `openssl req -x509 -new -nodes -key rootCA.key -sha256 -days 1024 -out rootCA.pem`
        - It's enough to only fill some fields here. E.g. Country as `fi` and location as `Helsinki`
    - Next you need to add the created root certificate as trusted in your Keychain Access application
@@ -98,7 +99,11 @@ NOTE 1: If you've already created and added the root key and root certificate du
    - Now the certificates are ready so all you need to do is move the `server.crt` and `server.key` files inside the `frontend` folder to the frontend project
      - Create a `certs` folder inside the frontend project
      - Move the `server.crt` and `server.key` inside the `certs` folder
-   - Run `yarn dev` to start the app and navigate to https://partio.ngrok.io:3000
+
+3. For using localhost https environment, you need to edit `~/.ngrok2/ngrok.yml`.
+
+- `addr: 3001` should be changed to `addr: https://localhost:3001`
+- Run `yarn dev` to start the app and navigate to https://partio.ngrok.io:3000
 
 ### PWA capabilities
 
