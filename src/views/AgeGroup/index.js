@@ -138,14 +138,17 @@ const AgeGroup = () => {
         return
       }
       const category = activityGroup.activity_group_category
-      let i = prev.findIndex((x) => x.category === (category?.name || ''))
-      if (i > -1) {
-        prev[i].groups.push(activityGroup)
+      const categoryIndex = prev.findIndex(
+        (x) => x.category === (category ? category.name : '')
+      )
+      if (categoryIndex > -1) {
+        prev[categoryIndex].groups.push(activityGroup)
       } else {
         prev.push({
-          category: category?.name || '',
-          sort_order:
-            activityGroup.activity_group_category?.sort_order || Infinity,
+          category: category ? category.name : '',
+          sort_order: activityGroup.activity_group_category
+            ? activityGroup.activity_group_category.sort_order
+            : Infinity,
           groups: [
             { ...activityGroup, sort_order: activityGroup.sort_order || 1000 },
           ],

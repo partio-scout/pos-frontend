@@ -119,6 +119,7 @@ export const removeMemberTaskEntry = async (entry) => {
 
 export const acceptGroupMemberTasks = async (data, taskId) => {
   for (let group of Object.values(data)) {
+    console.log('DATA:', data)
     const res = await fetch(`${API_URL}/groups/mark-task-done/${taskId}`, {
       method: 'POST',
       body: JSON.stringify(group),

@@ -1,10 +1,3 @@
-import React from 'react'
-import { fireEvent } from '@testing-library/react'
-import { Router } from 'react-router-dom'
-import { createMemoryHistory } from 'history'
-import { renderWithTheme } from 'test'
-import ListItem from './index'
-
 //TODO: Fix this test to work with Redux
 
 const listItemProps = {
