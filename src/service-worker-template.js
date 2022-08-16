@@ -9,35 +9,36 @@ workbox.setConfig({ modulePathPrefix: '/workbox/workbox-v5.1.3' })
 
 const cacheName = 'request-cache-v1'
 
-self.addEventListener('install', event => event.waitUntil(self.skipWaiting()))
-self.addEventListener('activate', event =>
+self.addEventListener('install', (event) => event.waitUntil(self.skipWaiting()))
+self.addEventListener('activate', (event) =>
   event.waitUntil(
-    caches.keys().then(cacheNames => {
+    caches.keys().then((cacheNames) => {
       return Promise.all(
-        cacheNames.map(cacheName => {
+        cacheNames.map((cacheName) => {
           return caches.delete(cacheName)
         })
       )
     })
   )
 )
-self.addEventListener('fetch', event => {
+self.addEventListener('fetch', (event) => {
   event.respondWith(
     caches
       .match(event.request)
-      .then(response => {
+      .then((response) => {
         if (response) {
           return response
         }
-        return fetch(event.request).then(response => {
-          return caches.open(cacheName).then(cache => {
+        return fetch(event.request).then((response) => {
+          return caches.open(cacheName).then((cache) => {
             cache.put(event.request.url, response.clone())
             return response
           })
         })
       })
-      .catch(error => {
+      .catch((error) => {
         // TODO: Respond with custom offline page
+        console.log('Error in service worker:', error)
       })
   )
 })

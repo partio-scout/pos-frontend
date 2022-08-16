@@ -15,6 +15,7 @@ import { COMPLETION_STATUS, TASK_GROUP_STATUS } from 'consts'
 import { useDispatch } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import CenteredSpinner from '../../components/LoadingSpinner'
+import LoadingSpinner from '../../components/LoadingSpinner'
 
 const AcceptTasksAction = styled.div`
   position: fixed;
@@ -108,10 +109,9 @@ const AcceptTasks = () => {
   const [isLoading, setLoading] = useState(false)
 
   const item = itemsByGuid[taskGuid]
-  if (!translations || !groupsData) return null
 
   useEffect(() => {
-    if (!Object.keys(memberIdList).length) {
+    if (memberIdList && !Object.keys(memberIdList).length) {
       const groups =
         groupsData &&
         groupsData.length &&
@@ -123,11 +123,17 @@ const AcceptTasks = () => {
     }
   }, [groupsData])
 
+  if (!translations || !groupsData) {
+    return (
+      <StyledAcceptTasks>
+        <LoadingSpinner fullHeight />
+      </StyledAcceptTasks>
+    )
+  }
+
   async function handleSubmit() {
     try {
-      setLoading(true)
-      const data = memberIdList
-      await acceptGroupMemberTasks(data, taskGuid)
+      await acceptGroupMemberTasks(memberIdList, taskGuid)
 
       for (let [membergroup, memberIds] of Object.entries(memberIdList)) {
         for (let memberid of memberIds) {
@@ -141,7 +147,6 @@ const AcceptTasks = () => {
           )
         }
       }
-      setLoading(false)
     } catch (e) {
       console.log(e)
     }
@@ -149,7 +154,6 @@ const AcceptTasks = () => {
 
   async function handleTaskGroupSubmit() {
     try {
-      setLoading(true)
       const data = {
         groups: memberIdList,
         group_leader_name: user.name,
@@ -167,10 +171,18 @@ const AcceptTasks = () => {
           )
         }
       }
-      setLoading(false)
     } catch (e) {
       console.log(e)
     }
+  }
+
+  const onSubmitClick = async (...args) => {
+    setLoading(true)
+    if (memberIdList && Object.values(memberIdList).length) {
+      if (item.type === 'TASK') await handleSubmit(args)
+      else await handleTaskGroupSubmit(args)
+    }
+    setLoading(false)
   }
 
   const updateIdList = (memberIds, groupId) => {
@@ -206,15 +218,8 @@ const AcceptTasks = () => {
           <AcceptTasksAction>
             <CenteredSpinner />
           </AcceptTasksAction>
-        ) : item.type === 'TASK' ? (
-          <AcceptTasksAction onClick={handleSubmit}>
-            <ActivityItem>
-              <StyledAcceptIcon />
-              {getTermInLanguage(translations, 'lisaa-valituille')}
-            </ActivityItem>
-          </AcceptTasksAction>
         ) : (
-          <AcceptTasksAction onClick={handleTaskGroupSubmit}>
+          <AcceptTasksAction onClick={onSubmitClick}>
             <ActivityItem>
               <StyledAcceptIcon />
               {getTermInLanguage(translations, 'lisaa-valituille')}
