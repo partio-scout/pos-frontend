@@ -14,6 +14,7 @@ import { ITEM_TYPES } from 'consts'
 import { useSelector } from 'react-redux'
 import { getTermInLanguage } from '../../helpers'
 import GroupMember from './GroupMember'
+import LoadingSpinner from '../../components/LoadingSpinner'
 
 const StyledAcceptTasks = styled.div`
   height: 100%;
@@ -72,13 +73,16 @@ const Group = ({ group, isLast, setMemberIdList }) => {
     () => setCheckboxData(getInitialCheckboxData(group)),
     [groupsData, group]
   )
-  if (!translations || !groupsData) return null
 
   const groupName = group.name
   const ageGroup = group.ageGroup
   const ageGroupId = group.id
   const title = '' + groupName + ' / ' + ageGroup
   const item = itemsByGuid[taskGuid]
+
+  if (!translations || !groupsData || !item) {
+    return <LoadingSpinner />
+  }
 
   const getItem = (item) => {
     switch (item.type) {
