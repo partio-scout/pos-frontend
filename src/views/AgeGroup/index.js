@@ -198,7 +198,14 @@ const AgeGroup = () => {
                 return taskCount
               }, 0)
               if (completedTasks === activities.length) {
-                completedGroups.push(group)
+                if (
+                  activities.length === 0 &&
+                  userActivityGroups[getItemId(group)] !== 'COMPLETED'
+                ) {
+                  unfinishedGroups.push(group)
+                } else {
+                  completedGroups.push(group)
+                }
               } else {
                 unfinishedGroups.push(group)
               }
