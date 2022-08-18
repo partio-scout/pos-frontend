@@ -117,18 +117,16 @@ export const removeMemberTaskEntry = async (entry) => {
   return res.json()
 }
 
-export const acceptGroupMemberTasks = async (data, taskId) => {
-  for (let group of Object.values(data)) {
-    const res = await fetch(`${API_URL}/groups/mark-task-done/${taskId}`, {
-      method: 'POST',
-      body: JSON.stringify(group),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-    })
-    return res.json()
-  }
+export const acceptGroupMemberTasks = async (memberGroups, taskId) => {
+  const res = await fetch(`${API_URL}/groups/mark-task-done/${taskId}`, {
+    method: 'POST',
+    body: JSON.stringify(memberGroups),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    credentials: 'include',
+  })
+  return res.json()
 }
 
 export const fetchUserTasks = async () => {
