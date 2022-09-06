@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 
 import { useSelector } from 'react-redux'
-import { getTaskUrl, getTimestamp } from './utils'
+import { getTimestamp, getTaskUrl } from './utils'
 import { getTermInLanguage } from 'helpers'
 
 const Container = styled.div`
@@ -25,7 +25,11 @@ const StyledLink = styled(Link)`
 const TaskGroupNotification = ({ notification, markRead }) => {
   const translations = useSelector((state) => state.translations)
   const itemsByGuid = useSelector((state) => state.itemsByGuid)
-  const taskGroup = itemsByGuid[notification.item_guid]
+  const activityGroups = useSelector((state) => state.activityGroups)
+  const taskGroup =
+    itemsByGuid[notification.item_guid] ||
+    activityGroups[notification.item_guid]
+  const taskGroupItem = taskGroup.item ? taskGroup.item : taskGroup
   const timestamp = getTimestamp(notification.created_at)
 
   const getStateMessage = (state) => {
@@ -47,8 +51,8 @@ const TaskGroupNotification = ({ notification, markRead }) => {
           {getStateMessage(notification.notification_type)}{' '}
           {getTermInLanguage(translations, 'tehtavakokonaisuuden-suoritetuksi')}{' '}
         </span>
-        <StyledLink to={getTaskUrl(taskGroup)} onClick={markRead}>
-          {taskGroup.item.title}
+        <StyledLink to={getTaskUrl(taskGroupItem)} onClick={markRead}>
+          {taskGroupItem.title}
         </StyledLink>
       </Message>
       <Timestamp>{timestamp}</Timestamp>

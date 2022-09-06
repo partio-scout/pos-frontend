@@ -8,7 +8,7 @@ import {
   determineLanguageFromUrl,
   getActivityGroupIcon,
   getTermInLanguage,
-  getItemId,
+  getActivityGroupItemId,
 } from '../../helpers'
 import ListItem from 'components/ListItem'
 import {
@@ -175,7 +175,7 @@ const Member = () => {
 
   const completedTaskGroups = Object.keys(memberTaskGroups)
     .filter((guid) => memberTaskGroups[guid] === TASK_GROUP_STATUS.COMPLETED)
-    .map((id) => itemsByGuid[id])
+    .map((id) => itemsByGuid[id] || activityGroups[id])
 
   const completedTaskGroupsGuids = completedTaskGroups.map(
     (group) => group && group.id
@@ -183,7 +183,7 @@ const Member = () => {
 
   const taskGroupsMarkedCompleted = completedTaskGroupsGuids
     .filter((guid) => !parentTaskGroupGuids.includes(guid))
-    .map((id) => itemsByGuid[id])
+    .map((id) => itemsByGuid[id] || activityGroups[id])
 
   const Lists = () => {
     /* If the user navigates to this page too fast or reloads the page all the data is not available.
@@ -240,17 +240,18 @@ const Member = () => {
           {taskGroupsMarkedCompleted &&
             taskGroupsMarkedCompleted.map((taskGroup) => {
               if (!taskGroup) return null
+              const group = taskGroup.item || taskGroup
               return (
                 <ListItem
                   key={taskGroup.id}
-                  guid={getItemId(taskGroup.item)}
+                  guid={getActivityGroupItemId(group)}
                   ageGroupGuid={taskGroup.ageGroupGuid}
-                  title={taskGroup.item.title}
+                  title={group.title}
                   subTitle={getTermInLanguage(
                     translations,
                     'kokonaisuus-valmis'
                   )}
-                  icon={getActivityGroupIcon(taskGroup.item)}
+                  icon={getActivityGroupIcon(group)}
                   language={language}
                   itemType={ITEM_TYPES.TASK_GROUP}
                   showActions

@@ -141,7 +141,7 @@ const AcceptTasks = () => {
             updateGroupMemberTask({
               task_guid: taskGuid,
               user_guid: Number(memberid),
-              completion_status: TASK_GROUP_STATUS.COMPLETED,
+              completion_status: COMPLETION_STATUS.COMPLETED,
               groupGuid: Number(membergroup),
             })
           )
@@ -165,7 +165,7 @@ const AcceptTasks = () => {
             updateGroupMemberTaskGroup({
               taskgroup_guid: taskGuid,
               user_guid: Number(memberid),
-              completed: COMPLETION_STATUS.COMPLETED,
+              completed: TASK_GROUP_STATUS.COMPLETED,
               groupGuid: Number(membergroup),
             })
           )

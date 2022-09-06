@@ -147,7 +147,7 @@ const Profile = () => {
   )
   const completedTaskGroups = Object.keys(userTaskGroups)
     .filter((guid) => userTaskGroups[guid] === TASK_GROUP_STATUS.COMPLETED)
-    .map((id) => itemsByGuid[id])
+    .map((id) => itemsByGuid[id] || activityGroups[id])
 
   const completedTaskGroupsGuids = completedTaskGroups.map(
     (group) => group && group.id
@@ -162,9 +162,10 @@ const Profile = () => {
 
   const parentTaskGroupGuids = Object.keys(taskGroupsWithChildTaskGroups)
 
+  /* Migrated data from Kuksa uses id instead of wp_guid, which is used mostly in the application - This looks messy */
   const taskGroupsMarkedCompleted = completedTaskGroupsGuids
     .filter((guid) => !parentTaskGroupGuids.includes(guid))
-    .map((id) => itemsByGuid[id])
+    .map((id) => activityGroups[id])
 
   const ongoingTasks = Object.keys(userTasks).filter(
     (guid) =>
@@ -313,14 +314,16 @@ const Profile = () => {
                 return (
                   <ListItem
                     key={taskGroup.id}
-                    guid={getItemId(taskGroup.item)}
-                    ageGroupGuid={taskGroup.ageGroupGuid}
-                    title={taskGroup.item.title}
+                    guid={getItemId(taskGroup)}
+                    ageGroupGuid={
+                      taskGroup.age_group ? taskGroup.age_group : null
+                    }
+                    title={taskGroup.title}
                     subTitle={getTermInLanguage(
                       translations,
                       'kokonaisuus-valmis'
                     )}
-                    icon={getActivityGroupIcon(taskGroup.item)}
+                    icon={getActivityGroupIcon(taskGroup)}
                     language={language}
                     itemType={ITEM_TYPES.TASK_GROUP}
                     showActions

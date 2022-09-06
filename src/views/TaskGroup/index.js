@@ -66,7 +66,9 @@ const TaskGroup = () => {
       <ListItem
         key={task.id}
         guid={taskId}
-        ageGroupGuid={getItemId(taskGroup.item.age_group)}
+        ageGroupGuid={
+          taskGroup.item.age_group ? getItemId(taskGroup.item.age_group) : null
+        }
         title={task.title}
         subTitle={getTermInLanguage(translations, `${task_status}`)}
         language={language}
