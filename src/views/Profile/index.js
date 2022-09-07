@@ -165,7 +165,15 @@ const Profile = () => {
   /* Migrated data from Kuksa uses id instead of wp_guid, which is used mostly in the application - This looks messy */
   const taskGroupsMarkedCompleted = completedTaskGroupsGuids
     .filter((guid) => !parentTaskGroupGuids.includes(guid))
-    .map((id) => activityGroups[id])
+    .map((id) => itemsByGuid[id] || activityGroups[id])
+
+  const filterUndefined = taskGroupsMarkedCompleted.filter(
+    (taskgroup) => taskgroup !== undefined
+  )
+  const filteredTaskGroupsMarkedCompleted = filterUndefined.filter(
+    (taskgroup) =>
+      !taskgroup.age_group || Object.keys(taskgroup.age_group).length > 0
+  )
 
   const ongoingTasks = Object.keys(userTasks).filter(
     (guid) =>
@@ -308,24 +316,23 @@ const Profile = () => {
                 parentTaskGroupGuids={parentTaskGroupGuids}
               />
             )}
-            {taskGroupsMarkedCompleted &&
-              taskGroupsMarkedCompleted.map((taskGroup) => {
+            {filteredTaskGroupsMarkedCompleted &&
+              filteredTaskGroupsMarkedCompleted.map((taskGroup) => {
                 if (!taskGroup) return null
                 return (
                   <ListItem
                     key={taskGroup.id}
                     guid={getItemId(taskGroup)}
-                    ageGroupGuid={
-                      taskGroup.age_group ? taskGroup.age_group : null
-                    }
-                    title={taskGroup.title}
+                    ageGroupGuid={taskGroup.ageGroupGuid}
+                    title={taskGroup.title || taskGroup.item.title}
                     subTitle={getTermInLanguage(
                       translations,
                       'kokonaisuus-valmis'
                     )}
-                    icon={getActivityGroupIcon(taskGroup)}
+                    icon={getActivityGroupIcon(taskGroup.item || taskGroup)}
                     language={language}
                     itemType={ITEM_TYPES.TASK_GROUP}
+                    actionsComponent={actionTypes.openTaskActions}
                     showActions
                   />
                 )

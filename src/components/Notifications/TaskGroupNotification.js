@@ -29,6 +29,9 @@ const TaskGroupNotification = ({ notification, markRead }) => {
   const taskGroup =
     itemsByGuid[notification.item_guid] ||
     activityGroups[notification.item_guid]
+  if (taskGroup === undefined) {
+    return null
+  }
   const taskGroupItem = taskGroup.item ? taskGroup.item : taskGroup
   const timestamp = getTimestamp(notification.created_at)
 

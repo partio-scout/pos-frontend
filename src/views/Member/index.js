@@ -8,7 +8,7 @@ import {
   determineLanguageFromUrl,
   getActivityGroupIcon,
   getTermInLanguage,
-  getActivityGroupItemId,
+  getItemId,
 } from '../../helpers'
 import ListItem from 'components/ListItem'
 import {
@@ -185,6 +185,14 @@ const Member = () => {
     .filter((guid) => !parentTaskGroupGuids.includes(guid))
     .map((id) => itemsByGuid[id] || activityGroups[id])
 
+  const filterUndefined = taskGroupsMarkedCompleted.filter(
+    (taskgroup) => taskgroup !== undefined
+  )
+  const filteredTaskGroupsMarkedCompleted = filterUndefined.filter(
+    (taskgroup) =>
+      !taskgroup.age_group || Object.keys(taskgroup.age_group).length > 0
+  )
+
   const Lists = () => {
     /* If the user navigates to this page too fast or reloads the page all the data is not available.
      * The initial download only fetches age groups which means the tasks and task groups are not available
@@ -237,23 +245,24 @@ const Member = () => {
               completedTaskGroupsGuids={completedTaskGroupsGuids}
             />
           )}
-          {taskGroupsMarkedCompleted &&
-            taskGroupsMarkedCompleted.map((taskGroup) => {
-              if (!taskGroup) return null
-              const group = taskGroup.item || taskGroup
+          {filteredTaskGroupsMarkedCompleted &&
+            filteredTaskGroupsMarkedCompleted.map((taskGroup) => {
+              if (taskGroup === undefined) return null
+              // const group = taskGroup.item || taskGroup
               return (
                 <ListItem
                   key={taskGroup.id}
-                  guid={getActivityGroupItemId(group)}
+                  guid={getItemId(taskGroup)}
                   ageGroupGuid={taskGroup.ageGroupGuid}
-                  title={group.title}
+                  title={taskGroup.title || taskGroup.item.title}
                   subTitle={getTermInLanguage(
                     translations,
                     'kokonaisuus-valmis'
                   )}
-                  icon={getActivityGroupIcon(group)}
+                  icon={getActivityGroupIcon(taskGroup.item || taskGroup)}
                   language={language}
                   itemType={ITEM_TYPES.TASK_GROUP}
+                  actionsComponent={actionTypes.openTaskActions}
                   showActions
                 />
               )
