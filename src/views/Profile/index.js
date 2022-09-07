@@ -145,9 +145,10 @@ const Profile = () => {
   const completedTasks = Object.keys(userTasks).filter(
     (guid) => userTasks[guid] === COMPLETION_STATUS.COMPLETED
   )
+
   const completedTaskGroups = Object.keys(userTaskGroups)
     .filter((guid) => userTaskGroups[guid] === TASK_GROUP_STATUS.COMPLETED)
-    .map((id) => itemsByGuid[id])
+    .map((id) => itemsByGuid[id] || activityGroups[id])
 
   const completedTaskGroupsGuids = completedTaskGroups.map(
     (group) => group && group.id
@@ -162,9 +163,22 @@ const Profile = () => {
 
   const parentTaskGroupGuids = Object.keys(taskGroupsWithChildTaskGroups)
 
+  /* Migrated data from Kuksa uses id instead of wp_guid, which is used mostly in the application, also some of the migrated activitygroups belongs to "Seikkailijat Vanha"-agegroup,
+   * which is not published yet - they need to be filtered. This looks messy
+   */
+
   const taskGroupsMarkedCompleted = completedTaskGroupsGuids
     .filter((guid) => !parentTaskGroupGuids.includes(guid))
-    .map((id) => itemsByGuid[id])
+    .map((id) => itemsByGuid[id] || activityGroups[id])
+
+  const filterUndefined = taskGroupsMarkedCompleted.filter(
+    (taskgroup) => taskgroup !== undefined
+  )
+
+  const filteredTaskGroupsMarkedCompleted = filterUndefined.filter(
+    (taskgroup) =>
+      !taskgroup.age_group || Object.keys(taskgroup.age_group).length > 0
+  )
 
   const ongoingTasks = Object.keys(userTasks).filter(
     (guid) =>
@@ -307,22 +321,23 @@ const Profile = () => {
                 parentTaskGroupGuids={parentTaskGroupGuids}
               />
             )}
-            {taskGroupsMarkedCompleted &&
-              taskGroupsMarkedCompleted.map((taskGroup) => {
+            {filteredTaskGroupsMarkedCompleted &&
+              filteredTaskGroupsMarkedCompleted.map((taskGroup) => {
                 if (!taskGroup) return null
                 return (
                   <ListItem
                     key={taskGroup.id}
-                    guid={getItemId(taskGroup.item)}
+                    guid={getItemId(taskGroup)}
                     ageGroupGuid={taskGroup.ageGroupGuid}
-                    title={taskGroup.item.title}
+                    title={taskGroup.title || taskGroup.item.title}
                     subTitle={getTermInLanguage(
                       translations,
                       'kokonaisuus-valmis'
                     )}
-                    icon={getActivityGroupIcon(taskGroup.item)}
+                    icon={getActivityGroupIcon(taskGroup.item || taskGroup)}
                     language={language}
                     itemType={ITEM_TYPES.TASK_GROUP}
+                    actionsComponent={actionTypes.openTaskActions}
                     showActions
                   />
                 )

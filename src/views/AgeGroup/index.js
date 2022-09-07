@@ -12,6 +12,7 @@ import {
   getTermInLanguage,
   getActivityGroupIcon,
   getItemId,
+  getActivityGroupItemId,
 } from 'helpers'
 
 const Background = styled.div`
@@ -183,11 +184,16 @@ const AgeGroup = () => {
   const completedGroups = []
   const unfinishedGroups = []
 
+  // TODO: Find a way to simplify this if else
   const getCompletedActivityGroups = (categories) => {
     user.loggedIn && categories
       ? categories.map(({ groups }) => {
           groups.map((group) => {
-            if (userActivityGroups[getItemId(group)] === 'COMPLETED') {
+            if (
+              userActivityGroups[getActivityGroupItemId(group)] === 'COMPLETED'
+            ) {
+              completedGroups.push(group)
+            } else if (userActivityGroups[getItemId(group)] === 'COMPLETED') {
               completedGroups.push(group)
             } else {
               const activities = group.activities
@@ -200,7 +206,8 @@ const AgeGroup = () => {
               if (completedTasks === activities.length) {
                 if (
                   activities.length === 0 &&
-                  userActivityGroups[getItemId(group)] !== 'COMPLETED'
+                  userActivityGroups[getActivityGroupItemId(group)] !==
+                    'COMPLETED'
                 ) {
                   unfinishedGroups.push(group)
                 } else {
@@ -214,6 +221,7 @@ const AgeGroup = () => {
         })
       : null
   }
+
   getCompletedActivityGroups(categories)
 
   return (

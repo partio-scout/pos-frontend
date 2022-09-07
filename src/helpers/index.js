@@ -26,6 +26,10 @@ export const getItemId = (item) => {
   return item.wp_guid || item.id.toString()
 }
 
+export const getActivityGroupItemId = (taskGroup) => {
+  return taskGroup.id.toString() || taskGroup.wp_guid
+}
+
 export const deepFlatten = (items) => {
   const flattener = (items) => {
     const CHILD_GROUPS = ['activities']
@@ -75,7 +79,10 @@ export const getCompletedUserActivityGroups = (
   activityGroup,
   userActivityGroups
 ) => {
-  if (userActivityGroups[getItemId(activityGroup)] === 'COMPLETED') {
+  if (
+    userActivityGroups[activityGroup.wp_guid] === 'COMPLETED' ||
+    userActivityGroups[activityGroup.id.toString()] === 'COMPLETED'
+  ) {
     return getTermInLanguage(translations, 'kokonaisuus-valmis')
   }
 }

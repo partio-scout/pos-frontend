@@ -6,5 +6,5 @@ export const getTimestamp = (datetime) => {
 }
 
 export const getTaskUrl = (task) => {
-  return `/guid/${getItemId(task.item)}`
+  return `/guid/${getItemId(task)}`
 }

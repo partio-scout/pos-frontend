@@ -175,7 +175,7 @@ const Member = () => {
 
   const completedTaskGroups = Object.keys(memberTaskGroups)
     .filter((guid) => memberTaskGroups[guid] === TASK_GROUP_STATUS.COMPLETED)
-    .map((id) => itemsByGuid[id])
+    .map((id) => itemsByGuid[id] || activityGroups[id])
 
   const completedTaskGroupsGuids = completedTaskGroups.map(
     (group) => group && group.id
@@ -183,7 +183,16 @@ const Member = () => {
 
   const taskGroupsMarkedCompleted = completedTaskGroupsGuids
     .filter((guid) => !parentTaskGroupGuids.includes(guid))
-    .map((id) => itemsByGuid[id])
+    .map((id) => itemsByGuid[id] || activityGroups[id])
+
+  const filterUndefined = taskGroupsMarkedCompleted.filter(
+    (taskgroup) => taskgroup !== undefined
+  )
+
+  const filteredTaskGroupsMarkedCompleted = filterUndefined.filter(
+    (taskgroup) =>
+      !taskgroup.age_group || Object.keys(taskgroup.age_group).length > 0
+  )
 
   const Lists = () => {
     /* If the user navigates to this page too fast or reloads the page all the data is not available.
@@ -237,22 +246,24 @@ const Member = () => {
               completedTaskGroupsGuids={completedTaskGroupsGuids}
             />
           )}
-          {taskGroupsMarkedCompleted &&
-            taskGroupsMarkedCompleted.map((taskGroup) => {
-              if (!taskGroup) return null
+          {filteredTaskGroupsMarkedCompleted &&
+            filteredTaskGroupsMarkedCompleted.map((taskGroup) => {
+              if (taskGroup === undefined) return null
+              // const group = taskGroup.item || taskGroup
               return (
                 <ListItem
                   key={taskGroup.id}
-                  guid={getItemId(taskGroup.item)}
+                  guid={getItemId(taskGroup)}
                   ageGroupGuid={taskGroup.ageGroupGuid}
-                  title={taskGroup.item.title}
+                  title={taskGroup.title || taskGroup.item.title}
                   subTitle={getTermInLanguage(
                     translations,
                     'kokonaisuus-valmis'
                   )}
-                  icon={getActivityGroupIcon(taskGroup.item)}
+                  icon={getActivityGroupIcon(taskGroup.item || taskGroup)}
                   language={language}
                   itemType={ITEM_TYPES.TASK_GROUP}
+                  actionsComponent={actionTypes.openTaskActions}
                   showActions
                 />
               )
