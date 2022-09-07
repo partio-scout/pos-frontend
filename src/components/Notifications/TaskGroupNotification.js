@@ -26,12 +26,20 @@ const TaskGroupNotification = ({ notification, markRead }) => {
   const translations = useSelector((state) => state.translations)
   const itemsByGuid = useSelector((state) => state.itemsByGuid)
   const activityGroups = useSelector((state) => state.activityGroups)
+
+  /* Below: Migrated activitygroup accomplishments comes with item id instead of wp_guid.
+   * ItemsByGuid keys are wp_guids, so if activitygroup won't be found from
+   * itemsByGuid -list, they need to be found from activitygroups-list (which contains slightly differend data)
+   */
+
   const taskGroup =
     itemsByGuid[notification.item_guid] ||
     activityGroups[notification.item_guid]
+
   if (taskGroup === undefined) {
     return null
   }
+
   const taskGroupItem = taskGroup.item ? taskGroup.item : taskGroup
   const timestamp = getTimestamp(notification.created_at)
 

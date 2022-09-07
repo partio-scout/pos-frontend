@@ -145,6 +145,7 @@ const Profile = () => {
   const completedTasks = Object.keys(userTasks).filter(
     (guid) => userTasks[guid] === COMPLETION_STATUS.COMPLETED
   )
+
   const completedTaskGroups = Object.keys(userTaskGroups)
     .filter((guid) => userTaskGroups[guid] === TASK_GROUP_STATUS.COMPLETED)
     .map((id) => itemsByGuid[id] || activityGroups[id])
@@ -162,7 +163,10 @@ const Profile = () => {
 
   const parentTaskGroupGuids = Object.keys(taskGroupsWithChildTaskGroups)
 
-  /* Migrated data from Kuksa uses id instead of wp_guid, which is used mostly in the application - This looks messy */
+  /* Migrated data from Kuksa uses id instead of wp_guid, which is used mostly in the application, also some of the migrated activitygroups belongs to "Seikkailijat Vanha"-agegroup,
+   * which is not published yet - they need to be filtered. This looks messy
+   */
+
   const taskGroupsMarkedCompleted = completedTaskGroupsGuids
     .filter((guid) => !parentTaskGroupGuids.includes(guid))
     .map((id) => itemsByGuid[id] || activityGroups[id])
@@ -170,6 +174,7 @@ const Profile = () => {
   const filterUndefined = taskGroupsMarkedCompleted.filter(
     (taskgroup) => taskgroup !== undefined
   )
+
   const filteredTaskGroupsMarkedCompleted = filterUndefined.filter(
     (taskgroup) =>
       !taskgroup.age_group || Object.keys(taskgroup.age_group).length > 0

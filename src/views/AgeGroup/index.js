@@ -184,6 +184,7 @@ const AgeGroup = () => {
   const completedGroups = []
   const unfinishedGroups = []
 
+  // TODO: Find a way to simplify this if else
   const getCompletedActivityGroups = (categories) => {
     user.loggedIn && categories
       ? categories.map(({ groups }) => {
@@ -220,6 +221,7 @@ const AgeGroup = () => {
         })
       : null
   }
+
   getCompletedActivityGroups(categories)
 
   return (

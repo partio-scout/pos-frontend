@@ -188,6 +188,7 @@ const Member = () => {
   const filterUndefined = taskGroupsMarkedCompleted.filter(
     (taskgroup) => taskgroup !== undefined
   )
+
   const filteredTaskGroupsMarkedCompleted = filterUndefined.filter(
     (taskgroup) =>
       !taskgroup.age_group || Object.keys(taskgroup.age_group).length > 0
