@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { useParams, useHistory } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
-import { X } from 'react-feather'
+import { X, MoreHorizontal } from 'react-feather'
 import UserAgeGroup from './userAgeGroup'
 import TaskGroupItem from 'components/TaskGroupItem'
 import { ITEM_TYPES } from '../../consts'
@@ -14,6 +14,7 @@ import {
   getItemId,
   getActivityGroupItemId,
 } from 'helpers'
+import { AgeGroupActions } from '../../components/TaskActions'
 
 const Background = styled.div`
   min-height: 100vh;
@@ -110,6 +111,7 @@ const AgeGroup = () => {
   const ageGroup = itemsByGuid[id] ? itemsByGuid[id].item : undefined
   const [categories, setCategories] = useState([])
   const userActivityGroups = useSelector((state) => state.userActivityGroups)
+  const [showAgeGroupActions, setShowAgeGroupActions] = useState(false)
 
   useEffect(() => {
     if (ageGroup) {
@@ -223,6 +225,7 @@ const AgeGroup = () => {
   }
 
   getCompletedActivityGroups(categories)
+  const isGroupLeader = user.userGroups ? user.userGroups.length > 0 : false
 
   return (
     <Background ageGroupGuid={ageGroupGuid}>
@@ -235,6 +238,15 @@ const AgeGroup = () => {
           <h3>{ageGroup.title}</h3>
         </HeadingContent>
         <BodyContent>
+          {isGroupLeader && (
+            <MoreHorizontal onClick={() => setShowAgeGroupActions(true)} />
+          )}
+          {showAgeGroupActions && (
+            <AgeGroupActions
+              onCancel={() => setShowAgeGroupActions(false)}
+              guid={id}
+            />
+          )}
           <h4>{getTitle(ageGroup.subactivitygroup_term)}</h4>
           {user.loggedIn ? (
             <UserAgeGroup
