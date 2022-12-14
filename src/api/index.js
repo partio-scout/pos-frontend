@@ -284,6 +284,20 @@ export const fetchUserGroups = async () => {
   }
 }
 
+export const postAgeGroupEntry = async (data, agegroup_guid) => {
+  const res = await fetch(
+    `${API_URL}/groups/mark-agegroup-done/${agegroup_guid}`,
+    {
+      method: 'POST',
+      body: JSON.stringify(data),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+    }
+  )
+  return res.json()
+}
 export {
   API_URL,
   fetchNotifications,
