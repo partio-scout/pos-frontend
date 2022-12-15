@@ -6,74 +6,56 @@ import {
   SET_GROUP_MEMBER_AGEGROUP,
 } from 'redux/actionTypes'
 
-const setTask = (user, taskData) => {
-  const groupIndex = user.userGroups.findIndex((group) => {
-    return group.id === taskData.groupGuid
-  })
-  const memberIndex = user.userGroups[groupIndex].members.findIndex(
-    (member) => member.memberId === taskData.user_guid
-  )
+// TODO: TEST THIS PROPERLY BEFORE DEPLOYING ANYWHERE!!
 
-  const tasks = Object.assign(
-    {},
-    user.userGroups[groupIndex].members[memberIndex].memberTasks
-  )
-  tasks[taskData.task_guid] = taskData.completion_status
-
-  const userGroups = user.userGroups.slice(0)
-  const groupMembers = user.userGroups[groupIndex].members.slice(0)
-  groupMembers[memberIndex].memberTasks = tasks
-  userGroups[groupIndex].members = groupMembers
-  return {
-    ...user,
-    userGroups,
+const getItemGuid = (itemtype, data) => {
+  switch (itemtype) {
+    case 'tasks':
+      return data.task_guid
+    case 'taskGroups':
+      return data.taskgroup_guid
+    case 'ageGroups':
+      return data.agegroup_guid
   }
 }
 
-const setTaskGroup = (user, taskGroupData) => {
+const setItems = (user, data, itemtype, items) => {
   const groupIndex = user.userGroups.findIndex((group) => {
-    return group.id === taskGroupData.groupGuid
+    return group.id === data.groupGuid
   })
   const memberIndex = user.userGroups[groupIndex].members.findIndex(
-    (member) => member.memberId === taskGroupData.user_guid
+    (member) => member.memberId === data.user_guid
   )
 
-  const taskGroups = Object.assign(
-    {},
-    user.userGroups[groupIndex].members[memberIndex].memberTaskGroups
-  )
-  taskGroups[taskGroupData.taskgroup_guid] = taskGroupData.completed
-
-  const userGroups = user.userGroups.slice(0)
-  const groupMembers = user.userGroups[groupIndex].members.slice(0)
-  groupMembers[memberIndex].memberTaskGroups = taskGroups
-  userGroups[groupIndex].members = groupMembers
-
-  return {
-    ...user,
-    userGroups,
+  if (itemtype === 'tasks') {
+    items = Object.assign(
+      {},
+      user.userGroups[groupIndex].members[memberIndex].memberTasks
+    )
+  } else if (itemtype === 'taskGroups') {
+    items = Object.assign(
+      {},
+      user.userGroups[groupIndex].members[memberIndex].memberTaskGroups
+    )
+  } else {
+    items = Object.assign(
+      {},
+      user.userGroups[groupIndex].members[memberIndex].memberAgeGroups
+    )
   }
-}
-
-const setAgeGroup = (user, ageGroupData) => {
-  const groupIndex = user.userGroups.findIndex((group) => {
-    return group.id === ageGroupData.groupGuid
-  })
-  const memberIndex = user.userGroups[groupIndex].members.findIndex(
-    (member) => member.memberId === ageGroupData.user_guid
-  )
-
-  const ageGroups = Object.assign(
-    {},
-    user.userGroups[groupIndex].members[memberIndex].memberAgeGroups
-  )
-  ageGroups[ageGroupData.agegroup_guid] = ageGroupData.completion_status
+  items[getItemGuid(itemtype, data)] = data.completion_status || data.completed
 
   const userGroups = user.userGroups.slice(0)
   const groupMembers = user.userGroups[groupIndex].members.slice(0)
-  groupMembers[memberIndex].memberAgeGroups = ageGroups
-  userGroups[groupIndex].members = groupMembers
 
+  if (itemtype === 'tasks') {
+    groupMembers[memberIndex].memberTasks = items
+  } else if (itemtype === 'taskGroups') {
+    groupMembers[memberIndex].memberTaskGroups = items
+  } else {
+    groupMembers[memberIndex].memberAgeGroups = items
+  }
+  userGroups[groupIndex].members = groupMembers
   return {
     ...user,
     userGroups,
@@ -94,11 +76,11 @@ export const user = (state = {}, action) => {
         userGroups: action.payload,
       }
     case SET_GROUP_MEMBER_TASK:
-      return setTask(state, action.payload)
+      return setItems(state, action.payload, 'tasks')
     case SET_GROUP_MEMBER_TASKGROUP:
-      return setTaskGroup(state, action.payload)
+      return setItems(state, action.payload, 'taskGroups')
     case SET_GROUP_MEMBER_AGEGROUP:
-      return setAgeGroup(state, action.payload)
+      return setItems(state, action.payload, 'ageGroups')
     default:
       return state
   }
