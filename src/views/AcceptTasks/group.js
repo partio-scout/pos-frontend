@@ -88,6 +88,8 @@ const Group = ({ group, isLast, setMemberIdList }) => {
     switch (item.type) {
       case 'TASK_GROUP':
         return item
+      case 'AGE_GROUP':
+        return item
       default:
         return activityGroupById[item.item.activity_group].activities
     }
