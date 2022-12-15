@@ -105,6 +105,12 @@ NOTE 1: If you've already created and added the root key and root certificate du
 - `addr: 3001` should be changed to `addr: https://localhost:3001`
 - Run `yarn dev` to start the app and navigate to https://partio.ngrok.io:3000
 
+## Logging out as user with HTTPS
+
+- https://partio.ngrok.io:3000 is not set to PartioId as allowed URL, so logging out as one user and signing in as another user doesn't always work and it just keeps logging in as the previous user. Workaround is to logout with curl.
+- Open the network tab and click the logout button. Right click the failed logout url and copy as cURL. Paste the outcome to some editor and find all the partio.ngrok.io matches and change them as localhost:3000. Make sure to change the https to http as well
+- Run the command na dyou should be logges out now.
+
 ### PWA capabilities
 
 You can test the service worker only in production mode. In order to test it, run `yarn build`,
