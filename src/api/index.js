@@ -298,6 +298,29 @@ export const postAgeGroupEntry = async (data, agegroup_guid) => {
   )
   return res.json()
 }
+
+export const fetchUserCompletedAgeGroups = async () => {
+  try {
+    const res = await fetch(`${API_URL}/agegroup-entries`, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+    })
+
+    if (!res.ok) {
+      console.log(
+        `FetchUserCompletedAgeGroups: ${res.status} ${res.statusText}`
+      )
+      return []
+    }
+    return await res.json()
+  } catch (error) {
+    console.log('Error fetching users agegroups')
+    return []
+  }
+}
+
 export {
   API_URL,
   fetchNotifications,
