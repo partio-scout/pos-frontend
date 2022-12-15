@@ -3,6 +3,7 @@ import {
   SET_USER_GROUPS,
   SET_GROUP_MEMBER_TASK,
   SET_GROUP_MEMBER_TASKGROUP,
+  SET_GROUP_MEMBER_AGEGROUP,
 } from 'redux/actionTypes'
 
 const setTask = (user, taskData) => {
@@ -54,6 +55,31 @@ const setTaskGroup = (user, taskGroupData) => {
   }
 }
 
+const setAgeGroup = (user, ageGroupData) => {
+  const groupIndex = user.userGroups.findIndex((group) => {
+    return group.id === ageGroupData.groupGuid
+  })
+  const memberIndex = user.userGroups[groupIndex].members.findIndex(
+    (member) => member.memberId === ageGroupData.user_guid
+  )
+
+  const ageGroups = Object.assign(
+    {},
+    user.userGroups[groupIndex].members[memberIndex].memberAgeGroups
+  )
+  ageGroups[ageGroupData.agegroup_guid] = ageGroupData.completed
+
+  const userGroups = user.userGroups.slice(0)
+  const groupMembers = user.userGroups[groupIndex].members.slice(0)
+  groupMembers[memberIndex].memberAgeGroups = ageGroups
+  userGroups[groupIndex].members = groupMembers
+
+  return {
+    ...user,
+    userGroups,
+  }
+}
+
 export const user = (state = {}, action) => {
   switch (action.type) {
     case SET_USER:
@@ -71,6 +97,8 @@ export const user = (state = {}, action) => {
       return setTask(state, action.payload)
     case SET_GROUP_MEMBER_TASKGROUP:
       return setTaskGroup(state, action.payload)
+    case SET_GROUP_MEMBER_AGEGROUP:
+      return setAgeGroup(state, action.payload)
     default:
       return state
   }
