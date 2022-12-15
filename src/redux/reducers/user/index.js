@@ -67,7 +67,7 @@ const setAgeGroup = (user, ageGroupData) => {
     {},
     user.userGroups[groupIndex].members[memberIndex].memberAgeGroups
   )
-  ageGroups[ageGroupData.agegroup_guid] = ageGroupData.completed
+  ageGroups[ageGroupData.agegroup_guid] = ageGroupData.completion_status
 
   const userGroups = user.userGroups.slice(0)
   const groupMembers = user.userGroups[groupIndex].members.slice(0)

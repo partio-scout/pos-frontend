@@ -89,18 +89,18 @@ const GroupMember = ({
         <label style={{ float: 'left', margin: 0 }} htmlFor={member.id}>
           {member.name}
         </label>
-        {/* {isCompleted(member.ageGroups) ? (
+        {isCompleted(member.ageGroups) ? (
           <Check style={{ ...CHECK_STYLE, color: 'green' }} />
-        ) : ( */}
-        <input
-          id={member.id}
-          style={CHECK_STYLE}
-          type="checkbox"
-          value={member.id}
-          onChange={handleChange}
-          checked={member.selected}
-        />
-        {/* )} */}
+        ) : (
+          <input
+            id={member.id}
+            style={CHECK_STYLE}
+            type="checkbox"
+            value={member.id}
+            onChange={handleChange}
+            checked={member.selected}
+          />
+        )}
       </StyledListItem>
     )
   }

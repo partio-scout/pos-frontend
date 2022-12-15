@@ -58,6 +58,7 @@ const getInitialCheckboxData = (group) =>
     id: member.memberId,
     tasks: member.memberTasks,
     taskGroups: member.memberTaskGroups,
+    ageGroups: member.memberAgeGroups,
   }))
 
 const Group = ({ group, isLast, setMemberIdList }) => {

@@ -27,7 +27,7 @@ export const userAgeGroups = (state = {}, action) => {
   switch (action.type) {
     case SET_USER_AGE_GROUPS:
       return action.payload.reduce((acc, curr) => {
-        acc[curr.agegroup_guid] = curr.completed
+        acc[curr.agegroup_guid] = curr.completion_status
         return acc
       }, {})
     default:
