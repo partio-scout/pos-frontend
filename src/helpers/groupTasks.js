@@ -101,7 +101,6 @@ export const getTaskGroupsWithChildTaskGroups = (
     const parentGuid = Object.keys(parent)[0]
     if (acc[parentGuid]) {
       const parentValue = Object.values(parent)[0]
-
       acc[parentGuid] = {
         ...acc[parentGuid],
         ...parentValue,
@@ -113,4 +112,53 @@ export const getTaskGroupsWithChildTaskGroups = (
       ...parent,
     }
   }, {})
+}
+
+export const getCompletedTasksForAllItems = (
+  agegroupsWithTaskGroups,
+  taskGroupsWithChildTaskGroups
+) => {
+  return Object.entries(agegroupsWithTaskGroups).reduce((acc, item) => {
+    const ageGroupId = item[0]
+    const activityGroups = item[1]
+    acc[ageGroupId] = {}
+    activityGroups.forEach((group) => {
+      const activities = taskGroupsWithChildTaskGroups[group]
+      acc[ageGroupId][group] = activities
+    })
+    return acc
+  }, {})
+}
+
+/**
+ * Get all the completed items for a completed agegroup
+ * @param completionBadges
+ * @param taskGroupsWithChildTaskGroups
+ */
+export const getCompletionBadgesWithCompletedItems = (
+  completionBadges,
+  taskGroupsWithChildTaskGroups
+) => {
+  const taskGroupIds = Object.keys(taskGroupsWithChildTaskGroups).map(
+    (id) => id
+  )
+
+  const completedAgeGroupsWithCompletedTaskGroupIds = Object.values(
+    completionBadges
+  ).reduce((acc, item) => {
+    const completedActivityGroupIds = item.item.activity_groups
+      .map((activitygroup) => {
+        return getItemId(activitygroup)
+      })
+      .filter((activitygroup) => taskGroupIds.includes(activitygroup))
+    acc[item.id] = completedActivityGroupIds
+    return acc
+  }, {})
+
+  const allCompletedItems = getCompletedTasksForAllItems(
+    completedAgeGroupsWithCompletedTaskGroupIds,
+    taskGroupsWithChildTaskGroups
+  )
+
+  return allCompletedItems
 }
