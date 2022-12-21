@@ -8,12 +8,13 @@ import {
   AccordionItemPanel,
 } from 'react-accessible-accordion'
 import styled from 'styled-components'
+import { useSelector } from 'react-redux'
 
 import { ITEM_TYPES } from 'consts'
 import ListItem from 'components/ListItem'
 import {
-  // getTermInLanguage,
-  // getTaskGroupStatus,
+  getTermInLanguage,
+  getTaskGroupStatus,
   getActivityGroupIcon,
   // getItemId,
 } from 'helpers'
@@ -26,8 +27,6 @@ const CompletionBadges = ({ itemsByGuid, completedItems, language }) => {
   return Object.entries(completedItems).map((completionBadgeItem) => {
     const agegroupId = completionBadgeItem[0]
     const values = completionBadgeItem[1]
-    console.log('KEY', agegroupId)
-    console.log('VALUESs', values)
     return (
       <AccordionList
         key={agegroupId}
@@ -42,10 +41,16 @@ const CompletionBadges = ({ itemsByGuid, completedItems, language }) => {
 
 const AccordionList = ({ groupId, items, itemsByGuid, language }) => {
   const groupItem = itemsByGuid[groupId]
-  console.log('😶 ageGroupItem ', groupItem)
-  console.log('🤡 items ', items)
-  console.log('💩 itemsByGuid ', itemsByGuid)
+  const translations = useSelector((state) => state.translations)
   const icon = getActivityGroupIcon(groupItem.item)
+  const status =
+    groupItem.type === 'AGE_GROUP'
+      ? 'Päätösmerkki annettu'
+      : getTaskGroupStatus(
+          groupItem.item,
+          useSelector((state) => state.tasks),
+          getTermInLanguage(translations, 'tehdyt')
+        )
   return (
     <Accordion key={groupId} allowZeroExpanded>
       <AccordionItem>
@@ -56,7 +61,7 @@ const AccordionList = ({ groupId, items, itemsByGuid, language }) => {
               itemType={ITEM_TYPES.AGE_GROUP}
               ageGroupGuid={groupId}
               language={language}
-              subTitle={'Suoritettu'}
+              subTitle={status}
               icon={icon}
               showActions
               showDropDownIcon
@@ -78,8 +83,6 @@ const AccordionList = ({ groupId, items, itemsByGuid, language }) => {
             Object.entries(items).map((activitygroup) => {
               const activitygroupId = activitygroup[0]
               const activities = activitygroup[1]
-              console.log('😺 activitygorupId', activitygroup)
-              // console.log('😵‍💫 activities', activities)
               return (
                 <AccordionList
                   key={activitygroupId}
@@ -107,7 +110,6 @@ const TaskList = ({
   icon,
 }) => {
   return tasks.map((task) => {
-    console.log('💀', task)
     return (
       <ListItem
         key={task.id}
