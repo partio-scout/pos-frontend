@@ -22,7 +22,11 @@ import {
   TASK_GROUP_STATUS,
 } from 'consts'
 import CompletedTasks from './CompletedTasks'
-import { getTaskGroupsWithChildTaskGroups } from '../../helpers/groupTasks'
+import CompletionBadges from './CompletionBadges'
+import {
+  getTaskGroupsWithChildTaskGroups,
+  getCompletionBadgesWithCompletedItems,
+} from '../../helpers/groupTasks'
 import { actionTypes } from 'components/Actions'
 import OngoingTaskList from './OngoingTaskList'
 
@@ -130,6 +134,7 @@ const Profile = () => {
   const [errorFetchingProfile, setErrorFetchingProfile] = useState(false)
   const userTasks = useSelector((state) => state.tasks)
   const userTaskGroups = useSelector((state) => state.userActivityGroups)
+  const userAgeGroups = useSelector((state) => state.userAgeGroups)
   const ageGroups = useSelector((state) => state.ageGroups)
   const itemsByGuid = useSelector((state) => state.itemsByGuid)
   const favourites = useSelector((state) =>
@@ -144,6 +149,10 @@ const Profile = () => {
 
   const completedTasks = Object.keys(userTasks).filter(
     (guid) => userTasks[guid] === COMPLETION_STATUS.COMPLETED
+  )
+
+  const completionBadges = Object.keys(userAgeGroups).map(
+    (id) => itemsByGuid[id]
   )
 
   const completedTaskGroups = Object.keys(userTaskGroups)
@@ -178,6 +187,17 @@ const Profile = () => {
   const filteredTaskGroupsMarkedCompleted = filterUndefined.filter(
     (taskgroup) =>
       !taskgroup.age_group || Object.keys(taskgroup.age_group).length > 0
+  )
+
+  const completionBadgesWithCompletedItems =
+    getCompletionBadgesWithCompletedItems(
+      completionBadges,
+      taskGroupsWithChildTaskGroups
+    )
+
+  console.log(
+    'completionBadgesWithCompletedItems -->',
+    completionBadgesWithCompletedItems
   )
 
   const ongoingTasks = Object.keys(userTasks).filter(
@@ -357,6 +377,12 @@ const Profile = () => {
                 )
               })}
           </TaskList>
+          <h4>Päätösmerkit</h4>
+          <CompletionBadges
+            itemsByGuid={itemsByGuid}
+            completedItems={completionBadgesWithCompletedItems}
+            language={language}
+          />
         </BodyContent>
       </Content>
     </Background>
