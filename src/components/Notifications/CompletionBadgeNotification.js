@@ -42,7 +42,6 @@ const CompletionBadgeNotification = ({ notification, markRead }) => {
         return getTermInLanguage(translations, 'antanut')
     }
   }
-  console.log(notification)
 
   return (
     <Container>

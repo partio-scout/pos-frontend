@@ -40,10 +40,8 @@ const components = {
 }
 
 const getNotificationsComponent = (notification, markRead) => {
-  console.log('🖕', notification)
   const itemType = notification.item_type
   const componentPrefix = itemType.charAt(0) + itemType.slice(1).toLowerCase()
-  console.log('componentPrefix', componentPrefix)
   const Component = components[componentPrefix + 'Notification']
   return <Component notification={notification} markRead={markRead} />
 }
