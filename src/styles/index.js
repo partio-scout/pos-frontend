@@ -63,6 +63,7 @@ export const GlobalStyle = createGlobalStyle`
     height: 100%;
     font-family: ${({ theme }) => theme.fontFamily};
     color: ${({ theme }) => theme.color.text};
+    overflow: auto;
   }
 
   #root {
