@@ -50,6 +50,13 @@ const CloseIcon = styled.div`
   cursor: pointer;
 `
 
+const GroupLeaderActions = styled.div`
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  cursor: pointer;
+`
+
 const Content = styled.div`
   position: absolute;
   top: 0;
@@ -233,14 +240,16 @@ const AgeGroup = () => {
         <CloseIcon>
           <X onClick={() => history.push(`/?lang=${language}`)} />
         </CloseIcon>
+        {isGroupLeader && (
+          <GroupLeaderActions>
+            <MoreHorizontal onClick={() => setShowAgeGroupActions(true)} />
+          </GroupLeaderActions>
+        )}
         <HeadingContent>
           <MainSymbol alt={ageGroup.title} src={ageGroup.logo.url} />
           <h3>{ageGroup.title}</h3>
         </HeadingContent>
         <BodyContent>
-          {isGroupLeader && (
-            <MoreHorizontal onClick={() => setShowAgeGroupActions(true)} />
-          )}
           {showAgeGroupActions && (
             <AgeGroupActions
               onCancel={() => setShowAgeGroupActions(false)}
