@@ -9,6 +9,7 @@ import {
   getActivityGroupIcon,
   getTermInLanguage,
   getItemId,
+  filterActivityGroupsWithCompletedAgegroup,
 } from '../../helpers'
 import ListItem from 'components/ListItem'
 import {
@@ -19,9 +20,13 @@ import {
 } from '../../consts'
 import { actionTypes } from 'components/Actions'
 import CompletedTasks from '../Profile/CompletedTasks'
-import { getTaskGroupsWithChildTaskGroups } from '../../helpers/groupTasks'
+import {
+  getTaskGroupsWithChildTaskGroups,
+  getCompletionBadgesWithCompletedItems,
+} from '../../helpers/groupTasks'
 import MemberTaskListItem, { LIST_ITEM_TYPES } from './taskListItems'
 import CenteredSpinner from '../../components/LoadingSpinner'
+import CompletionBadges from '../Profile/CompletionBadges'
 
 const Background = styled.div`
   min-height: 100vh;
@@ -149,7 +154,19 @@ const Member = () => {
 
   const memberTasks = member.memberTasks
   const memberTaskGroups = member.memberTaskGroups
+  const memberAgeGroups = member.memberAgeGroups
+  const completionBadgeAgegroupIds = Object.keys(memberAgeGroups).map(
+    (id) => id
+  )
+  const completionBadges = Object.keys(memberAgeGroups).map(
+    (id) => itemsByGuid[id]
+  )
 
+  const getAgeGroupId = (taskgroup) => {
+    return taskgroup.item
+      ? taskgroup.item.age_group.wp_guid
+      : taskgroup.age_group.wp_guid
+  }
   const completedTasks = Object.keys(memberTasks)
     .filter((guid) => memberTasks[guid] === COMPLETION_STATUS.COMPLETED)
     .filter((task) => task !== 'undefined')
@@ -157,6 +174,12 @@ const Member = () => {
   const taskGroupsWithChildTaskGroups = getTaskGroupsWithChildTaskGroups(
     itemsByGuid,
     completedTasks
+  )
+
+  const completedAgeGroupsFiltered = filterActivityGroupsWithCompletedAgegroup(
+    taskGroupsWithChildTaskGroups,
+    completionBadgeAgegroupIds,
+    itemsByGuid
   )
 
   const completionRequestedTasks = Object.keys(memberTasks).filter(
@@ -171,7 +194,7 @@ const Member = () => {
 
   const groupTitle = '' + group.name + ' / ' + group.ageGroup
 
-  const parentTaskGroupGuids = Object.keys(taskGroupsWithChildTaskGroups)
+  const parentTaskGroupGuids = Object.keys(completedAgeGroupsFiltered)
 
   const completedTaskGroups = Object.keys(memberTaskGroups)
     .filter((guid) => memberTaskGroups[guid] === TASK_GROUP_STATUS.COMPLETED)
@@ -186,7 +209,10 @@ const Member = () => {
     .map((id) => itemsByGuid[id] || activityGroups[id])
 
   const filterUndefined = taskGroupsMarkedCompleted.filter(
-    (taskgroup) => taskgroup !== undefined
+    (taskgroup) =>
+      taskgroup &&
+      taskgroup !== undefined &&
+      !completionBadgeAgegroupIds.includes(getAgeGroupId(taskgroup))
   )
 
   const filteredTaskGroupsMarkedCompleted = filterUndefined.filter(
@@ -194,6 +220,20 @@ const Member = () => {
       !taskgroup.age_group || Object.keys(taskgroup.age_group).length > 0
   )
 
+  /* COMPLETION BADGES */
+
+  const completionBadgesWithCompletedItems =
+    getCompletionBadgesWithCompletedItems(
+      completionBadges,
+      taskGroupsWithChildTaskGroups
+    )
+
+  const taskgroupsMarkedCompletedWhenAgeGroupMarkedCompleted =
+    taskGroupsMarkedCompleted.filter(
+      (taskgroup) =>
+        taskgroup !== undefined &&
+        completionBadgeAgegroupIds.includes(getAgeGroupId(taskgroup))
+    )
   const Lists = () => {
     /* If the user navigates to this page too fast or reloads the page all the data is not available.
      * The initial download only fetches age groups which means the tasks and task groups are not available
@@ -233,11 +273,11 @@ const Member = () => {
         </TaskList>
         <h4>{getTermInLanguage(translations, 'suoritetut')}</h4>
         <TaskList>
-          {taskGroupsWithChildTaskGroups && (
+          {completedAgeGroupsFiltered && (
             <CompletedTasks
               language={language}
               itemsByGuid={itemsByGuid}
-              taskGroupsWithChildTaskGroups={taskGroupsWithChildTaskGroups}
+              taskGroupsWithChildTaskGroups={completedAgeGroupsFiltered}
               groupMember={{ groupId, memberId }}
               actionsComponent={actionTypes.groupLeaderActions}
               userGuid={Number(memberId)}
@@ -269,6 +309,18 @@ const Member = () => {
               )
             })}
         </TaskList>
+        <h4>Päätösmerkit</h4>
+        {completionBadgesWithCompletedItems && (
+          <CompletionBadges
+            itemsByGuid={itemsByGuid}
+            completedItems={completionBadgesWithCompletedItems}
+            language={language}
+            taskgroupsMarkedCompleted={
+              taskgroupsMarkedCompletedWhenAgeGroupMarkedCompleted
+            }
+            actionsComponent={actionTypes.openTaskActions}
+          />
+        )}
       </>
     )
   }
