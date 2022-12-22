@@ -16,14 +16,21 @@ import {
   getTermInLanguage,
   getTaskGroupStatus,
   getActivityGroupIcon,
-  // getItemId,
+  getItemId,
 } from 'helpers'
+import { actionTypes } from 'components/Actions'
 
 const StyledAccordionItem = styled(AccordionItemPanel)`
   padding-left: 2.5rem;
 `
 
-const CompletionBadges = ({ itemsByGuid, completedItems, language }) => {
+const CompletionBadges = ({
+  itemsByGuid,
+  completedItems,
+  language,
+  taskgroupsMarkedCompleted,
+  actionsComponent,
+}) => {
   return Object.entries(completedItems).map((completionBadgeItem) => {
     const agegroupId = completionBadgeItem[0]
     const values = completionBadgeItem[1]
@@ -34,12 +41,21 @@ const CompletionBadges = ({ itemsByGuid, completedItems, language }) => {
         items={values}
         itemsByGuid={itemsByGuid}
         language={language}
+        taskgroupsMarkedCompleted={taskgroupsMarkedCompleted}
+        actionsComponent={actionsComponent}
       />
     )
   })
 }
 
-const AccordionList = ({ groupId, items, itemsByGuid, language }) => {
+const AccordionList = ({
+  groupId,
+  items,
+  itemsByGuid,
+  language,
+  taskgroupsMarkedCompleted,
+  actionsComponent,
+}) => {
   const groupItem = itemsByGuid[groupId]
   const translations = useSelector((state) => state.translations)
   const icon = getActivityGroupIcon(groupItem.item)
@@ -51,6 +67,12 @@ const AccordionList = ({ groupId, items, itemsByGuid, language }) => {
           useSelector((state) => state.tasks),
           getTermInLanguage(translations, 'tehdyt')
         )
+
+  const agegroupTaskgroupsMarkedCompleted =
+    taskgroupsMarkedCompleted &&
+    taskgroupsMarkedCompleted.filter((taskGroup) => {
+      return taskGroup.item.age_group.wp_guid === groupId
+    })
   return (
     <Accordion key={groupId} allowZeroExpanded>
       <AccordionItem>
@@ -74,10 +96,9 @@ const AccordionList = ({ groupId, items, itemsByGuid, language }) => {
               tasks={items}
               taskGroup={groupItem.id}
               language={language}
-              // actionsComponent={actionsComponent}
-              // userGuid={userGuid}
-              // groupGuid={groupGuid}
+              actionsComponent={actionsComponent}
               icon={icon}
+              translations={translations}
             />
           ) : (
             Object.entries(items).map((activitygroup) => {
@@ -94,21 +115,34 @@ const AccordionList = ({ groupId, items, itemsByGuid, language }) => {
               )
             })
           )}
+          {agegroupTaskgroupsMarkedCompleted &&
+            agegroupTaskgroupsMarkedCompleted.map((taskGroup) => {
+              if (!taskGroup) return null
+              return (
+                <ListItem
+                  key={taskGroup.id}
+                  guid={getItemId(taskGroup)}
+                  ageGroupGuid={taskGroup.ageGroupGuid}
+                  title={taskGroup.title || taskGroup.item.title}
+                  subTitle={getTermInLanguage(
+                    translations,
+                    'kokonaisuus-valmis'
+                  )}
+                  icon={getActivityGroupIcon(taskGroup.item || taskGroup)}
+                  language={language}
+                  itemType={ITEM_TYPES.TASK_GROUP}
+                  actionsComponent={actionTypes.openTaskActions}
+                  showActions
+                />
+              )
+            })}
         </StyledAccordionItem>
       </AccordionItem>
     </Accordion>
   )
 }
 
-const TaskList = ({
-  tasks,
-  // taskGroup,
-  language,
-  // actionsComponent,
-  // userGuid,
-  // groupGuid,
-  icon,
-}) => {
+const TaskList = ({ tasks, language, actionsComponent, icon }) => {
   return tasks.map((task) => {
     return (
       <ListItem
@@ -119,9 +153,7 @@ const TaskList = ({
         ageGroupGuid={task.item.age_group}
         icon={icon}
         language={language}
-        // actionsComponent={actionsComponent}
-        // userGuid={userGuid}
-        // groupGuid={groupGuid}
+        actionsComponent={actionsComponent}
         showActions
       />
     )
