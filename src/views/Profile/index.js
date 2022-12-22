@@ -388,7 +388,7 @@ const Profile = () => {
                 )
               })}
           </TaskList>
-          <h4>Päätösmerkit</h4>
+          <h4>{getTermInLanguage(translations, 'paatosmerkit')}</h4>
           <CompletionBadges
             itemsByGuid={itemsByGuid}
             completedItems={completionBadgesWithCompletedItems}

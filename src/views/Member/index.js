@@ -309,7 +309,7 @@ const Member = () => {
               )
             })}
         </TaskList>
-        <h4>Päätösmerkit</h4>
+        <h4>{getTermInLanguage(translations, 'paatosmerkit')}</h4>
         {completionBadgesWithCompletedItems && (
           <CompletionBadges
             itemsByGuid={itemsByGuid}

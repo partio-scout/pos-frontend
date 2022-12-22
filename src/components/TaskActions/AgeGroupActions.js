@@ -87,7 +87,7 @@ const AgeGroupActions = ({ onCancel, guid }) => {
             disabled={disabled}
           >
             <StyledAcceptIcon />
-            <span>Merkitse ikäryhmä suoritetuksi ja anna päätösmerkki</span>
+            <span>{getTermInLanguage(translations, 'anna-paatosmerkki')}</span>
           </ActivityItem>
         ) : null}
         <ActivityItem onClick={getOnClick(onCancel)} disabled={disabled}>

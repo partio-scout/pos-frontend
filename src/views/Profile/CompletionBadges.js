@@ -61,7 +61,7 @@ const AccordionList = ({
   const icon = getActivityGroupIcon(groupItem.item)
   const status =
     groupItem.type === 'AGE_GROUP'
-      ? 'Päätösmerkki annettu'
+      ? getTermInLanguage(translations, 'paatosmerkki-annettu')
       : getTaskGroupStatus(
           groupItem.item,
           useSelector((state) => state.tasks),
