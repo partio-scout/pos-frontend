@@ -22,7 +22,6 @@ export const selectedAgeGroup = (state = null, action) => {
   }
 }
 
-// completed?? completion_status??
 export const userAgeGroups = (state = {}, action) => {
   switch (action.type) {
     case SET_USER_AGE_GROUPS:

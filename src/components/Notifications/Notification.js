@@ -3,6 +3,7 @@ import styled from 'styled-components'
 
 import TaskNotification from './TaskNotification'
 import Task_groupNotification from './TaskGroupNotification'
+import Age_groupNotification from './CompletionBadgeNotification'
 
 export const UnreadNotificator = styled.div`
   width: 0.65rem;
@@ -35,11 +36,14 @@ const NotificationContainer = styled.div`
 const components = {
   TaskNotification,
   Task_groupNotification,
+  Age_groupNotification,
 }
 
 const getNotificationsComponent = (notification, markRead) => {
+  console.log('🖕', notification)
   const itemType = notification.item_type
   const componentPrefix = itemType.charAt(0) + itemType.slice(1).toLowerCase()
+  console.log('componentPrefix', componentPrefix)
   const Component = components[componentPrefix + 'Notification']
   return <Component notification={notification} markRead={markRead} />
 }
