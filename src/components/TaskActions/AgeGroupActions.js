@@ -65,8 +65,6 @@ const AgeGroupActions = ({ onCancel, guid }) => {
   const translations = useSelector((state) => state.translations)
   const userGroups = useSelector((state) => state.user.userGroups)
 
-  console.log('id', guid)
-
   const history = useHistory()
 
   const language = determineLanguageFromUrl(window.location)
