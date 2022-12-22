@@ -13,6 +13,7 @@ import {
   getAgeGroupCompletion,
   getActivityGroupIcon,
   getItemId,
+  filterActivityGroupsWithCompletedAgegroup,
 } from 'helpers'
 import ListItem from 'components/ListItem'
 import {
@@ -163,6 +164,8 @@ const Profile = () => {
     (group) => group && group.id
   )
 
+  const completionBadgeAgegroupIds = Object.keys(userAgeGroups).map((id) => id)
+
   const taskGroupsWithChildTaskGroups = getTaskGroupsWithChildTaskGroups(
     itemsByGuid,
     completedTasks,
@@ -170,7 +173,13 @@ const Profile = () => {
     getItemId
   )
 
-  const parentTaskGroupGuids = Object.keys(taskGroupsWithChildTaskGroups)
+  const completedAgeGroupsFiltered = filterActivityGroupsWithCompletedAgegroup(
+    taskGroupsWithChildTaskGroups,
+    completionBadgeAgegroupIds,
+    itemsByGuid
+  )
+
+  const parentTaskGroupGuids = Object.keys(completedAgeGroupsFiltered)
 
   /* Migrated data from Kuksa uses id instead of wp_guid, which is used mostly in the application, also some of the migrated activitygroups belongs to "Seikkailijat Vanha"-agegroup,
    * which is not published yet - they need to be filtered. This looks messy
@@ -194,11 +203,6 @@ const Profile = () => {
       completionBadges,
       taskGroupsWithChildTaskGroups
     )
-
-  console.log(
-    'completionBadgesWithCompletedItems -->',
-    completionBadgesWithCompletedItems
-  )
 
   const ongoingTasks = Object.keys(userTasks).filter(
     (guid) =>
@@ -331,11 +335,11 @@ const Profile = () => {
           />
           <h4>{getTermInLanguage(translations, 'suoritetut')}</h4>
           <TaskList>
-            {taskGroupsWithChildTaskGroups && (
+            {completedAgeGroupsFiltered && (
               <CompletedTasks
                 language={language}
                 itemsByGuid={itemsByGuid}
-                taskGroupsWithChildTaskGroups={taskGroupsWithChildTaskGroups}
+                taskGroupsWithChildTaskGroups={completedAgeGroupsFiltered}
                 actionsComponent={actionTypes.openTaskActions}
                 completedTaskGroupsGuids={completedTaskGroupsGuids}
                 parentTaskGroupGuids={parentTaskGroupGuids}
