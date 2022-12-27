@@ -6,8 +6,6 @@ import {
   SET_GROUP_MEMBER_AGEGROUP,
 } from 'redux/actionTypes'
 
-// TODO: TEST THIS PROPERLY BEFORE DEPLOYING ANYWHERE!!
-
 const getItemGuid = (itemtype, data) => {
   switch (itemtype) {
     case 'tasks':
