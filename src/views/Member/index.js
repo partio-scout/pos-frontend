@@ -234,6 +234,7 @@ const Member = () => {
         taskgroup !== undefined &&
         completionBadgeAgegroupIds.includes(getAgeGroupId(taskgroup))
     )
+
   const Lists = () => {
     /* If the user navigates to this page too fast or reloads the page all the data is not available.
      * The initial download only fetches age groups which means the tasks and task groups are not available
@@ -319,6 +320,7 @@ const Member = () => {
               taskgroupsMarkedCompletedWhenAgeGroupMarkedCompleted
             }
             actionsComponent={actionTypes.openTaskActions}
+            completedtasks={memberTasks}
           />
         )}
       </>

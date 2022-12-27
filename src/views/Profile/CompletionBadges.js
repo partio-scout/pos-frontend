@@ -30,6 +30,7 @@ const CompletionBadges = ({
   language,
   taskgroupsMarkedCompleted,
   actionsComponent,
+  completedtasks,
 }) => {
   return Object.entries(completedItems).map((completionBadgeItem) => {
     const agegroupId = completionBadgeItem[0]
@@ -43,6 +44,7 @@ const CompletionBadges = ({
         language={language}
         taskgroupsMarkedCompleted={taskgroupsMarkedCompleted}
         actionsComponent={actionsComponent}
+        completedtasks={completedtasks}
       />
     )
   })
@@ -55,6 +57,7 @@ const AccordionList = ({
   language,
   taskgroupsMarkedCompleted,
   actionsComponent,
+  completedtasks,
 }) => {
   const groupItem = itemsByGuid[groupId]
   const translations = useSelector((state) => state.translations)
@@ -64,7 +67,7 @@ const AccordionList = ({
       ? getTermInLanguage(translations, 'paatosmerkki-annettu')
       : getTaskGroupStatus(
           groupItem.item,
-          useSelector((state) => state.tasks),
+          completedtasks,
           getTermInLanguage(translations, 'tehdyt')
         )
 
@@ -111,6 +114,7 @@ const AccordionList = ({
                   items={activities}
                   itemsByGuid={itemsByGuid}
                   language={language}
+                  completedtasks={completedtasks}
                 />
               )
             })
