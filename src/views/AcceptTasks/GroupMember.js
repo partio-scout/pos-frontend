@@ -83,6 +83,28 @@ const GroupMember = ({
     )
   }
 
+  const getGroupMemberAgeGroupList = (member) => {
+    return (
+      <StyledListItem>
+        <label style={{ float: 'left', margin: 0 }} htmlFor={member.id}>
+          {member.name}
+        </label>
+        {isCompleted(member.ageGroups) ? (
+          <Check style={{ ...CHECK_STYLE, color: 'green' }} />
+        ) : (
+          <input
+            id={member.id}
+            style={CHECK_STYLE}
+            type="checkbox"
+            value={member.id}
+            onChange={handleChange}
+            checked={member.selected}
+          />
+        )}
+      </StyledListItem>
+    )
+  }
+
   function isCompleted(memberTasks) {
     const completedTasks = Object.keys(memberTasks).filter(
       (guid) =>
@@ -100,13 +122,18 @@ const GroupMember = ({
     height: '1.3rem',
   }
 
-  return (
-    <div key={member.id}>
-      {item && item.type === 'TASK_GROUP'
-        ? getGroupMemberTaskGroupList(member, item)
-        : getGroupMemberTaskList(member, item)}
-    </div>
-  )
+  const getMemberItemList = (item) => {
+    switch (item.type) {
+      case 'TASK_GROUP':
+        return getGroupMemberTaskGroupList(member, item)
+      case 'AGE_GROUP':
+        return getGroupMemberAgeGroupList(member, item)
+      default:
+        return getGroupMemberTaskList(member, item)
+    }
+  }
+
+  return <div key={member.id}>{item && getMemberItemList(item)}</div>
 }
 
 export default GroupMember

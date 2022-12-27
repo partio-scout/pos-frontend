@@ -11,6 +11,7 @@ export const SET_USER = 'SET_USER'
 export const SET_USER_GROUPS = 'SET_USER_GROUPS'
 export const SET_GROUP_MEMBER_TASK = 'SET_GROUP_MEMBER_TASK'
 export const SET_GROUP_MEMBER_TASKGROUP = 'SET_GROUP_MEMBER_TASKGROUP'
+export const SET_GROUP_MEMBER_AGEGROUP = 'SET_GROUP_MEMBER_AGEGROUP'
 
 // Tasks
 export const SET_TASKS = 'SET_TASKS'
@@ -20,6 +21,9 @@ export const SET_TASKGROUP_REQUIREMENTS = 'SET_TASKGROUP_REQUIREMENTS'
 
 // User Activitygroups
 export const SET_USER_ACTIVITY_GROUPS = 'SET_USER_ACTIVITY_GROUPS'
+
+// User completed agegroups
+export const SET_USER_AGE_GROUPS = 'SET_USER_AGE_GROUPS'
 
 // Favourites
 export const SET_FAVOURITES = 'SET_FAVOURITES'

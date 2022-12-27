@@ -9,8 +9,13 @@ import { StyledAcceptIcon } from '../../components/TaskActionsIcons'
 import {
   updateGroupMemberTask,
   updateGroupMemberTaskGroup,
+  updateGroupMemberAgeGroup,
 } from '../../redux/actionCreators'
-import { acceptGroupMemberTasks, postTaskGroupEntry } from '../../api'
+import {
+  acceptGroupMemberTasks,
+  postTaskGroupEntry,
+  postAgeGroupEntry,
+} from '../../api'
 import { COMPLETION_STATUS, TASK_GROUP_STATUS } from 'consts'
 import { useDispatch } from 'react-redux'
 import { useParams } from 'react-router-dom'
@@ -176,11 +181,36 @@ const AcceptTasks = () => {
     }
   }
 
+  async function handleAgeGroupSubmit() {
+    try {
+      const data = {
+        groups: memberIdList,
+        group_leader_name: user.name,
+      }
+      await postAgeGroupEntry(data, taskGuid)
+      for (let [membergroup, memberIds] of Object.entries(memberIdList)) {
+        for (let memberid of memberIds) {
+          dispatch(
+            updateGroupMemberAgeGroup({
+              agegroup_guid: taskGuid,
+              user_guid: Number(memberid),
+              completion_status: TASK_GROUP_STATUS.COMPLETED,
+              groupGuid: Number(membergroup),
+            })
+          )
+        }
+      }
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
   const onSubmitClick = async (...args) => {
     setLoading(true)
     if (memberIdList && Object.values(memberIdList).length) {
       if (item.type === 'TASK') await handleSubmit(args)
-      else await handleTaskGroupSubmit(args)
+      else if (item.type === 'TASK_GROUP') await handleTaskGroupSubmit(args)
+      else await handleAgeGroupSubmit(args)
     }
     setLoading(false)
   }

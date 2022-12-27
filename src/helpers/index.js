@@ -181,3 +181,18 @@ export const getAgeGroupCompletion = (ageGroup, userTasks, activityGroups) => {
     completedMandatory.length > 0
   )
 }
+
+export const filterActivityGroupsWithCompletedAgegroup = (
+  obj,
+  listCompared,
+  itemsByGuid
+) => {
+  return Object.keys(obj)
+    .filter(
+      (key) => !listCompared.includes(itemsByGuid[key].item.age_group.wp_guid)
+    )
+    .reduce((acc, curr) => {
+      acc[curr] = obj[curr]
+      return acc
+    }, {})
+}

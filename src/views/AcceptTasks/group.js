@@ -58,6 +58,7 @@ const getInitialCheckboxData = (group) =>
     id: member.memberId,
     tasks: member.memberTasks,
     taskGroups: member.memberTaskGroups,
+    ageGroups: member.memberAgeGroups,
   }))
 
 const Group = ({ group, isLast, setMemberIdList }) => {
@@ -87,6 +88,8 @@ const Group = ({ group, isLast, setMemberIdList }) => {
   const getItem = (item) => {
     switch (item.type) {
       case 'TASK_GROUP':
+        return item
+      case 'AGE_GROUP':
         return item
       default:
         return activityGroupById[item.item.activity_group].activities

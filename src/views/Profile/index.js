@@ -13,6 +13,7 @@ import {
   getAgeGroupCompletion,
   getActivityGroupIcon,
   getItemId,
+  filterActivityGroupsWithCompletedAgegroup,
 } from 'helpers'
 import ListItem from 'components/ListItem'
 import {
@@ -22,7 +23,11 @@ import {
   TASK_GROUP_STATUS,
 } from 'consts'
 import CompletedTasks from './CompletedTasks'
-import { getTaskGroupsWithChildTaskGroups } from '../../helpers/groupTasks'
+import CompletionBadges from './CompletionBadges'
+import {
+  getTaskGroupsWithChildTaskGroups,
+  getCompletionBadgesWithCompletedItems,
+} from '../../helpers/groupTasks'
 import { actionTypes } from 'components/Actions'
 import OngoingTaskList from './OngoingTaskList'
 
@@ -130,6 +135,7 @@ const Profile = () => {
   const [errorFetchingProfile, setErrorFetchingProfile] = useState(false)
   const userTasks = useSelector((state) => state.tasks)
   const userTaskGroups = useSelector((state) => state.userActivityGroups)
+  const userAgeGroups = useSelector((state) => state.userAgeGroups)
   const ageGroups = useSelector((state) => state.ageGroups)
   const itemsByGuid = useSelector((state) => state.itemsByGuid)
   const favourites = useSelector((state) =>
@@ -146,6 +152,10 @@ const Profile = () => {
     (guid) => userTasks[guid] === COMPLETION_STATUS.COMPLETED
   )
 
+  const completionBadges = Object.keys(userAgeGroups).map(
+    (id) => itemsByGuid[id]
+  )
+
   const completedTaskGroups = Object.keys(userTaskGroups)
     .filter((guid) => userTaskGroups[guid] === TASK_GROUP_STATUS.COMPLETED)
     .map((id) => itemsByGuid[id] || activityGroups[id])
@@ -154,6 +164,8 @@ const Profile = () => {
     (group) => group && group.id
   )
 
+  const completionBadgeAgegroupIds = Object.keys(userAgeGroups).map((id) => id)
+
   const taskGroupsWithChildTaskGroups = getTaskGroupsWithChildTaskGroups(
     itemsByGuid,
     completedTasks,
@@ -161,8 +173,12 @@ const Profile = () => {
     getItemId
   )
 
-  const parentTaskGroupGuids = Object.keys(taskGroupsWithChildTaskGroups)
-
+  const completedAgeGroupsFiltered = filterActivityGroupsWithCompletedAgegroup(
+    taskGroupsWithChildTaskGroups,
+    completionBadgeAgegroupIds,
+    itemsByGuid
+  )
+  const parentTaskGroupGuids = Object.keys(completedAgeGroupsFiltered)
   /* Migrated data from Kuksa uses id instead of wp_guid, which is used mostly in the application, also some of the migrated activitygroups belongs to "Seikkailijat Vanha"-agegroup,
    * which is not published yet - they need to be filtered. This looks messy
    */
@@ -172,13 +188,28 @@ const Profile = () => {
     .map((id) => itemsByGuid[id] || activityGroups[id])
 
   const filterUndefined = taskGroupsMarkedCompleted.filter(
-    (taskgroup) => taskgroup !== undefined
+    (taskgroup) =>
+      taskgroup !== undefined &&
+      !completionBadgeAgegroupIds.includes(taskgroup.item.age_group.wp_guid)
   )
+
+  const taskgroupsMarkedCompletedWhenAgeGroupMarkedCompleted =
+    taskGroupsMarkedCompleted.filter(
+      (taskgroup) =>
+        taskgroup !== undefined &&
+        completionBadgeAgegroupIds.includes(taskgroup.item.age_group.wp_guid)
+    )
 
   const filteredTaskGroupsMarkedCompleted = filterUndefined.filter(
     (taskgroup) =>
       !taskgroup.age_group || Object.keys(taskgroup.age_group).length > 0
   )
+
+  const completionBadgesWithCompletedItems =
+    getCompletionBadgesWithCompletedItems(
+      completionBadges,
+      taskGroupsWithChildTaskGroups
+    )
 
   const ongoingTasks = Object.keys(userTasks).filter(
     (guid) =>
@@ -311,11 +342,11 @@ const Profile = () => {
           />
           <h4>{getTermInLanguage(translations, 'suoritetut')}</h4>
           <TaskList>
-            {taskGroupsWithChildTaskGroups && (
+            {completedAgeGroupsFiltered && (
               <CompletedTasks
                 language={language}
                 itemsByGuid={itemsByGuid}
-                taskGroupsWithChildTaskGroups={taskGroupsWithChildTaskGroups}
+                taskGroupsWithChildTaskGroups={completedAgeGroupsFiltered}
                 actionsComponent={actionTypes.openTaskActions}
                 completedTaskGroupsGuids={completedTaskGroupsGuids}
                 parentTaskGroupGuids={parentTaskGroupGuids}
@@ -357,6 +388,16 @@ const Profile = () => {
                 )
               })}
           </TaskList>
+          <h4>{getTermInLanguage(translations, 'paatosmerkit')}</h4>
+          <CompletionBadges
+            itemsByGuid={itemsByGuid}
+            completedItems={completionBadgesWithCompletedItems}
+            language={language}
+            taskgroupsMarkedCompleted={
+              taskgroupsMarkedCompletedWhenAgeGroupMarkedCompleted
+            }
+            actionsComponent={actionTypes.openTaskActions}
+          />
         </BodyContent>
       </Content>
     </Background>

@@ -3,6 +3,7 @@ import {
   SET_USER_GROUPS,
   SET_GROUP_MEMBER_TASK,
   SET_GROUP_MEMBER_TASKGROUP,
+  SET_GROUP_MEMBER_AGEGROUP,
 } from 'redux/actionTypes'
 
 export const setUser = (user) => {
@@ -30,5 +31,12 @@ export const updateGroupMemberTaskGroup = (memberTaskGroup) => {
   return {
     type: SET_GROUP_MEMBER_TASKGROUP,
     payload: memberTaskGroup,
+  }
+}
+
+export const updateGroupMemberAgeGroup = (memberAgeGroup) => {
+  return {
+    type: SET_GROUP_MEMBER_AGEGROUP,
+    payload: memberAgeGroup,
   }
 }
