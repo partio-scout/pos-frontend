@@ -397,6 +397,7 @@ const Profile = () => {
               taskgroupsMarkedCompletedWhenAgeGroupMarkedCompleted
             }
             actionsComponent={actionTypes.openTaskActions}
+            completedtasks={useSelector((state) => state.tasks)}
           />
         </BodyContent>
       </Content>
