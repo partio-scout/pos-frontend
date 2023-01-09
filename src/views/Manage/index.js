@@ -6,6 +6,7 @@ import ListItem from 'components/ListItem'
 import { ITEM_TYPES } from 'consts'
 import { useSelector } from 'react-redux'
 import { determineLanguageFromUrl, getTermInLanguage } from 'helpers'
+import LoadingSpinner from '../../components/LoadingSpinner'
 
 const StyledManage = styled.div`
   height: 100%;
@@ -48,7 +49,7 @@ const Manage = () => {
   const language = determineLanguageFromUrl(window.location)
   const groupsData = useSelector((state) => state.user.userGroups)
   const translations = useSelector((state) => state.translations)
-  if (!translations || !groupsData) return null
+  if (!translations || !groupsData) return <LoadingSpinner fullHeight />
 
   return (
     <StyledManage>
