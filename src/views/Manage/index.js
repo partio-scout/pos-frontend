@@ -49,7 +49,8 @@ const Manage = () => {
   const language = determineLanguageFromUrl(window.location)
   const groupsData = useSelector((state) => state.user.userGroups)
   const translations = useSelector((state) => state.translations)
-  if (!translations || !groupsData) return <LoadingSpinner fullHeight />
+  if (!translations || !groupsData)
+    return <LoadingSpinner fullHeight backgroundBlack />
 
   return (
     <StyledManage>

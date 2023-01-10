@@ -24,6 +24,7 @@ const CenteredContainer = styled.div`
   justify-content: center;
 
   ${({ fullHeight }) => (fullHeight ? 'height: 100vh;' : '')}
+  ${({ backgroundBlack }) => (backgroundBlack ? 'background: black;' : '')}
 `
 
 export const Spinner = () => <Loader />
