@@ -321,6 +321,20 @@ export const fetchUserCompletedAgeGroups = async () => {
   }
 }
 
+export const deleteAgegroupEntry = async (entry) => {
+  const res = await fetch(
+    `${API_URL}/groups/delete-agegroup-entry/${entry.agegroup_guid}`,
+    {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+    }
+  )
+  return await res.json()
+}
+
 export {
   API_URL,
   fetchNotifications,
