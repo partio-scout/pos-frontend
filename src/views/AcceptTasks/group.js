@@ -10,7 +10,7 @@ import {
   AccordionItemPanel,
 } from 'react-accessible-accordion'
 import ListItem from 'components/ListItem'
-import { ITEM_TYPES, COMPLETION_STATUS } from 'consts'
+import { ITEM_TYPES, COMPLETION_STATUS, TASK_GROUP_STATUS } from 'consts'
 import { useSelector } from 'react-redux'
 import { getTermInLanguage } from '../../helpers'
 import GroupMember from './GroupMember'
@@ -62,21 +62,21 @@ const isCompleted = (memberTasks, taskGuid) => {
 }
 
 const getInitialCheckboxData = (group, taskGuid, itemsByGuid) => {
-  const itemType = itemsByGuid[taskGuid].type
+  const item = itemsByGuid[taskGuid]
   return group.members.map((member) => {
-    const selected = (itemType) => {
-      switch (itemType) {
+    const selected = (item) => {
+      switch (item.type) {
         case 'TASK_GROUP':
           return isCompleted(member.memberTaskGroups, taskGuid)
         case 'AGE_GROUP':
           return isCompleted(member.memberAgeGroups, taskGuid)
         default:
-          return activityGroupById[item.item.activity_group].activities
+          return isCompleted(member.memberTasks, taskGuid)
       }
     }
 
     return {
-      selected: selected(itemType) || false,
+      selected: selected(item) || false,
       name: member.memberName,
       id: member.memberId,
       tasks: member.memberTasks,
