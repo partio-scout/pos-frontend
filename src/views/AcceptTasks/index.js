@@ -116,16 +116,20 @@ const AcceptTasks = () => {
   const item = itemsByGuid[taskGuid]
 
   useEffect(() => {
-    if (memberIdList && !Object.keys(memberIdList).length) {
-      const groups =
-        groupsData &&
-        groupsData.length &&
-        groupsData.reduce((acc, group) => {
-          acc[group.id] = []
-          return acc
-        }, {})
-      setMemberIdList(groups)
-    }
+    const groups =
+      groupsData &&
+      groupsData.length &&
+      groupsData.reduce((acc, group) => {
+        const memberIdsWithCompletedItem = group.members
+          .filter((member) => {
+            return Object.keys(member.memberAgeGroups).includes(taskGuid)
+          })
+          .map((member) => member.memberId)
+        acc[group.id] = memberIdsWithCompletedItem
+
+        return acc
+      }, {})
+    setMemberIdList(groups)
   }, [groupsData])
 
   if (!translations || !groupsData) {
