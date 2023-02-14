@@ -1,5 +1,5 @@
 /* eslint-disable */
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled, { keyframes, css } from 'styled-components'
 import { useParams } from 'react-router-dom'
 import {
@@ -10,7 +10,7 @@ import {
   AccordionItemPanel,
 } from 'react-accessible-accordion'
 import ListItem from 'components/ListItem'
-import { ITEM_TYPES } from 'consts'
+import { ITEM_TYPES, COMPLETION_STATUS } from 'consts'
 import { useSelector } from 'react-redux'
 import { getTermInLanguage } from '../../helpers'
 import GroupMember from './GroupMember'
@@ -51,15 +51,40 @@ const StyledListHeading = styled.h4`
   text-decoration: underline;
 `
 
-const getInitialCheckboxData = (group) =>
-  group.members.map((member) => ({
-    selected: false,
-    name: member.memberName,
-    id: member.memberId,
-    tasks: member.memberTasks,
-    taskGroups: member.memberTaskGroups,
-    ageGroups: member.memberAgeGroups,
-  }))
+const isCompleted = (memberTasks, taskGuid) => {
+  const completedTasks = Object.keys(memberTasks).filter(
+    (guid) =>
+      memberTasks[guid] === COMPLETION_STATUS.COMPLETED ||
+      TASK_GROUP_STATUS.COMPLETED
+  )
+  const isCompleted = !!completedTasks.find((guid) => guid === taskGuid)
+  return isCompleted
+}
+
+const getInitialCheckboxData = (group, taskGuid, itemsByGuid) => {
+  const itemType = itemsByGuid[taskGuid].type
+  return group.members.map((member) => {
+    const selected = (itemType) => {
+      switch (itemType) {
+        case 'TASK_GROUP':
+          return isCompleted(member.memberTaskGroups, taskGuid)
+        case 'AGE_GROUP':
+          return isCompleted(member.memberAgeGroups, taskGuid)
+        default:
+          return activityGroupById[item.item.activity_group].activities
+      }
+    }
+
+    return {
+      selected: selected(itemType) || false,
+      name: member.memberName,
+      id: member.memberId,
+      tasks: member.memberTasks,
+      taskGroups: member.memberTaskGroups,
+      ageGroups: member.memberAgeGroups,
+    }
+  })
+}
 
 const Group = ({ group, isLast, setMemberIdList }) => {
   const { taskGuid } = useParams()
@@ -68,10 +93,10 @@ const Group = ({ group, isLast, setMemberIdList }) => {
   const itemsByGuid = useSelector((state) => state.itemsByGuid)
   const activityGroupById = useSelector((state) => state.activityGroups)
   const [checkboxData, setCheckboxData] = React.useState(
-    getInitialCheckboxData(group)
+    getInitialCheckboxData(group, taskGuid, itemsByGuid)
   )
   useEffect(
-    () => setCheckboxData(getInitialCheckboxData(group)),
+    () => setCheckboxData(getInitialCheckboxData(group, taskGuid, itemsByGuid)),
     [groupsData, group]
   )
 
