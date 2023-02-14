@@ -1,11 +1,9 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Check } from 'react-feather'
 import { useSelector } from 'react-redux'
 
 import { getTermInLanguage } from '../../helpers'
 import { getMemberCompletedTasks } from '../../helpers/groupTasks'
-import { COMPLETION_STATUS, TASK_GROUP_STATUS } from 'consts'
 
 const StyledListItem = styled.div`
   padding: 0.25rem;
@@ -21,13 +19,7 @@ const StyledSubtitle = styled.span`
   color: ${({ theme }) => theme.color.subText};
 `
 
-const GroupMember = ({
-  member,
-  item,
-  mandatoryTasks,
-  taskGuid,
-  handleChange,
-}) => {
+const GroupMember = ({ member, item, mandatoryTasks, handleChange }) => {
   const translations = useSelector((state) => state.translations)
 
   const getGroupMemberTaskList = (member, item) => {
@@ -37,10 +29,9 @@ const GroupMember = ({
           <label style={{ float: 'left', margin: 0 }} htmlFor={member.id}>
             {member.name}
           </label>
-          {(mandatoryTasks !== undefined &&
-            getMemberCompletedTasks(member, mandatoryTasks) ===
-              mandatoryTasks.length) ||
-          isCompleted(member.tasks) ? (
+          {mandatoryTasks !== undefined &&
+          getMemberCompletedTasks(member, mandatoryTasks) ===
+            mandatoryTasks.length ? (
             <Check style={{ ...CHECK_STYLE, color: 'green' }} />
           ) : (
             <input
@@ -95,16 +86,6 @@ const GroupMember = ({
         />
       </StyledListItem>
     )
-  }
-
-  function isCompleted(memberTasks) {
-    const completedTasks = Object.keys(memberTasks).filter(
-      (guid) =>
-        memberTasks[guid] === COMPLETION_STATUS.COMPLETED ||
-        TASK_GROUP_STATUS.COMPLETED
-    )
-    const isCompleted = !!completedTasks.find((guid) => guid === taskGuid)
-    return isCompleted
   }
 
   const CHECK_STYLE = {

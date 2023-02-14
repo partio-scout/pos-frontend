@@ -86,7 +86,12 @@ const getInitialCheckboxData = (group, taskGuid, itemsByGuid) => {
   })
 }
 
-const Group = ({ group, isLast, setMemberIdList }) => {
+const Group = ({
+  group,
+  isLast,
+  setPostMemberIdList,
+  setDeleteMemberIdList,
+}) => {
   const { taskGuid } = useParams()
   const groupsData = useSelector((state) => state.user.userGroups)
   const translations = useSelector((state) => state.translations)
@@ -132,6 +137,9 @@ const Group = ({ group, isLast, setMemberIdList }) => {
   }
 
   function handleChange(event) {
+    if (event.target.checked === false) {
+      console.log('tuleeks tähän')
+    }
     if (event.target.name === 'checkAll') {
       checkboxData.map((member) => {
         return handleCheckboxSelection(Number(member.id), event.target.checked)
@@ -147,7 +155,8 @@ const Group = ({ group, isLast, setMemberIdList }) => {
       return idList
     }, [])
 
-    setMemberIdList(editableList, group.id)
+    setDeleteMemberIdList()
+    setPostMemberIdList(editableList, group.id)
   }
 
   function handleCheckboxSelection(memberId, isChecked) {

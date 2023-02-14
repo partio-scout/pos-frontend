@@ -102,6 +102,7 @@ const Content = styled.div`
 `
 const AcceptTasks = () => {
   const [memberIdList, setMemberIdList] = useState({})
+  const [deleteItemMemberIdList, setDeleteItemMemberIdList] = useState({})
   const [selectedGroup, setSelectedGroup] = React.useState()
   const history = useHistory()
   const language = determineLanguageFromUrl(window.location)
@@ -224,6 +225,12 @@ const AcceptTasks = () => {
     setMemberIdList(updated)
   }
 
+  const deleteIdList = (memberIds, groupId) => {
+    const removed = Object.assign({}, deleteItemMemberIdList, {
+      [groupId]: memberIds,
+    })
+    setDeleteItemMemberIdList(removed)
+  }
   return (
     <StyledAcceptTasks>
       <Header>
@@ -242,7 +249,8 @@ const AcceptTasks = () => {
               key={group.id}
               group={group}
               isLast={i === groupsData.length - 1}
-              setMemberIdList={updateIdList}
+              setPostMemberIdList={updateIdList}
+              setDeleteMemberIdList={deleteIdList}
               setSelectedGroup={setSelectedGroup}
               selectedGroup={selectedGroup}
             />
