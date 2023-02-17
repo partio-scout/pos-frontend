@@ -104,7 +104,7 @@ const Group = ({
     () => setCheckboxData(getInitialCheckboxData(group, taskGuid, itemsByGuid)),
     [groupsData, group]
   )
-
+  // console.log('checkboxData', checkboxData)
   const groupName = group.name
   const ageGroup = group.ageGroup
   const ageGroupId = group.id
@@ -137,9 +137,6 @@ const Group = ({
   }
 
   function handleChange(event) {
-    if (event.target.checked === false) {
-      console.log('tuleeks tähän')
-    }
     if (event.target.name === 'checkAll') {
       checkboxData.map((member) => {
         return handleCheckboxSelection(Number(member.id), event.target.checked)
@@ -155,7 +152,14 @@ const Group = ({
       return idList
     }, [])
 
-    setDeleteMemberIdList()
+    const list = checkboxData.reduce((idList, data) => {
+      if (data.selected === false) {
+        idList.push(data.id.toString())
+      }
+      return idList
+    }, [])
+
+    setDeleteMemberIdList(list, group.id)
     setPostMemberIdList(editableList, group.id)
   }
 
