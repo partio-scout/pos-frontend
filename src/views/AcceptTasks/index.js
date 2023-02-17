@@ -13,6 +13,7 @@ import {
 } from '../../redux/actionCreators'
 import {
   acceptGroupMemberTasks,
+  deleteGroupMemberTasks,
   postTaskGroupEntry,
   deleteTaskGroupEntry,
   postAgeGroupEntry,
@@ -146,7 +147,7 @@ const AcceptTasks = () => {
   async function handleSubmit() {
     try {
       await acceptGroupMemberTasks(memberIdList, taskGuid)
-
+      await deleteGroupMemberTasks(deleteItemMemberIdList, taskGuid)
       for (let [membergroup, memberIds] of Object.entries(memberIdList)) {
         for (let memberid of memberIds) {
           dispatch(

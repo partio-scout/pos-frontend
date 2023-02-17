@@ -145,6 +145,18 @@ export const acceptGroupMemberTasks = async (memberGroups, taskId) => {
   return res.json()
 }
 
+export const deleteGroupMemberTasks = async (memberGroups, taskId) => {
+  const res = await fetch(`${API_URL}/groups/archive-task-entry/${taskId}`, {
+    method: 'DELETE',
+    body: JSON.stringify(memberGroups),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    credentials: 'include',
+  })
+  return res.json()
+}
+
 export const fetchUserTasks = async () => {
   try {
     const res = await fetch(`${API_URL}/task-entries`, {
