@@ -14,6 +14,7 @@ import {
 import {
   acceptGroupMemberTasks,
   postTaskGroupEntry,
+  deleteTaskGroupEntry,
   postAgeGroupEntry,
 } from '../../api'
 import { COMPLETION_STATUS, TASK_GROUP_STATUS } from 'consts'
@@ -164,11 +165,16 @@ const AcceptTasks = () => {
 
   async function handleTaskGroupSubmit() {
     try {
-      const data = {
+      const postdata = {
         groups: memberIdList,
         group_leader_name: user.name,
       }
-      await postTaskGroupEntry(data, taskGuid)
+      await postTaskGroupEntry(postdata, taskGuid)
+      const deleteData = {
+        itemsToBeDeleted: deleteItemMemberIdList,
+        group_leader_name: user.name,
+      }
+      await deleteTaskGroupEntry(deleteData, taskGuid)
       for (let [membergroup, memberIds] of Object.entries(memberIdList)) {
         for (let memberid of memberIds) {
           dispatch(

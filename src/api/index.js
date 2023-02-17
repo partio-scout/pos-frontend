@@ -93,6 +93,22 @@ export const postTaskGroupEntry = async (data, taskgroup_guid) => {
   return res.json()
 }
 
+export const deleteTaskGroupEntry = async (data, taskgroup_guid) => {
+  console.log('taskgroupentry data', data, taskgroup_guid)
+  const res = await fetch(
+    `${API_URL}/groups/delete-taskgroup-entry/${taskgroup_guid}`,
+    {
+      method: 'DELETE',
+      body: JSON.stringify(data),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+    }
+  )
+  return res.json()
+}
+
 export const postMemberTaskEntry = async (entry) => {
   const res = await fetch(`${API_URL}/member-entry`, {
     method: 'POST',
