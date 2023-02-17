@@ -29,11 +29,6 @@ const GroupMember = ({ member, item, handleChange }) => {
           <label style={{ float: 'left', margin: 0 }} htmlFor={member.id}>
             {member.name}
           </label>
-          {/* {mandatoryTasks !== undefined &&
-          getMemberCompletedTasks(member, mandatoryTasks) ===
-            mandatoryTasks.length ? (
-            <Check style={{ ...CHECK_STYLE, color: 'green' }} />
-          ) : ( */}
           <input
             id={member.id}
             style={CHECK_STYLE}
@@ -42,7 +37,6 @@ const GroupMember = ({ member, item, handleChange }) => {
             onChange={handleChange}
             checked={member.selected}
           />
-          {/* )} */}
         </StyledListItem>
         <StyledSubtitle>
           {getTermInLanguage(translations, 'tehdyt')}:{' '}
