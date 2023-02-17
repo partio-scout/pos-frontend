@@ -19,7 +19,7 @@ const StyledSubtitle = styled.span`
   color: ${({ theme }) => theme.color.subText};
 `
 
-const GroupMember = ({ member, item, mandatoryTasks, handleChange }) => {
+const GroupMember = ({ member, item, handleChange }) => {
   const translations = useSelector((state) => state.translations)
 
   const getGroupMemberTaskList = (member, item) => {
@@ -29,20 +29,20 @@ const GroupMember = ({ member, item, mandatoryTasks, handleChange }) => {
           <label style={{ float: 'left', margin: 0 }} htmlFor={member.id}>
             {member.name}
           </label>
-          {mandatoryTasks !== undefined &&
+          {/* {mandatoryTasks !== undefined &&
           getMemberCompletedTasks(member, mandatoryTasks) ===
             mandatoryTasks.length ? (
             <Check style={{ ...CHECK_STYLE, color: 'green' }} />
-          ) : (
-            <input
-              id={member.id}
-              style={CHECK_STYLE}
-              type="checkbox"
-              value={member.id}
-              onChange={handleChange}
-              checked={member.selected}
-            />
-          )}
+          ) : ( */}
+          <input
+            id={member.id}
+            style={CHECK_STYLE}
+            type="checkbox"
+            value={member.id}
+            onChange={handleChange}
+            checked={member.selected}
+          />
+          {/* )} */}
         </StyledListItem>
         <StyledSubtitle>
           {getTermInLanguage(translations, 'tehdyt')}:{' '}
