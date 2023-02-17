@@ -16,6 +16,7 @@ import {
   postTaskGroupEntry,
   deleteTaskGroupEntry,
   postAgeGroupEntry,
+  deleteAgegroupEntry,
 } from '../../api'
 import { COMPLETION_STATUS, TASK_GROUP_STATUS } from 'consts'
 import { useDispatch } from 'react-redux'
@@ -194,11 +195,16 @@ const AcceptTasks = () => {
 
   async function handleAgeGroupSubmit() {
     try {
-      const data = {
+      const postdata = {
         groups: memberIdList,
         group_leader_name: user.name,
       }
-      await postAgeGroupEntry(data, taskGuid)
+      await postAgeGroupEntry(postdata, taskGuid)
+      const deleteData = {
+        itemsToBeDeleted: deleteItemMemberIdList,
+        group_leader_name: user.name,
+      }
+      await deleteAgegroupEntry(deleteData, taskGuid)
       for (let [membergroup, memberIds] of Object.entries(memberIdList)) {
         for (let memberid of memberIds) {
           dispatch(
