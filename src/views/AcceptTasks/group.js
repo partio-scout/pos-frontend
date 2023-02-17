@@ -104,7 +104,6 @@ const Group = ({
     () => setCheckboxData(getInitialCheckboxData(group, taskGuid, itemsByGuid)),
     [groupsData, group]
   )
-  // console.log('checkboxData', checkboxData)
   const groupName = group.name
   const ageGroup = group.ageGroup
   const ageGroupId = group.id

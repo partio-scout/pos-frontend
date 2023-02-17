@@ -94,7 +94,6 @@ export const postTaskGroupEntry = async (data, taskgroup_guid) => {
 }
 
 export const deleteTaskGroupEntry = async (data, taskgroup_guid) => {
-  console.log('taskgroupentry data', data, taskgroup_guid)
   const res = await fetch(
     `${API_URL}/groups/delete-taskgroup-entry/${taskgroup_guid}`,
     {
@@ -350,7 +349,6 @@ export const fetchUserCompletedAgeGroups = async () => {
 }
 
 export const deleteAgegroupEntry = async (data, agegroup_guid) => {
-  console.log('DATA: ', data, agegroup_guid)
   const res = await fetch(
     `${API_URL}/groups/delete-agegroup-entry/${agegroup_guid}`,
     {
