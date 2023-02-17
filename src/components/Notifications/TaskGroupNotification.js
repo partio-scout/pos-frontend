@@ -47,6 +47,8 @@ const TaskGroupNotification = ({ notification, markRead }) => {
     switch (state) {
       case 'ACCEPTED':
         return getTermInLanguage(translations, 'hyvaksynyt')
+      case 'DELETED':
+        return 'poistanut'
       default:
         return getTermInLanguage(translations, 'hyvaksynyt')
     }

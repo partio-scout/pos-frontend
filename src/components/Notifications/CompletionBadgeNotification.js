@@ -38,6 +38,8 @@ const CompletionBadgeNotification = ({ notification, markRead }) => {
     switch (state) {
       case 'COMPLETED':
         return getTermInLanguage(translations, 'antanut')
+      case 'DELETED':
+        return 'poistanut'
       default:
         return getTermInLanguage(translations, 'antanut')
     }

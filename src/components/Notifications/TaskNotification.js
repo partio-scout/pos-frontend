@@ -32,6 +32,8 @@ const TaskNotification = ({ notification, markRead }) => {
     switch (state) {
       case 'ACCEPTED':
         return getTermInLanguage(translations, 'hyvaksynyt')
+      case 'ARCHIVED':
+        return 'poistanut'
       default:
         return getTermInLanguage(translations, 'hyvaksynyt')
     }
