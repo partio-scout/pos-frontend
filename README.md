@@ -2,11 +2,17 @@
 
 # 1. Project purpose
 
-TODO
+Partiolaiset Kompassi is a progressive web app made mainly for mobile devices. Main purpose of the app is to store and show scout members's completed achievement badges. Groupleaders are also able to give new achievement badges to their groupmembers. Users that are not logged in can also view different tasks and their info.
 
 # 2. Architecture
 
 This frontend application is deployed to an Azure App Service.
+Frontend fetches it's data from [pos-backend](https://github.com/partio-scout/pos-backend) which uses 2 different databases and API called Kuksa:
+[Strapi](https://pof-backend-production.azurewebsites.net/admin/) (which stores the information of agegroups, taskgroups and tasks),
+pos-db (Postresql database. It stores the user specific information of the achievements but not any user data except for user's id.)
+and Kuksa (It stores the information of userprofile, groups and troops.)
+
+Strapi is a content management system where Partiolaiset can create new content for websites. Kompassi uses only agegroups, taskgroups and tasks from Strapi, other content is used for different Partiolaiset projects.
 
 # 3. Development environment
 
@@ -143,7 +149,7 @@ Tests are automatically run during the GitHub workflow when things are pushed to
 
 ### 4.3.2. Manual test cases
 
-TODO
+Check that signing in works. Get the test account from 1Password. Always test the new features/fixes with both groupleader account and groupmember account because the logic is different.
 
 ## 4.4. Rollback
 
@@ -172,19 +178,23 @@ Create a release in GitHub. Fill out tag version and title and then publish the 
 
 Make sure the GitHub action successfully completes and production environment is accessible and these things works:
 
-- TODO
+- Logging in and logging out
+- Creating completion badge for task, taskgroup or agegroup
+- Signed in as groupleader you can also see the groupmembers in manage-screen
+
+you can find the test account for production environment in 1Password.
 
 ### 5.3.1. Automated test cases
 
-Tests are automatically run in the Github action flow.
+Tests are automatically run in the Github action flow. At the moment there is lack of test coverage.
 
 ### 5.3.2. Manual test cases
 
-TODO
+Same than in test environment. See above.
 
 ## 5.4. Rollback
 
-Fix the release
+Release the latest working version.
 
 ## 5.5. Logs
 
@@ -199,5 +209,7 @@ TODO
 Github Actions is used for CI.
 
 # 7. More useful information
+
+After Kompassi started using Strapi as CMS for information of items, the namings changed from activity -> task and activitygroup -> taskgroup. There are still places in frontend code where old names are used. These should be changed, but before that try not to get too confused.
 
 Useful links and information: https://partio-ohjelma.fi/partio-ohjelma-sovellus/
