@@ -2,7 +2,7 @@
 
 # 1. Project purpose
 
-Partiolaiset Kompassi is a progressive web app made mainly for mobile devices. Main purpose of the app is to store and show scout members's completed achievement badges. Groupleaders are also able to give new achievement badges to their groupmembers. Users that are not logged in can also view different tasks and their info.
+Partiolaiset Kompassi is a progressive web app made mainly for mobile devices. This is the frontend repository of the application. Main purpose of the app is to store and show scout members's completed achievement badges. Groupleaders are also able to give new achievement badges to their groupmembers. Users that are not logged in can also view different tasks and their info.
 
 # 2. Architecture
 
@@ -13,6 +13,13 @@ pos-db (Postresql database. It stores the user specific information of the achie
 and Kuksa (It stores the information of userprofile, groups and troops.)
 
 Strapi is a content management system where Partiolaiset can create new content for websites. Kompassi uses only agegroups, taskgroups and tasks from Strapi, other content is used for different Partiolaiset projects.
+
+## 2.1. Technologies
+
+- create-react-app written with React
+- [styled-componets](https://styled-components.com/)
+- Redux state management
+- Node 16.
 
 # 3. Development environment
 
@@ -202,7 +209,7 @@ TODO
 
 ## 5.6. Monitoring
 
-TODO
+- [Sentry - pos-frontend](https://orangit.sentry.io/projects/pos-frontend/?project=6398088)
 
 ## 6. Continuous integration
 
