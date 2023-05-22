@@ -47,7 +47,7 @@ const TaskNotification = ({ notification, markRead }) => {
           {notification.group_leader_name}{' '}
           {getTermInLanguage(translations, 'on')}{' '}
           {getStateMessage(notification.notification_type)}{' '}
-          {getTermInLanguage(translations, 'tehtavasi')}{' '}
+          {getTermInLanguage(translations, 'aktiviteetin')}{' '}
         </span>
         <StyledLink to={getTaskUrl(task)} onClick={markRead}>
           {task.item.title}
