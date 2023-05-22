@@ -38,6 +38,8 @@ const CompletionBadgeNotification = ({ notification, markRead }) => {
     switch (state) {
       case 'COMPLETED':
         return getTermInLanguage(translations, 'antanut')
+      case 'DELETED':
+        return 'poistanut'
       default:
         return getTermInLanguage(translations, 'antanut')
     }
@@ -51,8 +53,8 @@ const CompletionBadgeNotification = ({ notification, markRead }) => {
           {notification.group_leader_name}{' '}
           {getTermInLanguage(translations, 'on')}{' '}
           {getStateMessage(notification.notification_type)}{' '}
+          {getTermInLanguage(translations, 'ikakauden')}{' '}
           {getTermInLanguage(translations, 'paatosmerkin')}{' '}
-          {getTermInLanguage(translations, 'ikaryhmalle')}{' '}
         </span>
         <StyledLink to={getTaskUrl(agegroup.item)} onClick={markRead}>
           {agegroup.item.title}

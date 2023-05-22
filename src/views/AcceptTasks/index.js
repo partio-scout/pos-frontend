@@ -13,8 +13,11 @@ import {
 } from '../../redux/actionCreators'
 import {
   acceptGroupMemberTasks,
+  deleteGroupMemberTasks,
   postTaskGroupEntry,
+  deleteTaskGroupEntry,
   postAgeGroupEntry,
+  deleteAgegroupEntry,
 } from '../../api'
 import { COMPLETION_STATUS, TASK_GROUP_STATUS } from 'consts'
 import { useDispatch } from 'react-redux'
@@ -102,6 +105,7 @@ const Content = styled.div`
 `
 const AcceptTasks = () => {
   const [memberIdList, setMemberIdList] = useState({})
+  const [deleteItemMemberIdList, setDeleteItemMemberIdList] = useState({})
   const [selectedGroup, setSelectedGroup] = React.useState()
   const history = useHistory()
   const language = determineLanguageFromUrl(window.location)
@@ -116,16 +120,20 @@ const AcceptTasks = () => {
   const item = itemsByGuid[taskGuid]
 
   useEffect(() => {
-    if (memberIdList && !Object.keys(memberIdList).length) {
-      const groups =
-        groupsData &&
-        groupsData.length &&
-        groupsData.reduce((acc, group) => {
-          acc[group.id] = []
-          return acc
-        }, {})
-      setMemberIdList(groups)
-    }
+    const groups =
+      groupsData &&
+      groupsData.length &&
+      groupsData.reduce((acc, group) => {
+        const memberIdsWithCompletedItem = group.members
+          .filter((member) => {
+            return Object.keys(member.memberAgeGroups).includes(taskGuid)
+          })
+          .map((member) => member.memberId)
+        acc[group.id] = memberIdsWithCompletedItem
+
+        return acc
+      }, {})
+    setMemberIdList(groups)
   }, [groupsData])
 
   if (!translations || !groupsData) {
@@ -139,7 +147,7 @@ const AcceptTasks = () => {
   async function handleSubmit() {
     try {
       await acceptGroupMemberTasks(memberIdList, taskGuid)
-
+      await deleteGroupMemberTasks(deleteItemMemberIdList, taskGuid)
       for (let [membergroup, memberIds] of Object.entries(memberIdList)) {
         for (let memberid of memberIds) {
           dispatch(
@@ -159,11 +167,16 @@ const AcceptTasks = () => {
 
   async function handleTaskGroupSubmit() {
     try {
-      const data = {
+      const postdata = {
         groups: memberIdList,
         group_leader_name: user.name,
       }
-      await postTaskGroupEntry(data, taskGuid)
+      await postTaskGroupEntry(postdata, taskGuid)
+      const deleteData = {
+        itemsToBeDeleted: deleteItemMemberIdList,
+        group_leader_name: user.name,
+      }
+      await deleteTaskGroupEntry(deleteData, taskGuid)
       for (let [membergroup, memberIds] of Object.entries(memberIdList)) {
         for (let memberid of memberIds) {
           dispatch(
@@ -183,11 +196,16 @@ const AcceptTasks = () => {
 
   async function handleAgeGroupSubmit() {
     try {
-      const data = {
+      const postdata = {
         groups: memberIdList,
         group_leader_name: user.name,
       }
-      await postAgeGroupEntry(data, taskGuid)
+      await postAgeGroupEntry(postdata, taskGuid)
+      const deleteData = {
+        itemsToBeDeleted: deleteItemMemberIdList,
+        group_leader_name: user.name,
+      }
+      await deleteAgegroupEntry(deleteData, taskGuid)
       for (let [membergroup, memberIds] of Object.entries(memberIdList)) {
         for (let memberid of memberIds) {
           dispatch(
@@ -220,6 +238,12 @@ const AcceptTasks = () => {
     setMemberIdList(updated)
   }
 
+  const deleteIdList = (memberIds, groupId) => {
+    const removed = Object.assign({}, deleteItemMemberIdList, {
+      [groupId]: memberIds,
+    })
+    setDeleteItemMemberIdList(removed)
+  }
   return (
     <StyledAcceptTasks>
       <Header>
@@ -238,7 +262,8 @@ const AcceptTasks = () => {
               key={group.id}
               group={group}
               isLast={i === groupsData.length - 1}
-              setMemberIdList={updateIdList}
+              setPostMemberIdList={updateIdList}
+              setDeleteMemberIdList={deleteIdList}
               setSelectedGroup={setSelectedGroup}
               selectedGroup={selectedGroup}
             />

@@ -47,6 +47,8 @@ const TaskGroupNotification = ({ notification, markRead }) => {
     switch (state) {
       case 'ACCEPTED':
         return getTermInLanguage(translations, 'hyvaksynyt')
+      case 'DELETED':
+        return 'poistanut'
       default:
         return getTermInLanguage(translations, 'hyvaksynyt')
     }
@@ -60,11 +62,12 @@ const TaskGroupNotification = ({ notification, markRead }) => {
           {notification.group_leader_name}{' '}
           {getTermInLanguage(translations, 'on')}{' '}
           {getStateMessage(notification.notification_type)}{' '}
-          {getTermInLanguage(translations, 'tehtavakokonaisuuden-suoritetuksi')}{' '}
+          {getTermInLanguage(translations, 'aktiviteettikokonaisuuden')}{' '}
         </span>
         <StyledLink to={getTaskUrl(taskGroupItem)} onClick={markRead}>
-          {taskGroupItem.title}
+          {taskGroupItem.title}{' '}
         </StyledLink>
+        <span>{getTermInLanguage(translations, 'suoritetuksi')}</span>
       </Message>
       <Timestamp>{timestamp}</Timestamp>
     </Container>

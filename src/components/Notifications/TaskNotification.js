@@ -32,6 +32,8 @@ const TaskNotification = ({ notification, markRead }) => {
     switch (state) {
       case 'ACCEPTED':
         return getTermInLanguage(translations, 'hyvaksynyt')
+      case 'ARCHIVED':
+        return 'poistanut'
       default:
         return getTermInLanguage(translations, 'hyvaksynyt')
     }
@@ -45,7 +47,7 @@ const TaskNotification = ({ notification, markRead }) => {
           {notification.group_leader_name}{' '}
           {getTermInLanguage(translations, 'on')}{' '}
           {getStateMessage(notification.notification_type)}{' '}
-          {getTermInLanguage(translations, 'tehtavasi')}{' '}
+          {getTermInLanguage(translations, 'aktiviteetin')}{' '}
         </span>
         <StyledLink to={getTaskUrl(task)} onClick={markRead}>
           {task.item.title}

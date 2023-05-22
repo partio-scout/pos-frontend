@@ -93,6 +93,21 @@ export const postTaskGroupEntry = async (data, taskgroup_guid) => {
   return res.json()
 }
 
+export const deleteTaskGroupEntry = async (data, taskgroup_guid) => {
+  const res = await fetch(
+    `${API_URL}/groups/delete-taskgroup-entry/${taskgroup_guid}`,
+    {
+      method: 'DELETE',
+      body: JSON.stringify(data),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+    }
+  )
+  return res.json()
+}
+
 export const postMemberTaskEntry = async (entry) => {
   const res = await fetch(`${API_URL}/member-entry`, {
     method: 'POST',
@@ -120,6 +135,18 @@ export const removeMemberTaskEntry = async (entry) => {
 export const acceptGroupMemberTasks = async (memberGroups, taskId) => {
   const res = await fetch(`${API_URL}/groups/mark-task-done/${taskId}`, {
     method: 'POST',
+    body: JSON.stringify(memberGroups),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    credentials: 'include',
+  })
+  return res.json()
+}
+
+export const deleteGroupMemberTasks = async (memberGroups, taskId) => {
+  const res = await fetch(`${API_URL}/groups/archive-task-entry/${taskId}`, {
+    method: 'DELETE',
     body: JSON.stringify(memberGroups),
     headers: {
       'Content-Type': 'application/json',
@@ -319,6 +346,21 @@ export const fetchUserCompletedAgeGroups = async () => {
     console.log('Error fetching users agegroups')
     return []
   }
+}
+
+export const deleteAgegroupEntry = async (data, agegroup_guid) => {
+  const res = await fetch(
+    `${API_URL}/groups/delete-agegroup-entry/${agegroup_guid}`,
+    {
+      method: 'DELETE',
+      body: JSON.stringify(data),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+    }
+  )
+  return await res.json()
 }
 
 export {
