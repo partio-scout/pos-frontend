@@ -4,6 +4,9 @@ import {
   SET_GROUP_MEMBER_TASK,
   SET_GROUP_MEMBER_TASKGROUP,
   SET_GROUP_MEMBER_AGEGROUP,
+  DELETE_GROUP_MEMBER_TASK,
+  DELETE_GROUP_MEMBER_TASKGROUP,
+  DELETE_GROUP_MEMBER_AGEGROUP,
 } from 'redux/actionTypes'
 
 export const setUser = (user) => {
@@ -37,6 +40,26 @@ export const updateGroupMemberTaskGroup = (memberTaskGroup) => {
 export const updateGroupMemberAgeGroup = (memberAgeGroup) => {
   return {
     type: SET_GROUP_MEMBER_AGEGROUP,
+    payload: memberAgeGroup,
+  }
+}
+export const deleteGroupMemberTask = (memberTask) => {
+  return {
+    type: DELETE_GROUP_MEMBER_TASK,
+    payload: memberTask,
+  }
+}
+
+export const deleteGroupMemberTaskGroup = (memberTaskGroup) => {
+  return {
+    type: DELETE_GROUP_MEMBER_TASKGROUP,
+    payload: memberTaskGroup,
+  }
+}
+
+export const deleteGroupMemberAgeGroup = (memberAgeGroup) => {
+  return {
+    type: DELETE_GROUP_MEMBER_AGEGROUP,
     payload: memberAgeGroup,
   }
 }

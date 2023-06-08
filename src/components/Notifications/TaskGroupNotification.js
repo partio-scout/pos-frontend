@@ -48,7 +48,7 @@ const TaskGroupNotification = ({ notification, markRead }) => {
       case 'ACCEPTED':
         return getTermInLanguage(translations, 'hyvaksynyt')
       case 'DELETED':
-        return 'poistanut'
+        return getTermInLanguage(translations, 'poistanut')
       default:
         return getTermInLanguage(translations, 'hyvaksynyt')
     }
@@ -67,7 +67,6 @@ const TaskGroupNotification = ({ notification, markRead }) => {
         <StyledLink to={getTaskUrl(taskGroupItem)} onClick={markRead}>
           {taskGroupItem.title}{' '}
         </StyledLink>
-        <span>{getTermInLanguage(translations, 'suoritetuksi')}</span>
       </Message>
       <Timestamp>{timestamp}</Timestamp>
     </Container>
