@@ -1,7 +1,14 @@
 import React, { useEffect, useState } from 'react'
-import styled, { keyframes } from 'styled-components'
+import {
+  AcceptTasksAction,
+  ActivityItem,
+  CloseIcon,
+  Content,
+  Header,
+  Subheading,
+  StyledAcceptTasks,
+} from './styles'
 import { useHistory } from 'react-router-dom'
-import { X } from 'react-feather'
 import { useSelector } from 'react-redux'
 import { determineLanguageFromUrl, getTermInLanguage } from 'helpers'
 import Group from './group'
@@ -10,6 +17,9 @@ import {
   updateGroupMemberTask,
   updateGroupMemberTaskGroup,
   updateGroupMemberAgeGroup,
+  deleteGroupMemberTask,
+  deleteGroupMemberTaskGroup,
+  deleteGroupMemberAgeGroup,
 } from '../../redux/actionCreators'
 import {
   acceptGroupMemberTasks,
@@ -19,94 +29,15 @@ import {
   postAgeGroupEntry,
   deleteAgegroupEntry,
 } from '../../api'
-import { COMPLETION_STATUS, TASK_GROUP_STATUS } from 'consts'
+import { TASK_GROUP_STATUS, COMPLETION_STATUS } from 'consts'
 import { useDispatch } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import CenteredSpinner from '../../components/LoadingSpinner'
 import LoadingSpinner from '../../components/LoadingSpinner'
 
-const AcceptTasksAction = styled.div`
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  box-sizing: border-box;
-  width: 100%;
-  padding: 3rem;
-  color: ${({ theme }) => theme.color.text};
-  background-color: ${({ theme }) => theme.color.background};
-  z-index: 1;
-  animation: ${keyframes`
-    0% {
-      opacity: 0;
-    }
-    100% {
-      opacity: 1;
-    }
-  `} 200ms linear;
-`
-
-const ActivityItem = styled.div`
-  display: flex;
-  align-items: center;
-  padding: 3px 0 3px;
-  border: 2px solid #545454;
-  border-radius: 3%;
-
-  > span {
-    padding: 1rem;
-  }
-
-  :last-child {
-    justify-content: center;
-
-    > span {
-      padding-top: 2rem;
-    }
-  }
-
-  &:active {
-    border: 2px solid #fff;
-  }
-`
-
-const StyledAcceptTasks = styled.div`
-  height: 100%;
-  background-color: ${({ theme }) => theme.color.background};
-  pointer-events: all;
-  overflow: auto;
-`
-
-const Header = styled.div`
-  box-sizing: border-box;
-  width: 100%;
-  padding: 1rem;
-  padding-top: 1.5rem;
-  text-align: center;
-  background-color: #1a1a1a;
-`
-
-const Subheading = styled.h3`
-  margin: 0;
-  font-size: 18px;
-  font-weight: normal;
-`
-
-const CloseIcon = styled(X)`
-  position: absolute;
-  top: 1.45rem;
-  right: 1rem;
-`
-
-const Content = styled.div`
-  padding: 1rem;
-  > ${Subheading} {
-    margin-bottom: 1rem;
-  }
-`
 const AcceptTasks = () => {
   const [memberIdList, setMemberIdList] = useState({})
   const [deleteItemMemberIdList, setDeleteItemMemberIdList] = useState({})
-  const [selectedGroup, setSelectedGroup] = React.useState()
   const history = useHistory()
   const language = determineLanguageFromUrl(window.location)
   const groupsData = useSelector((state) => state.user.userGroups)
@@ -144,10 +75,9 @@ const AcceptTasks = () => {
     )
   }
 
-  async function handleSubmit() {
+  const handleAcceptGroupMemberTasks = async (memberIdList, taskGuid) => {
     try {
       await acceptGroupMemberTasks(memberIdList, taskGuid)
-      await deleteGroupMemberTasks(deleteItemMemberIdList, taskGuid)
       for (let [membergroup, memberIds] of Object.entries(memberIdList)) {
         for (let memberid of memberIds) {
           dispatch(
@@ -160,8 +90,85 @@ const AcceptTasks = () => {
           )
         }
       }
+    } catch (error) {
+      console.log('handleAcceptGroupMemberTasks error ', error)
+    }
+  }
+
+  async function handleDeleteGroupMemberTasks(memberIdList, taskGuid) {
+    try {
+      await deleteGroupMemberTasks(memberIdList, taskGuid)
+      for (let [membergroup, memberIds] of Object.entries(memberIdList)) {
+        for (let memberid of memberIds) {
+          dispatch(
+            deleteGroupMemberTask({
+              task_guid: taskGuid,
+              user_guid: Number(memberid),
+              completion_status: COMPLETION_STATUS.COMPLETED,
+              groupGuid: Number(membergroup),
+            })
+          )
+        }
+      }
+    } catch (error) {
+      console.log('handleDeleteGroupMemberTasks error ', error)
+    }
+  }
+
+  async function handleSubmit() {
+    try {
+      await handleAcceptGroupMemberTasks(memberIdList, taskGuid)
+      await handleDeleteGroupMemberTasks(deleteItemMemberIdList, taskGuid)
     } catch (e) {
       console.log(e)
+    }
+  }
+
+  const handleAcceptGroupMemberTaskGroups = async (
+    postdata,
+    taskGuid,
+    memberIdList
+  ) => {
+    try {
+      await postTaskGroupEntry(postdata, taskGuid)
+      for (let [membergroup, memberIds] of Object.entries(memberIdList)) {
+        for (let memberid of memberIds) {
+          dispatch(
+            updateGroupMemberTaskGroup({
+              task_guid: taskGuid,
+              user_guid: Number(memberid),
+              completion_status: COMPLETION_STATUS.COMPLETED,
+              groupGuid: Number(membergroup),
+            })
+          )
+        }
+      }
+    } catch (error) {
+      console.log('handleAcceptGroupMemberTaskGroups error ', error)
+    }
+  }
+
+  const handleDeleteGroupMemberTaskGroups = async (
+    deleteData,
+    taskGuid,
+    memberIdList
+  ) => {
+    try {
+      deleteTaskGroupEntry(deleteData, taskGuid)
+      for (let [membergroup, memberIds] of Object.entries(memberIdList)) {
+        for (let memberid of memberIds) {
+          dispatch(
+            deleteGroupMemberTaskGroup({
+              task_guid: taskGuid,
+              user_guid: Number(memberid),
+              completion_status: TASK_GROUP_STATUS.COMPLETED,
+              groupGuid: Number(membergroup),
+            })
+          )
+        }
+      }
+    } catch (error) {
+      console.log('handleDeleteGroupMemberTaskGroups error ', error)
     }
   }
 
@@ -171,26 +178,66 @@ const AcceptTasks = () => {
         groups: memberIdList,
         group_leader_name: user.name,
       }
-      await postTaskGroupEntry(postdata, taskGuid)
+      await handleAcceptGroupMemberTaskGroups(postdata, taskGuid, memberIdList)
       const deleteData = {
         itemsToBeDeleted: deleteItemMemberIdList,
         group_leader_name: user.name,
       }
-      await deleteTaskGroupEntry(deleteData, taskGuid)
+      await handleDeleteGroupMemberTaskGroups(
+        deleteData,
+        taskGuid,
+        deleteItemMemberIdList
+      )
+    } catch (e) {
+      console.log('handleTaskGroupSubmit error: ', e)
+    }
+  }
+
+  const handleAcceptGroupMemberAgeGroups = async (
+    postdata,
+    taskGuid,
+    memberIdList
+  ) => {
+    try {
+      await postAgeGroupEntry(postdata, taskGuid)
       for (let [membergroup, memberIds] of Object.entries(memberIdList)) {
         for (let memberid of memberIds) {
           dispatch(
-            updateGroupMemberTaskGroup({
-              taskgroup_guid: taskGuid,
+            updateGroupMemberAgeGroup({
+              task_guid: taskGuid,
               user_guid: Number(memberid),
-              completed: TASK_GROUP_STATUS.COMPLETED,
+              completion_status: COMPLETION_STATUS.COMPLETED,
               groupGuid: Number(membergroup),
             })
           )
         }
       }
-    } catch (e) {
-      console.log(e)
+    } catch (error) {
+      console.log('handleAcceptGroupMemberAgeGroups error ', error)
+    }
+  }
+
+  const handleDeleteGroupMemberAgeGroups = async (
+    deleteData,
+    taskGuid,
+    memberIdList
+  ) => {
+    try {
+      deleteAgegroupEntry(deleteData, taskGuid)
+      for (let [membergroup, memberIds] of Object.entries(memberIdList)) {
+        for (let memberid of memberIds) {
+          dispatch(
+            deleteGroupMemberAgeGroup({
+              task_guid: taskGuid,
+              user_guid: Number(memberid),
+              completion_status: TASK_GROUP_STATUS.COMPLETED,
+              groupGuid: Number(membergroup),
+            })
+          )
+        }
+      }
+    } catch (error) {
+      console.log('handleDeleteGroupMemberAgeGroups error ', error)
     }
   }
 
@@ -200,26 +247,18 @@ const AcceptTasks = () => {
         groups: memberIdList,
         group_leader_name: user.name,
       }
-      await postAgeGroupEntry(postdata, taskGuid)
+      await handleAcceptGroupMemberAgeGroups(postdata, taskGuid, memberIdList)
       const deleteData = {
         itemsToBeDeleted: deleteItemMemberIdList,
         group_leader_name: user.name,
       }
-      await deleteAgegroupEntry(deleteData, taskGuid)
-      for (let [membergroup, memberIds] of Object.entries(memberIdList)) {
-        for (let memberid of memberIds) {
-          dispatch(
-            updateGroupMemberAgeGroup({
-              agegroup_guid: taskGuid,
-              user_guid: Number(memberid),
-              completion_status: TASK_GROUP_STATUS.COMPLETED,
-              groupGuid: Number(membergroup),
-            })
-          )
-        }
-      }
+      await handleDeleteGroupMemberAgeGroups(
+        deleteData,
+        taskGuid,
+        deleteItemMemberIdList
+      )
     } catch (e) {
-      console.log(e)
+      console.log('handleAgeGroupSubmit error: ', e)
     }
   }
 
@@ -244,11 +283,12 @@ const AcceptTasks = () => {
     })
     setDeleteItemMemberIdList(removed)
   }
+
   return (
     <StyledAcceptTasks>
       <Header>
         <Subheading>
-          {getTermInLanguage(translations, 'lisaa-ryhmalaisille')}
+          {getTermInLanguage(translations, 'hallitse-merkintoja')}
         </Subheading>
         <CloseIcon onClick={() => history.push(`/?lang=${language}`)} />
       </Header>
@@ -264,8 +304,6 @@ const AcceptTasks = () => {
               isLast={i === groupsData.length - 1}
               setPostMemberIdList={updateIdList}
               setDeleteMemberIdList={deleteIdList}
-              setSelectedGroup={setSelectedGroup}
-              selectedGroup={selectedGroup}
             />
           )
         })}
@@ -277,7 +315,7 @@ const AcceptTasks = () => {
           <AcceptTasksAction onClick={onSubmitClick}>
             <ActivityItem>
               <StyledAcceptIcon />
-              {getTermInLanguage(translations, 'lisaa-valituille')}
+              {getTermInLanguage(translations, 'tallenna-muutokset')}
             </ActivityItem>
           </AcceptTasksAction>
         )}
