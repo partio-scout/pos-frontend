@@ -90,7 +90,7 @@ const TaskGroupActions = ({ onCancel, guid }) => {
             <span>
               {getTermInLanguage(
                 translations,
-                'merkitse-aktiviteettikokonaisuus-ryhmalaisille'
+                'hallitse-ryhman-aktiviteettikokonaisuutta'
               )}{' '}
             </span>
           </ActivityItem>
