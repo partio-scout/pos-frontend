@@ -97,7 +97,7 @@ const Group = ({
   const translations = useSelector((state) => state.translations)
   const itemsByGuid = useSelector((state) => state.itemsByGuid)
   const activityGroupById = useSelector((state) => state.activityGroups)
-  const [checkboxData, setCheckboxData] = React.useState(
+  const [checkboxData, setCheckboxData] = useState(
     getInitialCheckboxData(group, taskGuid, itemsByGuid)
   )
   useEffect(
