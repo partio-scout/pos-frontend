@@ -9,17 +9,6 @@ import {
   DELETE_GROUP_MEMBER_AGEGROUP,
 } from 'redux/actionTypes'
 
-const getItemGuid = (itemtype, data) => {
-  switch (itemtype) {
-    case 'tasks':
-      return data.task_guid
-    case 'taskGroups':
-      return data.taskgroup_guid
-    case 'ageGroups':
-      return data.agegroup_guid
-  }
-}
-
 const setItems = (user, data, itemtype, items) => {
   const groupIndex = user.userGroups.findIndex((group) => {
     return group.id === data.groupGuid
@@ -27,7 +16,6 @@ const setItems = (user, data, itemtype, items) => {
   const memberIndex = user.userGroups[groupIndex].members.findIndex(
     (member) => member.memberId === data.user_guid
   )
-
   if (itemtype === 'tasks') {
     items = Object.assign(
       {},
@@ -44,7 +32,8 @@ const setItems = (user, data, itemtype, items) => {
       user.userGroups[groupIndex].members[memberIndex].memberAgeGroups
     )
   }
-  items[getItemGuid(itemtype, data)] = data.completion_status || data.completed
+
+  items[data.task_guid] = data.completion_status || data.completed
 
   const userGroups = user.userGroups.slice(0)
   const groupMembers = user.userGroups[groupIndex].members.slice(0)
