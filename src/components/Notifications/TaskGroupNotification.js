@@ -67,6 +67,9 @@ const TaskGroupNotification = ({ notification, markRead }) => {
         <StyledLink to={getTaskUrl(taskGroupItem)} onClick={markRead}>
           {taskGroupItem.title}{' '}
         </StyledLink>
+        {notification.notification_type === 'DELETED' && (
+          <span> {getTermInLanguage(translations, 'tehdyista')}</span>
+        )}
       </Message>
       <Timestamp>{timestamp}</Timestamp>
     </Container>

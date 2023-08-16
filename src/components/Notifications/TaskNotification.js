@@ -52,6 +52,9 @@ const TaskNotification = ({ notification, markRead }) => {
         <StyledLink to={getTaskUrl(task)} onClick={markRead}>
           {task.item.title}
         </StyledLink>
+        {notification.notification_type === 'ARCHIVED' && (
+          <span> {getTermInLanguage(translations, 'tehdyista')}</span>
+        )}
       </Message>
       <Timestamp>{timestamp}</Timestamp>
     </Container>

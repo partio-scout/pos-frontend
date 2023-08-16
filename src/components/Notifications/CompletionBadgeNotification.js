@@ -54,7 +54,8 @@ const CompletionBadgeNotification = ({ notification, markRead }) => {
           {getTermInLanguage(translations, 'on')}{' '}
           {getStateMessage(notification.notification_type)}{' '}
           {getTermInLanguage(translations, 'ikakauden')}{' '}
-          {getTermInLanguage(translations, 'paatosmerkin')}{' '}
+          {getTermInLanguage(translations, 'paatosmerkin')}
+          {': '}
         </span>
         <StyledLink to={getTaskUrl(agegroup.item)} onClick={markRead}>
           {agegroup.item.title}
