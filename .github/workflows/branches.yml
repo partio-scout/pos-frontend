@@ -4,7 +4,7 @@ on:
       - master
 
 env:
-  NODE_VERSION: '16.x' # set this to the node version to use
+  NODE_VERSION: '18.x' # set this to the node version to use
 
 jobs:
   build-and-deploy:
