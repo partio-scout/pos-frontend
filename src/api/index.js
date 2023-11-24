@@ -2,7 +2,9 @@
 import { PARTIO_API_URL } from './variables'
 
 export const fetchAgeGroups = async (language) => {
-  const res = await fetch(`${PARTIO_API_URL}/age-groups?locale=${language}`)
+  const res = await fetch(
+    `${PARTIO_API_URL}/age-groups?populate=*&locale=${language}`
+  )
   const ageGroups = await res.json()
   return ageGroups.data
 }
