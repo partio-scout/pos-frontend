@@ -2,45 +2,64 @@
 import { PARTIO_API_URL } from './variables'
 
 export const fetchAgeGroups = async (language) => {
-  const res = await fetch(`${PARTIO_API_URL}/age-groups?_locale=${language}`)
-  const ageGroups = await res.json()
+  const res = await fetch(
+    `${PARTIO_API_URL}/api/age-groups?locale=${language}&populate[activity_groups]=*&populate[logo]=*`
+  )
+  const result = await res.json()
+
+  const ageGroups = result.data
+
   return ageGroups
 }
 
 export const fetchSingleAgeGroup = async (id) => {
-  const res = await fetch(`${PARTIO_API_URL}/age-groups/${id}`)
-  const ageGroup = await res.json()
+  const res = await fetch(`${PARTIO_API_URL}/api/age-groups/${id}`)
+  const result = await res.json()
+
+  const ageGroup = result.data
+
   return ageGroup
 }
 
 export const fetchActivityGroups = async (language) => {
   const locale = language === undefined ? 'fi' : language
-  const countRes = await fetch(
-    `${PARTIO_API_URL}/activity-groups/count?_locale=${locale}`
-  )
-  const count = await countRes.json()
-  const res = await fetch(
-    `${PARTIO_API_URL}/activity-groups?_limit=${count}&_locale=${locale}`
-  )
-  const activityGroups = await res.json()
+
+  let activityGroups = []
+  let currentPage = 1
+  let pageCount = 1
+
+  while (currentPage <= pageCount) {
+    const res = await fetch(
+      `${PARTIO_API_URL}/api/activity-groups?locale=${locale}&pagination[page]=${currentPage}&populate[activities]=*`
+    )
+    const data = await res.json()
+    activityGroups = activityGroups.concat(data.data)
+    pageCount = data.meta.pagination.pageCount
+    currentPage++
+  }
+
   return activityGroups
 }
 
 export const fetchSingleActivityGroup = async (id) => {
-  const res = await fetch(`${PARTIO_API_URL}/activity-groups/${id}`)
+  const res = await fetch(
+    `${PARTIO_API_URL}/api/activity-groups/${id}?populate[activities][populate][suggestions][populate]=*`
+  )
   const activityGroup = await res.json()
   return activityGroup
 }
 
 export const fetchActivities = async () => {
-  const res = await fetch(`${PARTIO_API_URL}/activities`)
+  const res = await fetch(
+    `${PARTIO_API_URL}/api/activities?populate[suggestions]=%2`
+  )
   const activities = await res.json()
   return activities
 }
 
 export const fetchActivity = async (wp_guid, language) => {
   const res = await fetch(
-    `${PARTIO_API_URL}/activities?wp_guid=${wp_guid}&_locale=${language}`
+    `${PARTIO_API_URL}/api/activities?wp_guid=${wp_guid}&locale=${language}&populate[suggestions]=*`
   )
   const activity = await res.json()
   return activity
@@ -54,8 +73,12 @@ export const fetchTaskDetails = async (guid, lang) => {
 }
 
 export const fetchTranslations = async (lang) => {
-  const res = await fetch(`${PARTIO_API_URL}/settings/translations/${lang}`)
-  return await res.json()
+  const res = await fetch(`${PARTIO_API_URL}/api/setting?locale=${lang}`)
+
+  const data = await res.json()
+  const translations = data?.data?.translations || {}
+
+  return translations
 }
 
 // POS BACKEND

@@ -93,9 +93,10 @@ const TaskGroup = () => {
     >
       <TaskList>
         {activityGroup.ingress && <p>{striptags(activityGroup.ingress)}</p>}
-        {activityGroup.content && activityGroup.content.length < 700 && (
-          <p>{striptags(activityGroup.content)}</p>
-        )}
+        {activityGroup.content?.data &&
+          activityGroup.content?.data.length < 700 && (
+            <p>{striptags(activityGroup.content?.data)}</p>
+          )}
         {activityGroup.activities.length > 0 ? (
           <>
             <h4>

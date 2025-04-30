@@ -63,6 +63,7 @@ const Task = () => {
   const { id } = useParams()
   const history = useHistory()
   const task = useSelector((state) => state.itemsByGuid[id])
+
   const user = useSelector((state) => state.user)
   const translations = useSelector((state) => state.translations)
 
@@ -76,7 +77,7 @@ const Task = () => {
   const renderDetails = () => {
     return (
       <DetailsContainer>
-        {task.item.content && <p>{striptags(task.item.content)}</p>}
+        {task.item.content.data && <p>{striptags(task.item.content.data)}</p>}
         {task.item.ingress && (
           <>
             <SubHeading>
@@ -93,7 +94,7 @@ const Task = () => {
             {task.item.suggestions.map((suggestion) => (
               <div key={suggestion.id}>
                 <p>{striptags(suggestion.title)}</p>
-                <p>{striptags(suggestion.content)}</p>
+                <p>{striptags(suggestion.content.data)}</p>
               </div>
             ))}
           </>
