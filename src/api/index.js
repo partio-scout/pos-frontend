@@ -13,7 +13,9 @@ export const fetchAgeGroups = async (language) => {
 }
 
 export const fetchSingleAgeGroup = async (id) => {
-  const res = await fetch(`${PARTIO_API_URL}/api/age-groups/${id}`)
+  const res = await fetch(
+    `${PARTIO_API_URL}/api/age-groups/${id}?populate[activity_groups]=*&populate[logo]=*`
+  )
   const result = await res.json()
 
   const ageGroup = result.data
@@ -30,7 +32,7 @@ export const fetchActivityGroups = async (language) => {
 
   while (currentPage <= pageCount) {
     const res = await fetch(
-      `${PARTIO_API_URL}/api/activity-groups?locale=${locale}&pagination[page]=${currentPage}&populate[activities]=*`
+      `${PARTIO_API_URL}/api/activity-groups?locale=${locale}&pagination[page]=${currentPage}&populate[activities]=*&populate[age_group]=*&populate[activity_group_category]=*&populate[logo]=*`
     )
     const data = await res.json()
     activityGroups = activityGroups.concat(data.data)
@@ -43,7 +45,7 @@ export const fetchActivityGroups = async (language) => {
 
 export const fetchSingleActivityGroup = async (id) => {
   const res = await fetch(
-    `${PARTIO_API_URL}/api/activity-groups/${id}?populate[activities][populate][suggestions][populate]=*`
+    `${PARTIO_API_URL}/api/activity-groups/${id}?populate[activities][populate][suggestions][populate]=*&populate[age_group]&populate[activity_group_category]=*&populate[logo]=*`
   )
   const activityGroup = await res.json()
   return activityGroup
@@ -51,7 +53,7 @@ export const fetchSingleActivityGroup = async (id) => {
 
 export const fetchActivities = async () => {
   const res = await fetch(
-    `${PARTIO_API_URL}/api/activities?populate[suggestions]=%2`
+    `${PARTIO_API_URL}/api/activities?populate[suggestions]=%2&populate[logo]=*`
   )
   const activities = await res.json()
   return activities
@@ -59,7 +61,7 @@ export const fetchActivities = async () => {
 
 export const fetchActivity = async (wp_guid, language) => {
   const res = await fetch(
-    `${PARTIO_API_URL}/api/activities?wp_guid=${wp_guid}&locale=${language}&populate[suggestions]=*`
+    `${PARTIO_API_URL}/api/activities?wp_guid=${wp_guid}&locale=${language}&populate[suggestions]=*&populate[logo]=*`
   )
   const activity = await res.json()
   return activity
