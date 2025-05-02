@@ -13,9 +13,7 @@ export const fetchAgeGroups = async (language) => {
 }
 
 export const fetchSingleAgeGroup = async (id) => {
-  const res = await fetch(
-    `${PARTIO_API_URL}/api/age-groups/${id}?populate[activity_groups]=*&populate[logo]=*`
-  )
+  const res = await fetch(`${PARTIO_API_URL}/api/age-groups/${id}?populate=*`)
   const result = await res.json()
 
   const ageGroup = result.data
@@ -32,7 +30,7 @@ export const fetchActivityGroups = async (language) => {
 
   while (currentPage <= pageCount) {
     const res = await fetch(
-      `${PARTIO_API_URL}/api/activity-groups?locale=${locale}&pagination[page]=${currentPage}&populate[activities]=*&populate[age_group]=*&populate[activity_group_category]=*&populate[logo]=*`
+      `${PARTIO_API_URL}/api/activity-groups?locale=${locale}&pagination[page]=${currentPage}&populate=*`
     )
     const data = await res.json()
     activityGroups = activityGroups.concat(data.data)
@@ -45,23 +43,21 @@ export const fetchActivityGroups = async (language) => {
 
 export const fetchSingleActivityGroup = async (id) => {
   const res = await fetch(
-    `${PARTIO_API_URL}/api/activity-groups/${id}?populate[activities][populate][suggestions][populate]=*&populate[age_group]&populate[activity_group_category]=*&populate[logo]=*`
+    `${PARTIO_API_URL}/api/activity-groups/${id}?populate=*`
   )
   const activityGroup = await res.json()
   return activityGroup
 }
 
 export const fetchActivities = async () => {
-  const res = await fetch(
-    `${PARTIO_API_URL}/api/activities?populate[suggestions]=%2&populate[logo]=*`
-  )
+  const res = await fetch(`${PARTIO_API_URL}/api/activities?populate=*`)
   const activities = await res.json()
   return activities
 }
 
 export const fetchActivity = async (wp_guid, language) => {
   const res = await fetch(
-    `${PARTIO_API_URL}/api/activities?wp_guid=${wp_guid}&locale=${language}&populate[suggestions]=*&populate[logo]=*`
+    `${PARTIO_API_URL}/api/activities?wp_guid=${wp_guid}&locale=${language}&populate=*`
   )
   const activity = await res.json()
   return activity
