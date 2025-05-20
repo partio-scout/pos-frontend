@@ -197,7 +197,7 @@ const Profile = () => {
     taskGroupsMarkedCompleted.filter(
       (taskgroup) =>
         taskgroup !== undefined &&
-        completionBadgeAgegroupIds.includes(taskgroup.item.age_group.wp_guid)
+        completionBadgeAgegroupIds.includes(taskgroup.item.age_group.id)
     )
 
   const filteredTaskGroupsMarkedCompleted = filterUndefined.filter(
@@ -309,7 +309,8 @@ const Profile = () => {
               favourites
                 .filter((x) => x !== undefined && x.item.locale == language)
                 .map((favourite) => {
-                  const parent = activityGroups[favourite.item.activity_group]
+                  const parent =
+                    activityGroups[favourite.item.activity_group.id]
                   return (
                     parent && (
                       <ListItem

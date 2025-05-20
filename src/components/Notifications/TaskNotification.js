@@ -25,7 +25,12 @@ const StyledLink = styled(Link)`
 const TaskNotification = ({ notification, markRead }) => {
   const translations = useSelector((state) => state.translations)
   const itemsByGuid = useSelector((state) => state.itemsByGuid)
+
   const task = itemsByGuid[notification.item_guid]
+
+  if (!task) {
+    return null
+  }
   const timestamp = getTimestamp(notification.created_at)
 
   const getStateMessage = (state) => {

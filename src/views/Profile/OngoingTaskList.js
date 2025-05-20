@@ -19,13 +19,15 @@ const OngoingTaskList = ({
     <TaskList>
       {list.map((taskGuid) => {
         const task = itemsByGuid[taskGuid]
-
         if (!task) return null
 
         if (task.item.locale !== language) return null
-        const parent = activityGroups[task.item.activity_group.toString()]
-        const finder = (favourite) => taskGuid === favourite.guid
+
+        const parent = activityGroups[task.item.activity_group.id.toString()]
+
+        const finder = (favourite) => taskGuid === favourite.id
         const isFavourite = !!favourites.find(finder)
+
         return (
           parent && (
             <ListItem
@@ -34,7 +36,7 @@ const OngoingTaskList = ({
               ageGroupGuid={
                 task.ageGroupGuid
                   ? task.ageGroupGuid
-                  : task.item.age_group.toString()
+                  : task.item.age_group.id.toString()
               }
               title={task.item.title}
               subTitle={parent.title}

@@ -23,7 +23,7 @@ export const getItemType = (item) => {
 }
 
 export const getItemId = (item) => {
-  return item.wp_guid || item.id.toString()
+  return item?.wp_guid || item?.id.toString()
 }
 
 export const getActivityGroupItemId = (taskGroup) => {
@@ -188,9 +188,7 @@ export const filterActivityGroupsWithCompletedAgegroup = (
   itemsByGuid
 ) => {
   return Object.keys(obj)
-    .filter(
-      (key) => !listCompared.includes(itemsByGuid[key].item.age_group.wp_guid)
-    )
+    .filter((key) => !listCompared.includes(itemsByGuid[key].item.age_group))
     .reduce((acc, curr) => {
       acc[curr] = obj[curr]
       return acc

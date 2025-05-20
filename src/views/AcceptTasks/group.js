@@ -63,6 +63,11 @@ const isCompleted = (memberTasks, taskGuid) => {
 
 const getInitialCheckboxData = (group, taskGuid, itemsByGuid) => {
   const item = itemsByGuid[taskGuid]
+
+  if (!item) {
+    return []
+  }
+
   return group.members.map((member) => {
     const selected = (item) => {
       switch (item.type) {
@@ -121,7 +126,7 @@ const Group = ({
       case 'AGE_GROUP':
         return item
       default:
-        return activityGroupById[item.item.activity_group].activities
+        return activityGroupById[item.item.activity_group.id].activities
     }
   }
 

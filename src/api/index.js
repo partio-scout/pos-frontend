@@ -3,7 +3,7 @@ import { PARTIO_API_URL } from './variables'
 
 export const fetchAgeGroups = async (language) => {
   const res = await fetch(
-    `${PARTIO_API_URL}/api/age-groups?locale=${language}&populate[activity_groups]=*&populate[logo]=*`
+    `${PARTIO_API_URL}/api/age-groups?locale=${language}&populate[activity_groups]=*&populate[age_groups]=*&populate[logo]=*`
   )
   const result = await res.json()
 
@@ -30,7 +30,7 @@ export const fetchActivityGroups = async (language) => {
 
   while (currentPage <= pageCount) {
     const res = await fetch(
-      `${PARTIO_API_URL}/api/activity-groups?locale=${locale}&pagination[page]=${currentPage}&populate=*`
+      `${PARTIO_API_URL}/api/activity-groups?locale=${locale}&pagination[page]=${currentPage}&pagination[pageSize]=50&populate[activities][populate][activity_group]=*&populate[activities][populate][age_group]=*&populate[age_group][populate]=*&populate=*`
     )
     const data = await res.json()
     activityGroups = activityGroups.concat(data.data)
@@ -50,14 +50,16 @@ export const fetchSingleActivityGroup = async (id) => {
 }
 
 export const fetchActivities = async () => {
-  const res = await fetch(`${PARTIO_API_URL}/api/activities?populate=*`)
+  const res = await fetch(
+    `${PARTIO_API_URL}/api/activities?age_group[popualate]=*&populate=*`
+  )
   const activities = await res.json()
   return activities
 }
 
-export const fetchActivity = async (wp_guid, language) => {
+export const fetchActivity = async (id, language) => {
   const res = await fetch(
-    `${PARTIO_API_URL}/api/activities?wp_guid=${wp_guid}&locale=${language}&populate=*`
+    `${PARTIO_API_URL}/api/activities?id=${id}&locale=${language}&populate=*&age_group=*`
   )
   const activity = await res.json()
   return activity
