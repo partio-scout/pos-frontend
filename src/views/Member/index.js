@@ -163,9 +163,12 @@ const Member = () => {
   )
 
   const getAgeGroupId = (taskgroup) => {
-    return taskgroup.item
-      ? taskgroup.item.age_group.wp_guid
-      : taskgroup.age_group.wp_guid
+    return (
+      taskgroup.item?.age_group?.wp_guid ||
+      taskgroup.age_group?.wp_guid ||
+      taskgroup.item?.age_group?.id ||
+      taskgroup.age_group?.id
+    )
   }
   const completedTasks = Object.keys(memberTasks)
     .filter((guid) => memberTasks[guid] === COMPLETION_STATUS.COMPLETED)

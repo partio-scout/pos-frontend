@@ -190,14 +190,24 @@ const Profile = () => {
   const filterUndefined = taskGroupsMarkedCompleted.filter(
     (taskgroup) =>
       taskgroup !== undefined &&
-      !completionBadgeAgegroupIds.includes(taskgroup.item.age_group.wp_guid)
+      !completionBadgeAgegroupIds.includes(
+        taskgroup.item?.age_group?.wp_guid ||
+          taskgroup.item?.age_group?.id ||
+          taskgroup.age_group?.wp_guid ||
+          taskgroup.age_group?.id
+      )
   )
 
   const taskgroupsMarkedCompletedWhenAgeGroupMarkedCompleted =
     taskGroupsMarkedCompleted.filter(
       (taskgroup) =>
         taskgroup !== undefined &&
-        completionBadgeAgegroupIds.includes(taskgroup.item.age_group.id)
+        completionBadgeAgegroupIds.includes(
+          taskgroup.item?.age_group?.wp_guid ||
+            taskgroup.item?.age_group?.id ||
+            taskgroup.age_group?.wp_guid ||
+            taskgroup.age_group?.id
+        )
     )
 
   const filteredTaskGroupsMarkedCompleted = filterUndefined.filter(

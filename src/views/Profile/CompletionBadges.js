@@ -74,7 +74,12 @@ const AccordionList = ({
   const agegroupTaskgroupsMarkedCompleted =
     taskgroupsMarkedCompleted &&
     taskgroupsMarkedCompleted.filter((taskGroup) => {
-      return taskGroup.item.age_group.wp_guid === groupId
+      return (
+        taskGroup.item?.age_group?.wp_guid === groupId ||
+        taskGroup.age_group?.wp_guid === groupId ||
+        taskGroup.item?.age_group?.id === groupId ||
+        taskGroup.age_group?.id === groupId
+      )
     })
   return (
     <Accordion key={groupId} allowZeroExpanded>
